@@ -27,8 +27,11 @@ func main() {
 	Env := interpreter.NewEnv()
 	if t := strings.Split(args[0], "."); t[len(t)-1] == "ecla" || t[len(t)-1] == "eclaw" {
 		Env.SetFile(args[0])
-	} else {
+	} else if args[0][len(args[0])-1] == ';' {
 		Env.SetCode(args[0])
+	} else {
+		println("ecla: invalid input file")
+		return
 	}
 	Env.Execute()
 	fmt.Println("//--- END", args[0], "---")
