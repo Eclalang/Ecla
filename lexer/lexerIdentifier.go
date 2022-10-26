@@ -1,14 +1,32 @@
 package lexer
 
+// each type of token
+var (
+	TEXT      = "TEXT"
+	PRINT     = "PRINT"
+	INT       = "INT"
+	FLOAT     = "FLOAT"
+	OPPERATOR = "OPPERATOR"
+	LPAREN    = "LPAREN"
+	RPAREN    = "RPAREN"
+	EOL       = "EOL"
+	EOF       = "EOF"
+)
+
+// link between syntaxe and token
 var Identifier []identifier = []identifier{
 	{
-		Identifier: "PRINT",
+		Identifier: TEXT,
+		Syntaxe:    []string{},
+	},
+	{
+		Identifier: PRINT,
 		Syntaxe: []string{
 			"print",
 		},
 	},
 	{
-		Identifier: "INT",
+		Identifier: INT,
 		Syntaxe: []string{
 			"0",
 			"1",
@@ -23,10 +41,9 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
-		Identifier: "OPPERATOR",
+		Identifier: OPPERATOR,
 		Syntaxe: []string{
 			"+",
-			"=",
 			"/",
 			"//",
 			"%",
@@ -35,25 +52,25 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
-		Identifier: "OPARENT",
+		Identifier: LPAREN,
 		Syntaxe: []string{
 			"(",
 		},
 	},
 	{
-		Identifier: "CPARENT",
+		Identifier: RPAREN,
 		Syntaxe: []string{
 			")",
 		},
 	},
 	{
-		Identifier: "EOL",
+		Identifier: EOL,
 		Syntaxe: []string{
 			";",
 		},
 	},
 	{
-		Identifier: "EOF",
+		Identifier: EOF,
 		Syntaxe:    []string{},
 	},
 }
@@ -61,4 +78,14 @@ var Identifier []identifier = []identifier{
 type identifier struct {
 	Identifier string
 	Syntaxe    []string
+}
+
+// IsSyntaxe verify is the string tempVal exist in the current identifier
+func (ident identifier) IsSyntaxe(tempVal string) bool {
+	for _, syntaxe := range ident.Syntaxe {
+		if syntaxe == tempVal {
+			return true
+		}
+	}
+	return false
 }
