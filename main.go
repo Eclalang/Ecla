@@ -26,5 +26,9 @@ func main() {
 	Env := interpreter.NewEnv()
 	Env.SetFile(args[0])
 	Env.Execute()
+	fmt.Println("//--- END", args[0], "---")
+	if Debug {
+		fmt.Println("ENV:", Env)
+	}
 	// Run the interpreter
 }

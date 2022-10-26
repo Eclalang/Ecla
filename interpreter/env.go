@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"fmt"
 	"os"
 	"runtime"
 
@@ -24,6 +25,10 @@ func NewEnv() *Env {
 		ARCH: runtime.GOARCH,
 		Vars: make(map[string]eclaType.Type),
 	}
+}
+
+func (env Env) String() string {
+	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s}", env.OS, env.ARCH, env.Code)
 }
 
 // SetCode sets the code to be executed.
