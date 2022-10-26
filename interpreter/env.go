@@ -11,6 +11,7 @@ import (
 type Env struct {
 	Vars       map[string]eclaType.Type
 	OS         string
+	ARCH       string
 	SyntaxTree any
 	File       string
 	Code       string
@@ -20,6 +21,7 @@ type Env struct {
 func NewEnv() *Env {
 	return &Env{
 		OS:   runtime.GOOS,
+		ARCH: runtime.GOARCH,
 		Vars: make(map[string]eclaType.Type),
 	}
 }
