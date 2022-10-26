@@ -78,13 +78,5 @@ func (f *Float) DIV(other Type) (Type, error) {
 
 // MOD returns Modulo of two Type of Ecla or error.
 func (f *Float) MOD(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case float32:
-		return &Float{Value: float32(int(f.Value) % int(vOther.(float32)))}, nil
-	case int:
-		return &Float{Value: float32(int(f.Value) % vOther.(int))}, nil
-	default:
-		return nil, errors.New("cannot mod float by " + other.GetString())
-	}
+	return nil, errors.New("cannot mod float")
 }

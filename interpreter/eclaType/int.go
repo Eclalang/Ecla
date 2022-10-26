@@ -32,6 +32,8 @@ func (i *Int) ADD(other Type) (Type, error) {
 		return &Int{Value: i.Value + vOther.(int)}, nil
 	case string:
 		return &String{Value: i.GetString() + vOther.(string)}, nil
+	case float32:
+		return &Float{Value: float32(i.Value) + vOther.(float32)}, nil
 	default:
 		return nil, errors.New("cannot add " + other.GetString() + " to int")
 	}
@@ -43,6 +45,8 @@ func (i *Int) SUB(other Type) (Type, error) {
 	switch vOther.(type) {
 	case int:
 		return &Int{Value: i.Value - vOther.(int)}, nil
+	case float32:
+		return &Float{Value: float32(i.Value) - vOther.(float32)}, nil
 	default:
 		return nil, errors.New("cannot subtract " + other.GetString() + " from int")
 	}
@@ -54,6 +58,14 @@ func (i *Int) MUL(other Type) (Type, error) {
 	switch vOther.(type) {
 	case int:
 		return &Int{Value: i.Value * vOther.(int)}, nil
+	case string:
+		result := vOther.(string)
+		for k := 0; k < i.Value; k++ {
+			result += vOther.(string)
+		}
+		return &String{Value: result}, nil
+	case float32:
+		return &Float{Value: float32(i.Value) * vOther.(float32)}, nil
 	default:
 		return nil, errors.New("cannot multiply int by " + other.GetString())
 	}
@@ -65,6 +77,8 @@ func (i *Int) DIV(other Type) (Type, error) {
 	switch vOther.(type) {
 	case int:
 		return &Int{Value: i.Value / vOther.(int)}, nil
+	case float32:
+		return &Float{Value: float32(i.Value) / vOther.(float32)}, nil
 	default:
 		return nil, errors.New("cannot divide int by " + other.GetString())
 	}
