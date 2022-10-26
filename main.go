@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/tot0p/Ecla/interpreter"
 )
 
 var (
@@ -22,5 +23,8 @@ func main() {
 		return
 	}
 	fmt.Println("//--- RUN", args[0], "---")
+	Env := interpreter.NewEnv()
+	Env.SetFile(args[0])
+	Env.Execute()
 	// Run the interpreter
 }
