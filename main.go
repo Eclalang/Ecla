@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/tot0p/Ecla/interpreter"
+	"strings"
 )
 
 var (
@@ -24,7 +25,11 @@ func main() {
 	}
 	fmt.Println("//--- RUN", args[0], "---")
 	Env := interpreter.NewEnv()
-	Env.SetFile(args[0])
+	if t := strings.Split(args[0], "."); t[len(t)-1] == "ecla" || t[len(t)-1] == "eclaw" {
+		Env.SetFile(args[0])
+	} else {
+		Env.SetCode(args[0])
+	}
 	Env.Execute()
 	fmt.Println("//--- END", args[0], "---")
 	if Debug {
