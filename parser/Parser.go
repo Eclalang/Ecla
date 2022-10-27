@@ -72,13 +72,13 @@ func (p *Parser) ParsePrimaryExpr() Expr {
 	if p.CurrentToken.TokenType == lexer.LPAREN {
 		tempLPAREN := p.CurrentToken
 		p.Step()
-		Expr := p.ParseBinaryExpr(nil)
+		tempExpr := p.ParseBinaryExpr(nil)
 		if p.CurrentToken.TokenType != lexer.RPAREN {
 			panic("Expected ')'")
 		}
 		tempRPAREN := p.CurrentToken
 		p.Step()
-		return ParenExpr{Lparen: tempLPAREN, Expression: Expr, Rparen: tempRPAREN}
+		return ParenExpr{Lparen: tempLPAREN, Expression: tempExpr, Rparen: tempRPAREN}
 	}
 	return p.ParseLiteral()
 
