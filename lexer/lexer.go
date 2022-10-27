@@ -20,7 +20,7 @@ func Lexer(sentence string) []Token {
 	var prevIndex int = 0
 	// line will be increase each time a ";" is founded
 	var line int = 0
-	// canBeText is false when a element is already considered as a known
+	// canBeText is false when an element is already considered as a known
 	// syntaxe, and true elsewhere
 	var canBeText bool
 
