@@ -8,7 +8,7 @@ type Token struct {
 	Line      int
 }
 
-// Lexer do a lexical analyse of the string sentence to separate each element,
+// Lexer do a lexical analysis of the string sentence to separate each element,
 // and associate each element with a token
 func Lexer(sentence string) []Token {
 
@@ -32,14 +32,14 @@ func Lexer(sentence string) []Token {
 		// we assign tempVal as an element in the interval [prevIndex:i]
 		tempVal = sentence[prevIndex:i]
 
-		// we assign canBeText to true, because we actualy dont know if the
-		// the current element is a text or not
+		// we assign canBeText to true, because we actually don't know if the
+		// current element is a text or not
 		canBeText = true
 
 		for _, identifier := range Identifier {
 			// for each element of Identifier, we compare all the known
-			// syntaxes with our tempVal, If the comparation is true,
-			// tempVal is know syntaxes, and then a token
+			// syntaxes with our tempVal, If the comparison is true,
+			// tempVal is now syntaxes, and then a token
 			if identifier.IsSyntaxe(tempVal) {
 				canBeText = false
 				// if the type of the known syntaxe is INT, we want to
@@ -55,7 +55,7 @@ func Lexer(sentence string) []Token {
 					}
 				}
 
-				// append a new Token to tthe variable ret
+				// append a new Token to the variable ret
 				ret = append(ret, addToken(identifier.Identifier, tempVal, prevIndex, line))
 
 				tempVal = ""
@@ -70,7 +70,7 @@ func Lexer(sentence string) []Token {
 			}
 		}
 		// if after checking all the known syntaxe, the tempValue can still
-		// be a TEXT, we parse the tempValue backward to verifie if
+		// be a TEXT, we parse the tempValue backward to verifies if
 		// a substring of tempValue can also be a known syntaxe
 		if canBeText {
 			for y := len(tempVal) - 1; y >= 0; y-- {
