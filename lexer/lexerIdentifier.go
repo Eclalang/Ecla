@@ -20,6 +20,11 @@ var (
 	EOF    = "EOF"
 )
 
+//--------------------------------------------//
+// Need to be optimized
+// Change for a switch case of a hashmap
+// -------------------------------------------//
+
 // link between syntax and token
 var Identifier []identifier = []identifier{
 	{
