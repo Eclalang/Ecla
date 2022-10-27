@@ -15,7 +15,7 @@ type Parser struct {
 func (p *Parser) Parse() AST {
 	p.TokenIndex = -1
 	p.Step()
-	ParsedAST := AST{Node(p.ParseBinaryExpr(nil))}
+	ParsedAST := AST{Node(p.ParseExpr())}
 
 	return ParsedAST
 }
@@ -28,6 +28,10 @@ func (p *Parser) Step() {
 	} else {
 		p.CurrentToken = p.Tokens[p.TokenIndex]
 	}
+}
+
+func (p *Parser) ParseExpr() Expr {
+	return p.ParseBinaryExpr(nil)
 }
 
 // ParseBinaryExpr parses a binary expression with the given precedence
