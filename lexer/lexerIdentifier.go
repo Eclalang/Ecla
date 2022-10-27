@@ -2,18 +2,25 @@ package lexer
 
 // each type of token
 var (
-	TEXT      = "TEXT"
-	PRINT     = "PRINT"
-	INT       = "INT"
-	FLOAT     = "FLOAT"
-	OPPERATOR = "OPPERATOR"
-	LPAREN    = "LPAREN"
-	RPAREN    = "RPAREN"
-	EOL       = "EOL"
-	EOF       = "EOF"
+	TEXT   = "TEXT"
+	PRINT  = "PRINT"
+	INT    = "INT"
+	FLOAT  = "FLOAT"
+	ADD    = "ADD"
+	SUB    = "SUB"
+	MULT   = "MULT"
+	DIV    = "DIV"
+	QOT    = "QOT"
+	MOD    = "MOD"
+	INC    = "INC"
+	DEC    = "DEC"
+	LPAREN = "LPAREN"
+	RPAREN = "RPAREN"
+	EOL    = "EOL"
+	EOF    = "EOF"
 )
 
-// link between syntaxe and token
+// link between syntax and token
 var Identifier []identifier = []identifier{
 	{
 		Identifier: TEXT,
@@ -41,14 +48,51 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
-		Identifier: OPPERATOR,
+		Identifier: ADD,
 		Syntaxe: []string{
 			"+",
-			"/",
-			"//",
-			"%",
+		},
+	},
+	{
+		Identifier: SUB,
+		Syntaxe: []string{
 			"-",
+		},
+	},
+	{
+		Identifier: MULT,
+		Syntaxe: []string{
 			"*",
+		},
+	},
+	{
+		Identifier: DIV,
+		Syntaxe: []string{
+			"/",
+		},
+	},
+	{
+		Identifier: QOT,
+		Syntaxe: []string{
+			"//",
+		},
+	},
+	{
+		Identifier: MOD,
+		Syntaxe: []string{
+			"%",
+		},
+	},
+	{
+		Identifier: INC,
+		Syntaxe: []string{
+			"++",
+		},
+	},
+	{
+		Identifier: DEC,
+		Syntaxe: []string{
+			"--",
 		},
 	},
 	{
