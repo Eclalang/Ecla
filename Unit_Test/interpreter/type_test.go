@@ -13,7 +13,7 @@ func TestAddTwoIntegers(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != 3 {
+	if result.GetValue() != eclaType.Int(3) {
 		t.Error("Expected 3, got ", result)
 	}
 }
