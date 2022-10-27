@@ -1,6 +1,6 @@
 package lexer
 
-// Token
+// Token is a struct that contains all the information about a token
 type Token struct {
 	TokenType string
 	Value     string
@@ -36,15 +36,15 @@ func Lexer(sentence string) []Token {
 		// current element is a text or not
 		canBeText = true
 
-		for _, identifier := range Identifier {
+		for _, ident := range Identifier {
 			// for each element of Identifier, we compare all the known
 			// syntaxes with our tempVal, If the comparison is true,
 			// tempVal is now syntaxes, and then a token
-			if identifier.IsSyntaxe(tempVal) {
+			if ident.IsSyntaxe(tempVal) {
 				canBeText = false
 				// if the type of the known syntaxe is INT, we want to
 				// concat each subsequent INT to the same token
-				if identifier.Identifier == INT {
+				if ident.Identifier == INT {
 					if len(ret) > 1 {
 						if ret[len(ret)-1].TokenType == INT {
 							ret[len(ret)-1].Value += tempVal
@@ -56,14 +56,14 @@ func Lexer(sentence string) []Token {
 				}
 
 				// append a new Token to the variable ret
-				ret = append(ret, addToken(identifier.Identifier, tempVal, prevIndex, line))
+				ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
 
 				tempVal = ""
 				prevIndex = i
 
 				// if the current created token is EOL,
 				// Line ++
-				if identifier.Identifier == EOL {
+				if ident.Identifier == EOL {
 					line += 1
 				}
 				break
@@ -74,8 +74,8 @@ func Lexer(sentence string) []Token {
 		// a substring of tempValue can also be a known syntaxe
 		if canBeText {
 			for y := len(tempVal) - 1; y >= 0; y-- {
-				for _, identifier := range Identifier {
-					if identifier.IsSyntaxe(tempVal[y:]) {
+				for _, ident := range Identifier {
+					if ident.IsSyntaxe(tempVal[y:]) {
 						canBeText = false
 						ret = append(ret, addToken(Identifier[0].Identifier, tempVal[:y], prevIndex, line))
 
@@ -86,8 +86,8 @@ func Lexer(sentence string) []Token {
 			}
 		}
 	}
-	// if at the end of the sentence parse, tempVal is not "", it mean that
-	// a last token of type TEXT must be append to the return value
+	// if at the end of the sentence parse, tempVal is not "", it means that
+	// a last token of type TEXT must be appended to the return value
 	if tempVal != "" {
 		ret = append(ret, addToken(Identifier[0].Identifier, tempVal, prevIndex, line))
 	}
