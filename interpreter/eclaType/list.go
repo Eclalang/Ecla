@@ -1,73 +1,54 @@
 package eclaType
 
-import (
-	"errors"
-	"fmt"
-)
+import "fmt"
 
-// NewList returns a new list
-func NewList(list []Type) Type {
-	return &List{Value: list}
+type List []Type
+
+// GetValue returns the value of the list
+func (l List) GetValue() any {
+	return l
 }
 
-type List struct {
-	Value []Type
+// GetString returns the string of list
+func (l List) GetString() String {
+	return String(fmt.Sprint(l))
 }
 
-// GetValue returns the value of the List.
-func (l *List) GetValue() any {
-	return l.Value
-}
-
-// GetString returns the value of the List.
-func (l *List) GetString() string {
-	return fmt.Sprint(l.Value)
-}
-
-// ADD returns the sum of the two Type of Ecla or error.
-func (l *List) ADD(other Type) (Type, error) {
-	var lll *List
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case []Type:
-		lll = l
-		for _, v := range vOther.([]Type) {
-			lll.Value = append(lll.Value, v)
-		}
-		return lll, nil
-	default:
-		return nil, errors.New("cannot add " + other.GetString() + " to list")
+// Add adds two Type objects  compatible with List
+func (l List) Add(other Type) (Type, error) {
+	switch other.(type) {
+	case List:
+		return append(l, other.(List)...), nil
+	case String:
+		return l.GetString() + other.GetString(), nil
 	}
+	return nil, fmt.Errorf("cannot add %s to list", other.GetString())
 }
 
-// MUL returns the product of the two Type of Ecla or error.
-func (l *List) MUL(other Type) (Type, error) {
-	var lll *List
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		for i := 0; i < vOther.(int); i++ {
-			for _, v := range l.Value {
-				lll.Value = append(lll.Value, v)
-			}
+// Sub returns errors because you cannot subtract lists
+func (l List) Sub(other Type) (Type, error) {
+	return nil, fmt.Errorf("cannot subtract from list")
+}
+
+// Mod returns errors because you cannot mod lists
+func (l List) Mod(other Type) (Type, error) {
+	return nil, fmt.Errorf("cannot mod list")
+}
+
+// Mul if other is Int , return n * List
+func (l List) Mul(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		result := List{}
+		for i := 0; i < int(other.(Int)); i++ {
+			result = append(result, l...)
 		}
-		return lll, nil
-	default:
-		return nil, errors.New("cannot multiply list by " + other.GetString())
+		return result, nil
 	}
+	return nil, fmt.Errorf("cannot multiply list by %s", other.GetString())
 }
 
-// SUB returns error.
-func (s *List) SUB(other Type) (Type, error) {
-	return nil, errors.New("cannot subtract from list")
-}
-
-// DIV returns error.
-func (s *List) DIV(other Type) (Type, error) {
-	return nil, errors.New("cannot divide list")
-}
-
-// MOD returns error.
-func (s *List) MOD(other Type) (Type, error) {
-	return nil, errors.New("cannot mod list")
+// Div returns errors because you cannot divide lists
+func (l List) Div(other Type) (Type, error) {
+	return nil, fmt.Errorf("cannot divide list")
 }

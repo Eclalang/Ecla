@@ -6,15 +6,15 @@ import (
 )
 
 func TestAddTwoIntegers(t *testing.T) {
-	t1 := eclaType.NewInt(1)
-	t2 := eclaType.NewInt(2)
+	t1 := eclaType.Int(1)
+	t2 := eclaType.Int(2)
 
-	result, err := t1.ADD(t2)
+	result, err := t1.Add(t2)
 	if err != nil {
 		t.Error(err)
 	}
 	if result.GetValue() != 3 {
-		t.Error("Expected 3, got ", result.GetValue())
+		t.Error("Expected 3, got ", result)
 	}
 }
 

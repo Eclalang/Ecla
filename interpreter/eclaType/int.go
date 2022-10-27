@@ -5,92 +5,80 @@ import (
 	"strconv"
 )
 
-// NewInt returns a new Int.
-func NewInt(value int) Type {
-	return &Int{Value: value}
+type Int int
+
+// GetValue returns the value of the int
+func (i Int) GetValue() any {
+	return i
 }
 
-type Int struct {
-	Value int
+// GetString returns the string representation of the int
+func (i Int) GetString() String {
+	return String(strconv.Itoa(int(i)))
 }
 
-// GetValue returns the value of the Int.
-func (i *Int) GetValue() any {
-	return i.Value
-}
-
-// GetString returns the string value of the Int .
-func (i *Int) GetString() string {
-	return strconv.Itoa(i.Value)
-}
-
-// ADD returns the sum of the two Type of Ecla or error.
-func (i *Int) ADD(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value + vOther.(int)}, nil
-	case string:
-		return &String{Value: i.GetString() + vOther.(string)}, nil
-	case float32:
-		return &Float{Value: float32(i.Value) + vOther.(float32)}, nil
+// Add adds two Type objects compatible with Int
+func (i Int) Add(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return i + other.(Int), nil
+	case Float:
+		return Float(i) + other.(Float), nil
+	case String:
+		return i.GetString() + other.GetString(), nil
 	default:
-		return nil, errors.New("cannot add " + other.GetString() + " to int")
+		return nil, errors.New("cannot add " + string(other.GetString()) + " to int")
 	}
 }
 
-// SUB returns the difference of the two Type of Ecla or error.
-func (i *Int) SUB(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value - vOther.(int)}, nil
-	case float32:
-		return &Float{Value: float32(i.Value) - vOther.(float32)}, nil
+// Sub subtracts two Type objects compatible with Int
+func (i Int) Sub(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return i - other.(Int), nil
+	case Float:
+		return Float(i) - other.(Float), nil
 	default:
-		return nil, errors.New("cannot subtract " + other.GetString() + " from int")
+		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
 	}
 }
 
-// MUL returns the product of the two Type of Ecla or error.
-func (i *Int) MUL(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value * vOther.(int)}, nil
-	case string:
-		result := vOther.(string)
-		for k := 0; k < i.Value; k++ {
-			result += vOther.(string)
+// Mod returns the remainder of the division of two Type objects compatible with Int
+func (i Int) Mod(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return i % other.(Int), nil
+	default:
+		return nil, errors.New("cannot mod " + string(other.GetString()) + " by int")
+	}
+}
+
+// Mul multiplies two Type objects compatible with Int
+func (i Int) Mul(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return i * other.(Int), nil
+	case Float:
+		return Float(i) * other.(Float), nil
+	case String:
+		result := String("")
+		for j := 0; j < int(i); j++ {
+			result += other.GetString()
 		}
-		return &String{Value: result}, nil
-	case float32:
-		return &Float{Value: float32(i.Value) * vOther.(float32)}, nil
+		return result, nil
 	default:
-		return nil, errors.New("cannot multiply int by " + other.GetString())
+		return nil, errors.New("cannot multiply " + string(other.GetString()) + " by int")
 	}
 }
 
-// DIV returns the quotient of the two Type of Ecla or error.
-func (i *Int) DIV(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value / vOther.(int)}, nil
-	case float32:
-		return &Float{Value: float32(i.Value) / vOther.(float32)}, nil
+// Div divides two Type objects compatible with Int
+func (i Int) Div(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return i / other.(Int), nil
+	case Float:
+		return Float(i) / other.(Float), nil
 	default:
-		return nil, errors.New("cannot divide int by " + other.GetString())
-	}
-}
-
-// MOD returns the remainder of the two Type of Ecla or error.
-func (i *Int) MOD(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value % vOther.(int)}, nil
-	default:
-		return nil, errors.New("cannot mod int by " + other.GetString())
+		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")
 	}
 }

@@ -5,78 +5,69 @@ import (
 	"fmt"
 )
 
-// NewFloat returns a new Float.
-func NewFloat(value float32) Type {
-	return &Float{Value: value}
+type Float float32
+
+// GetValue returns the value of the float
+func (f Float) GetValue() any {
+	return f
 }
 
-type Float struct {
-	Value float32
+// GetString returns the string representation of the float
+func (f Float) GetString() String {
+	return String(fmt.Sprint(f))
 }
 
-// GetValue returns the value of the Float.
-func (f *Float) GetValue() any {
-	return f.Value
-}
-
-// GetString returns the string value of the Float.
-func (f *Float) GetString() string {
-	return fmt.Sprint(f.Value)
-}
-
-// ADD returns the sum of the two Type of Ecla or error.
-func (f *Float) ADD(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case float32:
-		return &Float{Value: f.Value + vOther.(float32)}, nil
-	case int:
-		return &Float{Value: f.Value + float32(vOther.(int))}, nil
+// Add adds two Type objects compatible with Float
+func (f Float) Add(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return f + Float(other.(Int)), nil
+	case Float:
+		return f + other.(Float), nil
+	case String:
+		return f.GetString() + other.GetString(), nil
 	default:
-		return nil, errors.New("cannot add " + other.GetString() + " to float")
+		return nil, errors.New("cannot add " + string(other.GetString()) + " to float")
 	}
 }
 
-// SUB returns the difference of the two Type of Ecla or error.
-func (f *Float) SUB(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case float32:
-		return &Float{Value: f.Value - vOther.(float32)}, nil
-	case int:
-		return &Float{Value: f.Value - float32(vOther.(int))}, nil
+// Sub subtracts two Type objects compatible with Float
+func (f Float) Sub(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return f - Float(other.(Int)), nil
+	case Float:
+		return f - other.(Float), nil
 	default:
-		return nil, errors.New("cannot subtract " + other.GetString() + " from float")
+		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from float")
 	}
 }
 
-// MUL returns the product of the two Type of Ecla or error.
-func (f *Float) MUL(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case float32:
-		return &Float{Value: f.Value * vOther.(float32)}, nil
-	case int:
-		return &Float{Value: f.Value * float32(vOther.(int))}, nil
-	default:
-		return nil, errors.New("cannot multiply float by " + other.GetString())
-	}
-}
-
-// DIV returns the quotient of the two Type of Ecla or error.
-func (f *Float) DIV(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case float32:
-		return &Float{Value: f.Value / vOther.(float32)}, nil
-	case int:
-		return &Float{Value: f.Value / float32(vOther.(int))}, nil
-	default:
-		return nil, errors.New("cannot divide float by " + other.GetString())
-	}
-}
-
-// MOD returns Modulo of two Type of Ecla or error.
-func (f *Float) MOD(other Type) (Type, error) {
+// Mod returns error
+func (f Float) Mod(other Type) (Type, error) {
 	return nil, errors.New("cannot mod float")
+}
+
+// Mul multiplies two Type objects compatible with Float
+func (f Float) Mul(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return f * Float(other.(Int)), nil
+	case Float:
+		return f * other.(Float), nil
+	default:
+		return nil, errors.New("cannot multiply " + string(other.GetString()) + " by float")
+	}
+}
+
+// Div divides two Type objects compatible with Float
+func (f Float) Div(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return f / Float(other.(Int)), nil
+	case Float:
+		return f / other.(Float), nil
+	default:
+		return nil, errors.New("cannot divide " + string(other.GetString()) + " by float")
+	}
 }
