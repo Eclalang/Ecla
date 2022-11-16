@@ -25,7 +25,7 @@ func init() {
 func main() {
 	args := flag.Args()
 	if len(args) == 0 {
-		println("ecla: no input files")
+		println("ecla: no input")
 		return
 	}
 	fmt.Println("//--- RUN", args[0], "---")
