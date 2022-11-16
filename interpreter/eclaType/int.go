@@ -82,3 +82,87 @@ func (i Int) Div(other Type) (Type, error) {
 		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")
 	}
 }
+
+// DivEc divides two Type objects compatible with Int
+func (i Int) DivEc(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return (i - i%other.(Int)) / other.(Int), nil
+	case Float:
+		return nil, errors.New("cannot divide ec by float")
+	default:
+		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")
+	}
+}
+
+// Eq returns true if two Type objects are equal
+func (i Int) Eq(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(i == other.(Int)), nil
+	case Float:
+		return Bool(Float(i) == other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// NotEq returns true if two Type objects are not equal
+func (i Int) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(i != other.(Int)), nil
+	case Float:
+		return Bool(Float(i) != other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// Gt returns true if the first Type object is greater than the second
+func (i Int) Gt(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(i > other.(Int)), nil
+	case Float:
+		return Bool(Float(i) > other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// GtEq returns true if the first Type object is greater than or equal to the second
+func (i Int) GtEq(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(i >= other.(Int)), nil
+	case Float:
+		return Bool(Float(i) >= other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// Lw returns true if the first Type object is lower than the second
+func (i Int) Lw(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(i < other.(Int)), nil
+	case Float:
+		return Bool(Float(i) < other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// LwEq returns true if the first Type object is lower than or equal to the second
+func (i Int) LwEq(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(i <= other.(Int)), nil
+	case Float:
+		return Bool(Float(i) <= other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}

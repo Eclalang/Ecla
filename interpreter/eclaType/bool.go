@@ -41,3 +41,43 @@ func (b Bool) Mul(other Type) (Type, error) {
 func (b Bool) Div(other Type) (Type, error) {
 	return nil, errors.New("cannot divide bool")
 }
+
+// returns error
+func (b Bool) DivEc(other Type) (Type, error) {
+	return nil, errors.New("cannot divide ec bool")
+}
+
+// Eq returns true if two Type objects are equal
+func (b Bool) Eq(other Type) (Type, error) {
+	return Bool(b == other.GetValue()), nil
+}
+
+// NotEq returns true if two Type objects are not equal
+func (b Bool) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case Bool:
+		return Bool(b != other.GetValue()), nil
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}
+
+// returns error
+func (b Bool) Gt(other Type) (Type, error) {
+	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+}
+
+// returns error
+func (b Bool) GtEq(other Type) (Type, error) {
+	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+}
+
+// returns error
+func (b Bool) Lw(other Type) (Type, error) {
+	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+}
+
+// returns error
+func (b Bool) LwEq(other Type) (Type, error) {
+	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+}

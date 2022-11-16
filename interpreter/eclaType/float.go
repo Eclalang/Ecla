@@ -71,3 +71,80 @@ func (f Float) Div(other Type) (Type, error) {
 		return nil, errors.New("cannot divide " + string(other.GetString()) + " by float")
 	}
 }
+
+// DivEc returns error because you cannot div ec float
+func (f Float) DivEc(other Type) (Type, error) {
+	return nil, errors.New("cannot divide ec by float")
+}
+
+// Eq returns true if two Type objects are equal
+func (f Float) Eq(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(f == Float(other.(Int))), nil
+	case Float:
+		return Bool(f == other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+	}
+}
+
+// NotEq returns true if two Type objects are not equal
+func (f Float) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(f != Float(other.(Int))), nil
+	case Float:
+		return Bool(f != other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+	}
+}
+
+// Gt returns true if the float is greater than the other
+func (f Float) Gt(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(f > Float(other.(Int))), nil
+	case Float:
+		return Bool(f > other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+	}
+}
+
+// GtEq returns true if the float is greater than or equal to the other
+func (f Float) GtEq(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(f >= Float(other.(Int))), nil
+	case Float:
+		return Bool(f >= other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+	}
+}
+
+// Lw returns true if the float is lower than the other
+func (f Float) Lw(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(f < Float(other.(Int))), nil
+	case Float:
+		return Bool(f < other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+	}
+}
+
+// LwEq returns true if the float is lower than or equal to the other
+func (f Float) LwEq(other Type) (Type, error) {
+	switch other.(type) {
+	case Int:
+		return Bool(f <= Float(other.(Int))), nil
+	case Float:
+		return Bool(f <= other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+	}
+}

@@ -49,3 +49,68 @@ func (s String) Mul(other Type) (Type, error) {
 func (s String) Div(other Type) (Type, error) {
 	return nil, errors.New("cannot divide string")
 }
+
+// DivEc returns error because you cannot div ec strings
+func (s String) DivEc(other Type) (Type, error) {
+	return nil, errors.New("cannot divide ec by string")
+}
+
+// Eq returns true if two Type objects are equal
+func (s String) Eq(other Type) (Type, error) {
+	switch other.(type) {
+	case String:
+		return Bool(s == other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string by " + other.GetString()))
+	}
+}
+
+// NotEq returns true if two Type objects are not equal
+func (s String) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case String:
+		return Bool(s != other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}
+
+// Gt returns true if s is greater than other
+func (s String) Gt(other Type) (Type, error) {
+	switch other.(type) {
+	case String:
+		return Bool(s > other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}
+
+// GtEq returns true if s is greater than or equal to other
+func (s String) GtEq(other Type) (Type, error) {
+	switch other.(type) {
+	case String:
+		return Bool(s >= other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}
+
+// Lw returns true if s is lower than other
+func (s String) Lw(other Type) (Type, error) {
+	switch other.(type) {
+	case String:
+		return Bool(s < other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}
+
+// LwEq returns true if s is lower than or equal to other
+func (s String) LwEq(other Type) (Type, error) {
+	switch other.(type) {
+	case String:
+		return Bool(s <= other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}

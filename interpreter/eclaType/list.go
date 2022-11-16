@@ -1,6 +1,9 @@
 package eclaType
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type List []Type
 
@@ -51,4 +54,91 @@ func (l List) Mul(other Type) (Type, error) {
 // Div returns errors because you cannot divide lists
 func (l List) Div(other Type) (Type, error) {
 	return nil, fmt.Errorf("cannot divide list")
+}
+
+// DivEc returns error because you cannot div ec lists
+func (l List) DivEc(other Type) (Type, error) {
+	return nil, errors.New("cannot divide ec by list")
+}
+
+// Eq returns true if two Type objects are equal
+func (l List) Eq(other Type) (Type, error) {
+	switch other.(type) {
+	case List:
+		if len(l) != len(other.(List)) {
+			return Bool(false), nil
+		}
+		for i, v := range l {
+			if v != other.(List)[i] {
+				return Bool(false), nil
+			}
+		}
+		return Bool(true), nil
+	}
+	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+}
+
+// NotEq returns true if two Type objects are not equal
+func (l List) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case List:
+		if len(l) != len(other.(List)) {
+			return Bool(true), nil
+		}
+		for i, v := range l {
+			if v != other.(List)[i] {
+				return Bool(true), nil
+			}
+		}
+		return Bool(false), nil
+	}
+	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+}
+
+// Gt returns true if the first Type object is greater than the second
+func (l List) Gt(other Type) (Type, error) {
+	switch other.(type) {
+	case List:
+		if len(l) > len(other.(List)) {
+			return Bool(true), nil
+		}
+		return Bool(false), nil
+	}
+	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+}
+
+// GtEq returns true if the first Type object is greater than or equal the second
+func (l List) GtEq(other Type) (Type, error) {
+	switch other.(type) {
+	case List:
+		if len(l) >= len(other.(List)) {
+			return Bool(true), nil
+		}
+		return Bool(false), nil
+	}
+	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+}
+
+// Lw returns true if the first Type object is lower than the second
+func (l List) Lw(other Type) (Type, error) {
+	switch other.(type) {
+	case List:
+		if len(l) < len(other.(List)) {
+			return Bool(true), nil
+		}
+		return Bool(false), nil
+	}
+	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+}
+
+// LwEq returns true if the first Type object is lower than or equal the second
+func (l List) LwEq(other Type) (Type, error) {
+	switch other.(type) {
+	case List:
+		if len(l) <= len(other.(List)) {
+			return Bool(true), nil
+		}
+		return Bool(false), nil
+	}
+	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
