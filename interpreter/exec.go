@@ -30,7 +30,7 @@ func New(t parser.Literal) eclaType.Type {
 	switch t.Type {
 	case lexer.INT:
 		return eclaType.NewInt(t.Value)
-	case "STRING":
+	case lexer.STRING:
 		return eclaType.NewString(t.Value)
 	case lexer.BOOL:
 		return eclaType.NewBool(t.Value)
