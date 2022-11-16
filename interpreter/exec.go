@@ -101,5 +101,15 @@ func RunBinaryExpr(tree parser.BinaryExpr) eclaType.Type {
 }
 
 func RunUnaryExpr(tree parser.UnaryExpr) eclaType.Type {
+	switch tree.Operator.TokenType {
+	case lexer.SUB:
+		t, err := eclaType.Int(0).Sub(RunTree(tree.RightExpr)) // TODO: Fix this
+		if err != nil {
+			panic(err)
+		}
+		return t
+	case lexer.ADD:
+		return RunTree(tree.RightExpr)
+	}
 	return nil
 }
