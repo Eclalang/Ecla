@@ -30,7 +30,7 @@ type Type interface {
 	//And : &&
 	And(other Type) (Type, error)
 	//Or : ||
-	//Or(other Type) (Type, error)
-	//Opposite : !
-	//Opposite(other Type) (Type, error)
+	Or(other Type) (Type, error)
+	//Not : !
+	Not(other Type) (Type, error)
 }

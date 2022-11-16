@@ -156,7 +156,17 @@ func (f Float) LwEq(other Type) (Type, error) {
 	}
 }
 
-// And returns error
+// And returns errors
 func (f Float) And(other Type) (Type, error) {
 	return nil, errors.New("cannot and float")
+}
+
+// Or returns errors
+func (f Float) Or(other Type) (Type, error) {
+	return nil, errors.New("cannot or float")
+}
+
+// Not returns errors
+func (f Float) Not(other Type) (Type, error) {
+	return nil, errors.New("cannot opposite float")
 }

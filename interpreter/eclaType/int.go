@@ -177,3 +177,13 @@ func (i Int) LwEq(other Type) (Type, error) {
 func (i Int) And(other Type) (Type, error) {
 	return nil, errors.New("cannot and int")
 }
+
+// Or returns errors
+func (i Int) Or(other Type) (Type, error) {
+	return nil, errors.New("cannot or int")
+}
+
+// Not returns errors
+func (i Int) Not(other Type) (Type, error) {
+	return nil, errors.New("cannot opposite int")
+}

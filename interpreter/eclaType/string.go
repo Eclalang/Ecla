@@ -124,7 +124,17 @@ func (s String) LwEq(other Type) (Type, error) {
 	}
 }
 
-// And returns error
+// And returns errors
 func (s String) And(other Type) (Type, error) {
 	return nil, errors.New("cannot and string")
+}
+
+// Or returns errors
+func (s String) Or(other Type) (Type, error) {
+	return nil, errors.New("cannot or string")
+}
+
+// Not returns errors
+func (s String) Not(other Type) (Type, error) {
+	return nil, errors.New("cannot opposite string")
 }

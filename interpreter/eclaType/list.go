@@ -148,3 +148,18 @@ func (l List) LwEq(other Type) (Type, error) {
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
+
+// And returns errors
+func (l List) And(other Type) (Type, error) {
+	return nil, errors.New("cannot and list")
+}
+
+// Or returns errors
+func (l List) Or(other Type) (Type, error) {
+	return nil, errors.New("cannot or list")
+}
+
+// Not returns errors
+func (l List) Not(other Type) (Type, error) {
+	return nil, errors.New("cannot opposite list")
+}

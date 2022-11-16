@@ -91,15 +91,38 @@ func (b Bool) LwEq(other Type) (Type, error) {
 	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 }
 
-//
+// And returns true if both Types are true
 func (b Bool) And(other Type) (Type, error) {
 	switch other.(type) {
 	case Bool:
-		if b == other.GetValue() {
+		if b == true && other.GetValue() == true {
 			return Bool(true), nil
 		} else {
 			return Bool(false), nil
 		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}
+
+// Or returns true if either Type is true
+func (b Bool) Or(other Type) (Type, error) {
+	switch other.(type) {
+	case Bool:
+		if b == true || other.GetValue() == true {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}
+
+func (b Bool) Not(other Type) (Type, error) {
+	switch other.(type) {
+	case Bool:
+		return !other.GetValue().(Bool), nil
 	default:
 		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
