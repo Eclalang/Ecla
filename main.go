@@ -25,7 +25,7 @@ func init() {
 func main() {
 	args := flag.Args()
 	if len(args) == 0 {
-		println("ecla: no input")
+		fmt.Println("invalid input")
 		return
 	}
 	fmt.Println("//--- RUN", args[0], "---")
@@ -35,7 +35,7 @@ func main() {
 	} else if args[0][len(args[0])-1] == ';' {
 		Env.SetCode(args[0])
 	} else {
-		println("ecla: invalid input file")
+		fmt.Print("Ecla: invalid input file")
 		return
 	}
 	Env.Execute()
