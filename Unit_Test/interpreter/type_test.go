@@ -5,19 +5,6 @@ import (
 	"testing"
 )
 
-func TestEqStrings(t *testing.T) {
-	t1 := eclaType.String("hello")
-	t2 := eclaType.String("hello")
-
-	result, err := t1.Eq(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != eclaType.Int(3) {
-		t.Error("Expected true, got ", result)
-	}
-}
-
 func TestNotEqLists(t *testing.T) {
 	t1 := eclaType.List{eclaType.Int(1), eclaType.Int(2)}
 	t2 := eclaType.List{eclaType.Int(1), eclaType.Int(3)}
@@ -36,19 +23,6 @@ func TestGtLists(t *testing.T) {
 	t2 := eclaType.List{eclaType.Int(1), eclaType.Int(3)}
 
 	result, err := t1.Gt(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != eclaType.Bool(true) {
-		t.Error("Expected true, got ", result)
-	}
-}
-
-func TestGtEqStrings(t *testing.T) {
-	t1 := eclaType.String("hello!")
-	t2 := eclaType.String("hello")
-
-	result, err := t1.GtEq(t2)
 	if err != nil {
 		t.Error(err)
 	}
