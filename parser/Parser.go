@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"github.com/tot0p/Ecla/lexer"
 	"log"
 )
@@ -32,7 +31,6 @@ func (p *Parser) Parse() File {
 }
 
 func (p *Parser) ParseFile() File {
-	fmt.Println(p.Tokens)
 	tempFile := File{ParseTree: new(AST)}
 	for p.CurrentToken.TokenType != lexer.EOF {
 		if p.CurrentToken.TokenType != lexer.TEXT {
