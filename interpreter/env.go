@@ -16,7 +16,7 @@ type Env struct {
 	Vars       map[string]eclaType.Type
 	OS         string
 	ARCH       string
-	SyntaxTree any
+	SyntaxTree parser.File
 	File       string
 	Code       string
 }
