@@ -14,6 +14,8 @@ var (
 	MOD    = "MOD"
 	INC    = "INC"
 	DEC    = "DEC"
+	ASSIGN = "ASSIGN"
+	EQUAL  = "EQUAL"
 	LPAREN = "LPAREN"
 	RPAREN = "RPAREN"
 	EOL    = "EOL"
@@ -30,12 +32,6 @@ var Identifier []identifier = []identifier{
 	{
 		Identifier: TEXT,
 		Syntaxe:    []string{},
-	},
-	{
-		Identifier: PRINT,
-		Syntaxe: []string{
-			"print",
-		},
 	},
 	{
 		Identifier: INT,
@@ -101,6 +97,18 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
+		Identifier: ASSIGN,
+		Syntaxe: []string{
+			"=",
+		},
+	},
+	{
+		Identifier: EQUAL,
+		Syntaxe: []string{
+			"==",
+		},
+	},
+	{
 		Identifier: LPAREN,
 		Syntaxe: []string{
 			"(",
@@ -116,6 +124,13 @@ var Identifier []identifier = []identifier{
 		Identifier: EOL,
 		Syntaxe: []string{
 			";",
+		},
+	},
+	{
+		Identifier: "",
+		Syntaxe: []string{
+			" ",
+			"\n",
 		},
 	},
 	{
@@ -137,4 +152,27 @@ func (ident identifier) IsSyntaxe(tempVal string) bool {
 		}
 	}
 	return false
+}
+
+// concatEqual verify is the string str is equal with one of the
+// mathematical opperand
+func concatEqual(str string) bool {
+	switch str {
+	case ADD:
+		return true
+	case MOD:
+		return true
+	case SUB:
+		return true
+	case QOT:
+		return true
+	case MULT:
+		return true
+	case ASSIGN:
+		return true
+	case DIV:
+		return true
+	default:
+		return false
+	}
 }
