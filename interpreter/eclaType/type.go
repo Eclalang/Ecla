@@ -28,7 +28,7 @@ type Type interface {
 	//LwEq : <=
 	LwEq(other Type) (Type, error)
 	//And : &&
-	//And(other Type) (Type, error)
+	And(other Type) (Type, error)
 	//Or : ||
 	//Or(other Type) (Type, error)
 	//Opposite : !

@@ -155,3 +155,8 @@ func (f Float) LwEq(other Type) (Type, error) {
 		return nil, errors.New("cannot compare float to " + string(other.GetString()))
 	}
 }
+
+// And returns error
+func (f Float) And(other Type) (Type, error) {
+	return nil, errors.New("cannot and float")
+}

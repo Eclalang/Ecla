@@ -90,3 +90,17 @@ func (b Bool) Lw(other Type) (Type, error) {
 func (b Bool) LwEq(other Type) (Type, error) {
 	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 }
+
+//
+func (b Bool) And(other Type) (Type, error) {
+	switch other.(type) {
+	case Bool:
+		if b == other.GetValue() {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}

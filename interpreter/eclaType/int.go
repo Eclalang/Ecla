@@ -173,14 +173,7 @@ func (i Int) LwEq(other Type) (Type, error) {
 	}
 }
 
-/*func (i Int) And(other Type) (Type, error) {
-	switch other.(type) {
-	case Bool:
-		if other.(Bool) == True {
-			return i, nil
-		}
-		return Bool(i != 0 && other.(Bool)), nil
-	default:
-		return nil, errors.New("cannot and " + string(other.GetString()) + " to int")
-	}
-}*/
+// And returns errors
+func (i Int) And(other Type) (Type, error) {
+	return nil, errors.New("cannot and int")
+}
