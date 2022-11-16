@@ -26,17 +26,24 @@ func Run(env *Env) {
 	}
 }
 
+func New(t parser.Literal) eclaType.Type {
+	switch t.Type {
+	case lexer.INT:
+		return eclaType.NewInt(t.Value)
+	case "STRING":
+		return eclaType.NewString(t.Value)
+	case lexer.BOOL:
+		return eclaType.NewBool(t.Value)
+	default:
+		panic("Unknown type")
+	}
+}
+
 func RunTree(tree parser.Node) eclaType.Type {
 	//fmt.Printf("%T\n", tree)
 	switch tree.(type) {
 	case parser.Literal:
-		t := tree.(parser.Literal)
-		switch t.Type {
-		case lexer.INT:
-			return eclaType.NewInt(t.Value)
-		case "STRING":
-			return eclaType.NewString(t.Value)
-		}
+		return New(tree.(parser.Literal))
 	case parser.BinaryExpr:
 		return RunBinaryExpr(tree.(parser.BinaryExpr))
 	case parser.UnaryExpr:
