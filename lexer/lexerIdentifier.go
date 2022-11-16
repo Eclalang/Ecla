@@ -20,6 +20,7 @@ var (
 	RPAREN = "RPAREN"
 	EOL    = "EOL"
 	EOF    = "EOF"
+	BOOL   = "BOOL"
 )
 
 //--------------------------------------------//
@@ -131,6 +132,13 @@ var Identifier []identifier = []identifier{
 		Syntaxe: []string{
 			" ",
 			"\n",
+		},
+	},
+	{
+		Identifier: BOOL,
+		Syntaxe: []string{
+			"true",
+			"false",
 		},
 	},
 	{
