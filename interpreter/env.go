@@ -1,7 +1,10 @@
 package interpreter
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/tot0p/Ecla/lexer"
+	"github.com/tot0p/Ecla/parser"
 	"os"
 	"runtime"
 
@@ -56,8 +59,17 @@ func (env *Env) Execute() {
 	if env.File != "" {
 		env.Code = readFile(env.File)
 	}
-	//TODO: lexer
-	//TODO: parse code
+	// Lexing
+	// TODO: SUPPORT FOR MULTIPLE FILES
+	tokens := lexer.Lexer(env.Code)
+	fmt.Println("TOKENS:", tokens)
+	// Parsing
+	// TODO: SUPPORT FOR MULTIPLE FILES
+	pars := parser.Parser{Tokens: tokens}
+	env.SyntaxTree = pars.Parse()
+	//DEBUG
+	txt, _ := json.MarshalIndent(env.SyntaxTree, "", "  ")
+	fmt.Println("SYNTAX TREE:", string(txt))
 	//TODO: execute code
 }
 
