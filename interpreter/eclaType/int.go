@@ -5,6 +5,12 @@ import (
 	"strconv"
 )
 
+// NewInt creates a new Int object
+func NewInt(value string) Int {
+	result, _ := strconv.Atoi(value)
+	return Int(result)
+}
+
 type Int int
 
 // GetValue returns the value of the int
