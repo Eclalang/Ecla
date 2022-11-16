@@ -34,15 +34,17 @@ func (p *Parser) Parse() File {
 func (p *Parser) ParseFile() File {
 	tempFile := File{ParseTree: new(AST)}
 	for p.CurrentToken.TokenType != lexer.EOF {
-		if p.CurrentToken.TokenType != lexer.TEXT && p.CurrentToken.TokenType != lexer.PRINT {
+		if p.CurrentToken.TokenType != lexer.TEXT {
 			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseExpr())
 			if p.CurrentToken.TokenType != lexer.EOL {
 				log.Fatal("Expected EOL")
 			}
-		} else if p.CurrentToken.TokenType == lexer.PRINT {
-			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseKeyword())
 		} else {
-			fmt.Println("TEXT")
+			if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
+				fmt.Println("newline")
+			} else {
+				tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseKeyword())
+			}
 		}
 		p.Step()
 	}
@@ -52,10 +54,11 @@ func (p *Parser) ParseFile() File {
 }
 
 func (p *Parser) ParseKeyword() Stmt {
-	if p.CurrentToken.TokenType == lexer.PRINT {
+	if p.CurrentToken.TokenType == lexer.TEXT {
 		if p.CurrentToken.Value == "print" {
 			return p.ParsePrintStmt()
 		}
+
 	}
 	panic("Expected keyword")
 }
