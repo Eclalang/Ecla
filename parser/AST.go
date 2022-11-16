@@ -6,5 +6,5 @@ type AST struct {
 }
 
 type File struct {
-	ParseTree AST
+	ParseTree *AST
 }
