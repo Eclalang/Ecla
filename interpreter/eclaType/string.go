@@ -123,3 +123,8 @@ func (s String) LwEq(other Type) (Type, error) {
 		return nil, errors.New(string("cannot compare string to " + other.GetString()))
 	}
 }
+
+// And returns error
+func (s String) And(other Type) (Type, error) {
+	return nil, errors.New("cannot and string")
+}
