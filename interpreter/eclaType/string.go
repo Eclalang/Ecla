@@ -4,6 +4,11 @@ import (
 	"errors"
 )
 
+// NewString creates a new String
+func NewString(value string) String {
+	return String(value)
+}
+
 type String string
 
 // GetValue returns the value of the string
