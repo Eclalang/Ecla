@@ -71,6 +71,7 @@ func (env *Env) Execute() {
 	txt, _ := json.MarshalIndent(env.SyntaxTree, "", "  ")
 	fmt.Println("SYNTAX TREE:", string(txt))
 	//TODO: execute code
+	Run(env)
 }
 
 // readFile reads the file at the given path and returns its contents as a string.
