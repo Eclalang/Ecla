@@ -1,7 +1,9 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/tot0p/Ecla/lexer"
+	"log"
 )
 
 // Parser is the parser for the Ecla language
@@ -31,13 +33,52 @@ func (p *Parser) Parse() File {
 
 func (p *Parser) ParseFile() File {
 	tempFile := File{ParseTree: new(AST)}
-	if p.CurrentToken.TokenType == lexer.LPAREN {
-		tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseParenExpr())
+	for p.CurrentToken.TokenType != lexer.EOF {
+		if p.CurrentToken.TokenType != lexer.TEXT && p.CurrentToken.TokenType != lexer.PRINT {
+			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseExpr())
+			if p.CurrentToken.TokenType != lexer.EOL {
+				log.Fatal("Expected EOL")
+			}
+		} else if p.CurrentToken.TokenType == lexer.PRINT {
+			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseKeyword())
+		} else {
+			fmt.Println("TEXT")
+		}
+		p.Step()
 	}
-
 	p.Step()
 	return tempFile
 
+}
+
+func (p *Parser) ParseKeyword() Stmt {
+	if p.CurrentToken.TokenType == lexer.PRINT {
+		if p.CurrentToken.Value == "print" {
+			return p.ParsePrintStmt()
+		}
+	}
+	panic("Expected keyword")
+}
+
+func (p *Parser) ParsePrintStmt() Stmt {
+	tempPrint := PrintStmt{PrintToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		log.Fatal("Expected Print LPAREN")
+	}
+	tempPrint.Lparen = p.CurrentToken
+	p.Step()
+	tempPrint.Expression = p.ParseExpr()
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		log.Fatal("Expected Print RPAREN")
+	}
+	tempPrint.Rparen = p.CurrentToken
+	p.Step()
+	return tempPrint
+}
+
+func (p *Parser) ParseExpr() Expr {
+	return p.ParseBinaryExpr(nil)
 }
 
 func (p *Parser) ParseParenExpr() Node {
@@ -50,10 +91,6 @@ func (p *Parser) ParseParenExpr() Node {
 	}
 	tempParentExpr.Rparen = p.CurrentToken
 	return tempParentExpr
-}
-
-func (p *Parser) ParseExpr() Expr {
-	return p.ParseBinaryExpr(nil)
 }
 
 // ParseBinaryExpr parses a binary expression with the given precedence

@@ -68,3 +68,20 @@ func (p ParenExpr) EndPos() int {
 }
 
 func (p ParenExpr) exprNode() {}
+
+type PrintStmt struct {
+	PrintToken lexer.Token
+	Lparen     lexer.Token
+	Rparen     lexer.Token
+	Expression Expr
+}
+
+func (p PrintStmt) StartPos() int {
+	return p.PrintToken.Position
+}
+
+func (p PrintStmt) EndPos() int {
+	return p.Rparen.Position
+}
+
+func (p PrintStmt) stmtNode() {}
