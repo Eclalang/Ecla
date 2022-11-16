@@ -32,6 +32,7 @@ func (p *Parser) Parse() File {
 }
 
 func (p *Parser) ParseFile() File {
+	fmt.Println(p.Tokens)
 	tempFile := File{ParseTree: new(AST)}
 	for p.CurrentToken.TokenType != lexer.EOF {
 		if p.CurrentToken.TokenType != lexer.TEXT {
@@ -41,7 +42,7 @@ func (p *Parser) ParseFile() File {
 			}
 		} else {
 			if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
-				fmt.Println("newline")
+
 			} else {
 				tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseKeyword())
 			}
@@ -154,6 +155,11 @@ func (p *Parser) ParsePrimaryExpr() Expr {
 func (p *Parser) ParseLiteral() Expr {
 	if p.CurrentToken.TokenType == lexer.INT || p.CurrentToken.TokenType == lexer.FLOAT {
 		tempLiteral := Literal{Token: p.CurrentToken, Type: p.CurrentToken.TokenType, Value: p.CurrentToken.Value}
+		p.Step()
+		return tempLiteral
+	}
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		tempLiteral := Literal{Token: p.CurrentToken, Type: "STRING", Value: p.CurrentToken.Value}
 		p.Step()
 		return tempLiteral
 	}
