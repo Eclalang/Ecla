@@ -2,10 +2,14 @@ package eclaType
 
 import (
 	"errors"
+	"strings"
 )
 
 // NewString creates a new String
 func NewString(value string) String {
+	if strings.Contains(value, "\\n") {
+		value = strings.ReplaceAll(value, "\\n", "\n")
+	}
 	return String(value)
 }
 

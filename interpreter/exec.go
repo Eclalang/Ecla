@@ -34,6 +34,8 @@ func RunTree(tree parser.Node) eclaType.Type {
 		switch t.Type {
 		case lexer.INT:
 			return eclaType.NewInt(t.Value)
+		case "STRING":
+			return eclaType.NewString(t.Value)
 		}
 	case parser.BinaryExpr:
 		return RunBinaryExpr(tree.(parser.BinaryExpr))
@@ -59,6 +61,30 @@ func RunBinaryExpr(tree parser.BinaryExpr) eclaType.Type {
 	switch tree.Operator.TokenType {
 	case lexer.ADD:
 		t, err := left.Add(right)
+		if err != nil {
+			panic(err)
+		}
+		return t
+	case lexer.SUB:
+		t, err := left.Sub(right)
+		if err != nil {
+			panic(err)
+		}
+		return t
+	case lexer.MULT:
+		t, err := left.Mul(right)
+		if err != nil {
+			panic(err)
+		}
+		return t
+	case lexer.DIV:
+		t, err := left.Div(right)
+		if err != nil {
+			panic(err)
+		}
+		return t
+	case lexer.MOD:
+		t, err := left.Mod(right)
 		if err != nil {
 			panic(err)
 		}
