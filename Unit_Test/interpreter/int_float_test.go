@@ -126,11 +126,11 @@ func TestLwEqIntFloat(t *testing.T) {
 	t1 := eclaType.Int(5)
 	t2 := eclaType.Float(1.1)
 
-	result, err := t2.LwEq(t1)
+	result, err := t1.LwEq(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != eclaType.Bool(true) {
-		t.Error("Expected true, got ", result)
+	if result.GetValue() != eclaType.Bool(false) {
+		t.Error("Expected false, got ", result)
 	}
 }
