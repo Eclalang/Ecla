@@ -3,6 +3,7 @@ package lexer
 // each type of token
 var (
 	TEXT   = "TEXT"
+	STRING = "STRING"
 	PRINT  = "PRINT"
 	INT    = "INT"
 	FLOAT  = "FLOAT"
@@ -19,8 +20,9 @@ var (
 	LPAREN = "LPAREN"
 	RPAREN = "RPAREN"
 	EOL    = "EOL"
-	EOF    = "EOF"
+	DQUOTE = "DQUOTE"
 	BOOL   = "BOOL"
+	EOF    = "EOF"
 )
 
 //--------------------------------------------//
@@ -128,10 +130,17 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
+		Identifier: "DQUOTE",
+		Syntaxe: []string{
+			"\"",
+		},
+	},
+	{
 		Identifier: "",
 		Syntaxe: []string{
 			" ",
 			"\n",
+			"_",
 		},
 	},
 	{

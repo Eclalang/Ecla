@@ -24,6 +24,8 @@ func Lexer(sentence string) []Token {
 	// syntaxe, and true elsewhere
 	var canBeText bool
 	var isSpaces bool
+	var inQuote bool
+	var inQuoteStep bool
 
 	// tempVal is the current element that we want to compare with the known
 	// syntaxe
@@ -36,6 +38,7 @@ func Lexer(sentence string) []Token {
 		// we assign canBeText to true, because we actually don't know if the
 		// current element is a text or not
 		canBeText = true
+		inQuoteStep = false
 
 		for _, ident := range Identifier {
 			// for each element of Identifier, we compare all the known
@@ -43,12 +46,20 @@ func Lexer(sentence string) []Token {
 			// tempVal is now syntaxes, and then a token
 			if ident.IsSyntaxe(tempVal) {
 				canBeText = false
-				if ident.Identifier == "" {
+				if ident.Identifier == "" && !inQuote {
 					isSpaces = true
 					prevIndex = i
 					break
 				}
 
+				if ident.Identifier == DQUOTE {
+					if inQuote {
+						inQuote = false
+					} else {
+						inQuote = true
+						inQuoteStep = true
+					}
+				}
 				// if the type of the known syntaxe is INT, we want to
 				// concat each subsequent INT to the same token
 				if ident.Identifier == INT {
@@ -75,9 +86,21 @@ func Lexer(sentence string) []Token {
 						}
 					}
 				}
-
 				// append a new Token to the variable ret
-				ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
+				if inQuote && !inQuoteStep {
+					if len(ret) >= 1 {
+						if ret[len(ret)-1].TokenType == STRING {
+							ret[len(ret)-1].Value += tempVal
+						} else {
+							ret = append(ret, addToken(STRING, tempVal, prevIndex, line))
+
+						}
+					} else {
+						ret = append(ret, addToken(STRING, tempVal, prevIndex, line))
+					}
+				} else {
+					ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
+				}
 				isSpaces = false
 
 				tempVal = ""
@@ -99,9 +122,21 @@ func Lexer(sentence string) []Token {
 				for _, ident := range Identifier {
 					if ident.IsSyntaxe(tempVal[y:]) {
 						canBeText = false
-						ret = append(ret, addToken(Identifier[0].Identifier, tempVal[:y], prevIndex, line))
-						isSpaces = false
+						if inQuote && !inQuoteStep {
+							if len(ret) >= 1 {
+								if ret[len(ret)-1].TokenType == STRING {
+									ret[len(ret)-1].Value += tempVal[:y]
+								} else {
+									ret = append(ret, addToken(STRING, tempVal[:y], prevIndex, line))
 
+								}
+							} else {
+								ret = append(ret, addToken(STRING, tempVal[:y], prevIndex, line))
+							}
+						} else {
+							ret = append(ret, addToken(Identifier[0].Identifier, tempVal[:y], prevIndex, line))
+						}
+						isSpaces = false
 						i += len(tempVal[y:]) - 2
 						prevIndex = i
 					}
