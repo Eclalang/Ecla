@@ -10,6 +10,33 @@ func NewString(value string) String {
 	if strings.Contains(value, "\\n") {
 		value = strings.ReplaceAll(value, "\\n", "\n")
 	}
+	if strings.Contains(value, "\\\\") {
+		value = strings.ReplaceAll(value, "\\\\", "\\")
+	}
+	if strings.Contains(value, "\\a") {
+		value = strings.ReplaceAll(value, "\\a", "\a")
+	}
+	if strings.Contains(value, "\\b") {
+		value = strings.ReplaceAll(value, "\\b", "\b")
+	}
+	if strings.Contains(value, "\\f") {
+		value = strings.ReplaceAll(value, "\\f", "\f")
+	}
+	if strings.Contains(value, "\\r") {
+		value = strings.ReplaceAll(value, "\\r", "\r")
+	}
+	if strings.Contains(value, "\\t") {
+		value = strings.ReplaceAll(value, "\\t", "\t")
+	}
+	if strings.Contains(value, "\\v") {
+		value = strings.ReplaceAll(value, "\\v", "\v")
+	}
+	if strings.Contains(value, "\\\\'") {
+		value = strings.ReplaceAll(value, "\\\\'", "\\'")
+	}
+	if strings.Contains(value, "\\\"") {
+		value = strings.ReplaceAll(value, "\\\"", "\"")
+	}
 	return String(value)
 }
 
