@@ -163,6 +163,11 @@ func (p *Parser) ParseLiteral() Expr {
 		p.Step()
 		return tempLiteral
 	}
+	if p.CurrentToken.TokenType == lexer.BOOL {
+		tempLiteral := Literal{Token: p.CurrentToken, Type: p.CurrentToken.TokenType, Value: p.CurrentToken.Value}
+		p.Step()
+		return tempLiteral
+	}
 	panic("Expected literal")
 
 }
