@@ -5,19 +5,6 @@ import (
 	"testing"
 )
 
-/*func TestAddTwoFloats(t *testing.T) {
-	t1 := eclaType.Float(1.1)
-	t2 := eclaType.Float(2.2)
-
-	result, err := t1.Add(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != eclaType.Float(3.3) {
-		t.Error("Expected 3.3, got ", result, " t1 = ", t1, " t2 = ", t2)
-	}
-}*/
-
 func TestEqStrings(t *testing.T) {
 	t1 := eclaType.String("hello")
 	t2 := eclaType.String("hello")
@@ -62,19 +49,6 @@ func TestGtEqStrings(t *testing.T) {
 	t2 := eclaType.String("hello")
 
 	result, err := t1.GtEq(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != eclaType.Bool(true) {
-		t.Error("Expected true, got ", result)
-	}
-}
-
-func TestLwFloats(t *testing.T) {
-	t1 := eclaType.Float(1.1)
-	t2 := eclaType.Float(2.2)
-
-	result, err := t1.Lw(t2)
 	if err != nil {
 		t.Error(err)
 	}
