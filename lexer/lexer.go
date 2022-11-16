@@ -23,6 +23,7 @@ func Lexer(sentence string) []Token {
 	// canBeText is false when an element is already considered as a known
 	// syntaxe, and true elsewhere
 	var canBeText bool
+	var isSpaces bool
 
 	// tempVal is the current element that we want to compare with the known
 	// syntaxe
@@ -42,11 +43,31 @@ func Lexer(sentence string) []Token {
 			// tempVal is now syntaxes, and then a token
 			if ident.IsSyntaxe(tempVal) {
 				canBeText = false
+				if ident.Identifier == "" {
+					isSpaces = true
+					prevIndex = i
+					break
+				}
+
 				// if the type of the known syntaxe is INT, we want to
 				// concat each subsequent INT to the same token
 				if ident.Identifier == INT {
-					if len(ret) > 1 {
-						if ret[len(ret)-1].TokenType == INT {
+					if !isSpaces {
+						if len(ret) >= 1 {
+							if ret[len(ret)-1].TokenType == INT || ret[len(ret)-1].TokenType == TEXT {
+								ret[len(ret)-1].Value += tempVal
+								tempVal = ""
+								prevIndex = i
+								break
+							}
+						}
+					}
+					// if the type is ASSIGN, we want to concat it with all the other
+					// mathematic operand place just before ( ex: "+=", "==")
+				} else if ident.Identifier == ASSIGN {
+					if len(ret) >= 1 {
+						if concatEqual(ret[len(ret)-1].TokenType) {
+							ret[len(ret)-1].TokenType += ident.Identifier
 							ret[len(ret)-1].Value += tempVal
 							tempVal = ""
 							prevIndex = i
@@ -57,6 +78,7 @@ func Lexer(sentence string) []Token {
 
 				// append a new Token to the variable ret
 				ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
+				isSpaces = false
 
 				tempVal = ""
 				prevIndex = i
@@ -78,6 +100,7 @@ func Lexer(sentence string) []Token {
 					if ident.IsSyntaxe(tempVal[y:]) {
 						canBeText = false
 						ret = append(ret, addToken(Identifier[0].Identifier, tempVal[:y], prevIndex, line))
+						isSpaces = false
 
 						i += len(tempVal[y:]) - 2
 						prevIndex = i
