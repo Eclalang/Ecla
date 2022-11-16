@@ -5,6 +5,12 @@ import (
 	"fmt"
 )
 
+// NewList creates ?
+/* func NewList(value string) List {
+	result, _ := strconv.Atoi(value)
+	return Int(result)
+} */
+
 type List []Type
 
 // GetValue returns the value of the list

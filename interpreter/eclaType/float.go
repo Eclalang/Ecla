@@ -3,7 +3,14 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"strconv"
 )
+
+// NewFloat creates a new Float
+func NewFloat(value string) Float {
+	result, _ := strconv.Atoi(value)
+	return Float(result)
+}
 
 type Float float32
 

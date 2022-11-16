@@ -1,6 +1,15 @@
 package eclaType
 
-import "errors"
+import (
+	"errors"
+	"strconv"
+)
+
+// NewBool creates a new Bool
+func NewBool(value string) Bool {
+	result, _ := strconv.ParseBool(value)
+	return Bool(result)
+}
 
 type Bool bool
 
