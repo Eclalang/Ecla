@@ -5,6 +5,11 @@ import (
 	"log"
 )
 
+const (
+	LowestPrecedence  = 0
+	HighestPrecedence = 6
+)
+
 // Parser is the parser for the Ecla language
 type Parser struct {
 	Tokens       []lexer.Token
@@ -83,40 +88,31 @@ func (p *Parser) ParseExpr() Expr {
 	return p.ParseBinaryExpr(nil)
 }
 
-func (p *Parser) ParseParenExpr() Node {
-	tempParentExpr := ParenExpr{}
-	tempParentExpr.Lparen = p.CurrentToken
-	p.Step()
-	tempParentExpr.Expression = p.ParseExpr()
-	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected ')'")
-	}
-	tempParentExpr.Rparen = p.CurrentToken
-	return tempParentExpr
-}
-
 // ParseBinaryExpr parses a binary expression with the given precedence
+// func (p *Parser) ParseBinaryExpr(exp Expr, prec int) Expr {
 func (p *Parser) ParseBinaryExpr(exp Expr) Expr {
 	if exp == nil {
 		exp = p.ParseUnaryExpr()
 	}
+	//for {
+	//	opprec := TokenPrecedence(p.CurrentToken)
+	//	if opprec < prec {
+	//		return exp
+	//	}
+	//	RightExpr := p.ParseBinaryExpr(nil, opprec+1)
+	//	exp = BinaryExpr{LeftExpr: exp, Operator: p.CurrentToken, RightExpr: RightExpr}
+	//}
 	for p.CurrentToken.TokenType == lexer.ADD || p.CurrentToken.TokenType == lexer.SUB || p.CurrentToken.TokenType == lexer.MULT || p.CurrentToken.TokenType == lexer.DIV || p.CurrentToken.TokenType == lexer.MOD {
 		Operator := p.CurrentToken
 		p.Step()
-		RightExpr := p.ParseUnaryExpr()
-		exp = BinaryExpr{LeftExpr: exp, Operator: Operator, RightExpr: RightExpr}
+		RightExpr := p.ParseBinaryExpr(nil)
+		if RightExpr.precedence() > exp.precedence() {
+			exp = BinaryExpr{LeftExpr: RightExpr, Operator: Operator, RightExpr: exp}
+		} else {
+			exp = BinaryExpr{LeftExpr: exp, Operator: Operator, RightExpr: RightExpr}
+		}
 	}
 
-	//-----------------------------------//
-	// for operation priority
-	//-----------------------------------//
-
-	//for p.CurrentToken.TokenType == lexer.MULT || p.CurrentToken.TokenType == lexer.DIV || p.CurrentToken.TokenType == lexer.MOD {
-	//	Operator := p.CurrentToken
-	//	p.Step()
-	//	RightExpr := p.ParseUnaryExpr()
-	//	exp = BinaryExpr{LeftExpr: exp, Operator: Operator, RightExpr: RightExpr}
-	//}
 	return exp
 
 }
@@ -137,6 +133,7 @@ func (p *Parser) ParsePrimaryExpr() Expr {
 	if p.CurrentToken.TokenType == lexer.LPAREN {
 		tempLPAREN := p.CurrentToken
 		p.Step()
+		//tempExpr := p.ParseBinaryExpr(nil, LowestPrecedence+1)
 		tempExpr := p.ParseBinaryExpr(nil)
 		if p.CurrentToken.TokenType != lexer.RPAREN {
 			panic("Expected ')'")
@@ -147,6 +144,18 @@ func (p *Parser) ParsePrimaryExpr() Expr {
 	}
 	return p.ParseLiteral()
 
+}
+
+func (p *Parser) ParseParenExpr() Node {
+	tempParentExpr := ParenExpr{}
+	tempParentExpr.Lparen = p.CurrentToken
+	p.Step()
+	tempParentExpr.Expression = p.ParseExpr()
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		panic("Expected ')'")
+	}
+	tempParentExpr.Rparen = p.CurrentToken
+	return tempParentExpr
 }
 
 // ParseLiteral parses a literal

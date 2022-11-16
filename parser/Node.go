@@ -9,6 +9,7 @@ type Node interface {
 // Expr is an expression
 type Expr interface {
 	Node
+	precedence() int
 	exprNode()
 }
 

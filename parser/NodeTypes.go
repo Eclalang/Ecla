@@ -16,6 +16,9 @@ func (l Literal) StartPos() int {
 func (l Literal) EndPos() int {
 	return l.Token.Position
 }
+func (l Literal) precedence() int {
+	return TokenPrecedence(l.Token)
+}
 
 func (l Literal) exprNode() {}
 
@@ -34,6 +37,10 @@ func (b BinaryExpr) EndPos() int {
 	return b.RightExpr.EndPos()
 }
 
+func (b BinaryExpr) precedence() int {
+	return TokenPrecedence(b.Operator)
+}
+
 func (b BinaryExpr) exprNode() {}
 
 // UnaryExpr is a struct that defines a unary operation on an expression
@@ -48,6 +55,10 @@ func (u UnaryExpr) StartPos() int {
 
 func (u UnaryExpr) EndPos() int {
 	return u.RightExpr.EndPos()
+}
+
+func (u UnaryExpr) precedence() int {
+	return TokenPrecedence(u.Operator)
 }
 
 func (u UnaryExpr) exprNode() {}
@@ -65,6 +76,10 @@ func (p ParenExpr) StartPos() int {
 
 func (p ParenExpr) EndPos() int {
 	return p.Rparen.Position
+}
+
+func (p ParenExpr) precedence() int {
+	return HighestPrecedence
 }
 
 func (p ParenExpr) exprNode() {}
