@@ -7,4 +7,5 @@ type AST struct {
 
 type File struct {
 	ParseTree *AST
+	Trace     string
 }
