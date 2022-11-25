@@ -7,17 +7,7 @@ import (
 	"github.com/tot0p/Ecla/parser"
 )
 
-/*
-type Env struct {
-	Vars       map[string]eclaType.Type
-	OS         string
-	ARCH       string
-	SyntaxTree any
-	File       string
-	Code       string
-}
-*/
-
+// Run executes the environment.
 func Run(env *Env) {
 	for _, v := range env.SyntaxTree.ParseTree.Operations {
 		//txt, _ := json.MarshalIndent(v, "", "  ")
@@ -26,6 +16,7 @@ func Run(env *Env) {
 	}
 }
 
+// New returns a new eclaType.Type from a parser.Literal.
 func New(t parser.Literal) eclaType.Type {
 	switch t.Type {
 	case lexer.INT:
@@ -39,6 +30,7 @@ func New(t parser.Literal) eclaType.Type {
 	}
 }
 
+// RunTree executes a parser.Tree.
 func RunTree(tree parser.Node) eclaType.Type {
 	//fmt.Printf("%T\n", tree)
 	switch tree.(type) {
@@ -56,11 +48,13 @@ func RunTree(tree parser.Node) eclaType.Type {
 	return nil
 }
 
+// RunPrintStmt executes a parser.PrintStmt.
 func RunPrintStmt(tree parser.PrintStmt) eclaType.Type {
 	fmt.Print(RunTree(tree.Expression))
 	return nil
 }
 
+// RunBinaryExpr executes a parser.BinaryExpr.
 func RunBinaryExpr(tree parser.BinaryExpr) eclaType.Type {
 	//fmt.Printf("%T\n", tree)
 	left := RunTree(tree.LeftExpr)
@@ -100,6 +94,7 @@ func RunBinaryExpr(tree parser.BinaryExpr) eclaType.Type {
 	return nil
 }
 
+// RUnUnaryExpr executes a parser.UnaryExpr.
 func RunUnaryExpr(tree parser.UnaryExpr) eclaType.Type {
 	switch tree.Operator.TokenType {
 	case lexer.SUB:

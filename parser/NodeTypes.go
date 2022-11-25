@@ -1,6 +1,8 @@
 package parser
 
-import "github.com/tot0p/Ecla/lexer"
+import (
+	"github.com/tot0p/Ecla/lexer"
+)
 
 // Literal is a struct that defines a literal value for all types
 type Literal struct {
