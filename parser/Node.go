@@ -4,7 +4,6 @@ package parser
 type Node interface {
 	StartPos() int
 	EndPos() int
-	String() string
 }
 
 // Expr is an expression
