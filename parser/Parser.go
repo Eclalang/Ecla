@@ -19,9 +19,9 @@ type Tracer struct {
 	TraceString string
 }
 
-func (t *Tracer) Trace(currentNode Node) {
+func (t *Tracer) Trace(TraceMsg string) {
 	if t.DoesTrace {
-		t.TraceString += strings.Repeat("\t", t.Nesting) + currentNode.String()
+		t.TraceString += strings.Repeat("\t", t.Nesting) + TraceMsg
 	}
 }
 
