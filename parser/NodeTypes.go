@@ -20,6 +20,11 @@ func (l Literal) precedence() int {
 	return TokenPrecedence(l.Token)
 }
 
+func (l Literal) String() string {
+	//TODO: Implement method
+	return ""
+}
+
 func (l Literal) exprNode() {}
 
 // BinaryExpr is a struct that defines a binary operation between two expressions
@@ -41,6 +46,11 @@ func (b BinaryExpr) precedence() int {
 	return TokenPrecedence(b.Operator)
 }
 
+func (b BinaryExpr) String() string {
+	//TODO: Implement method
+	return ""
+}
+
 func (b BinaryExpr) exprNode() {}
 
 // UnaryExpr is a struct that defines a unary operation on an expression
@@ -59,6 +69,11 @@ func (u UnaryExpr) EndPos() int {
 
 func (u UnaryExpr) precedence() int {
 	return TokenPrecedence(u.Operator)
+}
+
+func (u UnaryExpr) String() string {
+	//TODO: Implement method
+	return ""
 }
 
 func (u UnaryExpr) exprNode() {}
@@ -82,6 +97,11 @@ func (p ParenExpr) precedence() int {
 	return HighestPrecedence
 }
 
+func (p ParenExpr) String() string {
+	//TODO: Implement method
+	return ""
+}
+
 func (p ParenExpr) exprNode() {}
 
 type PrintStmt struct {
@@ -97,6 +117,11 @@ func (p PrintStmt) StartPos() int {
 
 func (p PrintStmt) EndPos() int {
 	return p.Rparen.Position
+}
+
+func (p PrintStmt) String() string {
+	//TODO: Implement method
+	return ""
 }
 
 func (p PrintStmt) stmtNode() {}

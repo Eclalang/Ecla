@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/tot0p/Ecla/lexer"
 	"log"
+	"strings"
 )
 
 const (
@@ -11,10 +12,29 @@ const (
 )
 
 // Parser is the parser for the Ecla language
+
+type Tracer struct {
+	DoesTrace   bool
+	Nesting     int
+	TraceString string
+}
+
+func (t *Tracer) Trace(currentNode Node) {
+	if t.DoesTrace {
+		t.TraceString += strings.Repeat("\t", t.Nesting) + currentNode.String()
+	}
+}
+
+func (t *Tracer) Reset() {
+	t.Nesting = 0
+	t.TraceString = ""
+}
+
 type Parser struct {
 	Tokens       []lexer.Token
 	TokenIndex   int
 	CurrentToken lexer.Token
+	Tracer       Tracer
 }
 
 // Step moves the parser to the next token
@@ -36,6 +56,7 @@ func (p *Parser) Parse() File {
 }
 
 func (p *Parser) ParseFile() File {
+	FinalTrace := ""
 	tempFile := File{ParseTree: new(AST)}
 	for p.CurrentToken.TokenType != lexer.EOF {
 		if p.CurrentToken.TokenType != lexer.TEXT {
@@ -51,6 +72,8 @@ func (p *Parser) ParseFile() File {
 			}
 		}
 		p.Step()
+		FinalTrace += p.Tracer.TraceString
+		p.Tracer.Reset()
 	}
 	p.Step()
 	return tempFile
