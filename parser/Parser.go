@@ -91,20 +91,20 @@ func (p *Parser) ParseExpr() Expr {
 }
 
 // ParseBinaryExpr parses a binary expression with the given precedence
-func (p *Parser) ParseBinaryExpr(exp Expr, precedence int) Expr {
-	if exp == nil {
-		exp = p.ParseUnaryExpr()
+func (p *Parser) ParseBinaryExpr(Lhs Expr, precedence int) Expr {
+	if Lhs == nil {
+		Lhs = p.ParseUnaryExpr()
 	}
 	var n int
 	for n = 1; ; n++ {
-		oprec := TokenPrecedence(p.CurrentToken)
+		opprec := TokenPrecedence(p.CurrentToken)
 		operator := p.CurrentToken
-		if oprec < precedence {
-			return exp
+		if opprec < precedence {
+			return Lhs
 		}
 		p.Step()
-		Rhs := p.ParseBinaryExpr(nil, oprec+1)
-		exp = BinaryExpr{LeftExpr: Rhs, Operator: operator, RightExpr: exp}
+		Rhs := p.ParseBinaryExpr(nil, opprec+1)
+		Lhs = BinaryExpr{LeftExpr: Lhs, Operator: operator, RightExpr: Rhs}
 	}
 
 }
