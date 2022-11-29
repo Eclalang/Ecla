@@ -35,3 +35,8 @@ print(10+20*30);
 print("\n");
 print("Should produce: 610\n");
 print("//////Test Case 6//////\n\n");
+print("//////Test Case 7//////\n");
+print("Result: ");
+print(30/2*5+10+5-3);
+print("\n");
+print("Should produce: 87\n");
