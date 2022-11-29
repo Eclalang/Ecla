@@ -6,6 +6,8 @@ type AST struct {
 }
 
 type File struct {
-	ParseTree *AST
-	Trace     string
+	ParseTree    *AST
+	VariableDecl []string
+	FunctionDecl []string
+	Trace        string
 }
