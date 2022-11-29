@@ -1,0 +1,6 @@
+print("------Operator Precedence Test------\n\n\n");
+print("//////Test Case 1//////\n");
+print(2+8*5);
+print("\n");
+print("Expected: 42\n");
+print("//////Test Case 1//////\n");
