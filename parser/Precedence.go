@@ -10,7 +10,7 @@ func TokenPrecedence(tok lexer.Token) int {
 		return 1
 	case "temp2":
 		return 2
-	case "temp3":
+	case lexer.EQUAL:
 		return 3
 	case lexer.ADD, lexer.SUB:
 		return 4
