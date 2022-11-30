@@ -25,6 +25,8 @@ func New(t parser.Literal) eclaType.Type {
 		return eclaType.NewString(t.Value)
 	case lexer.BOOL:
 		return eclaType.NewBool(t.Value)
+	case lexer.FLOAT:
+		return eclaType.NewFloat(t.Value)
 	default:
 		panic("Unknown type")
 	}
