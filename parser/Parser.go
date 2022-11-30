@@ -87,6 +87,24 @@ func (p *Parser) ParseKeyword() Node {
 }
 
 func (p *Parser) ParseIdent() Node {
+	return p.ParseVariableAssign()
+}
+
+func (p *Parser) ParseVariableAssign() Stmt {
+	Var := p.CurrentToken
+	VarName := Var.Value
+	p.Step()
+	switch p.CurrentToken.TokenType {
+	case lexer.ASSIGN:
+		p.Step()
+		return VariableAssignStmt{VarToken: Var, Name: VarName, Value: p.ParseExpr()}
+	case lexer.INC:
+		p.Step()
+		return VariableIncrementStmt{VarToken: Var, Name: VarName, IncToken: p.CurrentToken}
+	case lexer.DEC:
+		p.Step()
+		return VariableDecrementStmt{VarToken: Var, Name: VarName, DecToken: p.CurrentToken}
+	}
 	return nil
 }
 
@@ -200,6 +218,7 @@ func (p *Parser) ParseParenExpr() Expr {
 		log.Fatal("Expected ')'")
 	}
 	tempParentExpr.Rparen = p.CurrentToken
+	p.Step()
 	return tempParentExpr
 }
 

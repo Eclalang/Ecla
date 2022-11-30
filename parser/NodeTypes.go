@@ -119,3 +119,51 @@ func (v VariableDecl) EndPos() int {
 }
 
 func (v VariableDecl) declNode() {}
+
+type VariableAssignStmt struct {
+	VarToken lexer.Token
+	Name     string
+	Value    Expr
+}
+
+func (v VariableAssignStmt) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v VariableAssignStmt) EndPos() int {
+	return v.Value.EndPos()
+}
+
+func (v VariableAssignStmt) stmtNode() {}
+
+type VariableIncrementStmt struct {
+	VarToken lexer.Token
+	Name     string
+	IncToken lexer.Token
+}
+
+func (v VariableIncrementStmt) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v VariableIncrementStmt) EndPos() int {
+	return v.IncToken.Position
+}
+
+func (v VariableIncrementStmt) stmtNode() {}
+
+type VariableDecrementStmt struct {
+	VarToken lexer.Token
+	Name     string
+	DecToken lexer.Token
+}
+
+func (v VariableDecrementStmt) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v VariableDecrementStmt) EndPos() int {
+	return v.DecToken.Position
+}
+
+func (v VariableDecrementStmt) stmtNode() {}
