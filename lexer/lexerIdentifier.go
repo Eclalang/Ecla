@@ -78,39 +78,15 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
-		Identifier: QOT,
-		Syntaxe: []string{
-			"//",
-		},
-	},
-	{
 		Identifier: MOD,
 		Syntaxe: []string{
 			"%",
 		},
 	},
 	{
-		Identifier: INC,
-		Syntaxe: []string{
-			"++",
-		},
-	},
-	{
-		Identifier: DEC,
-		Syntaxe: []string{
-			"--",
-		},
-	},
-	{
 		Identifier: ASSIGN,
 		Syntaxe: []string{
 			"=",
-		},
-	},
-	{
-		Identifier: EQUAL,
-		Syntaxe: []string{
-			"==",
 		},
 	},
 	{

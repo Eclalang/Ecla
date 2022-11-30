@@ -101,6 +101,36 @@ func Lexer(sentence string) []Token {
 							break
 						}
 					}
+				} else if ident.Identifier == SUB {
+					if len(ret) >= 1 {
+						if ret[len(ret)-1].TokenType == SUB {
+							ret[len(ret)-1].TokenType = DEC
+							ret[len(ret)-1].Value += tempVal
+							tempVal = ""
+							prevIndex = i
+							break
+						}
+					}
+				} else if ident.Identifier == ADD {
+					if len(ret) >= 1 {
+						if ret[len(ret)-1].TokenType == ADD {
+							ret[len(ret)-1].TokenType = INC
+							ret[len(ret)-1].Value += tempVal
+							tempVal = ""
+							prevIndex = i
+							break
+						}
+					}
+				} else if ident.Identifier == DIV {
+					if len(ret) >= 1 {
+						if ret[len(ret)-1].TokenType == DIV {
+							ret[len(ret)-1].TokenType = QOT
+							ret[len(ret)-1].Value += tempVal
+							tempVal = ""
+							prevIndex = i
+							break
+						}
+					}
 				}
 				// append a new Token to the variable ret
 				if inQuote && !inQuoteStep {
