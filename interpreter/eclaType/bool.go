@@ -27,7 +27,7 @@ func (b Bool) GetString() String {
 }
 
 // GetType returns the type Bool
-func (b Bool) GetType() String {
+func (b Bool) GetType() string {
 	return "Bool"
 }
 

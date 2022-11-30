@@ -28,7 +28,7 @@ func (f Float) GetString() String {
 }
 
 // GetType returns the type Float
-func (f Float) GetType() String {
+func (f Float) GetType() string {
 	return "Float"
 }
 

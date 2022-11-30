@@ -24,7 +24,7 @@ func (l List) GetString() String {
 }
 
 // GetType returns the type List
-func (l List) GetType() String {
+func (l List) GetType() string {
 	return "List"
 }
 

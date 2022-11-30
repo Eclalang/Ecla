@@ -53,7 +53,7 @@ func (s String) GetString() String {
 }
 
 // GetType returns the type String
-func (s String) GetType() String {
+func (s String) GetType() string {
 	return "String"
 }
 

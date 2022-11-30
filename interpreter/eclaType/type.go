@@ -3,7 +3,7 @@ package eclaType
 type Type interface {
 	GetValue() any
 	GetString() String
-	GetType() String
+	GetType() string
 	//Add : +
 	Add(other Type) (Type, error)
 	//Sub : -
