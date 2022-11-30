@@ -123,7 +123,6 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) eclaType.Type {
 	switch tree.Operator.TokenType {
 	case lexer.ADD:
 		t, err := left.Add(right)
-		fmt.Println(t)
 		if err != nil {
 			panic(err)
 		}
