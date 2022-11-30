@@ -16,6 +16,7 @@ type Parser struct {
 	Tokens       []lexer.Token
 	TokenIndex   int
 	CurrentToken lexer.Token
+	CurrentFile  *File
 }
 
 // Step moves the parser to the next token
@@ -30,14 +31,16 @@ func (p *Parser) Step() {
 
 //Recursive descent parser
 
-func (p *Parser) Parse() File {
+func (p *Parser) Parse() *File {
 	p.TokenIndex = -1
 	p.Step()
 	return p.ParseFile()
 }
 
-func (p *Parser) ParseFile() File {
-	tempFile := File{ParseTree: new(AST), Trace: ""}
+func (p *Parser) ParseFile() *File {
+	tempFile := new(File)
+	tempFile.ParseTree = new(AST)
+	p.CurrentFile = tempFile
 	for p.CurrentToken.TokenType != lexer.EOF {
 		if p.CurrentToken.TokenType != lexer.TEXT {
 			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseExpr())
@@ -63,7 +66,6 @@ func (p *Parser) ParseKeyword() Stmt {
 		if p.CurrentToken.Value == "print" {
 			return p.ParsePrintStmt()
 		}
-
 	}
 	log.Fatal("Expected keyword")
 	return nil
@@ -152,6 +154,11 @@ func (p *Parser) ParseParenExpr() Expr {
 func (p *Parser) ParseLiteral() Expr {
 	if p.CurrentToken.TokenType == lexer.INT || p.CurrentToken.TokenType == lexer.FLOAT {
 		tempLiteral := Literal{Token: p.CurrentToken, Type: p.CurrentToken.TokenType, Value: p.CurrentToken.Value}
+		p.Step()
+		return tempLiteral
+	}
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		tempLiteral := Literal{Token: p.CurrentToken, Type: "VAR", Value: p.CurrentToken.Value}
 		p.Step()
 		return tempLiteral
 	}
