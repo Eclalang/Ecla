@@ -54,7 +54,7 @@ func (s String) GetString() String {
 
 // GetType returns the type String
 func (s String) GetType() string {
-	return "String"
+	return "string"
 }
 
 // Add adds two Type objects

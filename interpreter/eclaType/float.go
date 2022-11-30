@@ -29,7 +29,7 @@ func (f Float) GetString() String {
 
 // GetType returns the type Float
 func (f Float) GetType() string {
-	return "Float"
+	return "float"
 }
 
 // Add adds two Type objects compatible with Float

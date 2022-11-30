@@ -1,2 +1,2 @@
-var test string = 1;
-print(test);
+var test int = 1;
+type(test);

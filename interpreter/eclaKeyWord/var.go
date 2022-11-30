@@ -23,8 +23,8 @@ func (v *Var) GetValue() any {
 	return v.Value.GetValue()
 }
 
-func (v *Var) GetType() eclaType.String {
-	return "Var"
+func (v *Var) GetType() string {
+	return v.Value.GetType()
 }
 
 // SetValue sets the value of the variable

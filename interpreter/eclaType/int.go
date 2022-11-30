@@ -25,7 +25,7 @@ func (i Int) GetString() String {
 
 // GetType returns the type Int
 func (i Int) GetType() string {
-	return "Int"
+	return "int"
 }
 
 // Add adds two Type objects compatible with Int

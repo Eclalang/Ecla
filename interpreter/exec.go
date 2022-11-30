@@ -49,8 +49,16 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		return RunTree(tree.(parser.ParenExpr).Expression, env)
 	case parser.PrintStmt:
 		return RunPrintStmt(tree.(parser.PrintStmt), env)
+	case parser.TypeStmt:
+		return RunTypeStmt(tree.(parser.TypeStmt), env)
 	case parser.VariableDecl:
 		return RunVariableDecl(tree.(parser.VariableDecl), env)
+	case parser.VariableDecrementStmt:
+		return nil
+	case parser.VariableIncrementStmt:
+		return nil
+	case parser.VariableAssignStmt:
+		return nil
 	}
 	return nil
 }
@@ -60,16 +68,36 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 	if tree.Value == nil {
 		switch tree.Type {
 		case parser.Int:
-			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewInt("0")))
+			v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewInt("0"))
+			if err != nil {
+				panic(err)
+			}
+			env.SetVar(tree.Name, v)
 		case parser.String:
-			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewString("")))
+			v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewString(""))
+			if err != nil {
+				panic(err)
+			}
+			env.SetVar(tree.Name, v)
 		case parser.Bool:
-			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewBool("false")))
+			v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewBool("false"))
+			if err != nil {
+				panic(err)
+			}
+			env.SetVar(tree.Name, v)
 		case parser.Float:
-			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewFloat("0")))
+			v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewFloat("0.0"))
+			if err != nil {
+				panic(err)
+			}
+			env.SetVar(tree.Name, v)
 		}
 	} else {
-		env.Vars[tree.Name] = eclaKeyWord.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
+		v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
+		if err != nil {
+			panic(err)
+		}
+		env.Vars[tree.Name] = v
 	}
 	return nil
 }
@@ -78,6 +106,13 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 func RunPrintStmt(tree parser.PrintStmt, env *Env) eclaType.Type {
 	fmt.Print(RunTree(tree.Expression, env).GetString())
 	return nil
+}
+
+// RunTypeStmt executes a parser.TypeStmt.
+func RunTypeStmt(tree parser.TypeStmt, env *Env) eclaType.Type {
+	fmt.Println(RunTree(tree.Expression, env).GetType())
+	return nil
+	//return eclaType.NewString(RunTree(tree.Expression, env).GetType())
 }
 
 // RunBinaryExpr executes a parser.BinaryExpr.
