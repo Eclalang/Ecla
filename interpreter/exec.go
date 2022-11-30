@@ -65,6 +65,7 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		RunVariableIncrementStmt(tree.(parser.VariableIncrementStmt), env)
 		return nil
 	case parser.VariableAssignStmt:
+		RunVariableAssignStmt(tree.(parser.VariableAssignStmt), env)
 		return nil
 	}
 	return nil
@@ -199,4 +200,13 @@ func RunVariableIncrementStmt(tree parser.VariableIncrementStmt, env *Env) {
 		panic(errors.New("variable not found"))
 	}
 	v.Increment()
+}
+
+// RunVariableAssignStmt Run assigns a variable.
+func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
+	v, ok := env.GetVar(tree.Name)
+	if !ok {
+		panic(errors.New("variable not found"))
+	}
+	v.SetValue(RunTree(tree.Value, env))
 }

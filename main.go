@@ -39,7 +39,7 @@ func main() {
 		return
 	}
 	Env.Execute()
-	fmt.Println("//--- END", args[0], "---")
+	fmt.Println("\n//--- END", args[0], "---")
 	if Debug {
 		fmt.Println("ENV:", Env)
 	}
