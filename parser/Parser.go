@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/tot0p/Ecla/lexer"
 	"log"
-	"strings"
 )
 
 const (
@@ -13,28 +12,10 @@ const (
 
 // Parser is the parser for the Ecla language
 
-type Tracer struct {
-	DoesTrace   bool
-	Nesting     int
-	TraceString string
-}
-
-func (t *Tracer) Trace(TraceMsg string) {
-	if t.DoesTrace {
-		t.TraceString += strings.Repeat("\t", t.Nesting) + TraceMsg
-	}
-}
-
-func (t *Tracer) Reset() {
-	t.Nesting = 0
-	t.TraceString = ""
-}
-
 type Parser struct {
 	Tokens       []lexer.Token
 	TokenIndex   int
 	CurrentToken lexer.Token
-	Tracer       Tracer
 }
 
 // Step moves the parser to the next token
@@ -56,8 +37,7 @@ func (p *Parser) Parse() File {
 }
 
 func (p *Parser) ParseFile() File {
-	FinalTrace := ""
-	tempFile := File{ParseTree: new(AST)}
+	tempFile := File{ParseTree: new(AST), Trace: ""}
 	for p.CurrentToken.TokenType != lexer.EOF {
 		if p.CurrentToken.TokenType != lexer.TEXT {
 			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseExpr())
@@ -72,8 +52,6 @@ func (p *Parser) ParseFile() File {
 			}
 		}
 		p.Step()
-		FinalTrace += p.Tracer.TraceString
-		p.Tracer.Reset()
 	}
 	p.Step()
 	return tempFile
@@ -87,7 +65,8 @@ func (p *Parser) ParseKeyword() Stmt {
 		}
 
 	}
-	panic("Expected keyword")
+	log.Fatal("Expected keyword")
+	return nil
 }
 
 func (p *Parser) ParsePrintStmt() Stmt {
@@ -108,35 +87,25 @@ func (p *Parser) ParsePrintStmt() Stmt {
 }
 
 func (p *Parser) ParseExpr() Expr {
-	return p.ParseBinaryExpr(nil)
+	return p.ParseBinaryExpr(nil, LowestPrecedence+1)
 }
 
 // ParseBinaryExpr parses a binary expression with the given precedence
-// func (p *Parser) ParseBinaryExpr(exp Expr, prec int) Expr {
-func (p *Parser) ParseBinaryExpr(exp Expr) Expr {
-	if exp == nil {
-		exp = p.ParseUnaryExpr()
+func (p *Parser) ParseBinaryExpr(Lhs Expr, precedence int) Expr {
+	if Lhs == nil {
+		Lhs = p.ParseUnaryExpr()
 	}
-	//for {
-	//	opprec := TokenPrecedence(p.CurrentToken)
-	//	if opprec < prec {
-	//		return exp
-	//	}
-	//	RightExpr := p.ParseBinaryExpr(nil, opprec+1)
-	//	exp = BinaryExpr{LeftExpr: exp, Operator: p.CurrentToken, RightExpr: RightExpr}
-	//}
-	for p.CurrentToken.TokenType == lexer.ADD || p.CurrentToken.TokenType == lexer.SUB || p.CurrentToken.TokenType == lexer.MULT || p.CurrentToken.TokenType == lexer.DIV || p.CurrentToken.TokenType == lexer.MOD {
-		Operator := p.CurrentToken
-		p.Step()
-		RightExpr := p.ParseBinaryExpr(nil)
-		if RightExpr.precedence() > exp.precedence() {
-			exp = BinaryExpr{LeftExpr: RightExpr, Operator: Operator, RightExpr: exp}
-		} else {
-			exp = BinaryExpr{LeftExpr: exp, Operator: Operator, RightExpr: RightExpr}
+	var n int
+	for n = 1; ; n++ {
+		opprec := TokenPrecedence(p.CurrentToken)
+		operator := p.CurrentToken
+		if opprec < precedence {
+			return Lhs
 		}
+		p.Step()
+		Rhs := p.ParseBinaryExpr(nil, opprec+1)
+		Lhs = BinaryExpr{LeftExpr: Lhs, Operator: operator, RightExpr: Rhs}
 	}
-
-	return exp
 
 }
 
@@ -145,37 +114,35 @@ func (p *Parser) ParseUnaryExpr() Expr {
 	if p.CurrentToken.TokenType == lexer.ADD || p.CurrentToken.TokenType == lexer.SUB {
 		Operator := p.CurrentToken
 		p.Step()
-		return UnaryExpr{Operator: Operator, RightExpr: p.ParseUnaryExpr()}
+		Rhs := p.ParseUnaryExpr()
+		return UnaryExpr{Operator: Operator, RightExpr: Rhs}
 	}
-	return p.ParsePrimaryExpr()
+	return p.ParsePrimaryExpr(nil)
 
 }
 
 // ParsePrimaryExpr parses a primary expression
-func (p *Parser) ParsePrimaryExpr() Expr {
-	if p.CurrentToken.TokenType == lexer.LPAREN {
-		tempLPAREN := p.CurrentToken
-		p.Step()
-		//tempExpr := p.ParseBinaryExpr(nil, LowestPrecedence+1)
-		tempExpr := p.ParseBinaryExpr(nil)
-		if p.CurrentToken.TokenType != lexer.RPAREN {
-			panic("Expected ')'")
-		}
-		tempRPAREN := p.CurrentToken
-		p.Step()
-		return ParenExpr{Lparen: tempLPAREN, Expression: tempExpr, Rparen: tempRPAREN}
+func (p *Parser) ParsePrimaryExpr(exp Expr) Expr {
+	if exp == nil {
+		exp = p.ParseOperand()
 	}
-	return p.ParseLiteral()
-
+	return exp
 }
 
-func (p *Parser) ParseParenExpr() Node {
+func (p *Parser) ParseOperand() Expr {
+	if p.CurrentToken.TokenType == lexer.LPAREN {
+		return p.ParseParenExpr()
+	}
+	return p.ParseLiteral()
+}
+
+func (p *Parser) ParseParenExpr() Expr {
 	tempParentExpr := ParenExpr{}
 	tempParentExpr.Lparen = p.CurrentToken
 	p.Step()
 	tempParentExpr.Expression = p.ParseExpr()
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected ')'")
+		log.Fatal("Expected ')'")
 	}
 	tempParentExpr.Rparen = p.CurrentToken
 	return tempParentExpr
@@ -191,12 +158,12 @@ func (p *Parser) ParseLiteral() Expr {
 	if p.CurrentToken.TokenType == lexer.DQUOTE {
 		p.Step()
 		if p.CurrentToken.TokenType != lexer.STRING {
-			panic("Expected string")
+			log.Fatal("Expected string")
 		}
 		tempLiteral := Literal{Token: p.CurrentToken, Type: lexer.STRING, Value: p.CurrentToken.Value}
 		p.Step()
 		if p.CurrentToken.TokenType != lexer.DQUOTE {
-			panic("Expected '\"'")
+			log.Fatal("Expected '\"'")
 		}
 		p.Step()
 		return tempLiteral
@@ -206,6 +173,6 @@ func (p *Parser) ParseLiteral() Expr {
 		p.Step()
 		return tempLiteral
 	}
-	panic("Expected literal")
-
+	log.Fatal("Expected literal instead of " + p.CurrentToken.Value)
+	return nil
 }

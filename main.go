@@ -46,19 +46,4 @@ func main() {
 	if Time {
 		fmt.Println("TIME EXEC:", time.Since(TimeExec))
 	}
-	/*
-		tokenList := []lexer.Token{
-			lexer.Token{TokenType: lexer.LPAREN, Value: "(", Position: 0, Line: 0},
-			lexer.Token{TokenType: lexer.INT, Value: "8", Position: 1, Line: 0},
-			lexer.Token{TokenType: lexer.MULT, Value: "*", Position: 2, Line: 0},
-			lexer.Token{TokenType: lexer.INT, Value: "5", Position: 3, Line: 0},
-			lexer.Token{TokenType: lexer.RPAREN, Value: ")", Position: 4, Line: 0},
-			lexer.Token{TokenType: lexer.ADD, Value: "+", Position: 5, Line: 0},
-			lexer.Token{TokenType: lexer.INT, Value: "2", Position: 6, Line: 0},
-		}
-		parser := parser.Parser{Tokens: tokenList}
-		text, _ := json.MarshalIndent(parser.Parse(), "", "  ")
-		fmt.Println(string(text))
-	*/
-	// Run the interpreter
 }
