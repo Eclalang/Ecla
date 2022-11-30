@@ -45,8 +45,8 @@ func TestAndBools(t *testing.T) {
 }
 
 func TestOrBools(t *testing.T) {
-	t1 := eclaType.Bool(true)
-	t2 := eclaType.Bool(false)
+	t1 := eclaType.Bool(false)
+	t2 := eclaType.Bool(true)
 
 	result, err := t1.Or(t2)
 	if err != nil {
