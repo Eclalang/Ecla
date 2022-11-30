@@ -1,2 +1,2 @@
 var test int = 1;
-type(test);
+print(test//8);
