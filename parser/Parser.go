@@ -204,7 +204,7 @@ func (p *Parser) ParseBinaryExpr(Lhs Expr, precedence int) Expr {
 
 // ParseUnaryExpr parses a unary expression
 func (p *Parser) ParseUnaryExpr() Expr {
-	if p.CurrentToken.TokenType == lexer.ADD || p.CurrentToken.TokenType == lexer.SUB {
+	if p.CurrentToken.TokenType == lexer.ADD || p.CurrentToken.TokenType == lexer.SUB || p.CurrentToken.TokenType == lexer.NOT {
 		Operator := p.CurrentToken
 		p.Step()
 		Rhs := p.ParseUnaryExpr()
