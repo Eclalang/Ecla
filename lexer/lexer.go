@@ -86,7 +86,7 @@ func Lexer(sentence string) []Token {
 							break
 						}
 					}
-				} else if ident.Identifier == DOT {
+				} else if ident.Identifier == PERIOD {
 					if len(ret) >= 1 {
 						if ret[len(ret)-1].TokenType == INT && !isSpaces {
 							ret[len(ret)-1].Value += tempVal
