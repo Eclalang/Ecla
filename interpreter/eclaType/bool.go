@@ -63,12 +63,41 @@ func (b Bool) DivEc(other Type) (Type, error) {
 
 // Eq returns true if two Type objects are equal
 func (b Bool) Eq(other Type) (Type, error) {
-	return Bool(b == other.GetValue()), nil
+	switch other.(type) {
+	case Int:
+		if (b == Bool(true) && other.GetValue() == Int(1)) || (b == Bool(false) && other.GetValue() == Int(0)) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Float:
+		if (b == Bool(true) && other.GetValue() == Float(1)) || (b == Bool(false) && other.GetValue() == Float(0)) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Bool:
+		return Bool(b == other.GetValue()), nil
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
 }
 
 // NotEq returns true if two Type objects are not equal
 func (b Bool) NotEq(other Type) (Type, error) {
 	switch other.(type) {
+	case Int:
+		if (b == Bool(true) && other.GetValue() == Int(1)) || (b == Bool(false) && other.GetValue() == Int(0)) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if (b == Bool(true) && other.GetValue() == Float(1)) || (b == Bool(false) && other.GetValue() == Float(0)) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
 	case Bool:
 		return Bool(b != other.GetValue()), nil
 	default:
@@ -99,6 +128,18 @@ func (b Bool) LwEq(other Type) (Type, error) {
 // And returns true if both Types are true
 func (b Bool) And(other Type) (Type, error) {
 	switch other.(type) {
+	case Int:
+		if b == Bool(true) && other.GetValue() == Int(1) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Float:
+		if b == Bool(true) && other.GetValue() == Float(1) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
 	case Bool:
 		if b == Bool(true) && other.GetValue() == Bool(true) {
 			return Bool(true), nil
@@ -113,6 +154,18 @@ func (b Bool) And(other Type) (Type, error) {
 // Or returns true if either Type is true
 func (b Bool) Or(other Type) (Type, error) {
 	switch other.(type) {
+	case Int:
+		if b == Bool(true) || other.GetValue() == Int(1) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Float:
+		if b == Bool(true) || other.GetValue() == Float(1) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
 	case Bool:
 		if b == Bool(true) || other.GetValue() == Bool(true) {
 			return Bool(true), nil

@@ -1,6 +1,11 @@
 package interpreter
 
-/* func TestEqBoolInt(t *testing.T) {
+import (
+	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"testing"
+)
+
+func TestEqBoolInt(t *testing.T) {
 	t1 := eclaType.Bool(true)
 	t2 := eclaType.Int(1)
 
@@ -11,4 +16,4 @@ package interpreter
 	if result.GetValue() != eclaType.Bool(true) {
 		t.Error("Expected true, got ", result)
 	}
-} */
+}
