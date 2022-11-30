@@ -45,72 +45,72 @@ func (v *Var) Add(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Add(other)
 }
 
-// Sub returns errors because you cannot subtract strings
+// Sub subtracts two Type objects
 func (v *Var) Sub(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Sub(other)
 }
 
-// Mul returns errors because you cannot multiply strings
+// Mul multiplies two Type objects
 func (v *Var) Mul(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Mul(other)
 }
 
-// Div returns errors because you cannot divide strings
+// Div divides two Type objects
 func (v *Var) Div(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Div(other)
 }
 
-// Mod returns errors because you cannot mod strings
+// Mod modulos two Type objects
 func (v *Var) Mod(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Mod(other)
 }
 
-// DivEc
+// DivEc divides two Type objects
 func (v *Var) DivEc(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.DivEc(other)
 }
 
-// Eq
+// Eq returns true if the two Type objects are equal
 func (v *Var) Eq(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Eq(other)
 }
 
-// NotEq
+// NotEq returns true if the two Type objects are not equal
 func (v *Var) NotEq(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.NotEq(other)
 }
 
-// Gt
+// Gt returns true if the first Type object is greater than the second
 func (v *Var) Gt(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Gt(other)
 }
 
-// GtEq
+// GtEq returns true if the first Type object is greater than or equal to the second
 func (v *Var) GtEq(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.GtEq(other)
 }
 
-// Lw
+// Lw returns true if the first Type object is lower than the second
 func (v *Var) Lw(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Lw(other)
 }
 
-// LwEq
+// LwEq returns true if the first Type object is lower than or equal to the second
 func (v *Var) LwEq(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.LwEq(other)
 }
 
-// And
+// And returns true if the two Type objects are true
 func (v *Var) And(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.And(other)
 }
 
-// Or
+// Or returns true if either Type objects is true
 func (v *Var) Or(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Or(other)
 }
 
-// Not
+// Not returns the opposite of the Type object
 func (v *Var) Not(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Not(other)
 }
