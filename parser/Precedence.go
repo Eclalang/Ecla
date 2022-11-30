@@ -10,7 +10,7 @@ func TokenPrecedence(tok lexer.Token) int {
 		return 1
 	case "temp2":
 		return 2
-	case lexer.EQUAL:
+	case lexer.EQUAL, lexer.NEQ, lexer.LSS, lexer.LEQ, lexer.GTR, lexer.GEQ:
 		return 3
 	case lexer.ADD, lexer.SUB:
 		return 4
