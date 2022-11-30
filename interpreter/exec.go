@@ -186,6 +186,12 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) eclaType.Type {
 		return t
 	case lexer.ADD:
 		return RunTree(tree.RightExpr, env)
+	case lexer.NOT:
+		t, err := RunTree(tree.RightExpr, env).Not()
+		if err != nil {
+			panic(err)
+		}
+		return t
 	}
 	return nil
 }

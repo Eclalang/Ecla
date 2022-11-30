@@ -107,8 +107,8 @@ func (v *Var) Or(other eclaType.Type) (eclaType.Type, error) {
 }
 
 // Not returns the opposite of the Type object
-func (v *Var) Not(other eclaType.Type) (eclaType.Type, error) {
-	return v.Value.Not(other)
+func (v *Var) Not() (eclaType.Type, error) {
+	return v.Value.Not()
 }
 
 func (v *Var) Decrement() {
