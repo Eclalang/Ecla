@@ -3,6 +3,7 @@ package eclaKeyWord
 import (
 	"errors"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"github.com/tot0p/Ecla/parser"
 )
 
 type Var struct {
@@ -33,11 +34,6 @@ func (v *Var) SetValue(value eclaType.Type) error {
 		return nil
 	}
 	return errors.New("cannot set value of " + v.Name + " to " + string(value.GetString()) + " because it is of type " + string(value.GetType()) + " and not " + string(v.Value.GetType()))
-}
-
-// NewVar creates a new variable
-func NewVar(name string, value eclaType.Type) *Var {
-	return &Var{Name: name, Value: value}
 }
 
 // Add adds two Type objects
@@ -113,4 +109,18 @@ func (v *Var) Or(other eclaType.Type) (eclaType.Type, error) {
 // Not returns the opposite of the Type object
 func (v *Var) Not(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Not(other)
+}
+
+// NewVar creates a new variable
+func NewVar(name string, Type string, value eclaType.Type) (*Var, error) {
+	if Type == parser.String {
+		return &Var{
+			Name:  name,
+			Value: value.GetString(),
+		}, nil
+	}
+	if Type != value.GetType() {
+		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
+	}
+	return &Var{Name: name, Value: value}, nil
 }

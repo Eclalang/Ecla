@@ -60,16 +60,16 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 	if tree.Value == nil {
 		switch tree.Type {
 		case parser.Int:
-			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, eclaType.NewInt("0")))
+			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewInt("0")))
 		case parser.String:
-			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, eclaType.NewString("")))
+			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewString("")))
 		case parser.Bool:
-			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, eclaType.NewBool("false")))
+			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewBool("false")))
 		case parser.Float:
-			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, eclaType.NewFloat("0")))
+			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewFloat("0")))
 		}
 	} else {
-		env.Vars[tree.Name] = eclaKeyWord.NewVar(tree.Name, RunTree(tree.Value, env))
+		env.Vars[tree.Name] = eclaKeyWord.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
 	}
 	return nil
 }
