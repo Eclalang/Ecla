@@ -23,6 +23,11 @@ func (i Int) GetString() String {
 	return String(strconv.Itoa(int(i)))
 }
 
+// GetType returns the type Int
+func (i Int) GetType() String {
+	return "Int"
+}
+
 // Add adds two Type objects compatible with Int
 func (i Int) Add(other Type) (Type, error) {
 	switch other.(type) {

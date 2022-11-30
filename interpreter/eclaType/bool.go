@@ -26,6 +26,11 @@ func (b Bool) GetString() String {
 	return "false"
 }
 
+// GetType returns the type Bool
+func (b Bool) GetType() String {
+	return "Bool"
+}
+
 // returns error
 func (b Bool) Add(other Type) (Type, error) {
 	return nil, errors.New("cannot add to bool")

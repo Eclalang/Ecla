@@ -24,6 +24,11 @@ func (f Float) GetString() String {
 	return String(fmt.Sprint(f))
 }
 
+// GetType returns the type Float
+func (f Float) GetType() String {
+	return "Float"
+}
+
 // Add adds two Type objects compatible with Float
 func (f Float) Add(other Type) (Type, error) {
 	switch other.(type) {

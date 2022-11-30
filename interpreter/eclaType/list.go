@@ -23,6 +23,11 @@ func (l List) GetString() String {
 	return String(fmt.Sprint(l))
 }
 
+// GetType returns the type List
+func (l List) GetType() String {
+	return "List"
+}
+
 // Add adds two Type objects  compatible with List
 func (l List) Add(other Type) (Type, error) {
 	switch other.(type) {

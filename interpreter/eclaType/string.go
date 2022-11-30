@@ -52,6 +52,11 @@ func (s String) GetString() String {
 	return s
 }
 
+// GetType returns the type String
+func (s String) GetType() String {
+	return "String"
+}
+
 // Add adds two Type objects
 func (s String) Add(other Type) (Type, error) {
 	return s + other.GetString(), nil
