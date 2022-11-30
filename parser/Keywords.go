@@ -1,5 +1,12 @@
 package parser
 
+const (
+	Int    = "int"
+	String = "string"
+	Float  = "float"
+	Bool   = "bool"
+)
+
 var (
 	Keywords = map[string]interface{}{
 		"var":      nil,
@@ -8,9 +15,9 @@ var (
 		"import":   nil,
 	}
 	VarTypes = map[string]interface{}{
-		"int":    nil,
-		"float":  nil,
-		"string": nil,
-		"bool":   nil,
+		Int:    nil,
+		Float:  nil,
+		String: nil,
+		Bool:   nil,
 	}
 )
