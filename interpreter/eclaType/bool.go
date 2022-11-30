@@ -109,7 +109,7 @@ func (b Bool) And(other Type) (Type, error) {
 func (b Bool) Or(other Type) (Type, error) {
 	switch other.(type) {
 	case Bool:
-		if b == true || other.GetValue() == true {
+		if b == Bool(true) || other.GetValue() == Bool(true) {
 			return Bool(true), nil
 		} else {
 			return Bool(false), nil
@@ -119,6 +119,7 @@ func (b Bool) Or(other Type) (Type, error) {
 	}
 }
 
+// Not returns the opposite of the bool
 func (b Bool) Not(other Type) (Type, error) {
 	switch other.(type) {
 	case Bool:
