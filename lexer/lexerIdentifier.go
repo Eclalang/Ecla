@@ -21,6 +21,8 @@ var (
 	RPAREN = "RPAREN"
 	EOL    = "EOL"
 	DQUOTE = "DQUOTE"
+	DOT    = "DOT"
+	NOT    = "NOT"
 	BOOL   = "BOOL"
 	EOF    = "EOF"
 )
@@ -130,9 +132,15 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
-		Identifier: "DQUOTE",
+		Identifier: DQUOTE,
 		Syntaxe: []string{
 			"\"",
+		},
+	},
+	{
+		Identifier: DOT,
+		Syntaxe: []string{
+			".",
 		},
 	},
 	{
@@ -148,6 +156,12 @@ var Identifier []identifier = []identifier{
 		Syntaxe: []string{
 			"true",
 			"false",
+		},
+	},
+	{
+		Identifier: NOT,
+		Syntaxe: []string{
+			"!",
 		},
 	},
 	{

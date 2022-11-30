@@ -60,12 +60,13 @@ func Lexer(sentence string) []Token {
 						inQuoteStep = true
 					}
 				}
+
 				// if the type of the known syntaxe is INT, we want to
 				// concat each subsequent INT to the same token
 				if ident.Identifier == INT {
 					if !isSpaces {
 						if len(ret) >= 1 {
-							if ret[len(ret)-1].TokenType == INT || ret[len(ret)-1].TokenType == TEXT {
+							if ret[len(ret)-1].TokenType == INT || ret[len(ret)-1].TokenType == TEXT || ret[len(ret)-1].TokenType == FLOAT {
 								ret[len(ret)-1].Value += tempVal
 								tempVal = ""
 								prevIndex = i
@@ -80,6 +81,21 @@ func Lexer(sentence string) []Token {
 						if concatEqual(ret[len(ret)-1].TokenType) {
 							ret[len(ret)-1].TokenType += ident.Identifier
 							ret[len(ret)-1].Value += tempVal
+							tempVal = ""
+							prevIndex = i
+							break
+						}
+					}
+				} else if ident.Identifier == DOT {
+					if len(ret) >= 1 {
+						if ret[len(ret)-1].TokenType == INT && !isSpaces {
+							ret[len(ret)-1].Value += tempVal
+							ret[len(ret)-1].TokenType = FLOAT
+							tempVal = ""
+							prevIndex = i
+							break
+						} else {
+							ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
 							tempVal = ""
 							prevIndex = i
 							break
