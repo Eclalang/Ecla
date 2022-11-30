@@ -165,6 +165,6 @@ func (l List) Or(other Type) (Type, error) {
 }
 
 // Not returns errors
-func (l List) Not(other Type) (Type, error) {
+func (l List) Not() (Type, error) {
 	return nil, errors.New("cannot opposite list")
 }

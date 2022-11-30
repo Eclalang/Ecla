@@ -178,11 +178,6 @@ func (b Bool) Or(other Type) (Type, error) {
 }
 
 // Not returns the opposite of the bool
-func (b Bool) Not(other Type) (Type, error) {
-	switch other.(type) {
-	case Bool:
-		return !other.GetValue().(Bool), nil
-	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
-	}
+func (b Bool) Not() (Type, error) {
+	return !b, nil
 }

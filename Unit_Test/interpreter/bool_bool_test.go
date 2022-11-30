@@ -60,7 +60,7 @@ func TestOrBools(t *testing.T) {
 func TestNotBools(t *testing.T) {
 	t1 := eclaType.Bool(true)
 
-	result, err := t1.Not(t1)
+	result, err := t1.Not()
 	if err != nil {
 		t.Error(err)
 	}

@@ -175,6 +175,6 @@ func (f Float) Or(other Type) (Type, error) {
 }
 
 // Not returns errors
-func (f Float) Not(other Type) (Type, error) {
+func (f Float) Not() (Type, error) {
 	return nil, errors.New("cannot opposite float")
 }

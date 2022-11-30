@@ -189,6 +189,6 @@ func (i Int) Or(other Type) (Type, error) {
 }
 
 // Not returns errors
-func (i Int) Not(other Type) (Type, error) {
+func (i Int) Not() (Type, error) {
 	return nil, errors.New("cannot opposite int")
 }

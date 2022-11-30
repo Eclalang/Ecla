@@ -167,6 +167,6 @@ func (s String) Or(other Type) (Type, error) {
 }
 
 // Not returns errors
-func (s String) Not(other Type) (Type, error) {
+func (s String) Not() (Type, error) {
 	return nil, errors.New("cannot opposite string")
 }

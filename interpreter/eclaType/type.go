@@ -33,5 +33,5 @@ type Type interface {
 	//Or : ||
 	Or(other Type) (Type, error)
 	//Not : !
-	Not(other Type) (Type, error)
+	Not() (Type, error)
 }
