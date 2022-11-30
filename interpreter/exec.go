@@ -67,6 +67,8 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 	case parser.VariableAssignStmt:
 		RunVariableAssignStmt(tree.(parser.VariableAssignStmt), env)
 		return nil
+	case parser.WhileStmt:
+		RunWhileStmt(tree.(parser.WhileStmt), env)
 	}
 	return nil
 }
@@ -221,4 +223,14 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 		panic(errors.New("variable not found"))
 	}
 	v.SetValue(RunTree(tree.Value, env))
+}
+
+// RunWhileStmt
+func RunWhileStmt(tree parser.WhileStmt, env *Env) {
+	while := eclaKeyWord.NewWhile(tree.Cond, tree.Body)
+	for RunTree(while.Condition, env).GetString() == "true" {
+		for _, stmt := range while.Body {
+			RunTree(stmt, env)
+		}
+	}
 }
