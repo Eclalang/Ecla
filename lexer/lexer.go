@@ -1,5 +1,7 @@
 package lexer
 
+import "fmt"
+
 // Token is a struct that contains all the information about a token
 type Token struct {
 	TokenType string
@@ -79,7 +81,19 @@ func Lexer(sentence string) []Token {
 				} else if ident.Identifier == ASSIGN {
 					if len(ret) >= 1 {
 						if concatEqual(ret[len(ret)-1].TokenType) {
-							ret[len(ret)-1].TokenType = EQUAL
+							if ret[len(ret)-1].TokenType == ASSIGN {
+								ret[len(ret)-1].TokenType = EQUAL
+							} else if ret[len(ret)-1].TokenType == ADD {
+								ret[len(ret)-1].TokenType = INC
+							} else if ret[len(ret)-1].TokenType == SUB {
+								ret[len(ret)-1].TokenType = DEC
+							} else if ret[len(ret)-1].TokenType == LSS {
+								ret[len(ret)-1].TokenType = LEQ
+							} else if ret[len(ret)-1].TokenType == GTR {
+								ret[len(ret)-1].TokenType = GEQ
+							} else if ret[len(ret)-1].TokenType == NOT {
+								ret[len(ret)-1].TokenType = NEQ
+							}
 							ret[len(ret)-1].Value += tempVal
 							tempVal = ""
 							prevIndex = i
@@ -138,13 +152,16 @@ func Lexer(sentence string) []Token {
 						if ret[len(ret)-1].TokenType == STRING {
 							ret[len(ret)-1].Value += tempVal
 						} else {
+							fmt.Printf("ligne 143")
 							ret = append(ret, addToken(STRING, tempVal, prevIndex, line))
 
 						}
 					} else {
+						fmt.Printf("ligne 147")
 						ret = append(ret, addToken(STRING, tempVal, prevIndex, line))
 					}
 				} else {
+					fmt.Printf("ligne 150: %v\n", addToken(ident.Identifier, tempVal, prevIndex, line))
 					ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
 				}
 				isSpaces = false
@@ -173,16 +190,21 @@ func Lexer(sentence string) []Token {
 								if ret[len(ret)-1].TokenType == STRING {
 									ret[len(ret)-1].Value += tempVal[:y]
 								} else {
+									fmt.Printf("ligne 181: %v\n", addToken(STRING, tempVal[:y], prevIndex, line))
 									ret = append(ret, addToken(STRING, tempVal[:y], prevIndex, line))
 
 								}
 							} else {
+								fmt.Printf("ligne 186: %v\n", addToken(STRING, tempVal[:y], prevIndex, line))
 								ret = append(ret, addToken(STRING, tempVal[:y], prevIndex, line))
+
 							}
 						} else {
+							fmt.Printf("ligne 191: %v\n", addToken(Identifier[0].Identifier, tempVal[:y], prevIndex, line))
 							ret = append(ret, addToken(Identifier[0].Identifier, tempVal[:y], prevIndex, line))
 						}
 						isSpaces = false
+
 						i += len(tempVal[y:]) - 2
 						prevIndex = i
 					}
