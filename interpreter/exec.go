@@ -60,15 +60,14 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		return RunVariableDecl(tree.(parser.VariableDecl), env)
 	case parser.VariableDecrementStmt:
 		RunVariableDecrementStmt(tree.(parser.VariableDecrementStmt), env)
-		return nil
 	case parser.VariableIncrementStmt:
 		RunVariableIncrementStmt(tree.(parser.VariableIncrementStmt), env)
-		return nil
 	case parser.VariableAssignStmt:
 		RunVariableAssignStmt(tree.(parser.VariableAssignStmt), env)
-		return nil
 	case parser.WhileStmt:
 		RunWhileStmt(tree.(parser.WhileStmt), env)
+	case parser.IfStmt:
+		RunIfStmt(tree.(parser.IfStmt), env)
 	}
 	return nil
 }
@@ -228,8 +227,17 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 // RunWhileStmt
 func RunWhileStmt(tree parser.WhileStmt, env *Env) {
 	while := eclaKeyWord.NewWhile(tree.Cond, tree.Body)
-	for RunTree(while.Condition, env).GetString() == "true" {
+	for RunTree(while.Condition, env).GetString() == "true" { //TODO add error
 		for _, stmt := range while.Body {
+			RunTree(stmt, env)
+		}
+	}
+}
+
+// RunIfStmt
+func RunIfStmt(tree parser.IfStmt, env *Env) {
+	if RunTree(tree.Cond, env).GetString() == "true" { //TODO add error
+		for _, stmt := range tree.Body {
 			RunTree(stmt, env)
 		}
 	}

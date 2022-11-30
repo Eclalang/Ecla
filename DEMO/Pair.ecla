@@ -1,4 +1,4 @@
-var number int = 4;
+var number int = 5;
 if (number%2 == 0) {
     print("Number is even");
 };
