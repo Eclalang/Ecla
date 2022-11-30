@@ -13,6 +13,9 @@ var (
 		"function": nil,
 		"print":    nil,
 		"import":   nil,
+		"type":     nil,
+		"for":      nil,
+		"if":       nil,
 	}
 	VarTypes = map[string]interface{}{
 		Int:    nil,

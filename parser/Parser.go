@@ -83,6 +83,9 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "print" {
 		return p.ParsePrintStmt()
 	}
+	if p.CurrentToken.Value == "type" {
+		return p.ParseTypeStmt()
+	}
 	return nil
 }
 
@@ -123,6 +126,23 @@ func (p *Parser) ParsePrintStmt() Stmt {
 	tempPrint.Rparen = p.CurrentToken
 	p.Step()
 	return tempPrint
+}
+
+func (p *Parser) ParseTypeStmt() Stmt {
+	tempType := TypeStmt{TypeToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		log.Fatal("Expected Print LPAREN")
+	}
+	tempType.Lparen = p.CurrentToken
+	p.Step()
+	tempType.Expression = p.ParseExpr()
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		log.Fatal("Expected Print RPAREN")
+	}
+	tempType.Rparen = p.CurrentToken
+	p.Step()
+	return tempType
 }
 
 func (p *Parser) ParseVariableDecl() Decl {
