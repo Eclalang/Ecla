@@ -16,10 +16,16 @@ var (
 	INC      = "INC"
 	DEC      = "DEC"
 	ASSIGN   = "ASSIGN"
+	LSS      = "LSS"
+	GTR      = "GTR"
+	NEQ      = "NEQ"
+	LEQ      = "LEQ"
+	GEQ      = "GEQ"
 	EQUAL    = "EQUAL"
 	LPAREN   = "LPAREN"
 	RPAREN   = "RPAREN"
 	EOL      = "EOL"
+	MURLOC   = "MURLOC"
 	DQUOTE   = "DQUOTE"
 	PERIOD   = "PERIOD"
 	LBRACE   = "LBRACE"
@@ -95,6 +101,18 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
+		Identifier: GTR,
+		Syntaxe: []string{
+			">",
+		},
+	},
+	{
+		Identifier: LSS,
+		Syntaxe: []string{
+			"<",
+		},
+	},
+	{
 		Identifier: LPAREN,
 		Syntaxe: []string{
 			"(",
@@ -116,6 +134,12 @@ var Identifier []identifier = []identifier{
 		Identifier: DQUOTE,
 		Syntaxe: []string{
 			"\"",
+		},
+	},
+	{
+		Identifier: MURLOC,
+		Syntaxe: []string{
+			"^^^^^^",
 		},
 	},
 	{
@@ -213,6 +237,12 @@ func concatEqual(str string) bool {
 	case ASSIGN:
 		return true
 	case DIV:
+		return true
+	case GTR:
+		return true
+	case LSS:
+		return true
+	case NOT:
 		return true
 	default:
 		return false
