@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"errors"
 	"fmt"
 	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
@@ -29,7 +30,11 @@ func New(t parser.Literal, env *Env) eclaType.Type {
 	case lexer.FLOAT:
 		return eclaType.NewFloat(t.Value)
 	case "VAR":
-		return env.GetVar(t.Value)
+		v, ok := env.GetVar(t.Value)
+		if !ok {
+			panic(errors.New("variable not found"))
+		}
+		return v
 	default:
 		panic("Unknown type")
 	}
@@ -54,6 +59,7 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 	case parser.VariableDecl:
 		return RunVariableDecl(tree.(parser.VariableDecl), env)
 	case parser.VariableDecrementStmt:
+		RunVariableDecrementStmt(tree.(parser.VariableDecrementStmt), env)
 		return nil
 	case parser.VariableIncrementStmt:
 		return nil
@@ -174,4 +180,22 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) eclaType.Type {
 		return RunTree(tree.RightExpr, env)
 	}
 	return nil
+}
+
+// RunVariableDecrementStmt Run decrements a variable.
+func RunVariableDecrementStmt(tree parser.VariableDecrementStmt, env *Env) {
+	v, ok := env.GetVar(tree.Name)
+	if !ok {
+		panic(errors.New("variable not found"))
+	}
+	v.Decrement()
+}
+
+// RunVariableIncrementStmt Run increments a variable.
+func RunVariableIncrementStmt(tree parser.VariableIncrementStmt, env *Env) {
+	v, ok := env.GetVar(tree.Name)
+	if !ok {
+		panic(errors.New("variable not found"))
+	}
+	v.Increment()
 }
