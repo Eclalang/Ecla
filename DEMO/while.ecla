@@ -1,5 +1,5 @@
 var t int;
-while (!(t ==5)){
-    t = t + 1;
-    print(t);
+while (!(t ==10000)){
+    t++;
+    print(t+"\n");
 };

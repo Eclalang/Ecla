@@ -151,7 +151,31 @@ func (p *Parser) ParseTypeStmt() Stmt {
 }
 
 func (p *Parser) ParseIfStmt() Stmt {
-	return nil
+	tempIf := IfStmt{IfToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		log.Fatal("Expected If LPAREN")
+	}
+	tempIf.LeftParen = p.CurrentToken
+	p.Step()
+	tempIf.Cond = p.ParseExpr()
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		log.Fatal("Expected If RPAREN")
+	}
+	tempIf.RightParen = p.CurrentToken
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LBRACE {
+		log.Fatal("Expected If LBRACE")
+	}
+	tempIf.LeftBrace = p.CurrentToken
+	p.Step()
+	tempIf.Body = p.ParseBody()
+	if p.CurrentToken.TokenType != lexer.RBRACE {
+		log.Fatal("Expected If RBRACE")
+	}
+	tempIf.RightBrace = p.CurrentToken
+	p.Step()
+	return tempIf
 }
 
 func (p *Parser) ParseWhileStmt() Stmt {
