@@ -18,7 +18,7 @@ func Run(env *Env) {
 }
 
 // New returns a new eclaType.Type from a parser.Literal.
-func New(t parser.Literal) eclaType.Type {
+func New(t parser.Literal, env *Env) eclaType.Type {
 	switch t.Type {
 	case lexer.INT:
 		return eclaType.NewInt(t.Value)
@@ -28,6 +28,8 @@ func New(t parser.Literal) eclaType.Type {
 		return eclaType.NewBool(t.Value)
 	case lexer.FLOAT:
 		return eclaType.NewFloat(t.Value)
+	case "VAR":
+		return env.GetVar(t.Value)
 	default:
 		panic("Unknown type")
 	}
@@ -38,7 +40,7 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 	//fmt.Printf("%T\n", tree)
 	switch tree.(type) {
 	case parser.Literal:
-		return New(tree.(parser.Literal))
+		return New(tree.(parser.Literal), env)
 	case parser.BinaryExpr:
 		return RunBinaryExpr(tree.(parser.BinaryExpr), env)
 	case parser.UnaryExpr:
@@ -55,22 +57,20 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 
 // RunVariableDecl executes a parser.VariableDecl.
 func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
-	if tree.Value != nil {
+	if tree.Value == nil {
 		switch tree.Type {
 		case "int":
-			env.Vars[tree.Name] = eclaKeyWord.NewVar(tree.Name, eclaType.NewInt("0"))
+			env.SetVar(tree.Name, eclaKeyWord.NewVar(tree.Name, eclaType.NewInt("0")))
 		}
 	} else {
 		env.Vars[tree.Name] = eclaKeyWord.NewVar(tree.Name, RunTree(tree.Value, env))
 	}
-	env.Vars[tree.Name] = eclaKeyWord.NewVar(tree.Name, RunTree(tree.Value, env))
-
 	return nil
 }
 
 // RunPrintStmt executes a parser.PrintStmt.
 func RunPrintStmt(tree parser.PrintStmt, env *Env) eclaType.Type {
-	fmt.Print(RunTree(tree.Expression, env))
+	fmt.Print(RunTree(tree.Expression, env).GetString())
 	return nil
 }
 

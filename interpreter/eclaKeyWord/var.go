@@ -15,7 +15,7 @@ func (v *Var) String() string {
 }
 
 func (v *Var) GetString() eclaType.String {
-	return eclaType.String(v.String())
+	return v.Value.GetString()
 }
 
 func (v *Var) GetValue() any {
