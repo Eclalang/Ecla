@@ -2,27 +2,34 @@ package lexer
 
 // each type of token
 var (
-	TEXT   = "TEXT"
-	STRING = "STRING"
-	PRINT  = "PRINT"
-	INT    = "INT"
-	FLOAT  = "FLOAT"
-	ADD    = "ADD"
-	SUB    = "SUB"
-	MULT   = "MULT"
-	DIV    = "DIV"
-	QOT    = "QOT"
-	MOD    = "MOD"
-	INC    = "INC"
-	DEC    = "DEC"
-	ASSIGN = "ASSIGN"
-	EQUAL  = "EQUAL"
-	LPAREN = "LPAREN"
-	RPAREN = "RPAREN"
-	EOL    = "EOL"
-	DQUOTE = "DQUOTE"
-	BOOL   = "BOOL"
-	EOF    = "EOF"
+	TEXT     = "TEXT"
+	STRING   = "STRING"
+	PRINT    = "PRINT"
+	INT      = "INT"
+	FLOAT    = "FLOAT"
+	ADD      = "ADD"
+	SUB      = "SUB"
+	MULT     = "MULT"
+	DIV      = "DIV"
+	QOT      = "QOT"
+	MOD      = "MOD"
+	INC      = "INC"
+	DEC      = "DEC"
+	ASSIGN   = "ASSIGN"
+	EQUAL    = "EQUAL"
+	LPAREN   = "LPAREN"
+	RPAREN   = "RPAREN"
+	EOL      = "EOL"
+	DQUOTE   = "DQUOTE"
+	PERIOD   = "PERIOD"
+	LBRACE   = "LBRACE"
+	RBRACE   = "RBRACE"
+	LBRACKET = "LBRACKET"
+	RBRACKET = "RBRACKET"
+	COMMA    = "COMMA"
+	NOT      = "NOT"
+	BOOL     = "BOOL"
+	EOF      = "EOF"
 )
 
 //--------------------------------------------//
@@ -76,39 +83,15 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
-		Identifier: QOT,
-		Syntaxe: []string{
-			"//",
-		},
-	},
-	{
 		Identifier: MOD,
 		Syntaxe: []string{
 			"%",
 		},
 	},
 	{
-		Identifier: INC,
-		Syntaxe: []string{
-			"++",
-		},
-	},
-	{
-		Identifier: DEC,
-		Syntaxe: []string{
-			"--",
-		},
-	},
-	{
 		Identifier: ASSIGN,
 		Syntaxe: []string{
 			"=",
-		},
-	},
-	{
-		Identifier: EQUAL,
-		Syntaxe: []string{
-			"==",
 		},
 	},
 	{
@@ -130,9 +113,45 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
-		Identifier: "DQUOTE",
+		Identifier: DQUOTE,
 		Syntaxe: []string{
 			"\"",
+		},
+	},
+	{
+		Identifier: PERIOD,
+		Syntaxe: []string{
+			".",
+		},
+	},
+	{
+		Identifier: COMMA,
+		Syntaxe: []string{
+			",",
+		},
+	},
+	{
+		Identifier: LBRACE,
+		Syntaxe: []string{
+			"{",
+		},
+	},
+	{
+		Identifier: RBRACE,
+		Syntaxe: []string{
+			"}",
+		},
+	},
+	{
+		Identifier: LBRACKET,
+		Syntaxe: []string{
+			"[",
+		},
+	},
+	{
+		Identifier: RBRACKET,
+		Syntaxe: []string{
+			"]",
 		},
 	},
 	{
@@ -148,6 +167,12 @@ var Identifier []identifier = []identifier{
 		Syntaxe: []string{
 			"true",
 			"false",
+		},
+	},
+	{
+		Identifier: NOT,
+		Syntaxe: []string{
+			"!",
 		},
 	},
 	{
