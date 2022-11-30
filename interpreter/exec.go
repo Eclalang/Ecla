@@ -62,6 +62,7 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		RunVariableDecrementStmt(tree.(parser.VariableDecrementStmt), env)
 		return nil
 	case parser.VariableIncrementStmt:
+		RunVariableIncrementStmt(tree.(parser.VariableIncrementStmt), env)
 		return nil
 	case parser.VariableAssignStmt:
 		return nil

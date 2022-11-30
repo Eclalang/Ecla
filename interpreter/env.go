@@ -62,7 +62,7 @@ func (env *Env) Execute() {
 	// TODO: SUPPORT FOR MULTIPLE FILES
 	tokens := lexer.Lexer(env.Code)
 	//DEBUG
-	fmt.Println("TOKENS:", tokens)
+	//fmt.Println("TOKENS:", tokens)
 	// Parsing
 	// TODO: SUPPORT FOR MULTIPLE FILES
 	pars := parser.Parser{Tokens: tokens}
@@ -72,6 +72,7 @@ func (env *Env) Execute() {
 	//fmt.Println("SYNTAX TREE:", string(txt))
 	//TODO: execute code
 	Run(env)
+	//os.WriteFile("test.txt", []byte(fmt.Sprint(tokens)), 0644)
 }
 
 // readFile reads the file at the given path and returns its contents as a string.
