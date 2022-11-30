@@ -127,6 +127,7 @@ func (p *Parser) ParseVariableDecl() Decl {
 		if p.CurrentToken.TokenType != lexer.EOL || p.CurrentToken.TokenType != lexer.EOF {
 			log.Fatal("Expected variable assignment instead of " + p.CurrentToken.Value)
 		}
+		tempDecl.Value = nil
 		p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
 		return tempDecl
 	}
