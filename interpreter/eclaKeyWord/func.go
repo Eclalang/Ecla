@@ -9,6 +9,10 @@ type Function struct {
 	Code  any
 }
 
+func (f *Function) GetType() eclaType.String {
+	return "Function"
+}
+
 func (f *Function) Call() {
 	//TODO EXECUTE CODE
 }
