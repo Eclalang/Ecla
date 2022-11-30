@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"errors"
 	"fmt"
 	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
@@ -29,7 +30,11 @@ func New(t parser.Literal, env *Env) eclaType.Type {
 	case lexer.FLOAT:
 		return eclaType.NewFloat(t.Value)
 	case "VAR":
-		return env.GetVar(t.Value)
+		v, ok := env.GetVar(t.Value)
+		if !ok {
+			panic(errors.New("variable not found"))
+		}
+		return v
 	default:
 		panic("Unknown type")
 	}
@@ -54,10 +59,13 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 	case parser.VariableDecl:
 		return RunVariableDecl(tree.(parser.VariableDecl), env)
 	case parser.VariableDecrementStmt:
+		RunVariableDecrementStmt(tree.(parser.VariableDecrementStmt), env)
 		return nil
 	case parser.VariableIncrementStmt:
+		RunVariableIncrementStmt(tree.(parser.VariableIncrementStmt), env)
 		return nil
 	case parser.VariableAssignStmt:
+		RunVariableAssignStmt(tree.(parser.VariableAssignStmt), env)
 		return nil
 	}
 	return nil
@@ -123,7 +131,6 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) eclaType.Type {
 	switch tree.Operator.TokenType {
 	case lexer.ADD:
 		t, err := left.Add(right)
-		fmt.Println(t)
 		if err != nil {
 			panic(err)
 		}
@@ -158,6 +165,12 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) eclaType.Type {
 			panic(err)
 		}
 		return t
+	case lexer.EQUAL:
+		t, err := left.Eq(right)
+		if err != nil {
+			panic(err)
+		}
+		return t
 	}
 	return nil
 }
@@ -175,4 +188,31 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) eclaType.Type {
 		return RunTree(tree.RightExpr, env)
 	}
 	return nil
+}
+
+// RunVariableDecrementStmt Run decrements a variable.
+func RunVariableDecrementStmt(tree parser.VariableDecrementStmt, env *Env) {
+	v, ok := env.GetVar(tree.Name)
+	if !ok {
+		panic(errors.New("variable not found"))
+	}
+	v.Decrement()
+}
+
+// RunVariableIncrementStmt Run increments a variable.
+func RunVariableIncrementStmt(tree parser.VariableIncrementStmt, env *Env) {
+	v, ok := env.GetVar(tree.Name)
+	if !ok {
+		panic(errors.New("variable not found"))
+	}
+	v.Increment()
+}
+
+// RunVariableAssignStmt Run assigns a variable.
+func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
+	v, ok := env.GetVar(tree.Name)
+	if !ok {
+		panic(errors.New("variable not found"))
+	}
+	v.SetValue(RunTree(tree.Value, env))
 }

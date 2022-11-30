@@ -111,6 +111,22 @@ func (v *Var) Not(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Not(other)
 }
 
+func (v *Var) Decrement() {
+	var err error
+	v.Value, err = v.Value.Sub(eclaType.NewInt("1"))
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (v *Var) Increment() {
+	var err error
+	v.Value, err = v.Value.Add(eclaType.NewInt("1"))
+	if err != nil {
+		panic(err)
+	}
+}
+
 // NewVar creates a new variable
 func NewVar(name string, Type string, value eclaType.Type) (*Var, error) {
 	if Type == parser.String {

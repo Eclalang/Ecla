@@ -197,7 +197,9 @@ func (p *Parser) ParseBinaryExpr(Lhs Expr, precedence int) Expr {
 		}
 		p.Step()
 		Rhs := p.ParseBinaryExpr(nil, opprec+1)
+
 		Lhs = BinaryExpr{LeftExpr: Lhs, Operator: operator, RightExpr: Rhs}
+
 	}
 
 }

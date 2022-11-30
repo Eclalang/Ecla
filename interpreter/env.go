@@ -2,17 +2,16 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
 	"os"
 	"runtime"
-
-	"github.com/tot0p/Ecla/interpreter/eclaType"
 )
 
 // Env is the environment in which the code is executed.
 type Env struct {
-	Vars       map[string]eclaType.Type
+	Vars       map[string]*eclaKeyWord.Var
 	OS         string
 	ARCH       string
 	SyntaxTree *parser.File
@@ -25,7 +24,7 @@ func NewEnv() *Env {
 	return &Env{
 		OS:   runtime.GOOS,
 		ARCH: runtime.GOARCH,
-		Vars: make(map[string]eclaType.Type),
+		Vars: make(map[string]*eclaKeyWord.Var),
 	}
 }
 
@@ -44,13 +43,14 @@ func (env *Env) SetFile(file string) {
 }
 
 // SetVar sets the value of the variable with the given name.
-func (env *Env) SetVar(name string, value eclaType.Type) {
+func (env *Env) SetVar(name string, value *eclaKeyWord.Var) {
 	env.Vars[name] = value
 }
 
 // GetVar returns the value of the variable with the given name.
-func (env *Env) GetVar(name string) eclaType.Type {
-	return env.Vars[name]
+func (env *Env) GetVar(name string) (*eclaKeyWord.Var, bool) {
+	v, ok := env.Vars[name]
+	return v, ok
 }
 
 // Execute executes Env.Code or Env.File.
@@ -62,7 +62,7 @@ func (env *Env) Execute() {
 	// TODO: SUPPORT FOR MULTIPLE FILES
 	tokens := lexer.Lexer(env.Code)
 	//DEBUG
-	fmt.Println("TOKENS:", tokens)
+	//fmt.Println("TOKENS:", tokens)
 	// Parsing
 	// TODO: SUPPORT FOR MULTIPLE FILES
 	pars := parser.Parser{Tokens: tokens}
@@ -72,6 +72,7 @@ func (env *Env) Execute() {
 	//fmt.Println("SYNTAX TREE:", string(txt))
 	//TODO: execute code
 	Run(env)
+	//os.WriteFile("test.txt", []byte(fmt.Sprint(tokens)), 0644)
 }
 
 // readFile reads the file at the given path and returns its contents as a string.
