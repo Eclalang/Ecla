@@ -79,7 +79,7 @@ func Lexer(sentence string) []Token {
 				} else if ident.Identifier == ASSIGN {
 					if len(ret) >= 1 {
 						if concatEqual(ret[len(ret)-1].TokenType) {
-							ret[len(ret)-1].TokenType += ident.Identifier
+							ret[len(ret)-1].TokenType = EQUAL
 							ret[len(ret)-1].Value += tempVal
 							tempVal = ""
 							prevIndex = i
