@@ -184,3 +184,43 @@ func (v VariableDecrementStmt) EndPos() int {
 }
 
 func (v VariableDecrementStmt) stmtNode() {}
+
+type IfStmt struct {
+	IfToken    lexer.Token
+	LeftParen  lexer.Token
+	RightParen lexer.Token
+	Cond       Expr
+	LeftBrace  lexer.Token
+	RightBrace lexer.Token
+	Body       []Node
+}
+
+func (i IfStmt) StartPos() int {
+	return i.IfToken.Position
+}
+
+func (i IfStmt) EndPos() int {
+	return i.RightBrace.Position
+}
+
+func (i IfStmt) stmtNode() {}
+
+type WhileStmt struct {
+	WhileToken lexer.Token
+	LeftParen  lexer.Token
+	RightParen lexer.Token
+	Cond       Expr
+	LeftBrace  lexer.Token
+	RightBrace lexer.Token
+	Body       []Node
+}
+
+func (w WhileStmt) StartPos() int {
+	return w.WhileToken.Position
+}
+
+func (w WhileStmt) EndPos() int {
+	return w.RightBrace.Position
+}
+
+func (w WhileStmt) stmtNode() {}

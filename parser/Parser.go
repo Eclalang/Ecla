@@ -49,23 +49,40 @@ func (p *Parser) ParseFile() *File {
 	tempFile.ParseTree = new(AST)
 	p.CurrentFile = tempFile
 	for p.CurrentToken.TokenType != lexer.EOF {
-		if p.CurrentToken.TokenType != lexer.TEXT {
-			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseExpr())
-			if p.CurrentToken.TokenType != lexer.EOL {
-				log.Fatal("Expected EOL")
-			}
-		} else {
-			if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
-
-			} else {
-				tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseText())
-			}
-		}
+		tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseNode())
 		p.Step()
 	}
 	p.Step()
 	return tempFile
 
+}
+
+func (p *Parser) ParseNode() Node {
+	if p.CurrentToken.TokenType != lexer.TEXT {
+		tempExpr := p.ParseExpr()
+
+		return tempExpr
+	} else {
+		if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
+
+		} else {
+			tempExpr := p.ParseText()
+			if p.CurrentToken.TokenType != lexer.EOL {
+				log.Fatal("Expected EOL")
+			}
+			return tempExpr
+		}
+	}
+	return nil
+}
+
+func (p *Parser) ParseBody() []Node {
+	tempBody := make([]Node, 0)
+	for p.CurrentToken.TokenType != lexer.RBRACE {
+		tempBody = append(tempBody, p.ParseExpr())
+		p.Step()
+	}
+	return tempBody
 }
 
 func (p *Parser) ParseText() Node {
@@ -86,29 +103,17 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "type" {
 		return p.ParseTypeStmt()
 	}
+	if p.CurrentToken.Value == "if" {
+		return p.ParseIfStmt()
+	}
+	if p.CurrentToken.Value == "while" {
+		return p.ParseWhileStmt()
+	}
 	return nil
 }
 
 func (p *Parser) ParseIdent() Node {
 	return p.ParseVariableAssign()
-}
-
-func (p *Parser) ParseVariableAssign() Stmt {
-	Var := p.CurrentToken
-	VarName := Var.Value
-	p.Step()
-	switch p.CurrentToken.TokenType {
-	case lexer.ASSIGN:
-		p.Step()
-		return VariableAssignStmt{VarToken: Var, Name: VarName, Value: p.ParseExpr()}
-	case lexer.INC:
-		p.Step()
-		return VariableIncrementStmt{VarToken: Var, Name: VarName, IncToken: p.CurrentToken}
-	case lexer.DEC:
-		p.Step()
-		return VariableDecrementStmt{VarToken: Var, Name: VarName, DecToken: p.CurrentToken}
-	}
-	return nil
 }
 
 func (p *Parser) ParsePrintStmt() Stmt {
@@ -145,6 +150,38 @@ func (p *Parser) ParseTypeStmt() Stmt {
 	return tempType
 }
 
+func (p *Parser) ParseIfStmt() Stmt {
+	return nil
+}
+
+func (p *Parser) ParseWhileStmt() Stmt {
+	tempWhile := WhileStmt{WhileToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		log.Fatal("Expected While LPAREN")
+	}
+	tempWhile.LeftParen = p.CurrentToken
+	p.Step()
+	tempWhile.Cond = p.ParseExpr()
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		log.Fatal("Expected While RPAREN")
+	}
+	tempWhile.RightParen = p.CurrentToken
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LBRACE {
+		log.Fatal("Expected While LBRACE")
+	}
+	tempWhile.LeftBrace = p.CurrentToken
+	p.Step()
+	tempWhile.Body = p.ParseBody()
+	if p.CurrentToken.TokenType != lexer.RBRACE {
+		log.Fatal("Expected While RBRACE")
+	}
+	tempWhile.RightBrace = p.CurrentToken
+	p.Step()
+	return tempWhile
+}
+
 func (p *Parser) ParseVariableDecl() Decl {
 	tempDecl := VariableDecl{VarToken: p.CurrentToken}
 	p.Step()
@@ -177,6 +214,24 @@ func (p *Parser) ParseVariableDecl() Decl {
 	p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
 	return tempDecl
 
+}
+
+func (p *Parser) ParseVariableAssign() Stmt {
+	Var := p.CurrentToken
+	VarName := Var.Value
+	p.Step()
+	switch p.CurrentToken.TokenType {
+	case lexer.ASSIGN:
+		p.Step()
+		return VariableAssignStmt{VarToken: Var, Name: VarName, Value: p.ParseExpr()}
+	case lexer.INC:
+		p.Step()
+		return VariableIncrementStmt{VarToken: Var, Name: VarName, IncToken: p.CurrentToken}
+	case lexer.DEC:
+		p.Step()
+		return VariableDecrementStmt{VarToken: Var, Name: VarName, DecToken: p.CurrentToken}
+	}
+	return nil
 }
 
 func (p *Parser) ParseExpr() Expr {

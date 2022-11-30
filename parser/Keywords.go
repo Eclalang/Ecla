@@ -15,6 +15,7 @@ var (
 		"import":   nil,
 		"type":     nil,
 		"for":      nil,
+		"while":    nil,
 		"if":       nil,
 	}
 	VarTypes = map[string]interface{}{
