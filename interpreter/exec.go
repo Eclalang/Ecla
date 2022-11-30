@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
@@ -12,7 +13,7 @@ func Run(env *Env) {
 	for _, v := range env.SyntaxTree.ParseTree.Operations {
 		//txt, _ := json.MarshalIndent(v, "", "  ")
 		//fmt.Println(string(txt))
-		RunTree(v)
+		RunTree(v, env)
 	}
 }
 
@@ -33,34 +34,51 @@ func New(t parser.Literal) eclaType.Type {
 }
 
 // RunTree executes a parser.Tree.
-func RunTree(tree parser.Node) eclaType.Type {
+func RunTree(tree parser.Node, env *Env) eclaType.Type {
 	//fmt.Printf("%T\n", tree)
 	switch tree.(type) {
 	case parser.Literal:
 		return New(tree.(parser.Literal))
 	case parser.BinaryExpr:
-		return RunBinaryExpr(tree.(parser.BinaryExpr))
+		return RunBinaryExpr(tree.(parser.BinaryExpr), env)
 	case parser.UnaryExpr:
-		return RunUnaryExpr(tree.(parser.UnaryExpr))
+		return RunUnaryExpr(tree.(parser.UnaryExpr), env)
 	case parser.ParenExpr:
-		return RunTree(tree.(parser.ParenExpr).Expression)
+		return RunTree(tree.(parser.ParenExpr).Expression, env)
 	case parser.PrintStmt:
-		return RunPrintStmt(tree.(parser.PrintStmt))
+		return RunPrintStmt(tree.(parser.PrintStmt), env)
+	case parser.VariableDecl:
+		return RunVariableDecl(tree.(parser.VariableDecl), env)
 	}
 	return nil
 }
 
+// RunVariableDecl executes a parser.VariableDecl.
+func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
+	if tree.Value != nil {
+		switch tree.Type {
+		case "int":
+			env.Vars[tree.Name] = eclaKeyWord.NewVar(tree.Name, eclaType.NewInt("0"))
+		}
+	} else {
+		env.Vars[tree.Name] = eclaKeyWord.NewVar(tree.Name, RunTree(tree.Value, env))
+	}
+	env.Vars[tree.Name] = eclaKeyWord.NewVar(tree.Name, RunTree(tree.Value, env))
+
+	return nil
+}
+
 // RunPrintStmt executes a parser.PrintStmt.
-func RunPrintStmt(tree parser.PrintStmt) eclaType.Type {
-	fmt.Print(RunTree(tree.Expression))
+func RunPrintStmt(tree parser.PrintStmt, env *Env) eclaType.Type {
+	fmt.Print(RunTree(tree.Expression, env))
 	return nil
 }
 
 // RunBinaryExpr executes a parser.BinaryExpr.
-func RunBinaryExpr(tree parser.BinaryExpr) eclaType.Type {
+func RunBinaryExpr(tree parser.BinaryExpr, env *Env) eclaType.Type {
 	//fmt.Printf("%T\n", tree)
-	left := RunTree(tree.LeftExpr)
-	right := RunTree(tree.RightExpr)
+	left := RunTree(tree.LeftExpr, env)
+	right := RunTree(tree.RightExpr, env)
 	switch tree.Operator.TokenType {
 	case lexer.ADD:
 		t, err := left.Add(right)
@@ -97,16 +115,16 @@ func RunBinaryExpr(tree parser.BinaryExpr) eclaType.Type {
 }
 
 // RUnUnaryExpr executes a parser.UnaryExpr.
-func RunUnaryExpr(tree parser.UnaryExpr) eclaType.Type {
+func RunUnaryExpr(tree parser.UnaryExpr, env *Env) eclaType.Type {
 	switch tree.Operator.TokenType {
 	case lexer.SUB:
-		t, err := eclaType.Int(0).Sub(RunTree(tree.RightExpr)) // TODO: Fix this
+		t, err := eclaType.Int(0).Sub(RunTree(tree.RightExpr, env)) // TODO: Fix this
 		if err != nil {
 			panic(err)
 		}
 		return t
 	case lexer.ADD:
-		return RunTree(tree.RightExpr)
+		return RunTree(tree.RightExpr, env)
 	}
 	return nil
 }

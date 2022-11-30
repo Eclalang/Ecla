@@ -62,7 +62,7 @@ func (env *Env) Execute() {
 	// TODO: SUPPORT FOR MULTIPLE FILES
 	tokens := lexer.Lexer(env.Code)
 	//DEBUG
-	//fmt.Println("TOKENS:", tokens)
+	fmt.Println("TOKENS:", tokens)
 	// Parsing
 	// TODO: SUPPORT FOR MULTIPLE FILES
 	pars := parser.Parser{Tokens: tokens}

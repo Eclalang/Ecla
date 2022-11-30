@@ -18,8 +18,8 @@ func (v *Var) GetString() eclaType.String {
 	return eclaType.String(v.String())
 }
 
-func (v *Var) GetValue() eclaType.Type {
-	return v.Value
+func (v *Var) GetValue() any {
+	return v.Value.GetValue()
 }
 
 func (v *Var) GetType() eclaType.String {
@@ -106,7 +106,6 @@ func (v *Var) And(other eclaType.Type) (eclaType.Type, error) {
 }
 
 // Or
-
 func (v *Var) Or(other eclaType.Type) (eclaType.Type, error) {
 	return v.Value.Or(other)
 }
