@@ -118,7 +118,7 @@ func (p *Parser) ParseVariableDecl() Decl {
 	}
 	tempDecl.Name = p.CurrentToken.Value
 	p.Step()
-	_, ok := Keywords[p.CurrentToken.Value]
+	_, ok := VarTypes[p.CurrentToken.Value]
 	if !ok || p.CurrentToken.TokenType != lexer.TEXT {
 		log.Fatal("Expected variable type")
 	}
