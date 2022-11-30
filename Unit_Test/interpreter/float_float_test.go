@@ -5,18 +5,18 @@ import (
 	"testing"
 )
 
-/*func TestAddFloats(t *testing.T) {
-	t1 := eclaType.Float(1.1)
-	t2 := eclaType.Float(2.2)
+func TestAddFloats(t *testing.T) {
+	t1 := eclaType.NewFloat("1.1")
+	t2 := eclaType.NewFloat("0.2")
 
 	result, err := t1.Add(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != eclaType.Float(3.3) {
-		t.Error("Expected 3.3, got ", result, " t1 = ", t1, " t2 = ", t2)
+	if result.GetValue() != eclaType.Float(1.3) {
+		t.Error("Expected 1.3, got ", result)
 	}
-}*/
+}
 
 func TestSubFloats(t *testing.T) {
 	t1 := eclaType.Float(1.1)

@@ -8,7 +8,10 @@ import (
 
 // NewFloat creates a new Float
 func NewFloat(value string) Float {
-	result, _ := strconv.Atoi(value)
+	result, error := strconv.ParseFloat(value, 32)
+	if error != nil {
+		panic(error)
+	}
 	return Float(result)
 }
 
