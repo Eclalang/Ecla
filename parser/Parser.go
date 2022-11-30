@@ -79,7 +79,7 @@ func (p *Parser) ParseNode() Node {
 func (p *Parser) ParseBody() []Node {
 	tempBody := make([]Node, 0)
 	for p.CurrentToken.TokenType != lexer.RBRACE {
-		tempBody = append(tempBody, p.ParseExpr())
+		tempBody = append(tempBody, p.ParseNode())
 		p.Step()
 	}
 	return tempBody
