@@ -132,13 +132,13 @@ func (p *Parser) ParseTypeStmt() Stmt {
 	tempType := TypeStmt{TypeToken: p.CurrentToken}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		log.Fatal("Expected Print LPAREN")
+		log.Fatal("Expected Type LPAREN")
 	}
 	tempType.Lparen = p.CurrentToken
 	p.Step()
 	tempType.Expression = p.ParseExpr()
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		log.Fatal("Expected Print RPAREN")
+		log.Fatal("Expected Type RPAREN")
 	}
 	tempType.Rparen = p.CurrentToken
 	p.Step()
