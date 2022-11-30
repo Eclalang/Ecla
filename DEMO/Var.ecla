@@ -1,2 +1,2 @@
-var test int;
+var test string;
 print(test);
