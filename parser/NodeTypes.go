@@ -102,3 +102,20 @@ func (p PrintStmt) EndPos() int {
 }
 
 func (p PrintStmt) stmtNode() {}
+
+type VariableDecl struct {
+	VarToken lexer.Token
+	Name     string
+	Type     string
+	Value    Expr
+}
+
+func (v VariableDecl) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v VariableDecl) EndPos() int {
+	return v.Value.EndPos()
+}
+
+func (v VariableDecl) declNode() {}

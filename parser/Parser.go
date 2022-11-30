@@ -29,6 +29,13 @@ func (p *Parser) Step() {
 	}
 }
 
+func (p *Parser) Peek() lexer.Token {
+	if p.TokenIndex+1 >= len(p.Tokens) {
+		return lexer.Token{}
+	}
+	return p.Tokens[p.TokenIndex+1]
+}
+
 //Recursive descent parser
 
 func (p *Parser) Parse() *File {
@@ -51,7 +58,7 @@ func (p *Parser) ParseFile() *File {
 			if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
 
 			} else {
-				tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseKeyword())
+				tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseText())
 			}
 		}
 		p.Step()
@@ -61,13 +68,25 @@ func (p *Parser) ParseFile() *File {
 
 }
 
-func (p *Parser) ParseKeyword() Stmt {
-	if p.CurrentToken.TokenType == lexer.TEXT {
-		if p.CurrentToken.Value == "print" {
-			return p.ParsePrintStmt()
-		}
+func (p *Parser) ParseText() Node {
+	if _, ok := Keywords[p.CurrentToken.Value]; ok {
+		return p.ParseKeyword()
+	} else {
+		return p.ParseIdent()
 	}
-	log.Fatal("Expected keyword")
+}
+
+func (p *Parser) ParseKeyword() Node {
+	if p.CurrentToken.Value == "var" {
+		return p.ParseVariableDecl()
+	}
+	if p.CurrentToken.Value == "print" {
+		return p.ParsePrintStmt()
+	}
+	return nil
+}
+
+func (p *Parser) ParseIdent() Node {
 	return nil
 }
 
@@ -86,6 +105,36 @@ func (p *Parser) ParsePrintStmt() Stmt {
 	tempPrint.Rparen = p.CurrentToken
 	p.Step()
 	return tempPrint
+}
+
+func (p *Parser) ParseVariableDecl() Decl {
+	tempDecl := VariableDecl{VarToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.TEXT {
+		if _, ok := Keywords[p.CurrentToken.Value]; ok {
+			log.Fatal("Variable name cannot be a keyword")
+		}
+		log.Fatal("Expected variable name")
+	}
+	tempDecl.Name = p.CurrentToken.Value
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.TEXT {
+		log.Fatal("Expected variable type")
+	}
+	tempDecl.Type = p.CurrentToken.Value
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.ASSIGN {
+		if p.CurrentToken.TokenType != lexer.EOL || p.CurrentToken.TokenType != lexer.EOF {
+			log.Fatal("Expected variable assignment instead of " + p.CurrentToken.Value)
+		}
+		p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
+		return tempDecl
+	}
+	p.Step()
+	tempDecl.Value = p.ParseExpr()
+	p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
+	return tempDecl
+
 }
 
 func (p *Parser) ParseExpr() Expr {
