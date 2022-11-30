@@ -95,7 +95,7 @@ func (b Bool) LwEq(other Type) (Type, error) {
 func (b Bool) And(other Type) (Type, error) {
 	switch other.(type) {
 	case Bool:
-		if b == true && other.GetValue() == true {
+		if b == Bool(true) && other.GetValue() == Bool(true) {
 			return Bool(true), nil
 		} else {
 			return Bool(false), nil
