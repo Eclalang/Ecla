@@ -1,5 +1,10 @@
 var t int;
 while (!(t ==10000)){
     t++;
-    print(t+"\n");
+    if (t%2 == 0) {
+        print(t+" is even\n");
+    };
+    if (!(t%2 == 0)) {
+        print(t+" is odd\n");
+    };
 };
