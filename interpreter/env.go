@@ -15,6 +15,7 @@ type Env struct {
 	OS         string
 	ARCH       string
 	SyntaxTree *parser.File
+	Tokens     []lexer.Token
 	File       string
 	Code       string
 }
@@ -60,19 +61,20 @@ func (env *Env) Execute() {
 	}
 	// Lexing
 	// TODO: SUPPORT FOR MULTIPLE FILES
-	tokens := lexer.Lexer(env.Code)
+	env.Tokens = lexer.Lexer(env.Code)
 	//DEBUG
+	//now use -dl for debug lexer
 	//fmt.Println("TOKENS:", tokens)
 	// Parsing
 	// TODO: SUPPORT FOR MULTIPLE FILES
-	pars := parser.Parser{Tokens: tokens}
+	pars := parser.Parser{Tokens: env.Tokens}
 	env.SyntaxTree = pars.Parse()
 	//DEBUG
+	// now use -dp for debug parser
 	//txt, _ := json.MarshalIndent(env.SyntaxTree, "", "  ")
 	//fmt.Println("SYNTAX TREE:", string(txt))
 	//TODO: execute code
 	Run(env)
-	//os.WriteFile("test.txt", []byte(fmt.Sprint(tokens)), 0644)
 }
 
 // readFile reads the file at the given path and returns its contents as a string.

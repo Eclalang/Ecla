@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/tot0p/Ecla/interpreter"
@@ -9,9 +10,11 @@ import (
 )
 
 var (
-	Debug    = false
-	Time     = false
-	TimeExec = time.Now()
+	Debug       = false
+	Time        = false
+	TimeExec    = time.Now()
+	lexerDebug  = false
+	parserDebug = false
 )
 
 func init() {
@@ -19,6 +22,10 @@ func init() {
 	flag.BoolVar(&Debug, "d", Debug, "enable debug mode (shorthand)")
 	flag.BoolVar(&Time, "time", Time, "enable time mode")
 	flag.BoolVar(&Time, "t", Time, "enable time mode (shorthand)")
+	flag.BoolVar(&lexerDebug, "debugLex", lexerDebug, "enable lexer debug mod")
+	flag.BoolVar(&lexerDebug, "dl", lexerDebug, "enable lexer debug mod")
+	flag.BoolVar(&parserDebug, "debugParser", parserDebug, "enable parser debug")
+	flag.BoolVar(&parserDebug, "dp", parserDebug, "enable parser debug")
 	flag.Parse()
 }
 
@@ -45,5 +52,12 @@ func main() {
 	}
 	if Time {
 		fmt.Println("TIME EXEC:", time.Since(TimeExec))
+	}
+	if lexerDebug {
+		fmt.Println("Lexer Token:", Env.Tokens)
+	}
+	if parserDebug {
+		txt, _ := json.MarshalIndent(Env.SyntaxTree, "", "  ")
+		fmt.Println("SYNTAX TREE:", string(txt))
 	}
 }
