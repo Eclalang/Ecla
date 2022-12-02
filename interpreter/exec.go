@@ -172,6 +172,30 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) eclaType.Type {
 			panic(err)
 		}
 		return t
+	case lexer.LSS:
+		t, err := left.Lw(right)
+		if err != nil {
+			panic(err)
+		}
+		return t
+	case lexer.LEQ:
+		t, err := left.LwEq(right)
+		if err != nil {
+			panic(err)
+		}
+		return t
+	case lexer.GTR:
+		t, err := left.Gt(right)
+		if err != nil {
+			panic(err)
+		}
+		return t
+	case lexer.GEQ:
+		t, err := left.GtEq(right)
+		if err != nil {
+			panic(err)
+		}
+		return t
 	}
 	return nil
 }

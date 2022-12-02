@@ -1,0 +1,40 @@
+
+print("BoolOpp\n");
+if (9 < 10) {
+    print("work 9 < 10\n");
+};
+if (!(10 < 10)){
+    print("work 10 < 10\n");
+};
+if (!(11 < 10)){
+    print("work 11 < 10\n");
+};
+
+if (9 <= 10) {
+    print("work 9 <= 10\n");
+};
+if (10 <= 10){
+    print("work 10 <= 10\n");
+};
+if (!(11 < 10)){
+    print("work 11 <= 10\n");
+};
+if (9 > 8) {
+    print("work 9 > 8\n");
+};
+if (!(10 > 10)){
+    print("work 10 > 10\n");
+};
+if (!(10 >11)){
+    print("work 10 > 11\n");
+};
+
+if (9 >= 8) {
+    print("work 9 >= 8\n");
+};
+if (10 >= 10){
+    print("work 10 >= 10\n");
+};
+if (!(10 >=11)){
+    print("work 10 >= 11\n");
+};
