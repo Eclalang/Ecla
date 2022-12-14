@@ -146,5 +146,9 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 	if Type != value.GetType() {
 		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
 	}
+	switch value.(type) {
+	case *Var:
+		value = value.(*Var).Value
+	}
 	return &Var{Name: name, Value: value}, nil
 }
