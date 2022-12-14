@@ -207,3 +207,8 @@ if (h == 10) {
     print("Condition is false\n");
 };
 print("\n");
+print("Case 29 :\n");
+print("Multiple Operation\n");
+print("2 + 3 * 8 / 6 = ");
+print(2 + 3 * 8 / 6);
+print("\n");
