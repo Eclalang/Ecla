@@ -264,5 +264,13 @@ func RunIfStmt(tree parser.IfStmt, env *Env) {
 		for _, stmt := range tree.Body {
 			RunTree(stmt, env)
 		}
+	} else if tree.ElseStmt != nil {
+		if tree.ElseStmt.IfStmt != nil {
+			RunIfStmt(*tree.ElseStmt.IfStmt, env)
+		} else {
+			for _, stmt := range tree.ElseStmt.Body {
+				RunTree(stmt, env)
+			}
+		}
 	}
 }

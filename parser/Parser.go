@@ -175,7 +175,46 @@ func (p *Parser) ParseIfStmt() Stmt {
 	}
 	tempIf.RightBrace = p.CurrentToken
 	p.Step()
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if p.CurrentToken.Value == "else" {
+			tempIf.ElseStmt = p.ParseElseStmt()
+		} else {
+			tempIf.ElseStmt = nil
+		}
+	} else {
+		tempIf.ElseStmt = nil
+	}
 	return tempIf
+}
+
+func (p *Parser) ParseElseStmt() *ElseStmt {
+	tempElse := new(ElseStmt)
+	tempElse.ElseToken = p.CurrentToken
+	p.Step()
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if p.CurrentToken.Value == "if" {
+			parsedIf := p.ParseIfStmt()
+			point := parsedIf.(IfStmt)
+			tempElse.IfStmt = &point
+			return tempElse
+		} else {
+			tempElse.IfStmt = nil
+		}
+	} else {
+		tempElse.IfStmt = nil
+	}
+	if p.CurrentToken.TokenType != lexer.LBRACE {
+		log.Fatal("Expected Else LBRACE")
+	}
+	tempElse.LeftBrace = p.CurrentToken
+	p.Step()
+	tempElse.Body = p.ParseBody()
+	if p.CurrentToken.TokenType != lexer.RBRACE {
+		log.Fatal("Expected Else RBRACE")
+	}
+	tempElse.RightBrace = p.CurrentToken
+	p.Step()
+	return tempElse
 }
 
 func (p *Parser) ParseWhileStmt() Stmt {
