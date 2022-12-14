@@ -263,3 +263,28 @@ func (w WhileStmt) EndPos() int {
 }
 
 func (w WhileStmt) stmtNode() {}
+
+type ForStmt struct {
+	ForToken             lexer.Token
+	LeftParen            lexer.Token
+	RightParen           lexer.Token
+	InitDecl             Decl
+	CondExpr             Expr
+	PostAssignStmt       Stmt
+	KeyToken, ValueToken lexer.Token
+	RangeToken           lexer.Token
+	RangeExpr            Expr
+	LeftBrace            lexer.Token
+	RightBrace           lexer.Token
+	Body                 []Node
+}
+
+func (f ForStmt) StartPos() int {
+	return f.ForToken.Position
+}
+
+func (f ForStmt) EndPos() int {
+	return f.RightBrace.Position
+}
+
+func (w ForStmt) stmtNode() {}

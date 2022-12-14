@@ -29,11 +29,11 @@ func (p *Parser) Step() {
 	}
 }
 
-func (p *Parser) Peek() lexer.Token {
-	if p.TokenIndex+1 >= len(p.Tokens) {
+func (p *Parser) Peek(lookAhead int) lexer.Token {
+	if p.TokenIndex+lookAhead >= len(p.Tokens) {
 		return lexer.Token{}
 	}
-	return p.Tokens[p.TokenIndex+1]
+	return p.Tokens[p.TokenIndex+lookAhead]
 }
 
 //Recursive descent parser
@@ -108,6 +108,9 @@ func (p *Parser) ParseKeyword() Node {
 	}
 	if p.CurrentToken.Value == "while" {
 		return p.ParseWhileStmt()
+	}
+	if p.CurrentToken.Value == "for" {
+		return p.ParseForStmt()
 	}
 	log.Fatal("Unexpected Keyword ", p.CurrentToken.Value)
 	return nil
@@ -246,6 +249,68 @@ func (p *Parser) ParseWhileStmt() Stmt {
 	return tempWhile
 }
 
+func (p *Parser) ParseForStmt() Stmt {
+	tempFor := ForStmt{}
+	tempFor.ForToken = p.CurrentToken
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		log.Fatal("Expected For LPAREN")
+	}
+	tempFor.LeftParen = p.CurrentToken
+	p.Step()
+	lookAhead := p.Peek(1)
+	if lookAhead.TokenType != lexer.COMMA {
+		tempFor.RangeToken = lexer.Token{}
+		tempFor.InitDecl = p.ParseVariableDecl()
+		if p.CurrentToken.TokenType != lexer.COMMA {
+			log.Fatal("Expected Condition Expression instead of ", p.CurrentToken.Value)
+		}
+		p.Step()
+		tempFor.CondExpr = p.ParseExpr()
+
+		if p.CurrentToken.TokenType != lexer.COMMA {
+			log.Fatal("Expected Post Expression")
+		}
+		p.Step()
+		tempFor.PostAssignStmt = p.ParseVariableAssign()
+	} else {
+		tempFor.KeyToken = p.CurrentToken
+		p.Step()
+		if p.CurrentToken.TokenType != lexer.COMMA {
+			log.Fatal("Expected For COMMA")
+		}
+		p.Step()
+		tempFor.ValueToken = p.CurrentToken
+		p.Step()
+		if p.CurrentToken.TokenType != lexer.TEXT {
+			log.Fatal("Unexpected Token : ", p.CurrentToken.Value)
+		}
+		if p.CurrentToken.Value != "range" {
+			log.Fatal("Expected range")
+		}
+		tempFor.RangeToken = p.CurrentToken
+		p.Step()
+		tempFor.RangeExpr = p.ParseExpr()
+	}
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		log.Fatal("Expected For RPAREN instead of ", p.CurrentToken.Value)
+	}
+	tempFor.RightParen = p.CurrentToken
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LBRACE {
+		log.Fatal("Expected For LBRACE instead of ", p.CurrentToken.Value)
+	}
+	tempFor.LeftBrace = p.CurrentToken
+	p.Step()
+	tempFor.Body = p.ParseBody()
+	if p.CurrentToken.TokenType != lexer.RBRACE {
+		log.Fatal("Expected For RBRACE instead of ", p.CurrentToken.Value)
+	}
+	tempFor.RightBrace = p.CurrentToken
+	p.Step()
+	return tempFor
+}
+
 func (p *Parser) ParseVariableDecl() Decl {
 	tempDecl := VariableDecl{VarToken: p.CurrentToken}
 	p.Step()
@@ -253,18 +318,20 @@ func (p *Parser) ParseVariableDecl() Decl {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			log.Fatal("Variable name cannot be a keyword")
 		}
-		log.Fatal("Expected variable name")
+		log.Fatal("Expected variable name instead of ", p.CurrentToken.Value)
 	}
 	tempDecl.Name = p.CurrentToken.Value
 	typeName, isType := p.ParseType()
 	if !isType {
-		log.Fatal("Expected variable type")
+		log.Fatal("Expected variable type instead of ", p.CurrentToken.Value)
 	}
 	tempDecl.Type = typeName
 	if p.CurrentToken.TokenType != lexer.ASSIGN {
-		if p.CurrentToken.TokenType != lexer.EOL {
-			if p.CurrentToken.TokenType != lexer.EOF {
-				log.Fatal("Expected variable assignment instead of " + p.CurrentToken.Value)
+		if p.CurrentToken.TokenType != lexer.COMMA {
+			if p.CurrentToken.TokenType != lexer.EOL {
+				if p.CurrentToken.TokenType != lexer.EOF {
+					log.Fatal("Expected variable assignment instead of " + p.CurrentToken.Value)
+				}
 			}
 		}
 		tempDecl.Value = nil
@@ -287,7 +354,7 @@ func (p *Parser) ParseType() (string, bool) {
 				break
 			}
 			if p.CurrentToken.TokenType == lexer.LBRACKET {
-				Peek := p.Peek()
+				Peek := p.Peek(1)
 				if Peek.TokenType != lexer.RBRACKET {
 					return "", false
 				}
