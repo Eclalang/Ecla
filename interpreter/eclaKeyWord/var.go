@@ -38,6 +38,10 @@ func (v *Var) SetValue(value eclaType.Type) error {
 
 // Add adds two Type objects
 func (v *Var) Add(other eclaType.Type) (eclaType.Type, error) {
+	switch other.(type) {
+	case *Var:
+		return v.Value.Add(other.(*Var).Value)
+	}
 	return v.Value.Add(other)
 }
 
