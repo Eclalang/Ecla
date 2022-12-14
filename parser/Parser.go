@@ -194,7 +194,8 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 	if p.CurrentToken.TokenType == lexer.TEXT {
 		if p.CurrentToken.Value == "if" {
 			parsedIf := p.ParseIfStmt()
-			tempElse.IfStmt = parsedIf.(*IfStmt)
+			point := parsedIf.(IfStmt)
+			tempElse.IfStmt = &point
 			return tempElse
 		} else {
 			tempElse.IfStmt = nil
