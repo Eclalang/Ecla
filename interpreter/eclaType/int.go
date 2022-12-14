@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"strconv"
 )
 
@@ -31,6 +32,10 @@ func (i Int) GetType() string {
 // Add adds two Type objects compatible with Int
 func (i Int) Add(other Type) (Type, error) {
 	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
+	switch other.(type) {
 	case Int:
 		return i + other.(Int), nil
 	case Float:
@@ -45,6 +50,10 @@ func (i Int) Add(other Type) (Type, error) {
 // Sub subtracts two Type objects compatible with Int
 func (i Int) Sub(other Type) (Type, error) {
 	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
+	switch other.(type) {
 	case Int:
 		return i - other.(Int), nil
 	case Float:
@@ -57,6 +66,10 @@ func (i Int) Sub(other Type) (Type, error) {
 // Mod returns the remainder of the division of two Type objects compatible with Int
 func (i Int) Mod(other Type) (Type, error) {
 	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
+	switch other.(type) {
 	case Int:
 		return i % other.(Int), nil
 	default:
@@ -66,6 +79,10 @@ func (i Int) Mod(other Type) (Type, error) {
 
 // Mul multiplies two Type objects compatible with Int
 func (i Int) Mul(other Type) (Type, error) {
+	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
 	switch other.(type) {
 	case Int:
 		return i * other.(Int), nil
@@ -85,6 +102,10 @@ func (i Int) Mul(other Type) (Type, error) {
 // Div divides two Type objects compatible with Int
 func (i Int) Div(other Type) (Type, error) {
 	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
+	switch other.(type) {
 	case Int:
 		return i / other.(Int), nil
 	case Float:
@@ -96,6 +117,10 @@ func (i Int) Div(other Type) (Type, error) {
 
 // DivEc divides two Type objects compatible with Int
 func (i Int) DivEc(other Type) (Type, error) {
+	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
 	switch other.(type) {
 	case Int:
 		return (i - i%other.(Int)) / other.(Int), nil
@@ -109,6 +134,10 @@ func (i Int) DivEc(other Type) (Type, error) {
 // Eq returns true if two Type objects are equal
 func (i Int) Eq(other Type) (Type, error) {
 	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
+	switch other.(type) {
 	case Int:
 		return Bool(i == other.(Int)), nil
 	case Float:
@@ -120,6 +149,10 @@ func (i Int) Eq(other Type) (Type, error) {
 
 // NotEq returns true if two Type objects are not equal
 func (i Int) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
 	switch other.(type) {
 	case Int:
 		return Bool(i != other.(Int)), nil
@@ -133,6 +166,10 @@ func (i Int) NotEq(other Type) (Type, error) {
 // Gt returns true if the first Type object is greater than the second
 func (i Int) Gt(other Type) (Type, error) {
 	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
+	switch other.(type) {
 	case Int:
 		return Bool(i > other.(Int)), nil
 	case Float:
@@ -144,6 +181,10 @@ func (i Int) Gt(other Type) (Type, error) {
 
 // GtEq returns true if the first Type object is greater than or equal to the second
 func (i Int) GtEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
 	switch other.(type) {
 	case Int:
 		return Bool(i >= other.(Int)), nil
@@ -157,6 +198,10 @@ func (i Int) GtEq(other Type) (Type, error) {
 // Lw returns true if the first Type object is lower than the second
 func (i Int) Lw(other Type) (Type, error) {
 	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
+	switch other.(type) {
 	case Int:
 		return Bool(i < other.(Int)), nil
 	case Float:
@@ -168,6 +213,10 @@ func (i Int) Lw(other Type) (Type, error) {
 
 // LwEq returns true if the first Type object is lower than or equal to the second
 func (i Int) LwEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
 	switch other.(type) {
 	case Int:
 		return Bool(i <= other.(Int)), nil

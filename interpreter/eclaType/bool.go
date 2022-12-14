@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"strconv"
 )
 
@@ -64,6 +65,10 @@ func (b Bool) DivEc(other Type) (Type, error) {
 // Eq returns true if two Type objects are equal
 func (b Bool) Eq(other Type) (Type, error) {
 	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
+	switch other.(type) {
 	case Int:
 		if (b == Bool(true) && other.GetValue() == Int(1)) || (b == Bool(false) && other.GetValue() == Int(0)) {
 			return Bool(true), nil
@@ -85,6 +90,10 @@ func (b Bool) Eq(other Type) (Type, error) {
 
 // NotEq returns true if two Type objects are not equal
 func (b Bool) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
 	switch other.(type) {
 	case Int:
 		if (b == Bool(true) && other.GetValue() == Int(1)) || (b == Bool(false) && other.GetValue() == Int(0)) {
@@ -128,6 +137,10 @@ func (b Bool) LwEq(other Type) (Type, error) {
 // And returns true if both Types are true
 func (b Bool) And(other Type) (Type, error) {
 	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
+	switch other.(type) {
 	case Int:
 		if b == Bool(true) && other.GetValue() == Int(1) {
 			return Bool(true), nil
@@ -153,6 +166,10 @@ func (b Bool) And(other Type) (Type, error) {
 
 // Or returns true if either Type is true
 func (b Bool) Or(other Type) (Type, error) {
+	switch other.(type) {
+	case *eclaKeyWord.Var:
+		other = other.(*eclaKeyWord.Var).Value
+	}
 	switch other.(type) {
 	case Int:
 		if b == Bool(true) || other.GetValue() == Int(1) {
