@@ -118,7 +118,7 @@ e = !e;
 print(e);
 print("\n");
 print("\nCase 21 :\n");
-print("Operation DivEq\n");
+print("Operation DivEc\n");
 a = 4;
 print("a = ");
 print(a);
@@ -206,3 +206,4 @@ if (h == 10) {
 } else {
     print("Condition is false\n");
 };
+print("\n");
