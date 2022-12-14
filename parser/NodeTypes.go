@@ -84,7 +84,27 @@ func (p ParenExpr) precedence() int {
 	return HighestPrecedence
 }
 
-func (p ParenExpr) exprNode() {}
+func (u ParenExpr) exprNode() {}
+
+type ArrayLiteral struct {
+	LBRACKET lexer.Token
+	Values   []Expr
+	RBRACKET lexer.Token
+}
+
+func (p ArrayLiteral) StartPos() int {
+	return p.LBRACKET.Position
+}
+
+func (p ArrayLiteral) EndPos() int {
+	return p.RBRACKET.Position
+}
+
+func (p ArrayLiteral) precedence() int {
+	return HighestPrecedence
+}
+
+func (p ArrayLiteral) exprNode() {}
 
 type PrintStmt struct {
 	PrintToken lexer.Token

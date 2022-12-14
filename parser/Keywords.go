@@ -1,10 +1,11 @@
 package parser
 
 const (
-	Int    = "int"
-	String = "string"
-	Float  = "float"
-	Bool   = "bool"
+	Int        = "int"
+	String     = "string"
+	Float      = "float"
+	Bool       = "bool"
+	ArrayStart = "["
 )
 
 var (
@@ -17,11 +18,13 @@ var (
 		"for":      nil,
 		"while":    nil,
 		"if":       nil,
+		"else":     nil,
 	}
 	VarTypes = map[string]interface{}{
-		Int:    nil,
-		Float:  nil,
-		String: nil,
-		Bool:   nil,
+		Int:        nil,
+		Float:      nil,
+		String:     nil,
+		Bool:       nil,
+		ArrayStart: nil,
 	}
 )

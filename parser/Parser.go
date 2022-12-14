@@ -109,6 +109,7 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "while" {
 		return p.ParseWhileStmt()
 	}
+	log.Fatal("Unexpected Keyword ", p.CurrentToken.Value)
 	return nil
 }
 
@@ -255,13 +256,11 @@ func (p *Parser) ParseVariableDecl() Decl {
 		log.Fatal("Expected variable name")
 	}
 	tempDecl.Name = p.CurrentToken.Value
-	p.Step()
-	_, ok := VarTypes[p.CurrentToken.Value]
-	if !ok || p.CurrentToken.TokenType != lexer.TEXT {
+	typeName, isType := p.ParseType()
+	if !isType {
 		log.Fatal("Expected variable type")
 	}
-	tempDecl.Type = p.CurrentToken.Value
-	p.Step()
+	tempDecl.Type = typeName
 	if p.CurrentToken.TokenType != lexer.ASSIGN {
 		if p.CurrentToken.TokenType != lexer.EOL {
 			if p.CurrentToken.TokenType != lexer.EOF {
@@ -277,6 +276,35 @@ func (p *Parser) ParseVariableDecl() Decl {
 	p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
 	return tempDecl
 
+}
+
+func (p *Parser) ParseType() (string, bool) {
+	p.Step()
+	if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		tempType := ""
+		for {
+			if _, ok2 := VarTypes[p.CurrentToken.Value]; !ok2 {
+				break
+			}
+			if p.CurrentToken.TokenType == lexer.LBRACKET {
+				Peek := p.Peek()
+				if Peek.TokenType != lexer.RBRACKET {
+					return "", false
+				}
+				p.Step()
+				p.Step()
+				tempType += "[]"
+				continue
+			}
+			tempType += p.CurrentToken.Value
+			p.Step()
+		}
+		if tempType == "" {
+			return "", false
+		}
+		return tempType, true
+	}
+	return "", false
 }
 
 func (p *Parser) ParseVariableAssign() Stmt {
@@ -346,6 +374,9 @@ func (p *Parser) ParseOperand() Expr {
 	if p.CurrentToken.TokenType == lexer.LPAREN {
 		return p.ParseParenExpr()
 	}
+	if p.CurrentToken.TokenType == lexer.LBRACKET {
+		return p.ParseArrayLiteral()
+	}
 	return p.ParseLiteral()
 }
 
@@ -360,6 +391,25 @@ func (p *Parser) ParseParenExpr() Expr {
 	tempParentExpr.Rparen = p.CurrentToken
 	p.Step()
 	return tempParentExpr
+}
+
+func (p *Parser) ParseArrayLiteral() Expr {
+	tempArrayExpr := ArrayLiteral{}
+	tempArrayExpr.LBRACKET = p.CurrentToken
+	p.Step()
+	for {
+		tempArrayExpr.Values = append(tempArrayExpr.Values, p.ParseExpr())
+		if p.CurrentToken.TokenType != lexer.COMMA {
+			break
+		}
+		p.Step()
+	}
+	if p.CurrentToken.TokenType != lexer.RBRACKET {
+		log.Fatal("Expected ']'")
+	}
+	tempArrayExpr.RBRACKET = p.CurrentToken
+	p.Step()
+	return tempArrayExpr
 }
 
 // ParseLiteral parses a literal
