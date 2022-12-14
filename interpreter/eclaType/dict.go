@@ -39,7 +39,7 @@ func (d Dict) String() string {
 	for _, v := range d.Value {
 		s += string(v.GetString()) + ", "
 	}
-	return "[" + s + "]"
+	return "{" + s + "}"
 }
 
 // GetString returns the string of list
