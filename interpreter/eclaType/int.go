@@ -18,6 +18,11 @@ func (i Int) GetValue() any {
 	return i
 }
 
+// SetValue
+func (i Int) SetValue(value any) error {
+	return errors.New("cannot set value to Int")
+}
+
 // GetString returns the string representation of the int
 func (i Int) GetString() String {
 	return String(strconv.Itoa(int(i)))
@@ -239,4 +244,9 @@ func (i Int) Or(other Type) (Type, error) {
 // Not returns errors
 func (i Int) Not() (Type, error) {
 	return nil, errors.New("cannot opposite int")
+}
+
+// Append returns errors
+func (i Int) Append(other Type) (Type, error) {
+	return nil, errors.New("cannot append int")
 }

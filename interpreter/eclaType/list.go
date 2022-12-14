@@ -3,19 +3,37 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
-// NewList creates ?
-/* func NewList(value string) List {
-	result, _ := strconv.Atoi(value)
-	return Int(result)
-} */
+func NewList(t string) (Type, error) {
+	if !IsList(t) {
+		return nil, errors.New("not a list")
+	}
+	return List{[]Type{}, t[2:]}, nil
+}
 
-type List []Type
+type List struct {
+	Value []Type
+	Typ   string
+}
 
 // GetValue returns the value of the list
 func (l List) GetValue() any {
 	return l
+}
+
+// SetValue
+func (l List) SetValue(v any) error {
+	switch v.(type) {
+	case []Type:
+		l.Value = v.([]Type)
+		return nil
+	case List:
+		l = v.(List)
+		return nil
+	}
+	return errors.New("cannot set value of list")
 }
 
 // GetString returns the string of list
@@ -32,7 +50,10 @@ func (l List) GetType() string {
 func (l List) Add(other Type) (Type, error) {
 	switch other.(type) {
 	case List:
-		return append(l, other.(List)...), nil
+		if l.Typ == other.(List).Typ {
+			return List{append(l.Value, other.(List).Value...), l.Typ}, nil
+		}
+		return nil, errors.New("cannot add lists of different types")
 	case String:
 		return l.GetString() + other.GetString(), nil
 	}
@@ -53,9 +74,9 @@ func (l List) Mod(other Type) (Type, error) {
 func (l List) Mul(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
-		result := List{}
+		result := List{[]Type{}, l.Typ}
 		for i := 0; i < int(other.(Int)); i++ {
-			result = append(result, l...)
+			result.Value = append(result.Value, l.Value...)
 		}
 		return result, nil
 	}
@@ -76,11 +97,14 @@ func (l List) DivEc(other Type) (Type, error) {
 func (l List) Eq(other Type) (Type, error) {
 	switch other.(type) {
 	case List:
-		if len(l) != len(other.(List)) {
+		if l.Typ != other.(List).Typ {
+			return nil, errors.New("cannot compare lists of different types")
+		}
+		if len(l.Value) != len(other.(List).Value) {
 			return Bool(false), nil
 		}
-		for i, v := range l {
-			if v != other.(List)[i] {
+		for i, v := range l.Value {
+			if v != other.(List).Value[i] {
 				return Bool(false), nil
 			}
 		}
@@ -93,11 +117,14 @@ func (l List) Eq(other Type) (Type, error) {
 func (l List) NotEq(other Type) (Type, error) {
 	switch other.(type) {
 	case List:
-		if len(l) != len(other.(List)) {
+		if l.Typ != other.(List).Typ {
+			return nil, errors.New("cannot compare lists of different types")
+		}
+		if len(l.Value) != len(other.(List).Value) {
 			return Bool(true), nil
 		}
-		for i, v := range l {
-			if v != other.(List)[i] {
+		for i, v := range l.Value {
+			if v != other.(List).Value[i] {
 				return Bool(true), nil
 			}
 		}
@@ -110,7 +137,10 @@ func (l List) NotEq(other Type) (Type, error) {
 func (l List) Gt(other Type) (Type, error) {
 	switch other.(type) {
 	case List:
-		if len(l) > len(other.(List)) {
+		if l.Typ != other.(List).Typ {
+			return nil, errors.New("cannot compare lists of different types")
+		}
+		if len(l.Value) > len(other.(List).Value) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
@@ -120,9 +150,13 @@ func (l List) Gt(other Type) (Type, error) {
 
 // GtEq returns true if the first Type object is greater than or equal the second
 func (l List) GtEq(other Type) (Type, error) {
+
 	switch other.(type) {
 	case List:
-		if len(l) >= len(other.(List)) {
+		if l.Typ != other.(List).Typ {
+			return nil, errors.New("cannot compare lists of different types")
+		}
+		if len(l.Value) >= len(other.(List).Value) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
@@ -134,7 +168,10 @@ func (l List) GtEq(other Type) (Type, error) {
 func (l List) Lw(other Type) (Type, error) {
 	switch other.(type) {
 	case List:
-		if len(l) < len(other.(List)) {
+		if l.Typ != other.(List).Typ {
+			return nil, errors.New("cannot compare lists of different types")
+		}
+		if len(l.Value) < len(other.(List).Value) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
@@ -146,7 +183,10 @@ func (l List) Lw(other Type) (Type, error) {
 func (l List) LwEq(other Type) (Type, error) {
 	switch other.(type) {
 	case List:
-		if len(l) <= len(other.(List)) {
+		if l.Typ != other.(List).Typ {
+			return nil, errors.New("cannot compare lists of different types")
+		}
+		if len(l.Value) <= len(other.(List).Value) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
@@ -168,3 +208,25 @@ func (l List) Or(other Type) (Type, error) {
 func (l List) Not() (Type, error) {
 	return nil, errors.New("cannot opposite list")
 }
+
+func IsList(t string) bool {
+	return strings.Contains(t, "[")
+}
+
+// append to list
+func (l List) Append(other Type) (Type, error) {
+	if other.GetType() == "list" {
+		if l.Typ == other.(List).Typ {
+			l.Value = append(l.Value, other.(List).Value...)
+			return l, nil
+		}
+	} else {
+		if l.Typ == other.GetType() {
+			l.Value = append(l.Value, other)
+			return l, nil
+		}
+	}
+	return nil, errors.New("cannot append to list")
+}
+
+// utils Functions for lists trainmen

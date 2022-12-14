@@ -47,6 +47,11 @@ func (s String) GetValue() any {
 	return s
 }
 
+// SetValue
+func (s String) SetValue(value any) error {
+	return errors.New("cannot set value to String")
+}
+
 // GetString returns the string
 func (s String) GetString() String {
 	return s
@@ -197,4 +202,12 @@ func (s String) Or(other Type) (Type, error) {
 // Not returns errors
 func (s String) Not() (Type, error) {
 	return nil, errors.New("cannot opposite string")
+}
+
+func (s String) Append(other Type) (Type, error) {
+	switch other.(type) {
+	case String:
+		return s + other.GetString(), nil
+	}
+	return nil, errors.New("cannot append string")
 }

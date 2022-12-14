@@ -68,6 +68,8 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		RunWhileStmt(tree.(parser.WhileStmt), env)
 	case parser.IfStmt:
 		RunIfStmt(tree.(parser.IfStmt), env)
+	case parser.ArrayLiteral:
+		return RunArrayLiteral(tree.(parser.ArrayLiteral), env)
 	}
 	return nil
 }
@@ -101,12 +103,40 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 			}
 			env.SetVar(tree.Name, v)
 		}
-	} else {
-		v, err := eclaType.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
-		if err != nil {
-			panic(err)
+		if eclaType.IsList(tree.Type) {
+			l, err := eclaType.NewList(tree.Type)
+			if err != nil {
+				panic(err)
+			}
+			v, err := eclaType.NewVar(tree.Name, tree.Type, l)
+			if err != nil {
+				panic(err)
+			}
+			env.SetVar(tree.Name, v)
 		}
-		env.Vars[tree.Name] = v
+	} else {
+		if eclaType.IsList(tree.Type) {
+			l, err := eclaType.NewList(tree.Type)
+			if err != nil {
+				panic(err)
+			}
+			t := RunTree(tree.Value, env)
+			err = l.SetValue(t)
+			if err != nil {
+				panic(err)
+			}
+			v, err := eclaType.NewVar(tree.Name, tree.Type, l)
+			if err != nil {
+				panic(err)
+			}
+			env.SetVar(tree.Name, v)
+		} else {
+			v, err := eclaType.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
+			if err != nil {
+				panic(err)
+			}
+			env.SetVar(tree.Name, v)
+		}
 	}
 	return nil
 }
@@ -251,7 +281,7 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 	if !ok {
 		panic(errors.New("variable not found"))
 	}
-	v.SetValue(RunTree(tree.Value, env))
+	v.SetVar(RunTree(tree.Value, env))
 }
 
 // RunWhileStmt
@@ -279,4 +309,21 @@ func RunIfStmt(tree parser.IfStmt, env *Env) {
 			}
 		}
 	}
+}
+
+func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) eclaType.Type {
+	var values []eclaType.Type
+	for _, v := range tree.Values {
+		values = append(values, RunTree(v, env))
+	}
+	typ := "[]" + values[0].GetType()
+	l, err := eclaType.NewList(typ)
+	if err != nil {
+		panic(err)
+	}
+	err = l.SetValue(values)
+	if err != nil {
+		panic(err)
+	}
+	return l
 }

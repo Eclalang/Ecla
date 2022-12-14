@@ -18,6 +18,11 @@ func (b Bool) GetValue() any {
 	return b
 }
 
+// SetValue
+func (b Bool) SetValue(value any) error {
+	return errors.New("cannot set value to Bool")
+}
+
 // GetString returns the string representation of the bool
 func (b Bool) GetString() String {
 	if b {
@@ -196,4 +201,9 @@ func (b Bool) Or(other Type) (Type, error) {
 // Not returns the opposite of the bool
 func (b Bool) Not() (Type, error) {
 	return !b, nil
+}
+
+// Append returns errors
+func (b Bool) Append(other Type) (Type, error) {
+	return nil, errors.New("cannot append bool")
 }

@@ -22,6 +22,11 @@ func (f Float) GetValue() any {
 	return f
 }
 
+// SetValue
+func (f Float) SetValue(value any) error {
+	return errors.New("cannot set value to Float")
+}
+
 // GetString returns the string representation of the float
 func (f Float) GetString() String {
 	return String(fmt.Sprint(f))
@@ -221,4 +226,9 @@ func (f Float) Or(other Type) (Type, error) {
 // Not returns errors
 func (f Float) Not() (Type, error) {
 	return nil, errors.New("cannot opposite float")
+}
+
+// Append returns errors
+func (f Float) Append(other Type) (Type, error) {
+	return nil, errors.New("cannot append float")
 }

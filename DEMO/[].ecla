@@ -1,1 +1,2 @@
 var test [][]int = [[10],[15]];
+print(test);

@@ -2,6 +2,7 @@ package eclaType
 
 type Type interface {
 	GetValue() any
+	SetValue(value any) error
 	GetString() String
 	GetType() string
 	//Add : +
@@ -34,4 +35,6 @@ type Type interface {
 	Or(other Type) (Type, error)
 	//Not : !
 	Not() (Type, error)
+	// append : temporary
+	Append(other Type) (Type, error)
 }

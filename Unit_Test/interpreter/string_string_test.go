@@ -108,3 +108,16 @@ func TestLwEqStrings(t *testing.T) {
 		t.Error("Expected true, got ", result)
 	}
 }
+
+func TestAppendStrings(t *testing.T) {
+	t1 := eclaType.String("hello")
+	t2 := eclaType.String(" world")
+
+	result, err := t1.Append(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != eclaType.String("hello world") {
+		t.Error("Expected hello world, got ", result)
+	}
+}
