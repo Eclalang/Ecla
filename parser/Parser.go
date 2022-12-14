@@ -192,6 +192,7 @@ func (p *Parser) ParseIfStmt() Stmt {
 
 func (p *Parser) ParseElseStmt() *ElseStmt {
 	tempElse := new(ElseStmt)
+	p.Step()
 	return tempElse
 }
 

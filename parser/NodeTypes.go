@@ -211,7 +211,7 @@ type ElseStmt struct {
 	LeftBrace  lexer.Token
 	RightBrace lexer.Token
 	Body       []Node
-	IfStmt     IfStmt
+	IfStmt     *IfStmt
 }
 
 func (e ElseStmt) StartPos() int {
