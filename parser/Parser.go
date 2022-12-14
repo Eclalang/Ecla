@@ -106,6 +106,9 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "if" {
 		return p.ParseIfStmt()
 	}
+	if p.CurrentToken.Value == "else" {
+		return p.ParseElseStmt()
+	}
 	if p.CurrentToken.Value == "while" {
 		return p.ParseWhileStmt()
 	}
@@ -175,7 +178,21 @@ func (p *Parser) ParseIfStmt() Stmt {
 	}
 	tempIf.RightBrace = p.CurrentToken
 	p.Step()
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if p.CurrentToken.Value == "else" {
+			tempIf.ElseStmt = p.ParseElseStmt()
+		} else {
+			tempIf.ElseStmt = nil
+		}
+	} else {
+		tempIf.ElseStmt = nil
+	}
 	return tempIf
+}
+
+func (p *Parser) ParseElseStmt() *ElseStmt {
+	tempElse := new(ElseStmt)
+	return tempElse
 }
 
 func (p *Parser) ParseWhileStmt() Stmt {

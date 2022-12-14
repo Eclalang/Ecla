@@ -193,6 +193,7 @@ type IfStmt struct {
 	LeftBrace  lexer.Token
 	RightBrace lexer.Token
 	Body       []Node
+	ElseStmt   *ElseStmt
 }
 
 func (i IfStmt) StartPos() int {
@@ -204,6 +205,24 @@ func (i IfStmt) EndPos() int {
 }
 
 func (i IfStmt) stmtNode() {}
+
+type ElseStmt struct {
+	ElseToken  lexer.Token
+	LeftBrace  lexer.Token
+	RightBrace lexer.Token
+	Body       []Node
+	IfStmt     IfStmt
+}
+
+func (e ElseStmt) StartPos() int {
+	return e.ElseToken.Position
+}
+
+func (e ElseStmt) EndPos() int {
+	return e.RightBrace.Position
+}
+
+func (e ElseStmt) stmtNode() {}
 
 type WhileStmt struct {
 	WhileToken lexer.Token
