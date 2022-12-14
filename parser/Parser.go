@@ -374,9 +374,6 @@ func (p *Parser) ParseOperand() Expr {
 	if p.CurrentToken.TokenType == lexer.LPAREN {
 		return p.ParseParenExpr()
 	}
-	if p.CurrentToken.TokenType == lexer.LBRACKET {
-		return p.ParseArrayLiteral()
-	}
 	return p.ParseLiteral()
 }
 
@@ -441,6 +438,9 @@ func (p *Parser) ParseLiteral() Expr {
 		tempLiteral := Literal{Token: p.CurrentToken, Type: p.CurrentToken.TokenType, Value: p.CurrentToken.Value}
 		p.Step()
 		return tempLiteral
+	}
+	if p.CurrentToken.TokenType == lexer.LBRACKET {
+		return p.ParseArrayLiteral()
 	}
 	log.Fatal("Expected literal instead of " + p.CurrentToken.Value)
 	return nil
