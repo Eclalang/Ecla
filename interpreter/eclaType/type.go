@@ -3,6 +3,7 @@ package eclaType
 type Type interface {
 	GetValue() any
 	SetValue(value any) error
+	String() string
 	GetString() String
 	GetType() string
 	//Add : +

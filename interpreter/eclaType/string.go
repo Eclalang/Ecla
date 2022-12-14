@@ -52,6 +52,10 @@ func (s String) SetValue(value any) error {
 	return errors.New("cannot set value to String")
 }
 
+func (s String) String() string {
+	return string(s)
+}
+
 // GetString returns the string
 func (s String) GetString() String {
 	return s

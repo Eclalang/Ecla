@@ -120,8 +120,10 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 			if err != nil {
 				panic(err)
 			}
+			// err into this
 			t := RunTree(tree.Value, env)
 			err = l.SetValue(t)
+			// err into this end
 			if err != nil {
 				panic(err)
 			}

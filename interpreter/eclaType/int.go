@@ -23,6 +23,10 @@ func (i Int) SetValue(value any) error {
 	return errors.New("cannot set value to Int")
 }
 
+func (i Int) String() string {
+	return strconv.Itoa(int(i))
+}
+
 // GetString returns the string representation of the int
 func (i Int) GetString() String {
 	return String(strconv.Itoa(int(i)))

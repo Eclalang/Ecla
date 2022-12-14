@@ -27,6 +27,10 @@ func (f Float) SetValue(value any) error {
 	return errors.New("cannot set value to Float")
 }
 
+func (f Float) String() string {
+	return fmt.Sprintf("%f", f)
+}
+
 // GetString returns the string representation of the float
 func (f Float) GetString() String {
 	return String(fmt.Sprint(f))

@@ -23,6 +23,10 @@ func (b Bool) SetValue(value any) error {
 	return errors.New("cannot set value to Bool")
 }
 
+func (b Bool) String() string {
+	return strconv.FormatBool(bool(b))
+}
+
 // GetString returns the string representation of the bool
 func (b Bool) GetString() String {
 	if b {
