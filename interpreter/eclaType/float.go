@@ -3,7 +3,6 @@ package eclaType
 import (
 	"errors"
 	"fmt"
-	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"strconv"
 )
 
@@ -36,8 +35,8 @@ func (f Float) GetType() string {
 // Add adds two Type objects compatible with Float
 func (f Float) Add(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -54,8 +53,8 @@ func (f Float) Add(other Type) (Type, error) {
 // Sub subtracts two Type objects compatible with Float
 func (f Float) Sub(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -70,8 +69,8 @@ func (f Float) Sub(other Type) (Type, error) {
 // Mod returns error
 func (f Float) Mod(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	return nil, errors.New("cannot mod float")
 }
@@ -79,8 +78,8 @@ func (f Float) Mod(other Type) (Type, error) {
 // Mul multiplies two Type objects compatible with Float
 func (f Float) Mul(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -95,8 +94,8 @@ func (f Float) Mul(other Type) (Type, error) {
 // Div divides two Type objects compatible with Float
 func (f Float) Div(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -116,8 +115,8 @@ func (f Float) DivEc(other Type) (Type, error) {
 // Eq returns true if two Type objects are equal
 func (f Float) Eq(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -132,8 +131,8 @@ func (f Float) Eq(other Type) (Type, error) {
 // NotEq returns true if two Type objects are not equal
 func (f Float) NotEq(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -148,8 +147,8 @@ func (f Float) NotEq(other Type) (Type, error) {
 // Gt returns true if the float is greater than the other
 func (f Float) Gt(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -164,8 +163,8 @@ func (f Float) Gt(other Type) (Type, error) {
 // GtEq returns true if the float is greater than or equal to the other
 func (f Float) GtEq(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -180,8 +179,8 @@ func (f Float) GtEq(other Type) (Type, error) {
 // Lw returns true if the float is lower than the other
 func (f Float) Lw(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -196,8 +195,8 @@ func (f Float) Lw(other Type) (Type, error) {
 // LwEq returns true if the float is lower than or equal to the other
 func (f Float) LwEq(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:

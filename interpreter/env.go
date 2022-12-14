@@ -2,7 +2,7 @@ package interpreter
 
 import (
 	"fmt"
-	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
+	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
 	"os"
@@ -11,7 +11,7 @@ import (
 
 // Env is the environment in which the code is executed.
 type Env struct {
-	Vars       map[string]*eclaKeyWord.Var
+	Vars       map[string]*eclaType.Var
 	OS         string
 	ARCH       string
 	SyntaxTree *parser.File
@@ -25,7 +25,7 @@ func NewEnv() *Env {
 	return &Env{
 		OS:   runtime.GOOS,
 		ARCH: runtime.GOARCH,
-		Vars: make(map[string]*eclaKeyWord.Var),
+		Vars: make(map[string]*eclaType.Var),
 	}
 }
 
@@ -44,12 +44,12 @@ func (env *Env) SetFile(file string) {
 }
 
 // SetVar sets the value of the variable with the given name.
-func (env *Env) SetVar(name string, value *eclaKeyWord.Var) {
+func (env *Env) SetVar(name string, value *eclaType.Var) {
 	env.Vars[name] = value
 }
 
 // GetVar returns the value of the variable with the given name.
-func (env *Env) GetVar(name string) (*eclaKeyWord.Var, bool) {
+func (env *Env) GetVar(name string) (*eclaType.Var, bool) {
 	v, ok := env.Vars[name]
 	return v, ok
 }

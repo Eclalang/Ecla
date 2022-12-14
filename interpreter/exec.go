@@ -77,32 +77,32 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 	if tree.Value == nil {
 		switch tree.Type {
 		case parser.Int:
-			v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewInt("0"))
+			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewInt("0"))
 			if err != nil {
 				panic(err)
 			}
 			env.SetVar(tree.Name, v)
 		case parser.String:
-			v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewString(""))
+			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewString(""))
 			if err != nil {
 				panic(err)
 			}
 			env.SetVar(tree.Name, v)
 		case parser.Bool:
-			v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewBool("false"))
+			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewBool("false"))
 			if err != nil {
 				panic(err)
 			}
 			env.SetVar(tree.Name, v)
 		case parser.Float:
-			v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, eclaType.NewFloat("0.0"))
+			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewFloat("0.0"))
 			if err != nil {
 				panic(err)
 			}
 			env.SetVar(tree.Name, v)
 		}
 	} else {
-		v, err := eclaKeyWord.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
+		v, err := eclaType.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
 		if err != nil {
 			panic(err)
 		}

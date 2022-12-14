@@ -2,7 +2,6 @@ package eclaType
 
 import (
 	"errors"
-	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"strings"
 )
 
@@ -76,8 +75,8 @@ func (s String) Mod(other Type) (Type, error) {
 // Mul if other is Int , return n * String
 func (s String) Mul(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case Int:
@@ -104,8 +103,8 @@ func (s String) DivEc(other Type) (Type, error) {
 // Eq returns true if two Type objects are equal
 func (s String) Eq(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case String:
@@ -118,8 +117,8 @@ func (s String) Eq(other Type) (Type, error) {
 // NotEq returns true if two Type objects are not equal
 func (s String) NotEq(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case String:
@@ -132,8 +131,8 @@ func (s String) NotEq(other Type) (Type, error) {
 // Gt returns true if s is greater than other
 func (s String) Gt(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case String:
@@ -146,8 +145,8 @@ func (s String) Gt(other Type) (Type, error) {
 // GtEq returns true if s is greater than or equal to other
 func (s String) GtEq(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case String:
@@ -160,8 +159,8 @@ func (s String) GtEq(other Type) (Type, error) {
 // Lw returns true if s is lower than other
 func (s String) Lw(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case String:
@@ -174,8 +173,8 @@ func (s String) Lw(other Type) (Type, error) {
 // LwEq returns true if s is lower than or equal to other
 func (s String) LwEq(other Type) (Type, error) {
 	switch other.(type) {
-	case *eclaKeyWord.Var:
-		other = other.(*eclaKeyWord.Var).Value
+	case *Var:
+		other = other.(*Var).Value
 	}
 	switch other.(type) {
 	case String:
