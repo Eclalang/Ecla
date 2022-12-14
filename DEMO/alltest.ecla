@@ -168,3 +168,41 @@ print("b * 3,5 = ");
 print(b * 3.5);
 print("\n");
 print("\nCase 26 :\n");
+print("If Else ElseIf Statement\n");
+var h int = 0;
+print("h = ");
+print(h);
+print("\n");
+print("While to add 1\n");
+while (h <= 10) {
+    print(h);
+    if (h < 4) {
+        print(" is lower than 4\n");
+    } else if (h < 8) {
+        print(" is lower than 8\n");
+    } else {
+        print(" is greater than 7\n");
+    };
+    h++;
+};
+print("\n");
+print("Case 27 :\n");
+print("NotEq Statement\n");
+print("h = ");
+print(h);
+print("\n");
+print("If h != 10\n");
+if (h != 10) {
+    print("Condition is true\n");
+} else {
+    print("Condition is false\n");
+};
+print("\n");
+print("Case 28 :\n");
+print("If Else Statement\n");
+print("If h == 10\n");
+if (h == 10) {
+    print("Condition is true\n");
+} else {
+    print("Condition is false\n");
+};
