@@ -64,7 +64,7 @@ func (env *Env) Execute() {
 	env.Tokens = lexer.Lexer(env.Code)
 	//DEBUG
 	//now use -dl for debug lexer
-	fmt.Println("TOKENS:", env.Tokens)
+	//fmt.Println("TOKENS:", env.Tokens)
 	// Parsing
 	// TODO: SUPPORT FOR MULTIPLE FILES
 	pars := parser.Parser{Tokens: env.Tokens}

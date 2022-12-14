@@ -28,6 +28,11 @@ func (v *Var) GetType() string {
 
 // SetValue sets the value of the variable
 func (v *Var) SetValue(value Type) error {
+	switch value.(type) {
+	case *Var:
+		v.Value = value.(*Var).Value
+		return nil
+	}
 	if v.Value.GetType() == value.GetType() {
 		v.Value = value
 		return nil
