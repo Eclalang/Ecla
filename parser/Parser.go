@@ -193,6 +193,7 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 	p.Step()
 	if p.CurrentToken.TokenType == lexer.TEXT {
 		if p.CurrentToken.Value == "if" {
+			p.Step()
 			parsedIf := p.ParseIfStmt()
 			tempElse.IfStmt = parsedIf.(*IfStmt)
 			return tempElse
@@ -213,7 +214,6 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 	}
 	tempElse.RightBrace = p.CurrentToken
 	p.Step()
-
 	return tempElse
 }
 
