@@ -243,3 +243,12 @@ func (l *List) Append(other Type) (Type, error) {
 }
 
 // utils Functions for lists trainmen
+
+func CheckTypeOfList(l *List, t string) bool {
+	for _, v := range l.Value {
+		if v.GetType() != t {
+			return false
+		}
+	}
+	return true
+}
