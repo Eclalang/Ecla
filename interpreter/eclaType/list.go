@@ -22,21 +22,32 @@ func (l *List) GetValue() any {
 
 // SetValue
 func (l *List) SetValue(v any) error {
+
 	switch v.(type) {
 	case []Type:
-		/*
-			if l.Typ == v.([]Type)[0].GetType() {
-				l.Value = v.([]Type)
-				return nil
+		var typ string
+		if v.([]Type)[0].GetType() == "list" {
+			switch v.([]Type)[0].(type) {
+			case *List:
+				t := v.([]Type)[0].(*List)
+				typ = "[]" + t.GetFullType()
+			default:
+				panic(errors.New("unknown type"))
 			}
-		*/
-		l.Value = v.([]Type)
-		return nil
+		} else {
+			typ = "[]" + v.([]Type)[0].GetType()
+		}
+		if l.Typ == typ {
+			l.Value = v.([]Type)
+			return nil
+		}
 	case *List:
 
 		t := v.(*List)
 		*l = *t
 		return nil
+	default:
+		fmt.Sprintf("cannot set value of list to %T", v)
 	}
 	return errors.New("cannot set value of list")
 }
@@ -61,6 +72,14 @@ func (l *List) GetString() String {
 // GetType returns the type List
 func (l *List) GetType() string {
 	return "list"
+}
+
+func (l *List) SetType(other string) {
+	l.Typ = other
+}
+
+func (l *List) GetFullType() string {
+	return l.Typ
 }
 
 // Add adds two Type objects  compatible with List

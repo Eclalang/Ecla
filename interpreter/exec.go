@@ -124,6 +124,20 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 			}
 			// err into this
 			t := RunTree(tree.Value, env)
+			// check type
+			switch t.(type) {
+			case *eclaType.List:
+				list := t.(*eclaType.List)
+				if list.GetFullType() == "empty" {
+					list.SetType(tree.Type)
+				} else {
+					if list.GetFullType() != tree.Type {
+						panic(errors.New("type mismatch"))
+					}
+				}
+			default:
+				panic(errors.New("cannot assign non-list to list"))
+			}
 			err = l.SetValue(t)
 			// err into this end
 			if err != nil {
@@ -338,13 +352,31 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) eclaType.Type {
 	for _, v := range tree.Values {
 		values = append(values, RunTree(v, env))
 	}
-	typ := ""
+	//Modif typ par tree.$type
+	/*
+		[14, 15] -> x1 [ donc [], 14 -> int donc []int
+	*/
+	var typ string
+	if len(values) == 0 {
+		typ = "empty"
+	} else {
+		if values[0].GetType() == "list" {
+			switch values[0].(type) {
+			case *eclaType.List:
+				t := values[0].(*eclaType.List)
+				typ = "[]" + t.GetFullType()
+			}
+		} else {
+			typ = "[]" + values[0].GetType()
+		}
+	}
 	l, err := eclaType.NewList(typ)
 	if err != nil {
 		panic(err)
 	}
 	err = l.SetValue(values)
 	if err != nil {
+		fmt.Println("non")
 		panic(err)
 	}
 	return l

@@ -1,2 +1,4 @@
-var test []int = [14,15];
+var test [][]int = [[14],[15, 1+1]];
 print(test);
+
+type(test);
