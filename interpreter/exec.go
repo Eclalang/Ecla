@@ -299,9 +299,15 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) {
 }
 
 func RunForStmt(For parser.ForStmt, env *Env) {
-	f := eclaKeyWord.NewFor(For)
-
-	f.Execute()
+	tokenEmpty := lexer.Token{}
+	if For.RangeToken != tokenEmpty {
+		f := eclaKeyWord.ForRange{Body: For.Body}
+		_ = f
+	} else {
+		f := eclaKeyWord.ForI{Body: For.Body, Condition: For.CondExpr, Post: For.PostAssignStmt}
+		_ = f
+		RunTree(For.InitDecl, env)
+	}
 }
 
 // RunIfStmt

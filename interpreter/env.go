@@ -30,7 +30,7 @@ func NewEnv() *Env {
 }
 
 func (env *Env) String() string {
-	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s}", env.OS, env.ARCH, env.Code)
+	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s , VAR : %s}", env.OS, env.ARCH, env.Code, env.Vars)
 }
 
 // SetCode sets the code to be executed.

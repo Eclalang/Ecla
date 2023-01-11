@@ -5,4 +5,3 @@ for (var i int = 0, i < 10, i++) {
 for (var i int, i < 10, i++) {
     print(i);
 };
-
