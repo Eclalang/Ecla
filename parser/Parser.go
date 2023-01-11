@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/tot0p/Ecla/lexer"
 	"log"
 )
@@ -28,6 +29,14 @@ func (p *Parser) Step() {
 		p.CurrentToken = p.Tokens[p.TokenIndex]
 	}
 }
+func (p *Parser) MultiStep(steps int) {
+	p.TokenIndex += steps
+	if p.TokenIndex >= len(p.Tokens) {
+		p.CurrentToken = lexer.Token{}
+	} else {
+		p.CurrentToken = p.Tokens[p.TokenIndex]
+	}
+}
 
 func (p *Parser) Peek(lookAhead int) lexer.Token {
 	if p.TokenIndex+lookAhead >= len(p.Tokens) {
@@ -41,7 +50,20 @@ func (p *Parser) Peek(lookAhead int) lexer.Token {
 func (p *Parser) Parse() *File {
 	p.TokenIndex = -1
 	p.Step()
-	return p.ParseFile()
+	file := p.ParseFile()
+	ok, UnresolvedDep := file.DepChecker()
+	if !ok {
+		Unresolved := ""
+		for i, dep := range UnresolvedDep {
+			if i < len(UnresolvedDep)-1 {
+				Unresolved += dep + ", "
+			} else {
+				Unresolved += dep
+			}
+		}
+		log.Fatal("Unresolved dependencies: " + fmt.Sprintf("%v", Unresolved))
+	}
+	return file
 }
 
 func (p *Parser) ParseFile() *File {
@@ -60,7 +82,6 @@ func (p *Parser) ParseFile() *File {
 func (p *Parser) ParseNode() Node {
 	if p.CurrentToken.TokenType != lexer.TEXT {
 		tempExpr := p.ParseExpr()
-
 		return tempExpr
 	} else {
 		if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
@@ -112,12 +133,21 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "for" {
 		return p.ParseForStmt()
 	}
+	if p.CurrentToken.Value == "import" {
+		return p.ParseImportStmt()
+	}
 	log.Fatal("Unexpected Keyword ", p.CurrentToken.Value)
 	return nil
 }
 
 func (p *Parser) ParseIdent() Node {
-	return p.ParseVariableAssign()
+	if p.Peek(1).TokenType == lexer.PERIOD {
+		return p.ParseMethodCallExpr()
+	} else if p.Peek(1).TokenType == lexer.LPAREN {
+		return p.ParseFunctionCallExpr()
+	} else {
+		return p.ParseVariableAssign()
+	}
 }
 
 func (p *Parser) ParsePrintStmt() Stmt {
@@ -345,6 +375,40 @@ func (p *Parser) ParseVariableDecl() Decl {
 
 }
 
+func (p *Parser) ParseMethodCallExpr() Expr {
+	tempMethodCall := MethodCallExpr{MethodCallToken: p.CurrentToken, ObjectName: p.CurrentToken.Value}
+	p.CurrentFile.Dependencies = append(p.CurrentFile.Dependencies, p.CurrentToken.Value)
+	p.MultiStep(2)
+	tempFunctionCall := p.ParseFunctionCallExpr()
+	tempMethodCall.FunctionCall = tempFunctionCall.(FunctionCallExpr)
+	return tempMethodCall
+}
+
+func (p *Parser) ParseFunctionCallExpr() Expr {
+	tempFunctionCall := FunctionCallExpr{FunctionCallToken: p.CurrentToken, Name: p.CurrentToken.Value}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		log.Fatal("Expected Function call LPAREN" + p.CurrentToken.Value)
+	}
+	tempFunctionCall.LeftParen = p.CurrentToken
+	exprArray := []Expr{}
+	for p.CurrentToken.TokenType != lexer.RPAREN {
+		p.Step()
+		tempExpr := p.ParseExpr()
+		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+			log.Fatal("Expected comma between function call arguments" + p.CurrentToken.Value)
+		}
+		exprArray = append(exprArray, tempExpr)
+	}
+	tempFunctionCall.Args = exprArray
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		log.Fatal("Expected Function call RPAREN")
+	}
+	tempFunctionCall.RightParen = p.CurrentToken
+	p.Step()
+	return tempFunctionCall
+}
+
 func (p *Parser) ParseType() (string, bool) {
 	p.Step()
 	if _, ok := VarTypes[p.CurrentToken.Value]; ok {
@@ -440,6 +504,15 @@ func (p *Parser) ParsePrimaryExpr(exp Expr) Expr {
 func (p *Parser) ParseOperand() Expr {
 	if p.CurrentToken.TokenType == lexer.LPAREN {
 		return p.ParseParenExpr()
+	} else if p.CurrentToken.TokenType == lexer.TEXT {
+		lookAhead := p.Peek(1)
+		if lookAhead.TokenType == lexer.PERIOD {
+			return p.ParseMethodCallExpr()
+		} else if lookAhead.TokenType == lexer.LPAREN {
+			return p.ParseFunctionCallExpr()
+		} else {
+			log.Fatal("Invalid Operand Provided")
+		}
 	}
 	return p.ParseLiteral()
 }
@@ -474,6 +547,19 @@ func (p *Parser) ParseArrayLiteral() Expr {
 	tempArrayExpr.RBRACKET = p.CurrentToken
 	p.Step()
 	return tempArrayExpr
+}
+
+func (p *Parser) ParseImportStmt() Stmt {
+	tempImportStmt := ImportStmt{}
+	tempImportStmt.ImportToken = p.CurrentToken
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.TEXT {
+		log.Fatal("Expected import path")
+	}
+	tempImportStmt.ModulePath = p.CurrentToken.Value
+	p.CurrentFile.Imports = append(p.CurrentFile.Imports, tempImportStmt.ModulePath)
+	p.Step()
+	return tempImportStmt
 }
 
 // ParseLiteral parses a literal

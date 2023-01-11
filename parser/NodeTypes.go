@@ -287,4 +287,61 @@ func (f ForStmt) EndPos() int {
 	return f.RightBrace.Position
 }
 
-func (w ForStmt) stmtNode() {}
+func (f ForStmt) stmtNode() {}
+
+type FunctionCallExpr struct {
+	FunctionCallToken lexer.Token
+	Name              string
+	LeftParen         lexer.Token
+	RightParen        lexer.Token
+	Args              []Expr
+}
+
+func (f FunctionCallExpr) StartPos() int {
+	return f.FunctionCallToken.Position
+}
+
+func (f FunctionCallExpr) EndPos() int {
+	return f.RightParen.Position
+}
+
+func (f FunctionCallExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (f FunctionCallExpr) exprNode() {}
+
+type MethodCallExpr struct {
+	MethodCallToken lexer.Token
+	ObjectName      string
+	FunctionCall    FunctionCallExpr
+}
+
+func (m MethodCallExpr) StartPos() int {
+	return m.MethodCallToken.Position
+}
+
+func (m MethodCallExpr) EndPos() int {
+	return m.FunctionCall.RightParen.Position
+}
+
+func (m MethodCallExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (m MethodCallExpr) exprNode() {}
+
+type ImportStmt struct {
+	ImportToken lexer.Token
+	ModulePath  string
+}
+
+func (i ImportStmt) StartPos() int {
+	return i.ImportToken.Position
+}
+
+func (i ImportStmt) EndPos() int {
+	return i.ImportToken.Position + len(i.ModulePath)
+}
+
+func (i ImportStmt) stmtNode() {}
