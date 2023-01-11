@@ -71,7 +71,11 @@ func (p *Parser) ParseFile() *File {
 	tempFile.ParseTree = new(AST)
 	p.CurrentFile = tempFile
 	for p.CurrentToken.TokenType != lexer.EOF {
-		tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, p.ParseNode())
+		NewNode := p.ParseNode()
+		if NewNode != nil {
+			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, )
+		}
+
 		p.Step()
 	}
 	p.Step()
@@ -85,7 +89,7 @@ func (p *Parser) ParseNode() Node {
 		return tempExpr
 	} else {
 		if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
-
+			return nil
 		} else {
 			tempExpr := p.ParseText()
 			if p.CurrentToken.TokenType != lexer.EOL {
