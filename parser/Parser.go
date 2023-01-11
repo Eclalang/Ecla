@@ -89,7 +89,7 @@ func (p *Parser) ParseNode() Node {
 		} else {
 			tempExpr := p.ParseText()
 			if p.CurrentToken.TokenType != lexer.EOL {
-				log.Fatal("Expected EOL")
+				log.Fatal("Expected EOL"+p.CurrentToken.Value, p.CurrentToken.TokenType)
 			}
 			return tempExpr
 		}
@@ -151,6 +151,8 @@ func (p *Parser) ParseIdent() Node {
 		return p.ParseMethodCallExpr()
 	} else if p.Peek(1).TokenType == lexer.LPAREN {
 		return p.ParseFunctionCallExpr()
+	} else if p.Peek(1).TokenType == lexer.LBRACKET {
+		return p.ParseIndexableAccessExpr()
 	} else {
 		return p.ParseVariableAssign()
 	}
@@ -653,6 +655,23 @@ func (p *Parser) ParseReturnStmt() Node {
 		log.Fatal("Unexpected token in return statement"+p.CurrentToken.Value, p.CurrentToken.TokenType)
 	}
 	return tempReturnStmt
+}
+
+func (p *Parser) ParseIndexableAccessExpr() Node {
+	tempIndexableAccessExpr := IndexableAccessExpr{VariableToken: p.CurrentToken, VariableName: p.CurrentToken.Value}
+	p.Step()
+	for p.CurrentToken.TokenType == lexer.RBRACKET || p.CurrentToken.TokenType == lexer.LBRACKET {
+		p.Step()
+		tempIndexableAccessExpr.Indexes = append(tempIndexableAccessExpr.Indexes, p.ParseExpr())
+		p.Step()
+		if p.CurrentToken.TokenType != lexer.LBRACKET {
+			if p.CurrentToken.TokenType == lexer.EOL || p.CurrentToken.TokenType == lexer.EOF {
+				break
+			}
+			log.Fatal("Expected '['"+p.CurrentToken.Value, p.CurrentToken.TokenType)
+		}
+	}
+	return tempIndexableAccessExpr
 }
 
 // ParseLiteral parses a literal
