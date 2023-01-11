@@ -307,6 +307,12 @@ func RunForStmt(For parser.ForStmt, env *Env) {
 		f := eclaKeyWord.ForI{Body: For.Body, Condition: For.CondExpr, Post: For.PostAssignStmt}
 		_ = f
 		RunTree(For.InitDecl, env)
+		for RunTree(f.Condition, env).GetString() == "true" { //TODO add error
+			for _, stmt := range f.Body {
+				RunTree(stmt, env)
+			}
+			RunTree(f.Post, env)
+		}
 	}
 }
 
