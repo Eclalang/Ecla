@@ -1,0 +1,4 @@
+import math;
+import console;
+console.test(1+1,2+2);
+var result int = 3;
