@@ -7,11 +7,7 @@ import (
 )
 
 func NewList(t string) (Type, error) {
-	if !IsList(t) {
-		return nil, errors.New("not a list")
-	}
-
-	return &List{[]Type{}, t[2:]}, nil
+	return &List{[]Type{}, t}, nil
 }
 
 type List struct {
@@ -43,8 +39,12 @@ func (l *List) SetValue(v any) error {
 
 func (l *List) String() string {
 	var s string
-	for _, v := range l.Value {
-		s += string(v.GetString()) + ", "
+	for index, v := range l.Value {
+		if index == len(l.Value)-1 {
+			s += string(v.GetString())
+		} else {
+			s += string(v.GetString()) + ", "
+		}
 	}
 	return "[" + s + "]"
 }
@@ -223,6 +223,12 @@ func (l *List) Not() (Type, error) {
 }
 
 func IsList(t string) bool {
+	/*
+		if strings.Contains(t, "[") {
+			return true, nil
+		}
+		return false, errors.New("not a list")
+	*/
 	return strings.Contains(t, "[")
 }
 
@@ -246,7 +252,7 @@ func (l *List) Append(other Type) (Type, error) {
 
 func CheckTypeOfList(l *List, t string) bool {
 	for _, v := range l.Value {
-		if v.GetType() != t {
+		if v.GetType() != l.Typ {
 			return false
 		}
 	}
