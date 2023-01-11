@@ -167,7 +167,24 @@ func RunPrintStmt(tree parser.PrintStmt, env *Env) eclaType.Type {
 
 // RunTypeStmt executes a parser.TypeStmt.
 func RunTypeStmt(tree parser.TypeStmt, env *Env) eclaType.Type {
-	fmt.Println(RunTree(tree.Expression, env).GetType())
+	t := RunTree(tree.Expression, env)
+	var typ string
+
+	switch t.(type) {
+	case *eclaType.Var:
+		t = t.(*eclaType.Var).GetValue().(eclaType.Type)
+		switch t.(type) {
+		case *eclaType.List:
+			typ = t.(*eclaType.List).GetFullType()
+		default:
+			typ = t.GetType()
+		}
+	case *eclaType.List:
+		typ = t.(*eclaType.List).GetFullType()
+	default:
+		typ = t.GetType()
+	}
+	fmt.Println(typ)
 	return nil
 	//return eclaType.NewString(RunTree(tree.Expression, env).GetType())
 }
