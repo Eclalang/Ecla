@@ -1,7 +1,5 @@
 package lexer
 
-import "fmt"
-
 // Token is a struct that contains all the information about a token
 type Token struct {
 	TokenType string
@@ -45,7 +43,7 @@ func Lexer(sentence string) []Token {
 		for _, ident := range Identifier {
 			// for each element of Identifier, we compare all the known
 			// syntaxes with our tempVal, If the comparison is true,
-			// tempVal is now syntaxes, and then a token
+			// tempVal is a known syntaxes, and then a token
 			if ident.IsSyntaxe(tempVal) {
 				canBeText = false
 				if ident.Identifier == "" && !inQuote {
@@ -56,7 +54,9 @@ func Lexer(sentence string) []Token {
 
 				if ident.Identifier == DQUOTE {
 					if inQuote {
-						inQuote = false
+						if ret[len(ret)-1].Value[len(ret[len(ret)-1].Value)-1] != '\\' {
+							inQuote = false
+						}
 					} else {
 						inQuote = true
 						inQuoteStep = true
@@ -108,7 +108,7 @@ func Lexer(sentence string) []Token {
 							tempVal = ""
 							prevIndex = i
 							break
-						} else {
+						} else if !inQuote {
 							ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
 							tempVal = ""
 							prevIndex = i
@@ -118,21 +118,30 @@ func Lexer(sentence string) []Token {
 				} else if ident.Identifier == SUB {
 					if len(ret) >= 1 {
 						if ret[len(ret)-1].TokenType == SUB {
-							ret[len(ret)-1].TokenType = DEC
-							ret[len(ret)-1].Value += tempVal
-							tempVal = ""
-							prevIndex = i
-							break
+							if len(ret) >= 2 {
+								if ret[len(ret)-2].TokenType == TEXT {
+									ret[len(ret)-1].TokenType = DEC
+									ret[len(ret)-1].Value += tempVal
+									tempVal = ""
+									prevIndex = i
+									break
+								}
+							}
+
 						}
 					}
 				} else if ident.Identifier == ADD {
 					if len(ret) >= 1 {
 						if ret[len(ret)-1].TokenType == ADD {
-							ret[len(ret)-1].TokenType = INC
-							ret[len(ret)-1].Value += tempVal
-							tempVal = ""
-							prevIndex = i
-							break
+							if len(ret) >= 2 {
+								if ret[len(ret)-2].TokenType == TEXT {
+									ret[len(ret)-1].TokenType = INC
+									ret[len(ret)-1].Value += tempVal
+									tempVal = ""
+									prevIndex = i
+									break
+								}
+							}
 						}
 					}
 				} else if ident.Identifier == DIV {
@@ -152,16 +161,13 @@ func Lexer(sentence string) []Token {
 						if ret[len(ret)-1].TokenType == STRING {
 							ret[len(ret)-1].Value += tempVal
 						} else {
-							fmt.Printf("ligne 143")
 							ret = append(ret, addToken(STRING, tempVal, prevIndex, line))
 
 						}
 					} else {
-						fmt.Printf("ligne 147")
 						ret = append(ret, addToken(STRING, tempVal, prevIndex, line))
 					}
 				} else {
-					fmt.Printf("ligne 150: %v\n", addToken(ident.Identifier, tempVal, prevIndex, line))
 					ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
 				}
 				isSpaces = false
@@ -190,17 +196,12 @@ func Lexer(sentence string) []Token {
 								if ret[len(ret)-1].TokenType == STRING {
 									ret[len(ret)-1].Value += tempVal[:y]
 								} else {
-									fmt.Printf("ligne 181: %v\n", addToken(STRING, tempVal[:y], prevIndex, line))
 									ret = append(ret, addToken(STRING, tempVal[:y], prevIndex, line))
-
 								}
 							} else {
-								fmt.Printf("ligne 186: %v\n", addToken(STRING, tempVal[:y], prevIndex, line))
 								ret = append(ret, addToken(STRING, tempVal[:y], prevIndex, line))
-
 							}
 						} else {
-							fmt.Printf("ligne 191: %v\n", addToken(Identifier[0].Identifier, tempVal[:y], prevIndex, line))
 							ret = append(ret, addToken(Identifier[0].Identifier, tempVal[:y], prevIndex, line))
 						}
 						isSpaces = false
