@@ -12,6 +12,7 @@ var (
 	Keywords = map[string]interface{}{
 		"var":      nil,
 		"function": nil,
+		"return":   nil,
 		"print":    nil,
 		"range":    nil,
 		"import":   nil,

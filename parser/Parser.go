@@ -118,6 +118,12 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "var" {
 		return p.ParseVariableDecl()
 	}
+	if p.CurrentToken.Value == "function" {
+		return p.ParseFunctionDecl()
+	}
+	if p.CurrentToken.Value == "return" {
+		return p.ParseReturnStmt()
+	}
 	if p.CurrentToken.Value == "print" {
 		return p.ParsePrintStmt()
 	}
@@ -476,9 +482,7 @@ func (p *Parser) ParseBinaryExpr(Lhs Expr, precedence int) Expr {
 		Rhs := p.ParseBinaryExpr(nil, opprec+1)
 
 		Lhs = BinaryExpr{LeftExpr: Lhs, Operator: operator, RightExpr: Rhs}
-
 	}
-
 }
 
 // ParseUnaryExpr parses a unary expression
@@ -558,6 +562,98 @@ func (p *Parser) ParseImportStmt() Stmt {
 	p.CurrentFile.Imports = append(p.CurrentFile.Imports, tempImportStmt.ModulePath)
 	p.Step()
 	return tempImportStmt
+}
+
+func (p *Parser) ParseFunctionDecl() Node {
+	tempFunctionDecl := FunctionDecl{FunctionToken: p.CurrentToken}
+	tempFunctionDecl.Parameters = make(map[string]string)
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.TEXT {
+		log.Fatal("Expected function name")
+	}
+	tempFunctionDecl.Name = p.CurrentToken.Value
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		log.Fatal("Expected '('")
+	}
+	tempFunctionDecl.LeftParamParen = p.CurrentToken
+	for p.CurrentToken.TokenType != lexer.RPAREN {
+		p.Step()
+		// parameter in the form of "a : int, b : int"
+		ParamName := ""
+		ParamType := ""
+		ParamName = p.CurrentToken.Value
+		p.Step()
+		// TODO : replace lexer.TEXT with lexer.COLON
+		if p.CurrentToken.TokenType != lexer.TEXT {
+			log.Fatal("Expected ':'")
+		}
+		p.Step()
+		ParamType = p.CurrentToken.Value
+		if _, ok := tempFunctionDecl.Parameters[ParamName]; !ok {
+			tempFunctionDecl.Parameters[ParamName] = ParamType
+		} else {
+			log.Fatal("Duplicate argument name")
+		}
+		p.Step()
+		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+			log.Fatal("Expected ','")
+		}
+	}
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		log.Fatal("Expected ')'")
+	}
+	tempFunctionDecl.RightParamParen = p.CurrentToken
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		log.Fatal("Expected '('")
+	}
+	tempFunctionDecl.LeftRetsParen = p.CurrentToken
+	for p.CurrentToken.TokenType != lexer.RPAREN {
+		p.Step()
+		tempFunctionDecl.ReturnTypes = append(tempFunctionDecl.ReturnTypes, p.CurrentToken.Value)
+		p.Step()
+		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+			fmt.Println(tempFunctionDecl.Parameters)
+			log.Fatal("Expected ','"+p.CurrentToken.Value, p.CurrentToken.TokenType)
+		}
+	}
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		log.Fatal("Expected ')'")
+	}
+	p.Step()
+	tempFunctionDecl.RightRetsParen = p.CurrentToken
+	if p.CurrentToken.TokenType != lexer.LBRACE {
+		log.Fatal("Expected '{'")
+	}
+	p.Step()
+	tempFunctionDecl.Body = p.ParseBody()
+	if p.CurrentToken.TokenType != lexer.RBRACE {
+		log.Fatal("Expected '}'" + p.CurrentToken.Value)
+	}
+	p.Step()
+	p.CurrentFile.FunctionDecl = append(p.CurrentFile.FunctionDecl, tempFunctionDecl.Name)
+	return tempFunctionDecl
+}
+
+func (p *Parser) ParseReturnStmt() Node {
+	tempReturnStmt := ReturnStmt{ReturnToken: p.CurrentToken}
+	p.Step()
+	err := false
+	for {
+		tempReturnStmt.ReturnValues = append(tempReturnStmt.ReturnValues, p.ParseExpr())
+		if p.CurrentToken.TokenType != lexer.COMMA {
+			if p.CurrentToken.TokenType != lexer.EOL && p.CurrentToken.TokenType != lexer.EOF {
+				err = true
+			}
+			break
+		}
+		p.Step()
+	}
+	if err {
+		log.Fatal("Unexpected token in return statement"+p.CurrentToken.Value, p.CurrentToken.TokenType)
+	}
+	return tempReturnStmt
 }
 
 // ParseLiteral parses a literal

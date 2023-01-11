@@ -345,3 +345,45 @@ func (i ImportStmt) EndPos() int {
 }
 
 func (i ImportStmt) stmtNode() {}
+
+type FunctionDecl struct {
+	FunctionToken   lexer.Token
+	Name            string
+	LeftParamParen  lexer.Token
+	RightParamParen lexer.Token
+	Parameters      map[string]string
+	LeftRetsParen   lexer.Token
+	RightRetsParen  lexer.Token
+	ReturnTypes     []string
+	LeftBrace       lexer.Token
+	RightBrace      lexer.Token
+	Body            []Node
+}
+
+func (f FunctionDecl) StartPos() int {
+	return f.FunctionToken.Position
+}
+
+func (f FunctionDecl) EndPos() int {
+	return f.RightBrace.Position
+}
+
+func (f FunctionDecl) declNode() {}
+
+type ReturnStmt struct {
+	ReturnToken  lexer.Token
+	ReturnValues []Expr
+}
+
+func (r ReturnStmt) StartPos() int {
+	return r.ReturnToken.Position
+}
+
+func (r ReturnStmt) EndPos() int {
+	if len(r.ReturnValues) > 0 {
+		return r.ReturnValues[len(r.ReturnValues)-1].EndPos()
+	}
+	return r.ReturnToken.Position
+}
+
+func (r ReturnStmt) stmtNode() {}
