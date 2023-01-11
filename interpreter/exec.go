@@ -66,6 +66,8 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		RunVariableAssignStmt(tree.(parser.VariableAssignStmt), env)
 	case parser.WhileStmt:
 		RunWhileStmt(tree.(parser.WhileStmt), env)
+	case parser.ForStmt:
+		RunForStmt(tree.(parser.ForStmt), env)
 	case parser.IfStmt:
 		RunIfStmt(tree.(parser.IfStmt), env)
 	case parser.ArrayLiteral:
@@ -294,6 +296,10 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) {
 			RunTree(stmt, env)
 		}
 	}
+}
+
+func RunForStmt(For parser.ForStmt, env *Env) {
+	//todo
 }
 
 // RunIfStmt
