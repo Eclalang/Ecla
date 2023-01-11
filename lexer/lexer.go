@@ -18,6 +18,7 @@ func Lexer(sentence string) []Token {
 	// prevIndex is index of the start of the element that we want to compare
 	// with the known syntaxe
 	var prevIndex int = 0
+	var actualIndex int = 1
 	// line will be increase each time a ";" is founded
 	var line int = 0
 	// canBeText is false when an element is already considered as a known
@@ -109,7 +110,8 @@ func Lexer(sentence string) []Token {
 							prevIndex = i
 							break
 						} else if !inQuote {
-							ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
+							actualIndex = positionDetector(ret, prevIndex)
+							ret = append(ret, addToken(ident.Identifier, tempVal, actualIndex, line))
 							tempVal = ""
 							prevIndex = i
 							break
@@ -156,20 +158,7 @@ func Lexer(sentence string) []Token {
 					}
 				}
 				// append a new Token to the variable ret
-				if inQuote && !inQuoteStep {
-					if len(ret) >= 1 {
-						if ret[len(ret)-1].TokenType == STRING {
-							ret[len(ret)-1].Value += tempVal
-						} else {
-							ret = append(ret, addToken(STRING, tempVal, prevIndex, line))
-
-						}
-					} else {
-						ret = append(ret, addToken(STRING, tempVal, prevIndex, line))
-					}
-				} else {
-					ret = append(ret, addToken(ident.Identifier, tempVal, prevIndex, line))
-				}
+				ret = inQuoteChange(inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, line)
 				isSpaces = false
 
 				tempVal = ""
@@ -191,19 +180,7 @@ func Lexer(sentence string) []Token {
 				for _, ident := range Identifier {
 					if ident.IsSyntaxe(tempVal[y:]) {
 						canBeText = false
-						if inQuote && !inQuoteStep {
-							if len(ret) >= 1 {
-								if ret[len(ret)-1].TokenType == STRING {
-									ret[len(ret)-1].Value += tempVal[:y]
-								} else {
-									ret = append(ret, addToken(STRING, tempVal[:y], prevIndex, line))
-								}
-							} else {
-								ret = append(ret, addToken(STRING, tempVal[:y], prevIndex, line))
-							}
-						} else {
-							ret = append(ret, addToken(Identifier[0].Identifier, tempVal[:y], prevIndex, line))
-						}
+						ret = inQuoteChange(inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, line)
 						isSpaces = false
 
 						i += len(tempVal[y:]) - 2
@@ -216,13 +193,49 @@ func Lexer(sentence string) []Token {
 	// if at the end of the sentence parse, tempVal is not "", it means that
 	// a last token of type TEXT must be appended to the return value
 	if tempVal != "" {
-		ret = append(ret, addToken(Identifier[0].Identifier, tempVal, prevIndex, line))
+		if tempVal[0] != ' ' {
+			actualIndex = positionDetector(ret, prevIndex)
+			ret = append(ret, addToken(Identifier[0].Identifier, tempVal, actualIndex, line))
+
+		}
+		prevIndex += len(tempVal)
 	}
 
 	// created a last token of type EOF (EndOfFile)
-	ret = append(ret, addToken(Identifier[len(Identifier)-1].Identifier, "", prevIndex, line))
+	actualIndex = positionDetector(ret, prevIndex)
+	ret = append(ret, addToken(Identifier[len(Identifier)-1].Identifier, "", actualIndex, line))
 
 	return ret
+}
+
+func inQuoteChange(inQuote bool, ret []Token, identi identifier, val string, prevIndex int, line int) []Token {
+	actualIndex := positionDetector(ret, prevIndex)
+	if inQuote {
+		if len(ret) >= 1 {
+			if ret[len(ret)-1].TokenType == STRING {
+				ret[len(ret)-1].Value += val
+			} else {
+				ret = append(ret, addToken(STRING, val, actualIndex, line))
+			}
+		} else {
+			ret = append(ret, addToken(STRING, val, actualIndex, line))
+		}
+	} else {
+		ret = append(ret, addToken(identi.Identifier, val, actualIndex, line))
+	}
+	return ret
+}
+
+func positionDetector(ret []Token, prevIndex int) int {
+	for _, v := range ret {
+		if v.TokenType == EOL {
+			prevIndex -= v.Position
+		}
+	}
+	if prevIndex == 0 {
+		return 1
+	}
+	return prevIndex
 }
 
 // addToken create a new token with the given parameters
