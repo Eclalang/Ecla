@@ -25,9 +25,9 @@ var (
 	LPAREN   = "LPAREN"
 	RPAREN   = "RPAREN"
 	EOL      = "EOL"
-	MURLOC   = "MURLOC"
 	DQUOTE   = "DQUOTE"
 	PERIOD   = "PERIOD"
+	COLON    = "COLON"
 	LBRACE   = "LBRACE"
 	RBRACE   = "RBRACE"
 	LBRACKET = "LBRACKET"
@@ -35,6 +35,7 @@ var (
 	COMMA    = "COMMA"
 	NOT      = "NOT"
 	BOOL     = "BOOL"
+	MURLOC   = "MURLOC"
 	EOF      = "EOF"
 )
 
@@ -139,13 +140,19 @@ var Identifier []identifier = []identifier{
 	{
 		Identifier: MURLOC,
 		Syntaxe: []string{
-			"^^^^^^",
+			"mgrlgrl",
 		},
 	},
 	{
 		Identifier: PERIOD,
 		Syntaxe: []string{
 			".",
+		},
+	},
+	{
+		Identifier: COLON,
+		Syntaxe: []string{
+			":",
 		},
 	},
 	{
