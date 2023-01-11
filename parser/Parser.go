@@ -510,8 +510,6 @@ func (p *Parser) ParseOperand() Expr {
 			return p.ParseMethodCallExpr()
 		} else if lookAhead.TokenType == lexer.LPAREN {
 			return p.ParseFunctionCallExpr()
-		} else {
-			log.Fatal("Invalid Operand Provided")
 		}
 	}
 	return p.ParseLiteral()
