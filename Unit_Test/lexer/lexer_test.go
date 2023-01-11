@@ -1,30 +1,61 @@
 package lexer
 
 import (
-	"github.com/tot0p/Ecla/lexer"
+	"strconv"
 	"testing"
+
+	"github.com/tot0p/Ecla/lexer"
 )
 
 func TestLexer(t *testing.T) {
-	code := `(1+1);`
+	code := `"\"a"`
+	expected := []lexer.Token{
+		{
+			TokenType: lexer.DQUOTE,
+			Value:     "\"",
+			Position:  0,
+			Line:      0,
+		},
+		{
+			TokenType: lexer.STRING,
+			Value:     `\"a`,
+			Position:  1,
+			Line:      0,
+		},
+		{
+			TokenType: lexer.DQUOTE,
+			Value:     "\"",
+			Position:  4,
+			Line:      0,
+		},
+		{
+			TokenType: lexer.EOF,
+			Value:     "",
+			Position:  len(code),
+			Line:      0,
+		},
+	}
+
+	expected_lenth := len(expected)
+	diff := 0
 	l := lexer.Lexer(code)
 	if l == nil {
 		t.Error("Expected a lexer, got nil")
-	} else if len(l) != 7 {
-		t.Error("Expected 6 tokens, got ", len(l))
-	} else if l[0].Value != "(" {
-		t.Error("Expected (, got ", l[0].Value)
-	} else if l[1].Value != "1" {
-		t.Error("Expected 1, got ", l[1].Value)
-	} else if l[2].Value != "+" {
-		t.Error("Expected +, got ", l[2].Value)
-	} else if l[3].Value != "1" {
-		t.Error("Expected 1, got ", l[3].Value)
-	} else if l[4].Value != ")" {
-		t.Error("Expected ), got ", l[4].Value)
-	} else if l[5].Value != ";" {
-		t.Error("Expected ;, got ", l[5].Value)
-	} else if l[6].Value != "" {
-		t.Error("Expected empty string, got ", l[6].Value)
+	} else if len(l) != expected_lenth {
+		t.Error("Expected "+strconv.Itoa(expected_lenth)+" tokens, got ", len(l))
+		diff++
 	}
+	for Position, expct := range expected {
+		if Position < len(l) {
+			if expct != l[Position] {
+				diff++
+				t.Error("Diff ", diff, " Expected ", expct, " for the token n°", Position+1, " , got ", l[Position])
+			}
+		}
+	}
+	t.Log("\n\t\t---GLOBAL RESULT---\n")
+	t.Log("entry \t <", code, ">")
+	t.Log("Expected \t", expected)
+	t.Log("Got \t", l)
+	t.Log("diff total ", diff)
 }
