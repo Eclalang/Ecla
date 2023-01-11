@@ -300,7 +300,7 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) {
 
 func RunForStmt(For parser.ForStmt, env *Env) {
 	f := eclaKeyWord.NewFor(For)
-	f.Execute()
+	f.Execute(env)
 }
 
 // RunIfStmt

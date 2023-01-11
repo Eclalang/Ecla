@@ -6,10 +6,3 @@ for (var i int, i < 10, i++) {
     print(i);
 };
 
-for (test,test2 range [1,2,3,4]) {
-    print(i);
-};
-
-for (test,test2 range list) {
-    print(i);
-};

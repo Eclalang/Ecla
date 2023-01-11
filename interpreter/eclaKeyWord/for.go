@@ -1,20 +1,43 @@
 package eclaKeyWord
 
 import (
+	"github.com/tot0p/Ecla/interpreter"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
 )
 
-type For struct {
-	Condition any
-	Body      any
+type ForRange struct {
 	Scope     []eclaType.Type
+	Body      []parser.Node
+	Condition parser.Expr
+	Post      parser.Stmt
 }
 
-func NewFor(parser.ForStmt) *For {
-	return &For{}
+type ForI struct {
+	Scope    []eclaType.Type
+	InitDecl parser.Decl
+	Body     []parser.Node
 }
 
-func (f *For) Execute() error {
+type For interface {
+	Execute(env *interpreter.Env) error
+}
+
+func NewFor(f parser.ForStmt) For {
+	tokenEmpty := lexer.Token{}
+	if f.RangeToken != tokenEmpty {
+		//TODO
+		return &ForI{Scope: []eclaType.Type{}, InitDecl: f.InitDecl, Body: f.Body}
+	} else {
+		return &ForRange{Scope: []eclaType.Type{}}
+	}
+}
+
+func (f *ForRange) Execute(env *interpreter.Env) error {
+	return nil
+}
+
+func (f *ForI) Execute(env *interpreter.Env) error {
 	return nil
 }
