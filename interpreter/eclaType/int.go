@@ -37,6 +37,11 @@ func (i Int) GetType() string {
 	return "int"
 }
 
+// returns error
+func (i Int) GetIndex(other Type) (Type, error) {
+	return nil, errors.New("cannot get index from int")
+}
+
 // Add adds two Type objects compatible with Int
 func (i Int) Add(other Type) (Type, error) {
 	switch other.(type) {

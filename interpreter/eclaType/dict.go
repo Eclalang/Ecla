@@ -52,6 +52,11 @@ func (d Dict) GetType() string {
 	return "dict"
 }
 
+// returns error
+func (d Dict) GetIndex(other Type) (Type, error) {
+	return nil, errors.New("cannot get index from dict")
+}
+
 // Add adds two Type objects  compatible with List
 func (d Dict) Add(other Type) (Type, error) {
 	switch other.(type) {

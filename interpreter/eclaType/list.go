@@ -82,6 +82,25 @@ func (l *List) GetFullType() string {
 	return l.Typ
 }
 
+func (l *List) GetIndex(index Type) (Type, error) {
+	switch index.(type) {
+	case Int:
+		if int(index.(Int)) < len(l.Value) {
+			return l.Value[int(index.(Int))], nil
+		} else {
+			return nil, errors.New("index out of range")
+		}
+	default:
+		return nil, errors.New("cannot get index of list")
+	}
+	return nil, errors.New("cannot get index of list")
+}
+
+// Len returns the length of a list
+func (l *List) Len() int {
+	return len(l.Value)
+}
+
 // Add adds two Type objects  compatible with List
 func (l *List) Add(other Type) (Type, error) {
 	switch other.(type) {

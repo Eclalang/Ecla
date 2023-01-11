@@ -41,6 +41,11 @@ func (b Bool) GetType() string {
 }
 
 // returns error
+func (b Bool) GetIndex(other Type) (Type, error) {
+	return nil, errors.New("cannot get index from bool")
+}
+
+// returns error
 func (b Bool) Add(other Type) (Type, error) {
 	return nil, errors.New("cannot add to bool")
 }

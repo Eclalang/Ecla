@@ -6,6 +6,7 @@ type Type interface {
 	String() string
 	GetString() String
 	GetType() string
+	GetIndex(number Type) (Type, error)
 	//Add : +
 	Add(other Type) (Type, error)
 	//Sub : -

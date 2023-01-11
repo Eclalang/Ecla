@@ -66,6 +66,27 @@ func (s String) GetType() string {
 	return "string"
 }
 
+// GetIndex returns a single character
+func (s String) GetIndex(other Type) (Type, error) {
+	if s == "" {
+		return nil, errors.New("Index out of range")
+	}
+	switch other.(type) {
+	case Int:
+		// bonjour -> other = 2 donc return = n
+		// [2:] [:4] = [other:] [:len(string)-other-1]
+		res := String(string(s)[int(other.(Int))])
+		return res, nil
+	default:
+		return nil, errors.New("cannot get index from string")
+	}
+}
+
+// Len returns the length of a string
+func (s String) Len() int {
+	return len(s)
+}
+
 // Add adds two Type objects
 func (s String) Add(other Type) (Type, error) {
 	return s + other.GetString(), nil

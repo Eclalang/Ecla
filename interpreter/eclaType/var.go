@@ -30,6 +30,10 @@ func (v *Var) GetType() string {
 	return v.Value.GetType()
 }
 
+func (v *Var) GetIndex(i Type) (Type, error) {
+	return v.Value.GetIndex(i)
+}
+
 // SetVar sets the value of the variable
 func (v *Var) SetVar(value Type) error {
 	switch value.(type) {
@@ -37,11 +41,27 @@ func (v *Var) SetVar(value Type) error {
 		v.Value = value.(*Var).Value
 		return nil
 	}
-	if v.Value.GetType() == value.GetType() {
+	typ := value.GetType()
+	typ2 := v.Value.GetType()
+	if typ == "list" {
+		switch value.(type) {
+		case *List:
+			typ = value.(*List).GetFullType()
+		}
+	}
+
+	if typ2 == "list" {
+		switch v.Value.(type) {
+		case *List:
+			typ2 = v.Value.(*List).GetFullType()
+		}
+	}
+
+	if typ2 == typ {
 		v.Value = value
 		return nil
 	}
-	return errors.New("cannot set value of " + v.Name + " to " + string(value.GetString()) + " because it is of type " + string(value.GetType()) + " and not " + string(v.Value.GetType()))
+	return errors.New("cannot set value of " + v.Name + " to " + string(value.GetString()) + " because it is of type " + string(typ) + " and not " + string(typ2))
 }
 
 // Add adds two Type objects
@@ -220,4 +240,8 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 		value = value.(*Var).Value
 	}
 	return &Var{Name: name, Value: value}, nil
+}
+
+func NewVarEmpty(name string, Type string) (*Var, error) {
+	return &Var{Name: name, Value: NewEmpty(Type)}, nil
 }

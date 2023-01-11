@@ -41,6 +41,11 @@ func (f Float) GetType() string {
 	return "float"
 }
 
+// returns error
+func (f Float) GetIndex(other Type) (Type, error) {
+	return nil, errors.New("cannot get index from float")
+}
+
 // Add adds two Type objects compatible with Float
 func (f Float) Add(other Type) (Type, error) {
 	switch other.(type) {

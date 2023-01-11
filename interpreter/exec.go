@@ -7,6 +7,7 @@ import (
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
+	"strconv"
 )
 
 // Run executes the environment.
@@ -332,11 +333,61 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) {
 func RunForStmt(For parser.ForStmt, env *Env) {
 	tokenEmpty := lexer.Token{}
 	if For.RangeToken != tokenEmpty {
-		f := eclaKeyWord.ForRange{Body: For.Body}
-		_ = f
+		f := eclaKeyWord.NewForRange([]eclaType.Type{}, For.RangeExpr, For.KeyToken, For.ValueToken, For.Body)
+		k, err := eclaType.NewVar(f.KeyToken.Value, "int", eclaType.NewInt("0"))
+		if err != nil {
+			panic(err)
+		}
+		list := RunTree(f.RangeExpr, env)
+		var typ string
+		var l int //...
+		//fmt.Printf("%T", list)
+		switch list.(type) {
+		case *eclaType.List:
+			typ = list.(*eclaType.List).GetFullType()[2:]
+			l = list.(*eclaType.List).Len()
+		case eclaType.String:
+			typ = list.GetType()
+			l = list.(eclaType.String).Len()
+		case *eclaType.Var:
+			temp := list.(*eclaType.Var).GetValue()
+			//fmt.Printf("%T", temp)
+			switch temp.(type) {
+			case *eclaType.List:
+				typ = temp.(*eclaType.List).GetFullType()[2:]
+				l = temp.(*eclaType.List).Len()
+			case eclaType.String:
+				typ = temp.(eclaType.String).GetType()
+				l = temp.(eclaType.String).Len()
+			default:
+				panic(errors.New("for range: type " + list.GetType() + " not supported"))
+			}
+		default:
+			panic(errors.New("type " + list.GetType() + " not supported"))
+		}
+
+		env.SetVar(f.KeyToken.Value, k)
+		v, err := eclaType.NewVarEmpty(f.ValueToken.Value, typ)
+		if err != nil {
+			panic(err)
+		}
+		env.SetVar(f.ValueToken.Value, v)
+		for i := 0; i < l; i++ {
+			k.SetVar(eclaType.NewInt(strconv.Itoa(i)))
+			val, err := list.GetIndex(eclaType.Int(i))
+			if err != nil {
+				panic(err)
+			}
+			err = v.SetVar(val)
+			if err != nil {
+				panic(err)
+			}
+			for _, stmt := range f.Body {
+				RunTree(stmt, env)
+			}
+		}
 	} else {
-		f := eclaKeyWord.ForI{Body: For.Body, Condition: For.CondExpr, Post: For.PostAssignStmt}
-		_ = f
+		f := eclaKeyWord.NewForI([]eclaType.Type{}, For.Body, For.CondExpr, For.PostAssignStmt)
 		RunTree(For.InitDecl, env)
 		for RunTree(f.Condition, env).GetString() == "true" { //TODO add error
 			for _, stmt := range f.Body {
