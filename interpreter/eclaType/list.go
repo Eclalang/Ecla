@@ -24,10 +24,14 @@ func (l *List) GetValue() any {
 func (l *List) SetValue(v any) error {
 	switch v.(type) {
 	case []Type:
-		if l.Typ == v.([]Type)[0].GetType() {
-			l.Value = v.([]Type)
-			return nil
-		}
+		/*
+			if l.Typ == v.([]Type)[0].GetType() {
+				l.Value = v.([]Type)
+				return nil
+			}
+		*/
+		l.Value = v.([]Type)
+		return nil
 	case *List:
 
 		t := v.(*List)

@@ -338,8 +338,7 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) eclaType.Type {
 	for _, v := range tree.Values {
 		values = append(values, RunTree(v, env))
 	}
-	//Modif typ par tree.$type
-	typ := values[0].GetType()
+	typ := ""
 	l, err := eclaType.NewList(typ)
 	if err != nil {
 		panic(err)
