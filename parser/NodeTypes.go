@@ -387,3 +387,24 @@ func (r ReturnStmt) EndPos() int {
 }
 
 func (r ReturnStmt) stmtNode() {}
+
+type IndexableAccessExpr struct {
+	VariableToken lexer.Token
+	VariableName  string
+	Indexes       []Expr
+	LastBracket   lexer.Token
+}
+
+func (a IndexableAccessExpr) StartPos() int {
+	return a.VariableToken.Position
+}
+
+func (a IndexableAccessExpr) EndPos() int {
+	return a.LastBracket.Position
+}
+
+func (a IndexableAccessExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (a IndexableAccessExpr) exprNode() {}
