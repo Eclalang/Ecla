@@ -1,6 +1,9 @@
 package eclaKeyWord
 
-import "github.com/tot0p/Ecla/interpreter/eclaType"
+import (
+	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"github.com/tot0p/Ecla/parser"
+)
 
 type For struct {
 	Condition any
@@ -8,8 +11,8 @@ type For struct {
 	Scope     []eclaType.Type
 }
 
-func NewFor(condition any, body any, scope []eclaType.Type) *For {
-	return &For{Condition: condition, Body: body, Scope: scope}
+func NewFor(parser.ForStmt) *For {
+	return &For{}
 }
 
 func (f *For) Execute() error {

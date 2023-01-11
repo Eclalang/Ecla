@@ -299,7 +299,8 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) {
 }
 
 func RunForStmt(For parser.ForStmt, env *Env) {
-	//todo
+	f := eclaKeyWord.NewFor(For)
+	f.Execute()
 }
 
 // RunIfStmt
