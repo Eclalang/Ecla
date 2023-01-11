@@ -584,8 +584,7 @@ func (p *Parser) ParseFunctionDecl() Node {
 		ParamType := ""
 		ParamName = p.CurrentToken.Value
 		p.Step()
-		// TODO : replace lexer.TEXT with lexer.COLON
-		if p.CurrentToken.TokenType != lexer.TEXT {
+		if p.CurrentToken.TokenType != lexer.COLON {
 			log.Fatal("Expected ':'")
 		}
 		p.Step()
