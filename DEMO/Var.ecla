@@ -1,0 +1,3 @@
+var test bool;
+test= !!(test==false);
+print(test);

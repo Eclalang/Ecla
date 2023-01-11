@@ -5,92 +5,252 @@ import (
 	"strconv"
 )
 
-// NewInt returns a new Int.
-func NewInt(value int) Type {
-	return &Int{Value: value}
+// NewInt creates a new Int
+func NewInt(value string) Int {
+	result, _ := strconv.Atoi(value)
+	return Int(result)
 }
 
-type Int struct {
-	Value int
+type Int int
+
+// GetValue returns the value of the int
+func (i Int) GetValue() any {
+	return i
 }
 
-// GetValue returns the value of the Int.
-func (i *Int) GetValue() any {
-	return i.Value
+// SetValue
+func (i Int) SetValue(value any) error {
+	return errors.New("cannot set value to Int")
 }
 
-// GetString returns the string value of the Int .
-func (i *Int) GetString() string {
-	return strconv.Itoa(i.Value)
+func (i Int) String() string {
+	return strconv.Itoa(int(i))
 }
 
-// ADD returns the sum of the two Type of Ecla or error.
-func (i *Int) ADD(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value + vOther.(int)}, nil
-	case string:
-		return &String{Value: i.GetString() + vOther.(string)}, nil
-	case float32:
-		return &Float{Value: float32(i.Value) + vOther.(float32)}, nil
+// GetString returns the string representation of the int
+func (i Int) GetString() String {
+	return String(strconv.Itoa(int(i)))
+}
+
+// GetType returns the type Int
+func (i Int) GetType() string {
+	return "int"
+}
+
+// Add adds two Type objects compatible with Int
+func (i Int) Add(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return i + other.(Int), nil
+	case Float:
+		return Float(i) + other.(Float), nil
+	case String:
+		return i.GetString() + other.GetString(), nil
 	default:
-		return nil, errors.New("cannot add " + other.GetString() + " to int")
+		return nil, errors.New("cannot add " + string(other.GetString()) + " to int")
 	}
 }
 
-// SUB returns the difference of the two Type of Ecla or error.
-func (i *Int) SUB(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value - vOther.(int)}, nil
-	case float32:
-		return &Float{Value: float32(i.Value) - vOther.(float32)}, nil
+// Sub subtracts two Type objects compatible with Int
+func (i Int) Sub(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return i - other.(Int), nil
+	case Float:
+		return Float(i) - other.(Float), nil
 	default:
-		return nil, errors.New("cannot subtract " + other.GetString() + " from int")
+		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
 	}
 }
 
-// MUL returns the product of the two Type of Ecla or error.
-func (i *Int) MUL(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value * vOther.(int)}, nil
-	case string:
-		result := vOther.(string)
-		for k := 0; k < i.Value; k++ {
-			result += vOther.(string)
+// Mod returns the remainder of the division of two Type objects compatible with Int
+func (i Int) Mod(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return i % other.(Int), nil
+	default:
+		return nil, errors.New("cannot mod " + string(other.GetString()) + " by int")
+	}
+}
+
+// Mul multiplies two Type objects compatible with Int
+func (i Int) Mul(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return i * other.(Int), nil
+	case Float:
+		return Float(i) * other.(Float), nil
+	case String:
+		result := String("")
+		for j := 0; j < int(i); j++ {
+			result += other.GetString()
 		}
-		return &String{Value: result}, nil
-	case float32:
-		return &Float{Value: float32(i.Value) * vOther.(float32)}, nil
+		return result, nil
 	default:
-		return nil, errors.New("cannot multiply int by " + other.GetString())
+		return nil, errors.New("cannot multiply " + string(other.GetString()) + " by int")
 	}
 }
 
-// DIV returns the quotient of the two Type of Ecla or error.
-func (i *Int) DIV(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value / vOther.(int)}, nil
-	case float32:
-		return &Float{Value: float32(i.Value) / vOther.(float32)}, nil
+// Div divides two Type objects compatible with Int
+func (i Int) Div(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return i / other.(Int), nil
+	case Float:
+		return Float(i) / other.(Float), nil
 	default:
-		return nil, errors.New("cannot divide int by " + other.GetString())
+		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")
 	}
 }
 
-// MOD returns the remainder of the two Type of Ecla or error.
-func (i *Int) MOD(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		return &Int{Value: i.Value % vOther.(int)}, nil
-	default:
-		return nil, errors.New("cannot mod int by " + other.GetString())
+// DivEc divides two Type objects compatible with Int
+func (i Int) DivEc(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
 	}
+	switch other.(type) {
+	case Int:
+		return (i - i%other.(Int)) / other.(Int), nil
+	case Float:
+		return nil, errors.New("cannot divide ec by float")
+	default:
+		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")
+	}
+}
+
+// Eq returns true if two Type objects are equal
+func (i Int) Eq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return Bool(i == other.(Int)), nil
+	case Float:
+		return Bool(Float(i) == other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// NotEq returns true if two Type objects are not equal
+func (i Int) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return Bool(i != other.(Int)), nil
+	case Float:
+		return Bool(Float(i) != other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// Gt returns true if the first Type object is greater than the second
+func (i Int) Gt(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return Bool(i > other.(Int)), nil
+	case Float:
+		return Bool(Float(i) > other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// GtEq returns true if the first Type object is greater than or equal to the second
+func (i Int) GtEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return Bool(i >= other.(Int)), nil
+	case Float:
+		return Bool(Float(i) >= other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// Lw returns true if the first Type object is lower than the second
+func (i Int) Lw(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return Bool(i < other.(Int)), nil
+	case Float:
+		return Bool(Float(i) < other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// LwEq returns true if the first Type object is lower than or equal to the second
+func (i Int) LwEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		return Bool(i <= other.(Int)), nil
+	case Float:
+		return Bool(Float(i) <= other.(Float)), nil
+	default:
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+	}
+}
+
+// And returns errors
+func (i Int) And(other Type) (Type, error) {
+	return nil, errors.New("cannot and int")
+}
+
+// Or returns errors
+func (i Int) Or(other Type) (Type, error) {
+	return nil, errors.New("cannot or int")
+}
+
+// Not returns errors
+func (i Int) Not() (Type, error) {
+	return nil, errors.New("cannot opposite int")
+}
+
+// Append returns errors
+func (i Int) Append(other Type) (Type, error) {
+	return nil, errors.New("cannot append int")
 }

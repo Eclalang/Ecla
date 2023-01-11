@@ -1,50 +1,213 @@
 package eclaType
 
-import "errors"
+import (
+	"errors"
+	"strconv"
+)
 
-// NewBool returns a new Bool.
-func NewBool(value bool) Type {
-	return &Bool{Value: value}
+// NewBool creates a new Bool
+func NewBool(value string) Bool {
+	result, _ := strconv.ParseBool(value)
+	return Bool(result)
 }
 
-type Bool struct {
-	Value bool
+type Bool bool
+
+// GetValue returns the value of the bool
+func (b Bool) GetValue() any {
+	return b
 }
 
-// GetValue returns the value of the Bool.
-func (b *Bool) GetValue() any {
-	return b.Value
+// SetValue
+func (b Bool) SetValue(value any) error {
+	return errors.New("cannot set value to Bool")
 }
 
-// GetString returns the string value of the Bool.
-func (b *Bool) GetString() string {
-	if b.Value {
+func (b Bool) String() string {
+	return strconv.FormatBool(bool(b))
+}
+
+// GetString returns the string representation of the bool
+func (b Bool) GetString() String {
+	if b {
 		return "true"
 	}
 	return "false"
 }
 
-// ADD returns error.
-func (b *Bool) ADD(other Type) (Type, error) {
+// GetType returns the type Bool
+func (b Bool) GetType() string {
+	return "bool"
+}
+
+// returns error
+func (b Bool) Add(other Type) (Type, error) {
 	return nil, errors.New("cannot add to bool")
 }
 
-// SUB returns error.
-func (b *Bool) SUB(other Type) (Type, error) {
+// returns error
+func (b Bool) Sub(other Type) (Type, error) {
 	return nil, errors.New("cannot subtract from bool")
 }
 
-// MUL returns error.
-func (b *Bool) MUL(other Type) (Type, error) {
+// returns error
+func (b Bool) Mod(other Type) (Type, error) {
+	return nil, errors.New("cannot mod bool")
+}
+
+// returns error
+func (b Bool) Mul(other Type) (Type, error) {
 	return nil, errors.New("cannot multiply bool")
 }
 
-// DIV returns error.
-func (b *Bool) DIV(other Type) (Type, error) {
+// returns error
+func (b Bool) Div(other Type) (Type, error) {
 	return nil, errors.New("cannot divide bool")
 }
 
-// MOD returns error.
-func (b *Bool) MOD(other Type) (Type, error) {
-	return nil, errors.New("cannot mod bool")
+// returns error
+func (b Bool) DivEc(other Type) (Type, error) {
+	return nil, errors.New("cannot divide ec bool")
+}
+
+// Eq returns true if two Type objects are equal
+func (b Bool) Eq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if (b == Bool(true) && other.GetValue() == Int(1)) || (b == Bool(false) && other.GetValue() == Int(0)) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Float:
+		if (b == Bool(true) && other.GetValue() == Float(1)) || (b == Bool(false) && other.GetValue() == Float(0)) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Bool:
+		return Bool(b == other.GetValue()), nil
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}
+
+// NotEq returns true if two Type objects are not equal
+func (b Bool) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if (b == Bool(true) && other.GetValue() == Int(1)) || (b == Bool(false) && other.GetValue() == Int(0)) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if (b == Bool(true) && other.GetValue() == Float(1)) || (b == Bool(false) && other.GetValue() == Float(0)) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		return Bool(b != other.GetValue()), nil
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}
+
+// returns error
+func (b Bool) Gt(other Type) (Type, error) {
+	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+}
+
+// returns error
+func (b Bool) GtEq(other Type) (Type, error) {
+	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+}
+
+// returns error
+func (b Bool) Lw(other Type) (Type, error) {
+	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+}
+
+// returns error
+func (b Bool) LwEq(other Type) (Type, error) {
+	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+}
+
+// And returns true if both Types are true
+func (b Bool) And(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if b == Bool(true) && other.GetValue() == Int(1) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Float:
+		if b == Bool(true) && other.GetValue() == Float(1) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Bool:
+		if b == Bool(true) && other.GetValue() == Bool(true) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}
+
+// Or returns true if either Type is true
+func (b Bool) Or(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if b == Bool(true) || other.GetValue() == Int(1) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Float:
+		if b == Bool(true) || other.GetValue() == Float(1) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	case Bool:
+		if b == Bool(true) || other.GetValue() == Bool(true) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}
+
+// Not returns the opposite of the bool
+func (b Bool) Not() (Type, error) {
+	return !b, nil
+}
+
+// Append returns errors
+func (b Bool) Append(other Type) (Type, error) {
+	return nil, errors.New("cannot append bool")
 }

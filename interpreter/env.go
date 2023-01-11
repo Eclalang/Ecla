@@ -1,22 +1,21 @@
 package interpreter
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
 	"os"
 	"runtime"
-
-	"github.com/tot0p/Ecla/interpreter/eclaType"
 )
 
 // Env is the environment in which the code is executed.
 type Env struct {
-	Vars       map[string]eclaType.Type
+	Vars       map[string]*eclaType.Var
 	OS         string
 	ARCH       string
-	SyntaxTree any
+	SyntaxTree *parser.File
+	Tokens     []lexer.Token
 	File       string
 	Code       string
 }
@@ -26,12 +25,12 @@ func NewEnv() *Env {
 	return &Env{
 		OS:   runtime.GOOS,
 		ARCH: runtime.GOARCH,
-		Vars: make(map[string]eclaType.Type),
+		Vars: make(map[string]*eclaType.Var),
 	}
 }
 
-func (env Env) String() string {
-	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s}", env.OS, env.ARCH, env.Code)
+func (env *Env) String() string {
+	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s , VAR : %s}", env.OS, env.ARCH, env.Code, env.Vars)
 }
 
 // SetCode sets the code to be executed.
@@ -45,13 +44,14 @@ func (env *Env) SetFile(file string) {
 }
 
 // SetVar sets the value of the variable with the given name.
-func (env *Env) SetVar(name string, value eclaType.Type) {
+func (env *Env) SetVar(name string, value *eclaType.Var) {
 	env.Vars[name] = value
 }
 
 // GetVar returns the value of the variable with the given name.
-func (env *Env) GetVar(name string) eclaType.Type {
-	return env.Vars[name]
+func (env *Env) GetVar(name string) (*eclaType.Var, bool) {
+	v, ok := env.Vars[name]
+	return v, ok
 }
 
 // Execute executes Env.Code or Env.File.
@@ -61,16 +61,20 @@ func (env *Env) Execute() {
 	}
 	// Lexing
 	// TODO: SUPPORT FOR MULTIPLE FILES
-	tokens := lexer.Lexer(env.Code)
-	fmt.Println("TOKENS:", tokens)
+	env.Tokens = lexer.Lexer(env.Code)
+	//DEBUG
+	//now use -dl for debug lexer
+	//fmt.Println("TOKENS:", env.Tokens)
 	// Parsing
 	// TODO: SUPPORT FOR MULTIPLE FILES
-	pars := parser.Parser{Tokens: tokens}
+	pars := parser.Parser{Tokens: env.Tokens}
 	env.SyntaxTree = pars.Parse()
 	//DEBUG
-	txt, _ := json.MarshalIndent(env.SyntaxTree, "", "  ")
-	fmt.Println("SYNTAX TREE:", string(txt))
+	// now use -dp for debug parser
+	//txt, _ := json.MarshalIndent(env.SyntaxTree, "", "  ")
+	//fmt.Println("SYNTAX TREE:", string(txt))
 	//TODO: execute code
+	Run(env)
 }
 
 // readFile reads the file at the given path and returns its contents as a string.

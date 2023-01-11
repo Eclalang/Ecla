@@ -1,0 +1,2 @@
+var test []int = [14,15];
+print(test);

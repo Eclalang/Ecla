@@ -1,58 +1,217 @@
 package eclaType
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
-// NewString returns a new String.
-func NewString(value string) Type {
-	return &String{Value: value}
+// NewString creates a new String
+func NewString(value string) String {
+	if strings.Contains(value, "\\n") {
+		value = strings.ReplaceAll(value, "\\n", "\n")
+	}
+	if strings.Contains(value, "\\\\") {
+		value = strings.ReplaceAll(value, "\\\\", "\\")
+	}
+	if strings.Contains(value, "\\a") {
+		value = strings.ReplaceAll(value, "\\a", "\a")
+	}
+	if strings.Contains(value, "\\b") {
+		value = strings.ReplaceAll(value, "\\b", "\b")
+	}
+	if strings.Contains(value, "\\f") {
+		value = strings.ReplaceAll(value, "\\f", "\f")
+	}
+	if strings.Contains(value, "\\r") {
+		value = strings.ReplaceAll(value, "\\r", "\r")
+	}
+	if strings.Contains(value, "\\t") {
+		value = strings.ReplaceAll(value, "\\t", "\t")
+	}
+	if strings.Contains(value, "\\v") {
+		value = strings.ReplaceAll(value, "\\v", "\v")
+	}
+	if strings.Contains(value, "\\\\'") {
+		value = strings.ReplaceAll(value, "\\\\'", "\\'")
+	}
+	if strings.Contains(value, "\\\"") {
+		value = strings.ReplaceAll(value, "\\\"", "\"")
+	}
+	return String(value)
 }
 
-type String struct {
-	Value string
+type String string
+
+// GetValue returns the value of the string
+func (s String) GetValue() any {
+	return s
 }
 
-// GetValue returns the value of the String.
-func (s *String) GetValue() any {
-	return s.Value
+// SetValue
+func (s String) SetValue(value any) error {
+	return errors.New("cannot set value to String")
 }
 
-// GetString returns the value of the String.
-func (s *String) GetString() string {
-	return s.Value
+func (s String) String() string {
+	return string(s)
 }
 
-// ADD returns the concatenation of the two Type of Ecla.
-func (s *String) ADD(other Type) (Type, error) {
-	return &String{Value: s.Value + other.GetString()}, nil
+// GetString returns the string
+func (s String) GetString() String {
+	return s
 }
 
-// SUB returns error.
-func (s *String) SUB(other Type) (Type, error) {
+// GetType returns the type String
+func (s String) GetType() string {
+	return "string"
+}
+
+// Add adds two Type objects
+func (s String) Add(other Type) (Type, error) {
+	return s + other.GetString(), nil
+}
+
+// Sub returns errors because you cannot subtract strings
+func (s String) Sub(other Type) (Type, error) {
 	return nil, errors.New("cannot subtract from string")
 }
 
-// MUL returns n * String if other is int else return error .
-func (s *String) MUL(other Type) (Type, error) {
-	vOther := other.GetValue()
-	switch vOther.(type) {
-	case int:
-		result := s.Value
-		for i := 0; i < vOther.(int); i++ {
-			result += s.Value
-		}
-		return &String{Value: result}, nil
-	default:
-		return nil, errors.New("cannot multiply string by " + other.GetString())
-	}
-
+// Mod returns errors because you cannot mod strings
+func (s String) Mod(other Type) (Type, error) {
+	return nil, errors.New("cannot mod string")
 }
 
-// DIV returns error.
-func (s *String) DIV(other Type) (Type, error) {
+// Mul if other is Int , return n * String
+func (s String) Mul(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		result := ""
+		for i := 0; i < int(other.(Int)); i++ {
+			result += string(s)
+		}
+		return String(result), nil
+	default:
+		return nil, errors.New(string("cannot multiply string by " + other.GetString()))
+	}
+}
+
+// Div returns errors because you cannot divide strings
+func (s String) Div(other Type) (Type, error) {
 	return nil, errors.New("cannot divide string")
 }
 
-// MOD returns error.
-func (s *String) MOD(other Type) (Type, error) {
-	return nil, errors.New("cannot mod string")
+// DivEc returns error because you cannot div ec strings
+func (s String) DivEc(other Type) (Type, error) {
+	return nil, errors.New("cannot divide ec by string")
+}
+
+// Eq returns true if two Type objects are equal
+func (s String) Eq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case String:
+		return Bool(s == other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string by " + other.GetString()))
+	}
+}
+
+// NotEq returns true if two Type objects are not equal
+func (s String) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case String:
+		return Bool(s != other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}
+
+// Gt returns true if s is greater than other
+func (s String) Gt(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case String:
+		return Bool(s > other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}
+
+// GtEq returns true if s is greater than or equal to other
+func (s String) GtEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case String:
+		return Bool(s >= other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}
+
+// Lw returns true if s is lower than other
+func (s String) Lw(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case String:
+		return Bool(s < other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}
+
+// LwEq returns true if s is lower than or equal to other
+func (s String) LwEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case String:
+		return Bool(s <= other.GetString()), nil
+	default:
+		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+	}
+}
+
+// And returns errors
+func (s String) And(other Type) (Type, error) {
+	return nil, errors.New("cannot and string")
+}
+
+// Or returns errors
+func (s String) Or(other Type) (Type, error) {
+	return nil, errors.New("cannot or string")
+}
+
+// Not returns errors
+func (s String) Not() (Type, error) {
+	return nil, errors.New("cannot opposite string")
+}
+
+func (s String) Append(other Type) (Type, error) {
+	switch other.(type) {
+	case String:
+		return s + other.GetString(), nil
+	}
+	return nil, errors.New("cannot append string")
 }
