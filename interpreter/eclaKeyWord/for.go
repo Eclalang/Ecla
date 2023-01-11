@@ -1,7 +1,6 @@
 package eclaKeyWord
 
 import (
-	"github.com/tot0p/Ecla/interpreter"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
@@ -21,7 +20,7 @@ type ForI struct {
 }
 
 type For interface {
-	Execute(env *interpreter.Env) error
+	Execute() error
 }
 
 func NewFor(f parser.ForStmt) For {
@@ -34,10 +33,10 @@ func NewFor(f parser.ForStmt) For {
 	}
 }
 
-func (f *ForRange) Execute(env *interpreter.Env) error {
+func (f *ForRange) Execute() error {
 	return nil
 }
 
-func (f *ForI) Execute(env *interpreter.Env) error {
+func (f *ForI) Execute() error {
 	return nil
 }
