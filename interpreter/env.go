@@ -11,13 +11,14 @@ import (
 
 // Env is the environment in which the code is executed.
 type Env struct {
-	Vars       map[string]*eclaType.Var
-	OS         string
-	ARCH       string
-	SyntaxTree *parser.File
-	Tokens     []lexer.Token
-	File       string
-	Code       string
+	Vars                     map[string]*eclaType.Var
+	OS                       string
+	ARCH                     string
+	SyntaxTree               *parser.File
+	Tokens                   []lexer.Token
+	File                     string
+	Code                     string
+	NameOfCurrentVariableMod string // TODO: REMOVE THIS LATER
 }
 
 // NewEnv returns a new Env.

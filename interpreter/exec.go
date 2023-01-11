@@ -282,10 +282,12 @@ func RunVariableIncrementStmt(tree parser.VariableIncrementStmt, env *Env) {
 // RunVariableAssignStmt Run assigns a variable.
 func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 	v, ok := env.GetVar(tree.Name)
+	env.NameOfCurrentVariableMod = tree.Name
 	if !ok {
 		panic(errors.New("variable not found"))
 	}
 	v.SetVar(RunTree(tree.Value, env))
+	env.NameOfCurrentVariableMod = ""
 }
 
 // RunWhileStmt
