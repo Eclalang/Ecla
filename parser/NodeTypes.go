@@ -84,7 +84,7 @@ func (p ParenExpr) precedence() int {
 	return HighestPrecedence
 }
 
-func (u ParenExpr) exprNode() {}
+func (p ParenExpr) exprNode() {}
 
 type ArrayLiteral struct {
 	LBRACKET lexer.Token
