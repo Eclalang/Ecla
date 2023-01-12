@@ -47,9 +47,11 @@ func Lexer(sentence string) []Token {
 			// tempVal is a known syntaxes, and then a token
 			if ident.IsSyntaxe(tempVal) {
 				canBeText = false
+
 				if ident.Identifier == "" && !inQuote {
 					isSpaces = true
 					prevIndex = i
+					tempVal = sentence[prevIndex:i]
 					break
 				}
 
@@ -159,6 +161,7 @@ func Lexer(sentence string) []Token {
 				}
 				// append a new Token to the variable ret
 				ret = inQuoteChange(inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, line)
+
 				isSpaces = false
 
 				tempVal = ""
@@ -193,12 +196,11 @@ func Lexer(sentence string) []Token {
 	// if at the end of the sentence parse, tempVal is not "", it means that
 	// a last token of type TEXT must be appended to the return value
 	if tempVal != "" {
-		if tempVal[0] != ' ' {
-			actualIndex = positionDetector(ret, prevIndex)
-			ret = append(ret, addToken(Identifier[0].Identifier, tempVal, actualIndex, line))
+		actualIndex = positionDetector(ret, prevIndex)
+		ret = append(ret, addToken(Identifier[0].Identifier, tempVal, actualIndex, line))
 
-		}
 		prevIndex += len(tempVal)
+
 	}
 
 	// created a last token of type EOF (EndOfFile)
@@ -232,10 +234,7 @@ func positionDetector(ret []Token, prevIndex int) int {
 			prevIndex -= v.Position
 		}
 	}
-	if prevIndex == 0 {
-		return 1
-	}
-	return prevIndex
+	return prevIndex + 1
 }
 
 // addToken create a new token with the given parameters

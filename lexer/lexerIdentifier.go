@@ -190,6 +190,8 @@ var Identifier []identifier = []identifier{
 		Syntaxe: []string{
 			" ",
 			"\n",
+			"\t",
+			"\r",
 			"_",
 		},
 	},
