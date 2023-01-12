@@ -73,7 +73,7 @@ func (p *Parser) ParseFile() *File {
 	for p.CurrentToken.TokenType != lexer.EOF {
 		NewNode := p.ParseNode()
 		if NewNode != nil {
-			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations)
+			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, NewNode)
 		}
 
 		p.Step()
@@ -439,6 +439,7 @@ func (p *Parser) ParseType() (string, bool) {
 				tempType += "[]"
 				continue
 			}
+			tempType += p.CurrentToken.Value
 			p.Step()
 		}
 		if tempType == "" {
