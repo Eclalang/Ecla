@@ -73,8 +73,25 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		RunIfStmt(tree.(parser.IfStmt), env)
 	case parser.ArrayLiteral:
 		return RunArrayLiteral(tree.(parser.ArrayLiteral), env)
+	case parser.ImportStmt:
+		RunImportStmt(tree.(parser.ImportStmt), env)
+	case parser.MethodCallExpr:
+		return RunMethodCallExpr(tree.(parser.MethodCallExpr), env)
 	}
 	return nil
+}
+
+func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) eclaType.Type {
+	var args []eclaType.Type
+	for _, v := range expr.FunctionCall.Args {
+		args = append(args, RunTree(v, env))
+	}
+
+	return env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name)
+}
+
+func RunImportStmt(stmt parser.ImportStmt, env *Env) {
+	env.Import(stmt.ModulePath)
 }
 
 // RunVariableDecl executes a parser.VariableDecl.

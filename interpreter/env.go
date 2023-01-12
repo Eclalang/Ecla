@@ -3,6 +3,7 @@ package interpreter
 import (
 	"fmt"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"github.com/tot0p/Ecla/interpreter/libs"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
 	"os"
@@ -18,6 +19,7 @@ type Env struct {
 	Tokens     []lexer.Token
 	File       string
 	Code       string
+	Libs       map[string]libs.Lib
 }
 
 // NewEnv returns a new Env.
@@ -75,6 +77,10 @@ func (env *Env) Execute() {
 	//fmt.Println("SYNTAX TREE:", string(txt))
 	//TODO: execute code
 	Run(env)
+}
+
+func (env *Env) Import(file string) {
+	env.Libs[file] = libs.Import(file)
 }
 
 // readFile reads the file at the given path and returns its contents as a string.
