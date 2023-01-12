@@ -73,7 +73,7 @@ func (p *Parser) ParseFile() *File {
 	for p.CurrentToken.TokenType != lexer.EOF {
 		NewNode := p.ParseNode()
 		if NewNode != nil {
-			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, )
+			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations)
 		}
 
 		p.Step()
@@ -356,10 +356,10 @@ func (p *Parser) ParseForStmt() Stmt {
 func (p *Parser) ParseVariableDecl() Decl {
 	tempDecl := VariableDecl{VarToken: p.CurrentToken}
 	p.Step()
+	if _, ok := Keywords[p.CurrentToken.Value]; ok {
+		log.Fatal("Variable name cannot be a keyword")
+	}
 	if p.CurrentToken.TokenType != lexer.TEXT {
-		if _, ok := Keywords[p.CurrentToken.Value]; ok {
-			log.Fatal("Variable name cannot be a keyword")
-		}
 		log.Fatal("Expected variable name instead of ", p.CurrentToken.Value)
 	}
 	tempDecl.Name = p.CurrentToken.Value
@@ -439,7 +439,6 @@ func (p *Parser) ParseType() (string, bool) {
 				tempType += "[]"
 				continue
 			}
-			tempType += p.CurrentToken.Value
 			p.Step()
 		}
 		if tempType == "" {
@@ -555,6 +554,30 @@ func (p *Parser) ParseArrayLiteral() Expr {
 	tempArrayExpr.RBRACKET = p.CurrentToken
 	p.Step()
 	return tempArrayExpr
+}
+
+func (p *Parser) ParseMapLiteral() Expr {
+	tempMapLiteral := MapLiteral{}
+	tempMapLiteral.LBRACE = p.CurrentToken
+	p.Step()
+	for {
+		tempMapLiteral.Keys = append(tempMapLiteral.Keys, p.ParseExpr())
+		if p.CurrentToken.TokenType != lexer.COLON {
+			log.Fatal("Expected ':'")
+		}
+		p.Step()
+		tempMapLiteral.Values = append(tempMapLiteral.Values, p.ParseExpr())
+		if p.CurrentToken.TokenType != lexer.COMMA {
+			break
+		}
+		p.Step()
+	}
+	if p.CurrentToken.TokenType != lexer.RBRACE {
+		log.Fatal("Expected '}'")
+	}
+	tempMapLiteral.RBRACE = p.CurrentToken
+	p.Step()
+	return tempMapLiteral
 }
 
 func (p *Parser) ParseImportStmt() Stmt {
@@ -710,6 +733,9 @@ func (p *Parser) ParseLiteral() Expr {
 	}
 	if p.CurrentToken.TokenType == lexer.LBRACKET {
 		return p.ParseArrayLiteral()
+	}
+	if p.CurrentToken.TokenType == lexer.LBRACE {
+		return p.ParseMapLiteral()
 	}
 	log.Fatal("Expected literal instead of " + p.CurrentToken.Value)
 	return nil

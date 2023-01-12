@@ -5,6 +5,7 @@ const (
 	String     = "string"
 	Float      = "float"
 	Bool       = "bool"
+	Map        = "map"
 	ArrayStart = "["
 )
 
@@ -27,6 +28,7 @@ var (
 		Float:      nil,
 		String:     nil,
 		Bool:       nil,
+		Map:        nil,
 		ArrayStart: nil,
 	}
 )
