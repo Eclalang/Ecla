@@ -84,7 +84,7 @@ func (p ParenExpr) precedence() int {
 	return HighestPrecedence
 }
 
-func (u ParenExpr) exprNode() {}
+func (p ParenExpr) exprNode() {}
 
 type ArrayLiteral struct {
 	LBRACKET lexer.Token
@@ -105,6 +105,48 @@ func (p ArrayLiteral) precedence() int {
 }
 
 func (p ArrayLiteral) exprNode() {}
+
+type MapLiteral struct {
+	LBRACE lexer.Token
+	Keys   []Expr
+	Values []Expr
+	RBRACE lexer.Token
+}
+
+func (m MapLiteral) StartPos() int {
+	return m.LBRACE.Position
+}
+
+func (m MapLiteral) EndPos() int {
+	return m.RBRACE.Position
+}
+
+func (m MapLiteral) precedence() int {
+	return HighestPrecedence
+}
+
+func (m MapLiteral) exprNode() {}
+
+type IndexableAccessExpr struct {
+	VariableToken lexer.Token
+	VariableName  string
+	Indexes       []Expr
+	LastBracket   lexer.Token
+}
+
+func (a IndexableAccessExpr) StartPos() int {
+	return a.VariableToken.Position
+}
+
+func (a IndexableAccessExpr) EndPos() int {
+	return a.LastBracket.Position
+}
+
+func (a IndexableAccessExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (a IndexableAccessExpr) exprNode() {}
 
 type PrintStmt struct {
 	PrintToken lexer.Token
@@ -387,24 +429,3 @@ func (r ReturnStmt) EndPos() int {
 }
 
 func (r ReturnStmt) stmtNode() {}
-
-type IndexableAccessExpr struct {
-	VariableToken lexer.Token
-	VariableName  string
-	Indexes       []Expr
-	LastBracket   lexer.Token
-}
-
-func (a IndexableAccessExpr) StartPos() int {
-	return a.VariableToken.Position
-}
-
-func (a IndexableAccessExpr) EndPos() int {
-	return a.LastBracket.Position
-}
-
-func (a IndexableAccessExpr) precedence() int {
-	return HighestPrecedence
-}
-
-func (a IndexableAccessExpr) exprNode() {}
