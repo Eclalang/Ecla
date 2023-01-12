@@ -87,7 +87,7 @@ func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) eclaType.Type {
 		args = append(args, RunTree(v, env))
 	}
 
-	return env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name)
+	return env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name, args)
 }
 
 func RunImportStmt(stmt parser.ImportStmt, env *Env) {

@@ -1,6 +1,7 @@
 package libs
 
 import (
+	"fmt"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 )
 
@@ -13,9 +14,9 @@ func (c *Console) Call(name string, args ...any) eclaType.Type {
 		for _, arg := range args {
 			switch arg.(type) {
 			case eclaType.Type:
-				print(arg.(eclaType.Type).String())
+				fmt.Print(arg.(eclaType.Type).String())
 			default:
-				print(arg)
+				fmt.Print(arg)
 			}
 		}
 	}

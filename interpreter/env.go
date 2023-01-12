@@ -28,6 +28,7 @@ func NewEnv() *Env {
 		OS:   runtime.GOOS,
 		ARCH: runtime.GOARCH,
 		Vars: make(map[string]*eclaType.Var),
+		Libs: make(map[string]libs.Lib),
 	}
 }
 
