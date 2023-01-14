@@ -86,7 +86,6 @@ func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) eclaType.Type {
 	for _, v := range expr.FunctionCall.Args {
 		args = append(args, RunTree(v, env))
 	}
-
 	return env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name, args)
 }
 

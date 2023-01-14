@@ -1,24 +1,22 @@
 package libs
 
 import (
-	"fmt"
+	"github.com/Eclalang/console"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"github.com/tot0p/Ecla/interpreter/libs/utils"
 )
 
 type Console struct {
 }
 
-func (c *Console) Call(name string, args ...any) eclaType.Type {
+func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
 	switch name {
 	case "print":
-		for _, arg := range args {
-			switch arg.(type) {
-			case eclaType.Type:
-				fmt.Print(arg.(eclaType.Type).String())
-			default:
-				fmt.Print(arg)
-			}
+		newargs := make([]any, len(args))
+		for k, arg := range args {
+			newargs[k] = utils.EclaTypeToGo(arg)
 		}
+		console.Print(newargs...)
 	}
 	return eclaType.Empty{}
 }
