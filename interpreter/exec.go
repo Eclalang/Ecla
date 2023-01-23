@@ -3,11 +3,12 @@ package interpreter
 import (
 	"errors"
 	"fmt"
+	"strconv"
+
 	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
-	"strconv"
 )
 
 // Run executes the environment.
@@ -84,7 +85,13 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) eclaType.Type {
 	var args []eclaType.Type
 	for _, v := range expr.FunctionCall.Args {
-		args = append(args, RunTree(v, env))
+		temp := RunTree(v, env)
+		switch temp.(type) {
+		case *eclaType.Var:
+			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+		}
+		args = append(args, temp)
+
 	}
 	return env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name, args)
 }

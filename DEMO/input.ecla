@@ -1,0 +1,3 @@
+import console;
+var nb string = console.input("Enter a number: ");
+console.print("This is your number ",nb);

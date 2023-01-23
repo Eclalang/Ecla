@@ -1,17 +1,19 @@
 package utils
 
-import "github.com/tot0p/Ecla/interpreter/eclaType"
+import (
+	"github.com/tot0p/Ecla/interpreter/eclaType"
+)
 
 func EclaTypeToGo(arg eclaType.Type) any {
 	switch arg.(type) {
 	case eclaType.Int:
-		return arg.(eclaType.Int).GetValue()
+		return int(arg.(eclaType.Int))
 	case eclaType.Float:
-		return arg.(eclaType.Float).GetValue()
+		return float64(arg.(eclaType.Float))
 	case eclaType.String:
-		return arg.(eclaType.String).GetValue()
+		return string(arg.(eclaType.String))
 	case eclaType.Bool:
-		return arg.(eclaType.Bool).GetValue()
+		return bool(arg.(eclaType.Bool))
 	case *eclaType.List:
 		types := make([]any, len(arg.(*eclaType.List).Value))
 		for _, val := range arg.(*eclaType.List).Value {

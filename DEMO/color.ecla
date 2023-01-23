@@ -1,0 +1,8 @@
+import console;
+console.printInColor("red", "This is red text\n");
+console.printInColor("green", "This is green text\n");
+console.printInColor("blue", "This is blue text\n");
+console.printInColor("yellow", "This is yellow text\n");
+console.printInColor("magenta", "This is magenta text\n");
+console.printInColor("cyan", "This is cyan text\n");
+console.printInColor("white", "This is white text\n");

@@ -434,8 +434,7 @@ func (p *Parser) ParseType() (string, bool) {
 				if Peek.TokenType != lexer.RBRACKET {
 					return "", false
 				}
-				p.Step()
-				p.Step()
+				p.MultiStep(2)
 				tempType += "[]"
 				continue
 			}
