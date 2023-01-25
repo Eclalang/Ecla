@@ -1,7 +1,6 @@
 import console;
 
 var test [][]int = [[14],[15, 1+1]];
-
 console.print(test[0][0] + "\n");
 
 console.print(test[1][1] + "\n");

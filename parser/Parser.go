@@ -854,6 +854,11 @@ func (p *Parser) ParseLiteral() Expr {
 		return tempLiteral
 	}
 	if p.CurrentToken.TokenType == lexer.TEXT {
+		if p.CurrentToken.Value == "null" {
+			tempLiteral := Literal{Token: p.CurrentToken, Type: "NULL", Value: p.CurrentToken.Value}
+			p.Step()
+			return tempLiteral
+		}
 		tempLiteral := p.ParseVariableAccess()
 		p.Step()
 		return tempLiteral
