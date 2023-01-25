@@ -45,7 +45,7 @@ func (s *Scope) GoDeep() {
 	cursor.next = &Scope{
 		Var:      make(map[string]*eclaType.Var),
 		next:     nil,
-		previous: s,
+		previous: cursor,
 	}
 }
 
