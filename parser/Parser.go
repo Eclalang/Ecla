@@ -67,7 +67,7 @@ func (p *Parser) Peek(lookAhead int) lexer.Token {
 
 func (p *Parser) PrintBacktrace() {
 	// print back the 10 last token values
-	p.MultiBack(10)
+	p.MultiBack(30)
 	for i := 0; i < 10; i++ {
 		fmt.Print(p.CurrentToken.Value)
 		p.Step()
@@ -755,8 +755,11 @@ func (p *Parser) ParseFunctionDecl() Node {
 		if p.CurrentToken.TokenType != lexer.COLON {
 			log.Fatal("Expected ':'")
 		}
-		p.Step()
-		ParamType = p.CurrentToken.Value
+		ParamType, succes := p.ParseType()
+		if !succes {
+			log.Fatal("Type does not exist")
+		}
+		p.Back()
 		if _, ok := tempFunctionDecl.Parameters[ParamName]; !ok {
 			tempFunctionDecl.Parameters[ParamName] = ParamType
 		} else {
@@ -771,26 +774,27 @@ func (p *Parser) ParseFunctionDecl() Node {
 		log.Fatal("Expected ')'")
 	}
 	tempFunctionDecl.RightParamParen = p.CurrentToken
-	p.Step()
-	if p.CurrentToken.TokenType != lexer.LPAREN {
-		log.Fatal("Expected '('")
-	}
-	tempFunctionDecl.LeftRetsParen = p.CurrentToken
-	for p.CurrentToken.TokenType != lexer.RPAREN {
+	if p.Peek(1).TokenType == lexer.LPAREN {
 		p.Step()
-		tempFunctionDecl.ReturnTypes = append(tempFunctionDecl.ReturnTypes, p.CurrentToken.Value)
-		p.Step()
-		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-			log.Fatal("Expected ','"+p.CurrentToken.Value, p.CurrentToken.TokenType)
+		tempFunctionDecl.LeftRetsParen = p.CurrentToken
+		for p.CurrentToken.TokenType != lexer.RPAREN {
+			retType, success := p.ParseType()
+			if !success {
+				log.Fatal("Type does not exist")
+			}
+			tempFunctionDecl.ReturnTypes = append(tempFunctionDecl.ReturnTypes, retType)
+			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+				log.Fatal("Expected ','"+p.CurrentToken.Value, p.CurrentToken.TokenType)
+			}
 		}
-	}
-	if p.CurrentToken.TokenType != lexer.RPAREN {
-		log.Fatal("Expected ')'")
+		if p.CurrentToken.TokenType != lexer.RPAREN {
+			log.Fatal("Expected ')'")
+		}
 	}
 	p.Step()
 	tempFunctionDecl.RightRetsParen = p.CurrentToken
 	if p.CurrentToken.TokenType != lexer.LBRACE {
-		log.Fatal("Expected '{'")
+		log.Fatal("Expected '{' instead of " + p.CurrentToken.Value)
 	}
 	p.Step()
 	tempFunctionDecl.Body = p.ParseBody()
