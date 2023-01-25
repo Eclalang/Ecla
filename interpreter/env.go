@@ -13,7 +13,7 @@ import (
 
 // Env is the environment in which the code is executed.
 type Env struct {
-	Vars       map[string]*eclaType.Var
+	Vars       *Scope
 	OS         string
 	ARCH       string
 	SyntaxTree *parser.File
@@ -29,7 +29,7 @@ func NewEnv() *Env {
 	return &Env{
 		OS:   runtime.GOOS,
 		ARCH: runtime.GOARCH,
-		Vars: make(map[string]*eclaType.Var),
+		Vars: NewScopeMain(),
 		Libs: make(map[string]libs.Lib),
 		Func: make(map[string]*eclaKeyWord.Function),
 	}
@@ -51,13 +51,21 @@ func (env *Env) SetFile(file string) {
 
 // SetVar sets the value of the variable with the given name.
 func (env *Env) SetVar(name string, value *eclaType.Var) {
-	env.Vars[name] = value
+	env.Vars.Set(name, value)
 }
 
 // GetVar returns the value of the variable with the given name.
 func (env *Env) GetVar(name string) (*eclaType.Var, bool) {
-	v, ok := env.Vars[name]
+	v, ok := env.Vars.Get(name)
 	return v, ok
+}
+
+func (env *Env) NewScope() {
+	env.Vars.GoDeep()
+}
+
+func (env *Env) EndScope() {
+	env.Vars.GoUp()
 }
 
 // SetFunc sets the function with the given name.
