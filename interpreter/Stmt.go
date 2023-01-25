@@ -154,9 +154,9 @@ func RunForStmt(For parser.ForStmt, env *Env) {
 
 // RunIfStmt
 func RunIfStmt(tree parser.IfStmt, env *Env) {
-	env.NewScope()
-	defer env.EndScope()
 	if RunTree(tree.Cond, env).GetString() == "true" { //TODO add error
+		env.NewScope()
+		defer env.EndScope()
 		for _, stmt := range tree.Body {
 			RunTree(stmt, env)
 		}
@@ -164,6 +164,8 @@ func RunIfStmt(tree parser.IfStmt, env *Env) {
 		if tree.ElseStmt.IfStmt != nil {
 			RunIfStmt(*tree.ElseStmt.IfStmt, env)
 		} else {
+			env.NewScope()
+			defer env.EndScope()
 			for _, stmt := range tree.ElseStmt.Body {
 				RunTree(stmt, env)
 			}
