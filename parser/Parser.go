@@ -473,6 +473,7 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 		p.Step()
 		tempExpr := p.ParseExpr()
 		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+			p.PrintBacktrace()
 			log.Fatal("Expected comma between function call arguments" + p.CurrentToken.Value)
 		}
 		exprArray = append(exprArray, tempExpr)
@@ -802,21 +803,25 @@ func (p *Parser) ParseReturnStmt() Node {
 }
 
 // ParseIndexableAccessExpr parses an indexable variable access expression
-func (p *Parser) ParseIndexableAccessExpr() Node {
+func (p *Parser) ParseIndexableAccessExpr() Expr {
 	tempIndexableAccessExpr := IndexableAccessExpr{VariableToken: p.CurrentToken, VariableName: p.CurrentToken.Value}
 	p.Step()
-	for p.CurrentToken.TokenType == lexer.RBRACKET || p.CurrentToken.TokenType == lexer.LBRACKET {
+	for p.CurrentToken.TokenType == lexer.LBRACKET {
 		p.Step()
 		tempIndexableAccessExpr.Indexes = append(tempIndexableAccessExpr.Indexes, p.ParseExpr())
 		p.Step()
-		if p.CurrentToken.TokenType != lexer.LBRACKET {
-			if p.CurrentToken.TokenType == lexer.EOL || p.CurrentToken.TokenType == lexer.EOF {
-				break
-			}
-			log.Fatal("Expected '['"+p.CurrentToken.Value, p.CurrentToken.TokenType)
-		}
 	}
 	return tempIndexableAccessExpr
+}
+
+func (p *Parser) ParseVariableAccess() Expr {
+	if p.Peek(1).TokenType == lexer.LBRACKET {
+		temp := p.ParseIndexableAccessExpr()
+		p.Back()
+		return temp
+	} else {
+		return Literal{Token: p.CurrentToken, Type: "VAR", Value: p.CurrentToken.Value}
+	}
 }
 
 // ParseLiteral parses a literal
@@ -827,7 +832,7 @@ func (p *Parser) ParseLiteral() Expr {
 		return tempLiteral
 	}
 	if p.CurrentToken.TokenType == lexer.TEXT {
-		tempLiteral := Literal{Token: p.CurrentToken, Type: "VAR", Value: p.CurrentToken.Value}
+		tempLiteral := p.ParseVariableAccess()
 		p.Step()
 		return tempLiteral
 	}
