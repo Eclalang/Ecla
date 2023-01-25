@@ -50,6 +50,8 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		return RunFunctionCallExpr(tree.(parser.FunctionCallExpr), env)
 	case parser.IndexableAccessExpr:
 		return RunIndexableAccessExpr(tree.(parser.IndexableAccessExpr), env)
+	case parser.IndexableVariableAssignStmt:
+		RunIndexableVariableAssignStmt(tree.(parser.IndexableVariableAssignStmt), env)
 	}
 	return nil
 }

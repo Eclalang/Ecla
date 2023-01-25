@@ -180,3 +180,48 @@ func RunReturnStmt(tree parser.ReturnStmt, env *Env) eclaType.Type {
 	}
 	return l[0]
 }
+
+func RunIndexableVariableAssignStmt(tree parser.IndexableVariableAssignStmt, env *Env) eclaType.Type {
+	var index parser.IndexableAccessExpr
+
+	switch tree.IndexableAccess.(type) {
+	case parser.IndexableAccessExpr:
+		index = tree.IndexableAccess.(parser.IndexableAccessExpr)
+	default:
+		panic(errors.New("indexable variable assign: indexable access not found"))
+	}
+
+	v, ok := env.GetVar(index.VariableName)
+	if !ok {
+		panic(errors.New("indexable variable assign: variable not found"))
+	}
+
+	var temp *eclaType.Type
+
+	switch v.Value.(type) {
+	case *eclaType.List:
+		temp = &v.Value
+	default:
+		panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
+	}
+
+	for i := range index.Indexes {
+		elem := RunTree(index.Indexes[i], env)
+		switch elem.(type) {
+		case *eclaType.Var:
+			elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
+		}
+		if elem.GetType() != "int" {
+			panic(fmt.Sprintf("Index must be an integer"))
+		}
+
+		switch (*temp).(type) {
+		case *eclaType.List:
+			temp = &((*temp).(*eclaType.List).Value[elem.(eclaType.Int)])
+		default:
+			panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
+		}
+	}
+	*temp = RunTree(tree.Value, env)
+	return nil
+}
