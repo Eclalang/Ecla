@@ -191,7 +191,6 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
 		panic(fmt.Sprintf("Function %s called with incorrect arguments", tree.Name))
 	}
 
-	fmt.Println(argsList)
 	for i, v := range argsList {
 		env.SetVar(i, v)
 	}
@@ -244,7 +243,7 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) eclaType.
 
 		switch result.(type) {
 		case *eclaType.List:
-			result = result.(*eclaType.List).Value[*elem.(*eclaType.Int)]
+			result = result.(*eclaType.List).Value[elem.(eclaType.Int)]
 		default:
 			panic(fmt.Sprintf("Variable %s is not indexable", tree.VariableName))
 		}
