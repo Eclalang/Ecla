@@ -6,9 +6,8 @@ import (
 	"log"
 )
 
-const (
-	LowestPrecedence  = 0
-	HighestPrecedence = 6
+var (
+	EndOfBrace = false
 )
 
 // Parser is the parser for the Ecla language
@@ -66,6 +65,25 @@ func (p *Parser) Peek(lookAhead int) lexer.Token {
 	return p.Tokens[p.TokenIndex+lookAhead]
 }
 
+func (p *Parser) PrintBacktrace() {
+	// print back the 10 last token values
+	p.MultiBack(10)
+	for i := 0; i < 10; i++ {
+		fmt.Print(p.CurrentToken.Value)
+		p.Step()
+	}
+	fmt.Println()
+}
+
+func (p *Parser) DisableEOLChecking() {
+	EndOfBrace = true
+	if p.CurrentToken.TokenType != lexer.EOL {
+		p.Back()
+	} else {
+		log.Println("Warning: Superfluous semicolon at line ", p.CurrentToken.Line, ":", p.CurrentToken.Position)
+	}
+}
+
 /*
 Parse is the main function of the parser.
 It parses the tokens within itself and returns a File struct containing the AST and the parsed declarations of variables and functions
@@ -115,17 +133,19 @@ func (p *Parser) ParseNode() Node {
 		return tempExpr
 	} else {
 		if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
-			log.Print("Warning: nil node added to AST")
+			log.Println("Warning: nil node added to AST")
 			return nil
 		} else {
 			tempExpr := p.ParseText()
-			if p.CurrentToken.TokenType != lexer.EOL {
+			if p.CurrentToken.TokenType != lexer.EOL && !EndOfBrace {
 				log.Fatal("Expected EOL"+p.CurrentToken.Value, p.CurrentToken.TokenType)
+			}
+			if EndOfBrace {
+				EndOfBrace = false
 			}
 			return tempExpr
 		}
 	}
-	return nil
 }
 
 // ParseBody parses a body of a function,a loop or a conditional statement
@@ -277,6 +297,7 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 			parsedIf := p.ParseIfStmt()
 			point := parsedIf.(IfStmt)
 			tempElse.IfStmt = &point
+			p.DisableEOLChecking()
 			return tempElse
 		} else {
 			tempElse.IfStmt = nil
@@ -295,6 +316,7 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 	}
 	tempElse.RightBrace = p.CurrentToken
 	p.Step()
+	p.DisableEOLChecking()
 	return tempElse
 }
 
@@ -324,6 +346,7 @@ func (p *Parser) ParseWhileStmt() Stmt {
 	}
 	tempWhile.RightBrace = p.CurrentToken
 	p.Step()
+	p.DisableEOLChecking()
 	return tempWhile
 }
 
@@ -387,6 +410,7 @@ func (p *Parser) ParseForStmt() Stmt {
 	}
 	tempFor.RightBrace = p.CurrentToken
 	p.Step()
+	p.DisableEOLChecking()
 	return tempFor
 }
 
@@ -547,6 +571,7 @@ func (p *Parser) ParseVariableAssign() Stmt {
 		p.Step()
 		return VariableDecrementStmt{VarToken: Var, Name: VarName, DecToken: p.CurrentToken}
 	}
+	fmt.Println()
 	return nil
 }
 
@@ -750,6 +775,7 @@ func (p *Parser) ParseFunctionDecl() Node {
 	}
 	p.Step()
 	p.CurrentFile.FunctionDecl = append(p.CurrentFile.FunctionDecl, tempFunctionDecl.Name)
+	p.DisableEOLChecking()
 	return tempFunctionDecl
 }
 
@@ -828,6 +854,7 @@ func (p *Parser) ParseLiteral() Expr {
 	if p.CurrentToken.TokenType == lexer.LBRACE {
 		return p.ParseMapLiteral()
 	}
+	p.PrintBacktrace()
 	log.Fatal("Expected literal instead of " + p.CurrentToken.Value)
 	return nil
 }

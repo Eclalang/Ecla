@@ -1,8 +1,6 @@
 import console;
-
 var a bool = true;
 var b bool = false;
-
 if (a){
     var b bool = true;
     console.println("b :",b);
@@ -12,5 +10,5 @@ if (a){
         console.println("b :",b);
     };
 };
-
+console.println("b is ",b," and a is ",a);
 console.println("a is ",a," and b is ",b);

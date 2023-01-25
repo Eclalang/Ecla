@@ -4,6 +4,11 @@ import (
 	"github.com/tot0p/Ecla/lexer"
 )
 
+const (
+	LowestPrecedence  = 0
+	HighestPrecedence = 6
+)
+
 func TokenPrecedence(tok lexer.Token) int {
 	switch tok.TokenType {
 	case "temp1":
