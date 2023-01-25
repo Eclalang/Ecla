@@ -30,6 +30,7 @@ func (p *Parser) Step() {
 	}
 }
 
+// Back moves the parser back one token
 func (p *Parser) Back() {
 	p.TokenIndex--
 	if p.TokenIndex < 0 {
@@ -38,6 +39,7 @@ func (p *Parser) Back() {
 	p.CurrentToken = p.Tokens[p.TokenIndex]
 }
 
+// MultiStep moves the parser forward n times givens as parameter
 func (p *Parser) MultiStep(steps int) {
 	p.TokenIndex += steps
 	if p.TokenIndex >= len(p.Tokens) {
@@ -47,6 +49,7 @@ func (p *Parser) MultiStep(steps int) {
 	}
 }
 
+// MultiBack moves the parser back n times given as parameter
 func (p *Parser) MultiBack(steps int) {
 	p.TokenIndex -= steps
 	if p.TokenIndex < 0 {
@@ -55,6 +58,7 @@ func (p *Parser) MultiBack(steps int) {
 	p.CurrentToken = p.Tokens[p.TokenIndex]
 }
 
+// Peek returns the token n steps ahead of the current token without moving the parser
 func (p *Parser) Peek(lookAhead int) lexer.Token {
 	if p.TokenIndex+lookAhead >= len(p.Tokens) {
 		return lexer.Token{}
@@ -62,8 +66,11 @@ func (p *Parser) Peek(lookAhead int) lexer.Token {
 	return p.Tokens[p.TokenIndex+lookAhead]
 }
 
-//Recursive descent parser
-
+/*
+Parse is the main function of the parser.
+It parses the tokens within itself and returns a File struct containing the AST and the parsed declarations of variables and functions
+It also runs the dependency checker to find any missing dependencies and notifies the user
+*/
 func (p *Parser) Parse() *File {
 	p.TokenIndex = -1
 	p.Step()
@@ -83,6 +90,7 @@ func (p *Parser) Parse() *File {
 	return file
 }
 
+// ParseFile parses the tokens and returns a File struct containing the AST and the parsed declarations of variables and functions
 func (p *Parser) ParseFile() *File {
 	tempFile := new(File)
 	tempFile.ParseTree = new(AST)
@@ -100,12 +108,14 @@ func (p *Parser) ParseFile() *File {
 
 }
 
+// ParseNode parses a node from the current token deciding checking if the token is text or other
 func (p *Parser) ParseNode() Node {
 	if p.CurrentToken.TokenType != lexer.TEXT {
 		tempExpr := p.ParseExpr()
 		return tempExpr
 	} else {
 		if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
+			log.Print("Warning: nil node added to AST")
 			return nil
 		} else {
 			tempExpr := p.ParseText()
@@ -118,6 +128,7 @@ func (p *Parser) ParseNode() Node {
 	return nil
 }
 
+// ParseBody parses a body of a function,a loop or a conditional statement
 func (p *Parser) ParseBody() []Node {
 	tempBody := make([]Node, 0)
 	for p.CurrentToken.TokenType != lexer.RBRACE {
@@ -127,6 +138,7 @@ func (p *Parser) ParseBody() []Node {
 	return tempBody
 }
 
+// ParseText parses a text node and checking if it is a keyword from Keywords
 func (p *Parser) ParseText() Node {
 	if _, ok := Keywords[p.CurrentToken.Value]; ok {
 		return p.ParseKeyword()
@@ -135,6 +147,7 @@ func (p *Parser) ParseText() Node {
 	}
 }
 
+// ParseKeyword parses a keyword and calls the appropriate parsing function
 func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "var" {
 		return p.ParseVariableDecl()
@@ -167,6 +180,7 @@ func (p *Parser) ParseKeyword() Node {
 	return nil
 }
 
+// ParseIdent parses an identifier and checking if it is function or method call,a variable declaration or a indexable variable access
 func (p *Parser) ParseIdent() Node {
 	if p.Peek(1).TokenType == lexer.PERIOD {
 		return p.ParseMethodCallExpr()
@@ -179,6 +193,7 @@ func (p *Parser) ParseIdent() Node {
 	}
 }
 
+// ParsePrintStmt 'Deprecated function' parses a print statement
 func (p *Parser) ParsePrintStmt() Stmt {
 	tempPrint := PrintStmt{PrintToken: p.CurrentToken}
 	p.Step()
@@ -196,6 +211,7 @@ func (p *Parser) ParsePrintStmt() Stmt {
 	return tempPrint
 }
 
+// ParseTypeStmt parses a type statement
 func (p *Parser) ParseTypeStmt() Stmt {
 	tempType := TypeStmt{TypeToken: p.CurrentToken}
 	p.Step()
@@ -213,6 +229,7 @@ func (p *Parser) ParseTypeStmt() Stmt {
 	return tempType
 }
 
+// ParseIfStmt parses an if statement
 func (p *Parser) ParseIfStmt() Stmt {
 	tempIf := IfStmt{IfToken: p.CurrentToken}
 	p.Step()
@@ -250,6 +267,7 @@ func (p *Parser) ParseIfStmt() Stmt {
 	return tempIf
 }
 
+// ParseElseStmt parses an else statement
 func (p *Parser) ParseElseStmt() *ElseStmt {
 	tempElse := new(ElseStmt)
 	tempElse.ElseToken = p.CurrentToken
@@ -280,6 +298,7 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 	return tempElse
 }
 
+// ParseWhileStmt parses a while statement
 func (p *Parser) ParseWhileStmt() Stmt {
 	tempWhile := WhileStmt{WhileToken: p.CurrentToken}
 	p.Step()
@@ -308,6 +327,7 @@ func (p *Parser) ParseWhileStmt() Stmt {
 	return tempWhile
 }
 
+// ParseForStmt parses a for statement
 func (p *Parser) ParseForStmt() Stmt {
 	tempFor := ForStmt{}
 	tempFor.ForToken = p.CurrentToken
@@ -370,6 +390,7 @@ func (p *Parser) ParseForStmt() Stmt {
 	return tempFor
 }
 
+// ParseVariableDecl parses a variable declaration
 func (p *Parser) ParseVariableDecl() Decl {
 	tempDecl := VariableDecl{VarToken: p.CurrentToken}
 	p.Step()
@@ -380,8 +401,8 @@ func (p *Parser) ParseVariableDecl() Decl {
 		log.Fatal("Expected variable name instead of ", p.CurrentToken.Value)
 	}
 	tempDecl.Name = p.CurrentToken.Value
-	typeName, succes := p.ParseType()
-	if !succes {
+	typeName, success := p.ParseType()
+	if !success {
 		log.Fatal("Expected variable type instead of ", p.CurrentToken.Value)
 	}
 	tempDecl.Type = typeName
@@ -404,6 +425,7 @@ func (p *Parser) ParseVariableDecl() Decl {
 
 }
 
+// ParseMethodCallExpr parses a method call expression
 func (p *Parser) ParseMethodCallExpr() Expr {
 	tempMethodCall := MethodCallExpr{MethodCallToken: p.CurrentToken, ObjectName: p.CurrentToken.Value}
 	p.CurrentFile.Dependencies = append(p.CurrentFile.Dependencies, p.CurrentToken.Value)
@@ -413,6 +435,7 @@ func (p *Parser) ParseMethodCallExpr() Expr {
 	return tempMethodCall
 }
 
+// ParseFunctionCallExpr parses a function call expression
 func (p *Parser) ParseFunctionCallExpr() Expr {
 	tempFunctionCall := FunctionCallExpr{FunctionCallToken: p.CurrentToken, Name: p.CurrentToken.Value}
 	p.Step()
@@ -438,6 +461,7 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 	return tempFunctionCall
 }
 
+// ParseType parses a valid type
 func (p *Parser) ParseType() (string, bool) {
 	p.Step()
 	if _, ok := VarTypes[p.CurrentToken.Value]; ok {
@@ -459,6 +483,7 @@ func (p *Parser) ParseType() (string, bool) {
 	return "", false
 }
 
+// ParseArrayType parses an array type
 func (p *Parser) ParseArrayType() string {
 	tempType := ""
 	for p.CurrentToken.TokenType == lexer.LBRACKET {
@@ -471,8 +496,8 @@ func (p *Parser) ParseArrayType() string {
 		p.Step()
 	}
 	p.Back()
-	arrayType, succes := p.ParseType()
-	if !succes {
+	arrayType, success := p.ParseType()
+	if !success {
 		return ""
 	}
 	p.Back()
@@ -480,6 +505,7 @@ func (p *Parser) ParseArrayType() string {
 	return tempType
 }
 
+// ParseMapType parses a map type
 func (p *Parser) ParseMapType() string {
 	tempType := "map"
 	p.Step()
@@ -487,8 +513,8 @@ func (p *Parser) ParseMapType() string {
 		return ""
 	}
 	tempType += p.CurrentToken.Value
-	keyType, succes := p.ParseType()
-	if !succes {
+	keyType, success := p.ParseType()
+	if !success {
 		return ""
 	}
 	tempType += keyType
@@ -496,8 +522,8 @@ func (p *Parser) ParseMapType() string {
 		return ""
 	}
 	tempType += p.CurrentToken.Value
-	valueType, succes := p.ParseType()
-	if !succes {
+	valueType, success := p.ParseType()
+	if !success {
 		return ""
 	}
 	p.Back()
@@ -505,6 +531,7 @@ func (p *Parser) ParseMapType() string {
 	return tempType
 }
 
+// ParseVariableAssign parses a variable assignment
 func (p *Parser) ParseVariableAssign() Stmt {
 	Var := p.CurrentToken
 	VarName := Var.Value
@@ -523,6 +550,7 @@ func (p *Parser) ParseVariableAssign() Stmt {
 	return nil
 }
 
+// ParseExpr parses an expression
 func (p *Parser) ParseExpr() Expr {
 	return p.ParseBinaryExpr(nil, LowestPrecedence+1)
 }
@@ -566,6 +594,7 @@ func (p *Parser) ParsePrimaryExpr(exp Expr) Expr {
 	return exp
 }
 
+// ParseOperand parses an operand
 func (p *Parser) ParseOperand() Expr {
 	if p.CurrentToken.TokenType == lexer.LPAREN {
 		return p.ParseParenExpr()
@@ -580,6 +609,7 @@ func (p *Parser) ParseOperand() Expr {
 	return p.ParseLiteral()
 }
 
+// ParseParenExpr parses a parenthesized expression
 func (p *Parser) ParseParenExpr() Expr {
 	tempParentExpr := ParenExpr{}
 	tempParentExpr.Lparen = p.CurrentToken
@@ -593,6 +623,7 @@ func (p *Parser) ParseParenExpr() Expr {
 	return tempParentExpr
 }
 
+// ParseArrayLiteral parses an array literal
 func (p *Parser) ParseArrayLiteral() Expr {
 	tempArrayExpr := ArrayLiteral{}
 	tempArrayExpr.LBRACKET = p.CurrentToken
@@ -612,6 +643,7 @@ func (p *Parser) ParseArrayLiteral() Expr {
 	return tempArrayExpr
 }
 
+// ParseMapLiteral parses a map literal
 func (p *Parser) ParseMapLiteral() Expr {
 	tempMapLiteral := MapLiteral{}
 	tempMapLiteral.LBRACE = p.CurrentToken
@@ -636,6 +668,7 @@ func (p *Parser) ParseMapLiteral() Expr {
 	return tempMapLiteral
 }
 
+// ParseImportStmt parses an import statement
 func (p *Parser) ParseImportStmt() Stmt {
 	tempImportStmt := ImportStmt{}
 	tempImportStmt.ImportToken = p.CurrentToken
@@ -649,6 +682,7 @@ func (p *Parser) ParseImportStmt() Stmt {
 	return tempImportStmt
 }
 
+// ParseFunctionDecl parses a function declaration
 func (p *Parser) ParseFunctionDecl() Node {
 	tempFunctionDecl := FunctionDecl{FunctionToken: p.CurrentToken}
 	tempFunctionDecl.Parameters = make(map[string]string)
@@ -719,6 +753,7 @@ func (p *Parser) ParseFunctionDecl() Node {
 	return tempFunctionDecl
 }
 
+// ParseReturnStmt parses a return statement
 func (p *Parser) ParseReturnStmt() Node {
 	tempReturnStmt := ReturnStmt{ReturnToken: p.CurrentToken}
 	p.Step()
@@ -739,6 +774,7 @@ func (p *Parser) ParseReturnStmt() Node {
 	return tempReturnStmt
 }
 
+// ParseIndexableAccessExpr parses an indexable variable access expression
 func (p *Parser) ParseIndexableAccessExpr() Node {
 	tempIndexableAccessExpr := IndexableAccessExpr{VariableToken: p.CurrentToken, VariableName: p.CurrentToken.Value}
 	p.Step()
