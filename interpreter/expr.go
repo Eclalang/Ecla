@@ -48,6 +48,8 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		RunFunctionDecl(tree.(parser.FunctionDecl), env)
 	case parser.FunctionCallExpr:
 		return RunFunctionCallExpr(tree.(parser.FunctionCallExpr), env)
+	case parser.IndexableAccessExpr:
+		return RunIndexableAccessExpr(tree.(parser.IndexableAccessExpr), env)
 	}
 	return nil
 }
@@ -215,4 +217,37 @@ func RunBodyFunction(fn *eclaKeyWord.Function, env *Env) (eclaType.Type, error) 
 		RunTree(v, env)
 	}
 	return nil, nil
+}
+
+func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) eclaType.Type {
+	v, ok := env.GetVar(tree.VariableName)
+	if !ok {
+		panic(fmt.Sprintf("Variable %s not found", tree.VariableName))
+	}
+	var result eclaType.Type
+	switch v.Value.(type) {
+	case *eclaType.List:
+		result = v.Value
+	default:
+		panic(fmt.Sprintf("Variable %s is not indexable", tree.VariableName))
+	}
+
+	for i := range tree.Indexes {
+		elem := RunTree(tree.Indexes[i], env)
+		switch elem.(type) {
+		case *eclaType.Var:
+			elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
+		}
+		if elem.GetType() != "int" {
+			panic(fmt.Sprintf("Index must be an integer"))
+		}
+
+		switch result.(type) {
+		case *eclaType.List:
+			result = result.(*eclaType.List).Value[*elem.(*eclaType.Int)]
+		default:
+			panic(fmt.Sprintf("Variable %s is not indexable", tree.VariableName))
+		}
+	}
+	return result
 }
