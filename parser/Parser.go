@@ -29,6 +29,15 @@ func (p *Parser) Step() {
 		p.CurrentToken = p.Tokens[p.TokenIndex]
 	}
 }
+
+func (p *Parser) Back() {
+	p.TokenIndex--
+	if p.TokenIndex < 0 {
+		p.TokenIndex = 0
+	}
+	p.CurrentToken = p.Tokens[p.TokenIndex]
+}
+
 func (p *Parser) MultiStep(steps int) {
 	p.TokenIndex += steps
 	if p.TokenIndex >= len(p.Tokens) {
@@ -36,6 +45,14 @@ func (p *Parser) MultiStep(steps int) {
 	} else {
 		p.CurrentToken = p.Tokens[p.TokenIndex]
 	}
+}
+
+func (p *Parser) MultiBack(steps int) {
+	p.TokenIndex -= steps
+	if p.TokenIndex < 0 {
+		p.TokenIndex = 0
+	}
+	p.CurrentToken = p.Tokens[p.TokenIndex]
 }
 
 func (p *Parser) Peek(lookAhead int) lexer.Token {
@@ -363,8 +380,8 @@ func (p *Parser) ParseVariableDecl() Decl {
 		log.Fatal("Expected variable name instead of ", p.CurrentToken.Value)
 	}
 	tempDecl.Name = p.CurrentToken.Value
-	typeName, isType := p.ParseType()
-	if !isType {
+	typeName, succes := p.ParseType()
+	if !succes {
 		log.Fatal("Expected variable type instead of ", p.CurrentToken.Value)
 	}
 	tempDecl.Type = typeName
@@ -425,28 +442,67 @@ func (p *Parser) ParseType() (string, bool) {
 	p.Step()
 	if _, ok := VarTypes[p.CurrentToken.Value]; ok {
 		tempType := ""
-		for {
-			if _, ok2 := VarTypes[p.CurrentToken.Value]; !ok2 {
-				break
-			}
-			if p.CurrentToken.TokenType == lexer.LBRACKET {
-				Peek := p.Peek(1)
-				if Peek.TokenType != lexer.RBRACKET {
-					return "", false
-				}
-				p.MultiStep(2)
-				tempType += "[]"
-				continue
-			}
-			tempType += p.CurrentToken.Value
-			p.Step()
+		switch p.CurrentToken.Value {
+		case "[":
+			tempType = p.ParseArrayType()
+		case "map":
+			tempType = p.ParseMapType()
+		default:
+			tempType = p.CurrentToken.Value
 		}
+		p.Step()
 		if tempType == "" {
 			return "", false
 		}
 		return tempType, true
 	}
 	return "", false
+}
+
+func (p *Parser) ParseArrayType() string {
+	tempType := ""
+	for p.CurrentToken.TokenType == lexer.LBRACKET {
+		tempType += p.CurrentToken.Value
+		p.Step()
+		if p.CurrentToken.TokenType != lexer.RBRACKET {
+			return ""
+		}
+		tempType += p.CurrentToken.Value
+		p.Step()
+	}
+	p.Back()
+	arrayType, succes := p.ParseType()
+	if !succes {
+		return ""
+	}
+	p.Back()
+	tempType += arrayType
+	return tempType
+}
+
+func (p *Parser) ParseMapType() string {
+	tempType := "map"
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LBRACKET {
+		return ""
+	}
+	tempType += p.CurrentToken.Value
+	keyType, succes := p.ParseType()
+	if !succes {
+		return ""
+	}
+	tempType += keyType
+	if p.CurrentToken.TokenType != lexer.RBRACKET {
+		return ""
+	}
+	tempType += p.CurrentToken.Value
+	valueType, succes := p.ParseType()
+	if !succes {
+		return ""
+	}
+	p.Back()
+	tempType += valueType
+	return tempType
 }
 
 func (p *Parser) ParseVariableAssign() Stmt {
@@ -642,7 +698,6 @@ func (p *Parser) ParseFunctionDecl() Node {
 		tempFunctionDecl.ReturnTypes = append(tempFunctionDecl.ReturnTypes, p.CurrentToken.Value)
 		p.Step()
 		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-			fmt.Println(tempFunctionDecl.Parameters)
 			log.Fatal("Expected ','"+p.CurrentToken.Value, p.CurrentToken.TokenType)
 		}
 	}

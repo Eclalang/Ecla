@@ -1,1 +1,1 @@
-var testmap map[string]string = {"test":"test","test2":"test2"}
+var test map[string]string = {"test":"test","test2":"test2"};
