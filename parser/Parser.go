@@ -206,8 +206,6 @@ func (p *Parser) ParseIdent() Node {
 		return p.ParseMethodCallExpr()
 	} else if p.Peek(1).TokenType == lexer.LPAREN {
 		return p.ParseFunctionCallExpr()
-	} else if p.Peek(1).TokenType == lexer.LBRACKET {
-		return p.ParseIndexableAccessExpr()
 	} else {
 		return p.ParseVariableAssign()
 	}
@@ -559,6 +557,14 @@ func (p *Parser) ParseMapType() string {
 
 // ParseVariableAssign parses a variable assignment
 func (p *Parser) ParseVariableAssign() Stmt {
+	if p.Peek(1).TokenType == lexer.LBRACKET {
+		return p.ParseIndexableVariableAssign()
+	} else {
+		return p.ParseNormalVariableAssign()
+	}
+}
+
+func (p *Parser) ParseNormalVariableAssign() Stmt {
 	Var := p.CurrentToken
 	VarName := Var.Value
 	p.Step()
@@ -573,7 +579,23 @@ func (p *Parser) ParseVariableAssign() Stmt {
 		p.Step()
 		return VariableDecrementStmt{VarToken: Var, Name: VarName, DecToken: p.CurrentToken}
 	}
-	fmt.Println()
+	return nil
+}
+
+func (p *Parser) ParseIndexableVariableAssign() Stmt {
+	Var := p.CurrentToken
+	VarAccess := p.ParseIndexableAccessExpr()
+	switch p.CurrentToken.TokenType {
+	case lexer.ASSIGN:
+		p.Step()
+		return IndexableVariableAssignStmt{VarToken: Var, IndexableAccess: VarAccess, Value: p.ParseExpr()}
+	case lexer.INC:
+		p.Step()
+		return IndexableVariableIncrementStmt{VarToken: Var, IndexableAccess: VarAccess, IncToken: p.CurrentToken}
+	case lexer.DEC:
+		p.Step()
+		return IndexableVariableDecrementStmt{VarToken: Var, IndexableAccess: VarAccess, DecToken: p.CurrentToken}
+	}
 	return nil
 }
 

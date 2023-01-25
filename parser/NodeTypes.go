@@ -247,6 +247,56 @@ func (v VariableDecrementStmt) EndPos() int {
 
 func (v VariableDecrementStmt) stmtNode() {}
 
+// Indexable variable assignements
+
+type IndexableVariableAssignStmt struct {
+	VarToken        lexer.Token
+	IndexableAccess Expr
+	Value           Expr
+}
+
+func (v IndexableVariableAssignStmt) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v IndexableVariableAssignStmt) EndPos() int {
+	return v.Value.EndPos()
+}
+
+func (v IndexableVariableAssignStmt) stmtNode() {}
+
+type IndexableVariableIncrementStmt struct {
+	VarToken        lexer.Token
+	IndexableAccess Expr
+	IncToken        lexer.Token
+}
+
+func (v IndexableVariableIncrementStmt) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v IndexableVariableIncrementStmt) EndPos() int {
+	return v.IncToken.Position
+}
+
+func (v IndexableVariableIncrementStmt) stmtNode() {}
+
+type IndexableVariableDecrementStmt struct {
+	VarToken        lexer.Token
+	IndexableAccess Expr
+	DecToken        lexer.Token
+}
+
+func (v IndexableVariableDecrementStmt) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v IndexableVariableDecrementStmt) EndPos() int {
+	return v.DecToken.Position
+}
+
+func (v IndexableVariableDecrementStmt) stmtNode() {}
+
 type IfStmt struct {
 	IfToken    lexer.Token
 	LeftParen  lexer.Token
