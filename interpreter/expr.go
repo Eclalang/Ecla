@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"fmt"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
@@ -42,6 +43,10 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		RunImportStmt(tree.(parser.ImportStmt), env)
 	case parser.MethodCallExpr:
 		return RunMethodCallExpr(tree.(parser.MethodCallExpr), env)
+	case parser.FunctionDecl:
+		RunFunctionDecl(tree.(parser.FunctionDecl), env)
+	case parser.FunctionCallExpr:
+		return RunFunctionCallExpr(tree.(parser.FunctionCallExpr), env)
 	}
 	return nil
 }
@@ -160,4 +165,22 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) eclaType.Type {
 		return t
 	}
 	return nil
+}
+
+func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
+	var args []eclaType.Type
+	for _, v := range tree.Args {
+		temp := RunTree(v, env)
+		switch temp.(type) {
+		case *eclaType.Var:
+			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+		}
+		args = append(args, temp)
+	}
+	fn, ok := env.GetFunction(tree.Name)
+	if !ok {
+		panic(fmt.Sprintf("Function %s not found", tree.Name))
+	}
+	_ = fn
+	return eclaType.Bool(true)
 }

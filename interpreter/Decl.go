@@ -3,6 +3,7 @@ package interpreter
 import (
 	"errors"
 	"fmt"
+	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
@@ -146,4 +147,9 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) eclaType.Type {
 		panic(err)
 	}
 	return l
+}
+
+func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
+	fn := eclaKeyWord.NewFunction(tree.Name, tree.Parameters, tree.Body, tree.ReturnTypes)
+	env.SetFunction(tree.Name, fn)
 }

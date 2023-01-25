@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs"
 	"github.com/tot0p/Ecla/lexer"
@@ -20,6 +21,7 @@ type Env struct {
 	File       string
 	Code       string
 	Libs       map[string]libs.Lib
+	Func       map[string]*eclaKeyWord.Function
 }
 
 // NewEnv returns a new Env.
@@ -29,11 +31,12 @@ func NewEnv() *Env {
 		ARCH: runtime.GOARCH,
 		Vars: make(map[string]*eclaType.Var),
 		Libs: make(map[string]libs.Lib),
+		Func: make(map[string]*eclaKeyWord.Function),
 	}
 }
 
 func (env *Env) String() string {
-	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s , VAR : %s}", env.OS, env.ARCH, env.Code, env.Vars)
+	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s , VAR : %s, FUNC : %s}", env.OS, env.ARCH, env.Code, env.Vars, env.Func)
 }
 
 // SetCode sets the code to be executed.
@@ -55,6 +58,17 @@ func (env *Env) SetVar(name string, value *eclaType.Var) {
 func (env *Env) GetVar(name string) (*eclaType.Var, bool) {
 	v, ok := env.Vars[name]
 	return v, ok
+}
+
+// SetFunc sets the function with the given name.
+func (env *Env) SetFunction(name string, f *eclaKeyWord.Function) {
+	env.Func[name] = f
+}
+
+// GetFunc returns the function with the given name.
+func (env *Env) GetFunction(name string) (*eclaKeyWord.Function, bool) {
+	f, ok := env.Func[name]
+	return f, ok
 }
 
 // Execute executes Env.Code or Env.File.
