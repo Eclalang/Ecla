@@ -284,6 +284,7 @@ func (p *Parser) ParseIfStmt() Stmt {
 	} else {
 		tempIf.ElseStmt = nil
 	}
+	p.DisableEOLChecking()
 	return tempIf
 }
 
