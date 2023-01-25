@@ -180,7 +180,7 @@ func (p *Parser) ParseKeyword() Node {
 	return nil
 }
 
-// ParseIdent parses an identifier and checking if it is function or method call,a variable declaration or a indexable variable access
+// ParseIdent parses an identifier and checking if it is function or method call,a variable declaration or an indexable variable access
 func (p *Parser) ParseIdent() Node {
 	if p.Peek(1).TokenType == lexer.PERIOD {
 		return p.ParseMethodCallExpr()
@@ -435,7 +435,7 @@ func (p *Parser) ParseMethodCallExpr() Expr {
 	return tempMethodCall
 }
 
-// ParseFunctionCallExpr parses a function call expression
+// ParseFunctionCallExpr parse a function call expression
 func (p *Parser) ParseFunctionCallExpr() Expr {
 	tempFunctionCall := FunctionCallExpr{FunctionCallToken: p.CurrentToken, Name: p.CurrentToken.Value}
 	p.Step()
@@ -443,7 +443,7 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 		log.Fatal("Expected Function call LPAREN" + p.CurrentToken.Value)
 	}
 	tempFunctionCall.LeftParen = p.CurrentToken
-	exprArray := []Expr{}
+	var exprArray []Expr
 	for p.CurrentToken.TokenType != lexer.RPAREN {
 		p.Step()
 		tempExpr := p.ParseExpr()
@@ -550,7 +550,7 @@ func (p *Parser) ParseVariableAssign() Stmt {
 	return nil
 }
 
-// ParseExpr parses an expression
+// ParseExpr parse an expression
 func (p *Parser) ParseExpr() Expr {
 	return p.ParseBinaryExpr(nil, LowestPrecedence+1)
 }
@@ -562,13 +562,13 @@ func (p *Parser) ParseBinaryExpr(Lhs Expr, precedence int) Expr {
 	}
 	var n int
 	for n = 1; ; n++ {
-		opprec := TokenPrecedence(p.CurrentToken)
+		opPrecedence := TokenPrecedence(p.CurrentToken)
 		operator := p.CurrentToken
-		if opprec < precedence {
+		if opPrecedence < precedence {
 			return Lhs
 		}
 		p.Step()
-		Rhs := p.ParseBinaryExpr(nil, opprec+1)
+		Rhs := p.ParseBinaryExpr(nil, opPrecedence+1)
 
 		Lhs = BinaryExpr{LeftExpr: Lhs, Operator: operator, RightExpr: Rhs}
 	}
