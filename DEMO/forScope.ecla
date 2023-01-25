@@ -1,0 +1,26 @@
+
+var i int = 100;
+var k int = 200;
+
+for (var i int = 0, i < 10, i++) {
+    print(i + "\n");
+    
+};
+
+print(i + "\n");
+
+print("=====================================" + "\n");
+
+
+var list []int =[1,2,3,4];
+
+for (test,test2 range list ) {
+    var k int = 100;
+    print(k + "\n");
+    print("Key : " + test);
+    print("\n");
+    print("Value : " + test2);
+    print("\n");
+};
+
+print(k + "\n");

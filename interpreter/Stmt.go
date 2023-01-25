@@ -72,6 +72,8 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 
 // RunWhileStmt
 func RunWhileStmt(tree parser.WhileStmt, env *Env) {
+	env.NewScope()
+	defer env.EndScope()
 	while := eclaKeyWord.NewWhile(tree.Cond, tree.Body)
 	for RunTree(while.Condition, env).GetString() == "true" { //TODO add error
 		for _, stmt := range while.Body {
@@ -81,6 +83,8 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) {
 }
 
 func RunForStmt(For parser.ForStmt, env *Env) {
+	env.NewScope()
+	defer env.EndScope()
 	tokenEmpty := lexer.Token{}
 	if For.RangeToken != tokenEmpty {
 		f := eclaKeyWord.NewForRange([]eclaType.Type{}, For.RangeExpr, For.KeyToken, For.ValueToken, For.Body)
