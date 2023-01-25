@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
@@ -168,6 +169,8 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) eclaType.Type {
 }
 
 func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
+	env.NewScope()
+	defer env.EndScope()
 	var args []eclaType.Type
 	for _, v := range tree.Args {
 		temp := RunTree(v, env)
@@ -181,6 +184,35 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
 	if !ok {
 		panic(fmt.Sprintf("Function %s not found", tree.Name))
 	}
-	_ = fn
-	return eclaType.Bool(true)
+	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args)
+	if !ok {
+		panic(fmt.Sprintf("Function %s called with incorrect arguments", tree.Name))
+	}
+
+	fmt.Println(argsList)
+	for i, v := range argsList {
+		env.SetVar(i, v)
+	}
+
+	r, err := RunBodyFunction(fn, env)
+	if err != nil {
+		panic(err)
+	}
+	return r
+}
+
+func RunBodyFunction(fn *eclaKeyWord.Function, env *Env) (eclaType.Type, error) {
+	for _, v := range fn.Body {
+		switch v.(type) {
+		case parser.ReturnStmt:
+			r := RunReturnStmt(v.(parser.ReturnStmt), env)
+			ok := fn.CheckReturn([]eclaType.Type{r})
+			if !ok {
+				return nil, fmt.Errorf("Return type of function %s is incorrect", fn.Name)
+			}
+			return r, nil
+		}
+		RunTree(v, env)
+	}
+	return nil, nil
 }

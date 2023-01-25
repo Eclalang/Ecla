@@ -170,3 +170,11 @@ func RunIfStmt(tree parser.IfStmt, env *Env) {
 		}
 	}
 }
+
+func RunReturnStmt(tree parser.ReturnStmt, env *Env) eclaType.Type {
+	l := []eclaType.Type{}
+	for _, expr := range tree.ReturnValues {
+		l = append(l, RunTree(expr, env))
+	}
+	return l[0]
+}
