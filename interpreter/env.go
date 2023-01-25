@@ -68,12 +68,12 @@ func (env *Env) EndScope() {
 	env.Vars.GoUp()
 }
 
-// SetFunc sets the function with the given name.
+// SetFunction sets the function with the given name.
 func (env *Env) SetFunction(name string, f *eclaKeyWord.Function) {
 	env.Func[name] = f
 }
 
-// GetFunc returns the function with the given name.
+// GetFunction returns the function with the given name.
 func (env *Env) GetFunction(name string) (*eclaKeyWord.Function, bool) {
 	f, ok := env.Func[name]
 	return f, ok

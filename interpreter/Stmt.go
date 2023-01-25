@@ -150,6 +150,7 @@ func RunForStmt(For parser.ForStmt, env *Env) {
 
 // RunIfStmt
 func RunIfStmt(tree parser.IfStmt, env *Env) {
+	env.NewScope()
 	if RunTree(tree.Cond, env).GetString() == "true" { //TODO add error
 		for _, stmt := range tree.Body {
 			RunTree(stmt, env)
@@ -163,4 +164,5 @@ func RunIfStmt(tree parser.IfStmt, env *Env) {
 			}
 		}
 	}
+	env.EndScope()
 }
