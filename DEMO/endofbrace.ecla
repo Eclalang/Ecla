@@ -1,0 +1,10 @@
+import console;
+
+var Bool1 bool = true;
+var Bool2 bool = !(0 == 0);
+
+if (Bool1) {
+    console.paul("Bool1 is true");
+} else {
+    console.log("Bool1 is false");
+};

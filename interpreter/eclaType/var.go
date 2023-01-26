@@ -22,6 +22,7 @@ func (v *Var) GetValue() any {
 	return v.Value.GetValue()
 }
 
+// TODO: Refactor this method
 func (v *Var) SetValue(value any) error {
 	return errors.New("this should not be called")
 }

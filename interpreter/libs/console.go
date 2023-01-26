@@ -9,10 +9,23 @@ import (
 type Console struct {
 }
 
+var (
+	functionMap = map[string]interface{}{
+		"printf":       nil,
+		"println":      nil,
+		"print":        nil,
+		"input":        nil,
+		"printInColor": nil,
+	}
+)
+
 func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
 	newargs := make([]any, len(args))
 	for k, arg := range args {
 		newargs[k] = utils.EclaTypeToGo(arg)
+	}
+	if _, ok := functionMap[name]; !ok {
+		return nil
 	}
 	switch name {
 	case "printf":

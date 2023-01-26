@@ -66,7 +66,11 @@ func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) eclaType.Type {
 		}
 		args = append(args, temp)
 	}
-	return env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name, args)
+	call := env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name, args)
+	if call == nil {
+		panic(fmt.Sprintf("Method %s not found in module %s", expr.FunctionCall.Name, expr.ObjectName))
+	}
+	return call
 }
 
 // RunBinaryExpr executes a parser.BinaryExpr.
