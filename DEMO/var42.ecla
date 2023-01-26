@@ -1,0 +1,6 @@
+import console;
+
+var nb1 int = 2;
+var nb2 int = 8;
+var nb3 int = 5;
+console.println(nb1 + nb2 * nb3);
