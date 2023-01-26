@@ -67,7 +67,7 @@ func (p *Parser) Peek(lookAhead int) lexer.Token {
 
 func (p *Parser) PrintBacktrace() {
 	// print back the 10 last token values
-	p.MultiBack(30)
+	p.MultiBack(10)
 	for i := 0; i < 10; i++ {
 		fmt.Print(p.CurrentToken.Value)
 		p.Step()
@@ -869,10 +869,19 @@ func (p *Parser) ParseLiteral() Expr {
 	}
 	if p.CurrentToken.TokenType == lexer.DQUOTE {
 		p.Step()
-		if p.CurrentToken.TokenType != lexer.STRING {
-			log.Fatal("Expected string")
+		tempLiteral := Literal{}
+		if p.CurrentToken.TokenType == lexer.DQUOTE {
+			tempLiteral = Literal{Token: p.CurrentToken, Type: lexer.STRING, Value: ""}
+			p.Step()
+			return tempLiteral
+		} else {
+			if p.CurrentToken.TokenType != lexer.STRING {
+				p.PrintBacktrace()
+				log.Fatal("Expected string")
+			}
+			tempLiteral = Literal{Token: p.CurrentToken, Type: lexer.STRING, Value: p.CurrentToken.Value}
 		}
-		tempLiteral := Literal{Token: p.CurrentToken, Type: lexer.STRING, Value: p.CurrentToken.Value}
+
 		p.Step()
 		if p.CurrentToken.TokenType != lexer.DQUOTE {
 			log.Fatal("Expected '\"'")
