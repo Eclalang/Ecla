@@ -14,31 +14,31 @@ var (
 		input: `+= -= /= *= %= ++ -- a++ b-- //=`,
 		output: []lexer.Token{
 			{
-				TokenType: lexer.INC,
+				TokenType: lexer.ADD + lexer.ASSIGN,
 				Value:     `+=`,
 				Position:  1,
 				Line:      0,
 			},
 			{
-				TokenType: lexer.DEC,
+				TokenType: lexer.SUB + lexer.ASSIGN,
 				Value:     `-=`,
 				Position:  4,
 				Line:      0,
 			},
 			{
-				TokenType: lexer.DIV,
+				TokenType: lexer.DIV + lexer.ASSIGN,
 				Value:     `/=`,
 				Position:  7,
 				Line:      0,
 			},
 			{
-				TokenType: lexer.MULT,
+				TokenType: lexer.MULT + lexer.ASSIGN,
 				Value:     `*=`,
 				Position:  10,
 				Line:      0,
 			},
 			{
-				TokenType: lexer.MOD,
+				TokenType: lexer.MOD + lexer.ASSIGN,
 				Value:     `%=`,
 				Position:  13,
 				Line:      0,
@@ -92,7 +92,7 @@ var (
 				Line:      0,
 			},
 			{
-				TokenType: lexer.QOT,
+				TokenType: lexer.QOT + lexer.ASSIGN,
 				Value:     `//=`,
 				Position:  30,
 				Line:      0,
@@ -106,7 +106,7 @@ var (
 		},
 	}
 	testDQuote = testList{
-		input: `"a\"b"a"be"`,
+		input: `"    "a"be"`,
 		output: []lexer.Token{
 			{
 				TokenType: lexer.DQUOTE,
@@ -116,7 +116,7 @@ var (
 			},
 			{
 				TokenType: lexer.STRING,
-				Value:     `a\"b`,
+				Value:     `    `,
 				Position:  2,
 				Line:      0,
 			},
@@ -212,7 +212,7 @@ var (
 		},
 	}
 	testSpeChar = testList{
-		input: ":;.,()[]{}",
+		input: ":;\n.,()[]{}",
 		output: []lexer.Token{
 			{
 				TokenType: lexer.COLON,
@@ -282,7 +282,7 @@ var (
 			}},
 	}
 	testEOL = testList{
-		input: "();mgrlgrl;_aa_",
+		input: "();\nmgrlgrl;\n_aa_",
 		output: []lexer.Token{
 			{
 				TokenType: lexer.LPAREN,
@@ -320,6 +320,17 @@ var (
 				Position:  2,
 				Line:      2,
 			},
+			{
+				TokenType: lexer.EOF,
+				Value:     ``,
+				Position:  5,
+				Line:      2,
+			},
+		},
+	}
+	testHashtag = testList{
+		input: "prout# in comment\n#/ in commentgroup\n and next ligne /#",
+		output: []lexer.Token{
 			{
 				TokenType: lexer.EOF,
 				Value:     ``,
