@@ -58,7 +58,7 @@ func (v *Var) SetVar(value Type) error {
 		}
 	}
 
-	if typ2 == typ {
+	if typ2 == typ || typ == "null" || typ2 == "null" {
 		v.Value = value
 		return nil
 	}
