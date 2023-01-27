@@ -20,9 +20,9 @@ var (
 )
 
 func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
-	newargs := make([]any, len(args))
+	newArgs := make([]any, len(args))
 	for k, arg := range args {
-		newargs[k] = utils.EclaTypeToGo(arg)
+		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
 	if _, ok := functionMap[name]; !ok {
 		return nil
@@ -30,18 +30,18 @@ func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
 	switch name {
 	case "printf":
 		// TODO: refactor this line
-		console.Printf(newargs[0].(string), newargs[1:]...)
+		console.Printf(newArgs[0].(string), newArgs[1:]...)
 	case "println":
-		console.Println(newargs...)
+		console.Println(newArgs...)
 	case "print":
-		console.Print(newargs...)
+		console.Print(newArgs...)
 	case "input":
-		return utils.GoToEclaType(console.Input(newargs...))
+		return utils.GoToEclaType(console.Input(newArgs...))
 	case "printInColor":
-		console.PrintInColor(newargs[0].(string), newargs[1:]...)
+		console.PrintInColor(newArgs[0].(string), newArgs[1:]...)
 		// To add later
 		//case "printlnInColor":
-		//	console.PrintlnInColor(newargs[0].(string), newargs[1:]...)
+		//	console.PrintlnInColor(newArgs[0].(string), newArgs[1:]...)
 	}
 
 	return eclaType.Empty{}
