@@ -26,6 +26,8 @@ func New(t parser.Literal, env *Env) eclaType.Type {
 			panic(errors.New("variable not found"))
 		}
 		return v
+	case "NULL":
+		return eclaType.NewNull()
 	default:
 		panic("Unknown type")
 	}

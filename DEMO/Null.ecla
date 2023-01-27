@@ -1,0 +1,6 @@
+
+
+var t int = null;
+
+t = 1;
+

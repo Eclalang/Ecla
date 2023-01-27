@@ -22,7 +22,7 @@ func (v *Var) GetValue() any {
 	return v.Value.GetValue()
 }
 
-// TODO: Refactor this method
+// SetValue TODO: Refactor this method
 func (v *Var) SetValue(value any) error {
 	return errors.New("this should not be called")
 }
@@ -188,7 +188,7 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 			Value: value,
 		}, nil
 	}
-	if Type != value.GetType() {
+	if Type != value.GetType() && value.GetType() != "null" {
 		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
 	}
 	switch value.(type) {
