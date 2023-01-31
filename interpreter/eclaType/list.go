@@ -69,15 +69,15 @@ func (l *List) SetType(other string) {
 func (l *List) GetIndex(index Type) (Type, error) {
 	switch index.(type) {
 	case Int:
-		if int(index.(Int)) < len(l.Value) {
-			return l.Value[int(index.(Int))], nil
-		} else {
-			return nil, errors.New("index out of range")
+		ind := int(index.(Int))
+		if ind >= len(l.Value) || ind < 0 {
+			return nil, errors.New("Index out of range")
 		}
+		return l.Value[ind], nil
+
 	default:
-		return nil, errors.New("cannot get index of list")
+		return nil, errors.New("index must be an integer")
 	}
-	return nil, errors.New("cannot get index of list")
 }
 
 // Len returns the length of a list

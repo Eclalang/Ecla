@@ -68,17 +68,19 @@ func (s String) GetType() string {
 
 // GetIndex returns a single character
 func (s String) GetIndex(other Type) (Type, error) {
-	if s == "" {
-		return nil, errors.New("Index out of range")
-	}
+
 	switch other.(type) {
 	case Int:
 		// bonjour -> other = 2 donc return = n
 		// [2:] [:4] = [other:] [:len(string)-other-1]
-		res := String(string(s)[int(other.(Int))])
+		ind := int(other.(Int))
+		if ind >= len(s) || ind < 0 {
+			return nil, errors.New("Index out of range")
+		}
+		res := String(string(s)[ind])
 		return res, nil
 	default:
-		return nil, errors.New("cannot get index from string")
+		return nil, errors.New("index must be an integer")
 	}
 }
 

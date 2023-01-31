@@ -1,0 +1,15 @@
+
+
+var t []string = ["hello", "world"];
+
+var i string = "hello";
+
+
+import console;
+
+console.println(i);
+console.println(i[1]);
+
+
+console.println(t);
+console.print(t[1][0]);

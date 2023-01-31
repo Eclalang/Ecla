@@ -229,29 +229,29 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) eclaType.
 	if !ok {
 		panic(fmt.Sprintf("Variable %s not found", tree.VariableName))
 	}
-	var result eclaType.Type
-	switch v.Value.(type) {
-	case *eclaType.List:
-		result = v.Value
-	default:
-		panic(fmt.Sprintf("Variable %s is not indexable", tree.VariableName))
-	}
+	var result eclaType.Type = v
 
 	for i := range tree.Indexes {
 		elem := RunTree(tree.Indexes[i], env)
-		switch elem.(type) {
-		case *eclaType.Var:
-			elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
-		}
-		if elem.GetType() != "int" {
-			panic(fmt.Sprintf("Index must be an integer"))
-		}
+		//switch elem.(type) {
+		//case *eclaType.Var:
+		//	elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
+		//}
+		//if elem.GetType() != "int" {
+		//	panic(fmt.Sprintf("Index must be an integer"))
+		//}
+		//
+		//switch result.(type) {
+		//case *eclaType.List:
+		//	result = result.(*eclaType.List).Value[elem.(eclaType.Int)]
+		//default:
+		//	panic(fmt.Sprintf("Variable %s is not indexable", tree.VariableName))
+		//}
 
-		switch result.(type) {
-		case *eclaType.List:
-			result = result.(*eclaType.List).Value[elem.(eclaType.Int)]
-		default:
-			panic(fmt.Sprintf("Variable %s is not indexable", tree.VariableName))
+		var err error
+		result, err = result.GetIndex(elem)
+		if err != nil {
+			panic(err)
 		}
 	}
 	return result
