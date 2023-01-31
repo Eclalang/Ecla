@@ -13,7 +13,7 @@ func GoToEclaType(arg any) eclaType.Type {
 	case bool:
 		return eclaType.Bool(arg.(bool))
 	case []any:
-		types := make([]eclaType.Type, len(arg.([]any)))
+		var types []eclaType.Type
 		for _, val := range arg.([]any) {
 			types = append(types, GoToEclaType(val))
 		}

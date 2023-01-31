@@ -3,7 +3,6 @@ package eclaType
 import (
 	"errors"
 	"fmt"
-	"strings"
 )
 
 func NewList(t string) (Type, error) {
@@ -264,16 +263,6 @@ func (l *List) Not() (Type, error) {
 	return nil, errors.New("cannot opposite list")
 }
 
-func IsList(t string) bool {
-	/*
-		if strings.Contains(t, "[") {
-			return true, nil
-		}
-		return false, errors.New("not a list")
-	*/
-	return strings.Contains(t, "[")
-}
-
 // append to list
 func (l *List) Append(other Type) (Type, error) {
 	if other.GetType() == "list" {
@@ -299,4 +288,14 @@ func CheckTypeOfList(l *List, t string) bool {
 		}
 	}
 	return true
+}
+
+func IsList(t string) bool {
+	// via []int or []string [][]int ,string int map[string]int []map[string]int
+	if !(len(t) <= 2) {
+		if t[0] == '[' && t[1] == ']' {
+			return true
+		}
+	}
+	return false
 }

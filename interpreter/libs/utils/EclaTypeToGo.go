@@ -15,7 +15,7 @@ func EclaTypeToGo(arg eclaType.Type) any {
 	case eclaType.Bool:
 		return bool(arg.(eclaType.Bool))
 	case *eclaType.List:
-		types := make([]any, len(arg.(*eclaType.List).Value))
+		var types []any
 		for _, val := range arg.(*eclaType.List).Value {
 			types = append(types, EclaTypeToGo(val))
 		}
