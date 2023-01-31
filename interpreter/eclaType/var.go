@@ -42,9 +42,13 @@ func (v *Var) SetVar(value Type) error {
 		v.Value = value.(*Var).Value
 		return nil
 	}
-	typ := value.GetType()
 	typ2 := v.Value.GetType()
-	if typ2 == typ || typ == "null" || typ2 == "null" {
+	if value.IsNull() {
+		v.Value = NewNullType(typ2)
+		return nil
+	}
+	typ := value.GetType()
+	if typ2 == typ {
 		v.Value = value
 		return nil
 	}
@@ -53,7 +57,6 @@ func (v *Var) SetVar(value Type) error {
 
 // Add adds two Type objects
 func (v *Var) Add(other Type) (Type, error) {
-
 	return v.Value.Add(other)
 }
 
@@ -161,6 +164,10 @@ func (v *Var) Append(other Type) (Type, error) {
 	return v.Value.Append(other)
 }
 
+func (v *Var) IsNull() bool {
+	return v.Value.IsNull()
+}
+
 // NewVar creates a new variable
 func NewVar(name string, Type string, value Type) (*Var, error) {
 	if Type == parser.String {
@@ -169,9 +176,13 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 			Value: value.GetString(),
 		}, nil
 	}
-	if Type != value.GetType() && value.GetType() != "null" {
+	if Type != value.GetType() && !value.IsNull() {
 		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
 	}
+	if value.IsNull() {
+		value = NewNullType(Type)
+	}
+
 	switch value.(type) {
 	case *Var:
 		value = value.(*Var).Value

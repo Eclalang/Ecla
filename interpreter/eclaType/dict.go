@@ -212,3 +212,7 @@ func (d Dict) Append(other Type) (Type, error) {
 	}
 	return nil, errors.New("cannot append dict")
 }
+
+func (d Dict) IsNull() bool {
+	return false
+}

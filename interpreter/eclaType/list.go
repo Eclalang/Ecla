@@ -257,6 +257,10 @@ func (l *List) Append(other Type) (Type, error) {
 	return nil, errors.New("cannot append to list")
 }
 
+func (l *List) IsNull() bool {
+	return false
+}
+
 // utils Functions for lists trainmen
 
 func CheckTypeOfList(l *List, t string) bool {

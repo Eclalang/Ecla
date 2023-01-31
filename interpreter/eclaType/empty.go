@@ -118,3 +118,7 @@ func (e Empty) Not() (Type, error) {
 func (e Empty) Append(other Type) (Type, error) {
 	return nil, errors.New("cannot get index from bool")
 }
+
+func (e Empty) IsNull() bool {
+	return false
+}

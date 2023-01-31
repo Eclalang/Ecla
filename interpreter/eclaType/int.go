@@ -259,3 +259,7 @@ func (i Int) Not() (Type, error) {
 func (i Int) Append(other Type) (Type, error) {
 	return nil, errors.New("cannot append int")
 }
+
+func (i Int) IsNull() bool {
+	return false
+}

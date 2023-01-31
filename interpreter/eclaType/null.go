@@ -3,10 +3,15 @@ package eclaType
 import "errors"
 
 type Null struct {
+	typ string
 }
 
 func NewNull() Null {
-	return Null{}
+	return Null{""}
+}
+
+func NewNullType(typ string) Null {
+	return Null{typ}
 }
 
 func (n Null) GetValue() any {
@@ -26,7 +31,7 @@ func (n Null) GetString() String {
 }
 
 func (n Null) GetType() string {
-	return "null"
+	return n.typ
 }
 
 func (n Null) GetIndex(number Type) (Type, error) {
@@ -101,4 +106,8 @@ func (n Null) LwEq(other Type) (Type, error) {
 
 func (n Null) Append(other Type) (Type, error) {
 	return nil, errors.New("cannot append null")
+}
+
+func (n Null) IsNull() bool {
+	return true
 }

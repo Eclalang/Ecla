@@ -24,13 +24,7 @@ func RunImportStmt(stmt parser.ImportStmt, env *Env) {
 func RunTypeStmt(tree parser.TypeStmt, env *Env) eclaType.Type {
 	t := RunTree(tree.Expression, env)
 	var typ string
-	switch t.(type) {
-	case *eclaType.Var:
-		t = t.(*eclaType.Var).GetValue().(eclaType.Type)
-		typ = t.GetType()
-	default:
-		typ = t.GetType()
-	}
+	typ = t.GetType()
 	fmt.Println(typ)
 	return nil
 	//return eclaType.NewString(RunTree(tree.Expression, env).GetType())

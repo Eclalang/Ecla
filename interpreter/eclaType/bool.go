@@ -216,3 +216,7 @@ func (b Bool) Not() (Type, error) {
 func (b Bool) Append(other Type) (Type, error) {
 	return nil, errors.New("cannot append bool")
 }
+
+func (b Bool) IsNull() bool {
+	return false
+}

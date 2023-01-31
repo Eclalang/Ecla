@@ -241,3 +241,7 @@ func (f Float) Not() (Type, error) {
 func (f Float) Append(other Type) (Type, error) {
 	return nil, errors.New("cannot append float")
 }
+
+func (f Float) IsNull() bool {
+	return false
+}

@@ -1,6 +1,17 @@
 
 
+import console;
+
+
 var t int = null;
 
 t = 1;
 
+t = null;
+
+t = "hello";
+
+
+type(t);
+
+print(t);

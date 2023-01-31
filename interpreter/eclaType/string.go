@@ -236,3 +236,7 @@ func (s String) Append(other Type) (Type, error) {
 	}
 	return nil, errors.New("cannot append string")
 }
+
+func (s String) IsNull() bool {
+	return false
+}

@@ -7,4 +7,6 @@ console.println(l);
 console.println(l[0]);
 console.println(l[0][0]);
 
+type(l);
+
 
