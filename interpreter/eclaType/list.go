@@ -25,23 +25,12 @@ func (l *List) SetValue(v any) error {
 	switch v.(type) {
 	case []Type:
 		var typ string
-		if v.([]Type)[0].GetType() == "list" {
-			switch v.([]Type)[0].(type) {
-			case *List:
-				t := v.([]Type)[0].(*List)
-				typ = "[]" + t.GetFullType()
-			default:
-				panic(errors.New("unknown type"))
-			}
-		} else {
-			typ = "[]" + v.([]Type)[0].GetType()
-		}
+		typ = "[]" + v.([]Type)[0].GetType()
 		if l.Typ == typ {
 			l.Value = v.([]Type)
 			return nil
 		}
 	case *List:
-
 		t := v.(*List)
 		*l = *t
 		return nil
@@ -70,15 +59,11 @@ func (l *List) GetString() String {
 
 // GetType returns the type List
 func (l *List) GetType() string {
-	return "list"
+	return l.Typ
 }
 
 func (l *List) SetType(other string) {
 	l.Typ = other
-}
-
-func (l *List) GetFullType() string {
-	return l.Typ
 }
 
 func (l *List) GetIndex(index Type) (Type, error) {
@@ -263,18 +248,11 @@ func (l *List) Not() (Type, error) {
 	return nil, errors.New("cannot opposite list")
 }
 
-// append to list
+// Append to list
 func (l *List) Append(other Type) (Type, error) {
-	if other.GetType() == "list" {
-		if l.Typ == other.(*List).Typ {
-			l.Value = append(l.Value, other.(*List).Value...)
-			return l, nil
-		}
-	} else {
-		if l.Typ == other.GetType() {
-			l.Value = append(l.Value, other)
-			return l, nil
-		}
+	if l.Typ == other.GetType() {
+		l.Value = append(l.Value, other)
+		return l, nil
 	}
 	return nil, errors.New("cannot append to list")
 }

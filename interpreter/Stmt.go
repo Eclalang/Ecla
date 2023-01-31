@@ -27,14 +27,7 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) eclaType.Type {
 	switch t.(type) {
 	case *eclaType.Var:
 		t = t.(*eclaType.Var).GetValue().(eclaType.Type)
-		switch t.(type) {
-		case *eclaType.List:
-			typ = t.(*eclaType.List).GetFullType()
-		default:
-			typ = t.GetType()
-		}
-	case *eclaType.List:
-		typ = t.(*eclaType.List).GetFullType()
+		typ = t.GetType()
 	default:
 		typ = t.GetType()
 	}
@@ -67,7 +60,10 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 	if !ok {
 		panic(errors.New("variable not found"))
 	}
-	v.SetVar(RunTree(tree.Value, env))
+	err := v.SetVar(RunTree(tree.Value, env))
+	if err != nil {
+		panic(err)
+	}
 }
 
 // RunWhileStmt
@@ -98,7 +94,7 @@ func RunForStmt(For parser.ForStmt, env *Env) {
 		//fmt.Printf("%T", list)
 		switch list.(type) {
 		case *eclaType.List:
-			typ = list.(*eclaType.List).GetFullType()[2:]
+			typ = list.(*eclaType.List).GetType()[2:]
 			l = list.(*eclaType.List).Len()
 		case eclaType.String:
 			typ = list.GetType()
@@ -108,7 +104,7 @@ func RunForStmt(For parser.ForStmt, env *Env) {
 			//fmt.Printf("%T", temp)
 			switch temp.(type) {
 			case *eclaType.List:
-				typ = temp.(*eclaType.List).GetFullType()[2:]
+				typ = temp.(*eclaType.List).GetType()[2:]
 				l = temp.(*eclaType.List).Len()
 			case eclaType.String:
 				typ = temp.(eclaType.String).GetType()

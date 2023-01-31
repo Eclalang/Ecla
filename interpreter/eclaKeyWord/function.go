@@ -39,12 +39,6 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []eclaType.Type) (bool, map
 			elem = elem.(*eclaType.Var).Value
 		}
 		tp := elem.GetType()
-		if tp == "list" {
-			switch elem.(type) {
-			case *eclaType.List:
-				tp = elem.(*eclaType.List).GetFullType()
-			}
-		}
 		if tp != arg {
 			return false, nil
 		}
@@ -70,12 +64,6 @@ func (f *Function) CheckReturn(ret []eclaType.Type) bool {
 			elem = elem.(*eclaType.Var).Value
 		}
 		tp := elem.GetType()
-		if tp == "list" {
-			switch elem.(type) {
-			case *eclaType.List:
-				tp = elem.(*eclaType.List).GetFullType()
-			}
-		}
 		if tp != r {
 			return false
 		}

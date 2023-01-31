@@ -44,20 +44,6 @@ func (v *Var) SetVar(value Type) error {
 	}
 	typ := value.GetType()
 	typ2 := v.Value.GetType()
-	if typ == "list" {
-		switch value.(type) {
-		case *List:
-			typ = value.(*List).GetFullType()
-		}
-	}
-
-	if typ2 == "list" {
-		switch v.Value.(type) {
-		case *List:
-			typ2 = v.Value.(*List).GetFullType()
-		}
-	}
-
 	if typ2 == typ || typ == "null" || typ2 == "null" {
 		v.Value = value
 		return nil
@@ -181,11 +167,6 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 		return &Var{
 			Name:  name,
 			Value: value.GetString(),
-		}, nil
-	} else if IsList(Type) {
-		return &Var{
-			Name:  name,
-			Value: value,
 		}, nil
 	}
 	if Type != value.GetType() && value.GetType() != "null" {

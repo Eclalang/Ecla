@@ -2,5 +2,5 @@ import console;
 
 function testFunction(a : int , b : int) (int){
     return a+b;
-};
+}
 console.print(testFunction(1,3));

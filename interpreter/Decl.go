@@ -85,10 +85,10 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 			switch t.(type) {
 			case *eclaType.List:
 				list := t.(*eclaType.List)
-				if list.GetFullType() == "empty" {
+				if list.GetType() == "empty" {
 					list.SetType(tree.Type)
 				} else {
-					if list.GetFullType() != tree.Type {
+					if list.GetType() != tree.Type {
 						panic(errors.New("type mismatch"))
 					}
 				}
@@ -129,15 +129,7 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) eclaType.Type {
 	if len(values) == 0 {
 		typ = "empty"
 	} else {
-		if values[0].GetType() == "list" {
-			switch values[0].(type) {
-			case *eclaType.List:
-				t := values[0].(*eclaType.List)
-				typ = "[]" + t.GetFullType()
-			}
-		} else {
-			typ = "[]" + values[0].GetType()
-		}
+		typ = "[]" + values[0].GetType()
 	}
 	l, err := eclaType.NewList(typ)
 	if err != nil {
