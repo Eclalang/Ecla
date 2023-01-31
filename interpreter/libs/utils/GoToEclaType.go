@@ -19,6 +19,6 @@ func GoToEclaType(arg any) eclaType.Type {
 		}
 		return &eclaType.List{Value: types}
 	default:
-		return eclaType.Empty{}
+		return eclaType.Null{}
 	}
 }

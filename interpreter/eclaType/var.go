@@ -191,5 +191,5 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 }
 
 func NewVarEmpty(name string, Type string) (*Var, error) {
-	return &Var{Name: name, Value: NewEmpty(Type)}, nil
+	return &Var{Name: name, Value: NewNullType(Type)}, nil
 }

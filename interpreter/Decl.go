@@ -74,44 +74,13 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 			env.SetVar(tree.Name, v)
 		}
 	} else {
-		if eclaType.IsList(tree.Type) {
-			l, err := eclaType.NewList(tree.Type)
-			if err != nil {
-				panic(err)
-			}
-			// err into this
-			t := RunTree(tree.Value, env)
-			// check type
-			switch t.(type) {
-			case *eclaType.List:
-				list := t.(*eclaType.List)
-				if list.GetType() == "empty" {
-					list.SetType(tree.Type)
-				} else {
-					if list.GetType() != tree.Type {
-						panic(errors.New("type mismatch"))
-					}
-				}
-			default:
-				panic(errors.New("cannot assign non-list to list"))
-			}
-			err = l.SetValue(t)
-			// err into this end
-			if err != nil {
-				panic(err)
-			}
-			v, err := eclaType.NewVar(tree.Name, tree.Type, l)
-			if err != nil {
-				panic(err)
-			}
-			env.SetVar(tree.Name, v)
-		} else {
-			v, err := eclaType.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
-			if err != nil {
-				panic(err)
-			}
-			env.SetVar(tree.Name, v)
+
+		v, err := eclaType.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
+		if err != nil {
+			panic(err)
 		}
+		env.SetVar(tree.Name, v)
+
 	}
 	return nil
 }

@@ -39,7 +39,10 @@ func (n Null) GetIndex(number Type) (Type, error) {
 }
 
 func (n Null) Add(other Type) (Type, error) {
-	return nil, errors.New("cannot add null")
+	if other.GetType() == "string" {
+		return NewString("null" + string(other.GetString())), nil
+	}
+	return nil, errors.New("cannot add null to " + other.GetType())
 }
 
 func (n Null) Sub(other Type) (Type, error) {

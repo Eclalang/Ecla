@@ -5,3 +5,6 @@ console.print(test[0][0] + "\n");
 
 console.print(test[1][1] + "\n");
 
+var test2 [][]int = null;
+
+console.print(test2[0] + "\n");

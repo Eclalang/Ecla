@@ -44,5 +44,5 @@ func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
 		//	console.PrintlnInColor(newArgs[0].(string), newArgs[1:]...)
 	}
 
-	return eclaType.Empty{}
+	return eclaType.Null{}
 }
