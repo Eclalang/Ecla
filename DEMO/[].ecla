@@ -7,4 +7,21 @@ console.print(test[1][1] + "\n");
 
 var test2 [][]int = null;
 
-console.print(test2[0] + "\n");
+console.print(test2 + "\n");
+
+test2 = [[1,2,3],[4,5,6],[7,8,9]];
+
+console.print(test2[0][0] + "\n");
+
+test2[0][0] = null;
+
+console.print(test2[0][0] + "\n");
+
+
+test2 = null;
+
+console.print(test2 + "\n");
+
+test2 = [[1,2,3],[4,5,6],[7,8,9]];
+test2[0] = null;
+console.print(test2 + "\n");
