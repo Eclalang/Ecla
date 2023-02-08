@@ -72,6 +72,14 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 				panic(err)
 			}
 			env.SetVar(tree.Name, v)
+		} else if eclaType.IsMap(tree.Type) {
+			m := eclaType.NewMap()
+			m.SetType(tree.Type)
+			v, err := eclaType.NewVar(tree.Name, tree.Type, m)
+			if err != nil {
+				panic(err)
+			}
+			env.SetVar(tree.Name, v)
 		}
 	} else {
 
@@ -115,4 +123,20 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) eclaType.Type {
 func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
 	fn := eclaKeyWord.NewFunction(tree.Name, tree.Parameters, tree.Body, tree.ReturnTypes)
 	env.SetFunction(tree.Name, fn)
+}
+
+func RunMapLiteral(tree parser.MapLiteral, env *Env) eclaType.Type {
+	var keys []eclaType.Type
+	var values []eclaType.Type
+	for _, v := range tree.Values {
+		values = append(values, RunTree(v, env))
+	}
+	for _, k := range tree.Keys {
+		keys = append(keys, RunTree(k, env))
+	}
+	m := eclaType.NewMap()
+	m.Keys = keys
+	m.Values = values
+	m.SetAutoType()
+	return m
 }

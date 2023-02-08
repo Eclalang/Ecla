@@ -1,0 +1,223 @@
+package eclaType
+
+import (
+	"errors"
+	"fmt"
+)
+
+type Map struct {
+	Keys   []Type
+	Values []Type
+	Typ    string
+}
+
+func NewMap() *Map {
+	return &Map{[]Type{}, []Type{}, ""}
+}
+
+func (m *Map) SetAutoType() {
+	var typ string
+	if len(m.Values) == 0 {
+		typ = "empty"
+	} else {
+		typ = "map[" + m.Keys[0].GetType() + "]" + m.Values[0].GetType()
+	}
+	m.Typ = typ
+}
+
+func (m *Map) GetValue() any {
+	return m
+}
+
+func (m *Map) SetValue(v any) error {
+	switch v.(type) {
+	case *Map:
+		t := v.(*Map)
+		*m = *t
+		return nil
+	default:
+		return errors.New("cannot set value of map")
+	}
+}
+
+func (m *Map) String() string {
+	var s string
+	for index, v := range m.Values {
+		if index == len(m.Values)-1 {
+			s += m.Keys[index].GetString().String() + ": " + v.GetString().String()
+		} else {
+			s += m.Keys[index].GetString().String() + ": " + v.GetString().String() + ", "
+		}
+	}
+	return "{" + s + "}"
+}
+
+// GetString returns the string of map
+func (m *Map) GetString() String {
+	return String(fmt.Sprint(m))
+}
+
+// GetType returns the type Map
+func (m *Map) GetType() string {
+	return m.Typ
+}
+
+func (m *Map) SetType(t string) {
+	m.Typ = t
+}
+
+func (m *Map) Set(key Type, value Type) {
+	for index, k := range m.Keys {
+		if k.GetString().String() == key.GetString().String() {
+			m.Values[index] = value
+			return
+		}
+	}
+	m.Keys = append(m.Keys, key)
+	m.Values = append(m.Values, value)
+}
+
+func (m *Map) Get(key Type) (Type, bool) {
+	for index, k := range m.Keys {
+		if k.GetString().String() == key.GetString().String() {
+			return m.Values[index], true
+		}
+	}
+	return nil, false
+}
+
+func (m *Map) GetIndex(index Type) (Type, error) {
+	return nil, nil
+}
+
+func (m *Map) GetKey(value Type) (Type, bool) {
+	for index, v := range m.Values {
+		if v.GetString().String() == value.GetString().String() {
+			return m.Keys[index], true
+		}
+	}
+	return nil, false
+}
+
+func (m *Map) Add(value Type) (Type, error) {
+	switch value.(type) {
+	case *Map:
+		for index, v := range value.(*Map).Keys {
+			m.Set(v, value.(*Map).Values[index])
+		}
+	}
+	return m, nil
+}
+
+func (m *Map) Delete(key Type) {
+	for index, k := range m.Keys {
+		if k.GetString().String() == key.GetString().String() {
+			m.Keys = append(m.Keys[:index], m.Keys[index+1:]...)
+			m.Values = append(m.Values[:index], m.Values[index+1:]...)
+			return
+		}
+	}
+}
+
+func (m *Map) Sub(value Type) (Type, error) {
+	switch value.(type) {
+	case *Map:
+		for _, v := range value.(*Map).Keys {
+			value.(*Map).Delete(v)
+		}
+	}
+	return m, nil
+}
+
+func (m *Map) Mul(value Type) (Type, error) {
+	return nil, errors.New("cannot mul map")
+}
+
+func (m *Map) Div(value Type) (Type, error) {
+	return nil, errors.New("cannot div map")
+}
+
+func (m *Map) Mod(value Type) (Type, error) {
+	return nil, errors.New("cannot mod map")
+}
+
+func (m *Map) DivEc(value Type) (Type, error) {
+	return nil, errors.New("cannot divec map")
+}
+func (m *Map) DivMod(value Type) (Type, error) {
+	return nil, errors.New("cannot divmod map")
+}
+
+func (m *Map) Eq(value Type) (Type, error) {
+	switch value.(type) {
+	case *Map:
+		if len(m.Keys) != len(value.(*Map).Keys) {
+			return Bool(false), nil
+		}
+		for index, _ := range m.Keys {
+			if v, err := m.Values[index].Eq(value.(*Map).Values[index]); err == nil && v.(Bool) == false {
+				return Bool(false), nil
+			}
+		}
+		return Bool(true), nil
+	default:
+		return Bool(false), errors.New("cannot compare map with other type")
+	}
+}
+
+func (m *Map) NotEq(value Type) (Type, error) {
+	v, err := m.Eq(value)
+	if err != nil {
+		return nil, err
+	}
+	return !v.(Bool), nil
+}
+
+func (m *Map) And(other Type) (Type, error) {
+	return nil, errors.New("cannot and null")
+}
+
+func (m *Map) Or(other Type) (Type, error) {
+	return nil, errors.New("cannot or null")
+}
+
+func (m *Map) Not() (Type, error) {
+	return nil, errors.New("cannot not null")
+}
+
+func (m *Map) Gt(other Type) (Type, error) {
+	return nil, errors.New("cannot gt null")
+}
+
+func (m *Map) GtEq(other Type) (Type, error) {
+	return nil, errors.New("cannot gtEq null")
+}
+
+func (m *Map) Lw(other Type) (Type, error) {
+	return nil, errors.New("cannot lw null")
+}
+
+func (m *Map) LwEq(other Type) (Type, error) {
+	return nil, errors.New("cannot lwEq null")
+}
+
+func (m *Map) Append(other Type) (Type, error) {
+	return nil, errors.New("cannot append null")
+}
+
+func (m *Map) IsNull() bool {
+	return false
+}
+
+func IsMap(typ string) bool {
+	// exemple of type good : map[string]int
+	// exemple of good type : map[[]int]int
+	// exemple of bad type : []map[int]int
+	if len(typ) < 4 {
+		return false
+	}
+	if typ[:4] != "map[" {
+		return false
+	}
+	return true
+}
