@@ -329,13 +329,148 @@ var (
 		},
 	}
 	testHashtag = testList{
-		input: "prout# in comment\n#/ in commentgroup\n and next ligne /#",
+		input: "prout# in comment\n#/ in commentgroup\n and next ligne\n and test for / and #/ /#\nOutside of the comment group",
 		output: []lexer.Token{
+			{
+				TokenType: lexer.TEXT,
+				Value:     "prout",
+				Position:  1,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.COMMENT,
+				Value:     " in comment",
+				Position:  6,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.COMMENTGROUP,
+				Value:     " in commentgroup\n and next ligne\n and test for / and #/ ",
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: lexer.TEXT,
+				Value:     `Outside`,
+				Position:  1,
+				Line:      4,
+			},
+			{
+				TokenType: lexer.TEXT,
+				Value:     `of`,
+				Position:  9,
+				Line:      4,
+			},
+			{
+				TokenType: lexer.TEXT,
+				Value:     `the`,
+				Position:  12,
+				Line:      4,
+			},
+			{
+				TokenType: lexer.TEXT,
+				Value:     `comment`,
+				Position:  16,
+				Line:      4,
+			},
+			{
+				TokenType: lexer.TEXT,
+				Value:     `group`,
+				Position:  24,
+				Line:      4,
+			},
 			{
 				TokenType: lexer.EOF,
 				Value:     ``,
-				Position:  5,
-				Line:      2,
+				Position:  29,
+				Line:      4,
+			},
+		},
+	}
+	testHashtag2 = testList{
+		input: "prout# in comment\n#/ in commentgroup\n and next ligne\n and test for / and #/",
+		output: []lexer.Token{
+			{
+				TokenType: lexer.TEXT,
+				Value:     `prout`,
+				Position:  1,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.COMMENT,
+				Value:     ` in comment`,
+				Position:  6,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.COMMENTGROUP,
+				Value:     " in commentgroup\n and next ligne\n and test for / and #/",
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: lexer.EOF,
+				Value:     ``,
+				Position:  22,
+				Line:      3,
+			},
+		},
+	}
+	testHashtag3 = testList{
+		input: "\"#prout\"",
+		output: []lexer.Token{
+			{
+				TokenType: lexer.DQUOTE,
+				Value:     `"`,
+				Position:  1,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.STRING,
+				Value:     `#prout`,
+				Position:  2,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.DQUOTE,
+				Value:     `"`,
+				Position:  8,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.EOF,
+				Value:     ``,
+				Position:  9,
+				Line:      0,
+			},
+		},
+	}
+	testHashtag4 = testList{
+		input: "\"prout\"",
+		output: []lexer.Token{
+			{
+				TokenType: lexer.DQUOTE,
+				Value:     `"`,
+				Position:  1,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.STRING,
+				Value:     `#/prout/#`,
+				Position:  2,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.DQUOTE,
+				Value:     `"`,
+				Position:  11,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.EOF,
+				Value:     ``,
+				Position:  12,
+				Line:      0,
 			},
 		},
 	}

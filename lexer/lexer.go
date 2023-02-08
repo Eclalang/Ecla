@@ -1,5 +1,7 @@
 package lexer
 
+import "fmt"
+
 // Token is a struct that contains all the information about a token
 type Token struct {
 	TokenType string
@@ -27,6 +29,8 @@ func Lexer(sentence string) []Token {
 	var isSpaces bool
 	var inQuote bool
 	var inQuoteStep bool
+	var endOfComm int
+	var endOfCommGroup int
 
 	// tempVal is the current element that we want to compare with the known
 	// syntaxe
@@ -35,7 +39,6 @@ func Lexer(sentence string) []Token {
 	for i := 0; i <= len(sentence); i++ {
 		// we assign tempVal as an element in the interval [prevIndex:i]
 		tempVal = sentence[prevIndex:i]
-
 		// we assign canBeText to true, because we actually don't know if the
 		// current element is a text or not
 		canBeText = true
@@ -47,14 +50,52 @@ func Lexer(sentence string) []Token {
 			// tempVal is a known syntaxes, and then a token
 			if ident.IsSyntaxe(tempVal) {
 				canBeText = false
-
+				if (ident.Identifier == COMMENT || ident.Identifier == COMMENTGROUP) && inQuote {
+					break
+				}
+				if len(ret) > 1 {
+					if ret[len(ret)-1].TokenType == COMMENT && len(ret)-1 != endOfComm && !inQuote {
+						if tempVal == "/" && ret[len(ret)-1].Value == "" {
+							ret[len(ret)-1].TokenType = COMMENTGROUP
+							break
+						} else if tempVal != "\n" && tempVal != "\r" {
+							ret[len(ret)-1].Value += tempVal
+						} else {
+							endOfComm = len(ret) - 1
+						}
+						tempVal = ""
+						prevIndex = i
+						break
+					}
+					if ret[len(ret)-1].TokenType == COMMENTGROUP && len(ret)-1 != endOfCommGroup && !inQuote {
+						if tempVal[len(tempVal)-1] == '/' {
+							break
+						} else if len(tempVal) > 1 {
+							if tempVal[len(tempVal)-2:] == "/#" {
+								endOfCommGroup = len(ret) - 1
+								tempVal = ""
+								prevIndex = i
+								break
+							} else {
+								ret[len(ret)-1].Value += tempVal
+								tempVal = ""
+								prevIndex = i
+								break
+							}
+						} else {
+							ret[len(ret)-1].Value += tempVal
+							tempVal = ""
+							prevIndex = i
+							break
+						}
+					}
+				}
 				if ident.Identifier == "" && !inQuote {
 					isSpaces = true
 					prevIndex = i
 					tempVal = sentence[prevIndex:i]
 					break
 				}
-
 				if ident.Identifier == DQUOTE {
 					if inQuote {
 						if ret[len(ret)-1].Value[len(ret[len(ret)-1].Value)-1] != '\\' {
@@ -66,101 +107,23 @@ func Lexer(sentence string) []Token {
 					}
 				}
 
-				// if the type of the known syntaxe is INT, we want to
-				// concat each subsequent INT to the same token
-				if ident.Identifier == INT {
-					if !isSpaces {
-						if len(ret) >= 1 {
-							if ret[len(ret)-1].TokenType == INT || ret[len(ret)-1].TokenType == TEXT || ret[len(ret)-1].TokenType == FLOAT {
-								ret[len(ret)-1].Value += tempVal
-								tempVal = ""
-								prevIndex = i
-								break
-							}
-						}
-					}
-					// if the type is ASSIGN, we want to concat it with all the other
-					// mathematic operand place just before ( ex: "+=", "==")
-				} else if ident.Identifier == ASSIGN {
-					if len(ret) >= 1 {
-						if concatEqual(ret[len(ret)-1].TokenType) {
-							if ret[len(ret)-1].TokenType == ASSIGN {
-								ret[len(ret)-1].TokenType = EQUAL
-							} else if ret[len(ret)-1].TokenType == ADD {
-								ret[len(ret)-1].TokenType = INC
-							} else if ret[len(ret)-1].TokenType == SUB {
-								ret[len(ret)-1].TokenType = DEC
-							} else if ret[len(ret)-1].TokenType == LSS {
-								ret[len(ret)-1].TokenType = LEQ
-							} else if ret[len(ret)-1].TokenType == GTR {
-								ret[len(ret)-1].TokenType = GEQ
-							} else if ret[len(ret)-1].TokenType == NOT {
-								ret[len(ret)-1].TokenType = NEQ
-							}
-							ret[len(ret)-1].Value += tempVal
-							tempVal = ""
-							prevIndex = i
-							break
-						}
-					}
-				} else if ident.Identifier == PERIOD {
-					if len(ret) >= 1 {
-						if ret[len(ret)-1].TokenType == INT && !isSpaces {
-							ret[len(ret)-1].Value += tempVal
-							ret[len(ret)-1].TokenType = FLOAT
-							tempVal = ""
-							prevIndex = i
-							break
-						} else if !inQuote {
-							actualIndex = positionDetector(ret, prevIndex)
-							ret = append(ret, addToken(ident.Identifier, tempVal, actualIndex, line))
-							tempVal = ""
-							prevIndex = i
-							break
-						}
-					}
-				} else if ident.Identifier == SUB {
-					if len(ret) >= 1 {
-						if ret[len(ret)-1].TokenType == SUB {
-							if len(ret) >= 2 {
-								if ret[len(ret)-2].TokenType == TEXT {
-									ret[len(ret)-1].TokenType = DEC
-									ret[len(ret)-1].Value += tempVal
-									tempVal = ""
-									prevIndex = i
-									break
-								}
-							}
-
-						}
-					}
-				} else if ident.Identifier == ADD {
-					if len(ret) >= 1 {
-						if ret[len(ret)-1].TokenType == ADD {
-							if len(ret) >= 2 {
-								if ret[len(ret)-2].TokenType == TEXT {
-									ret[len(ret)-1].TokenType = INC
-									ret[len(ret)-1].Value += tempVal
-									tempVal = ""
-									prevIndex = i
-									break
-								}
-							}
-						}
-					}
-				} else if ident.Identifier == DIV {
-					if len(ret) >= 1 {
-						if ret[len(ret)-1].TokenType == DIV {
-							ret[len(ret)-1].TokenType = QOT
-							ret[len(ret)-1].Value += tempVal
-							tempVal = ""
-							prevIndex = i
-							break
-						}
-					}
+				// -----------Special Token Part-------------
+				beforeChangeVal := tempVal
+				ret = tokenCommentGroup(ident, ret, &prevIndex, &tempVal, i)
+				ret = tokenComment(ident, ret, &prevIndex, &tempVal, i, line, sentence)
+				ret = tokenInt(ident.Identifier == INT, ident, ret, &prevIndex, &tempVal, i, isSpaces)
+				ret = tokenPeriod(ident.Identifier == PERIOD, ident, ret, &prevIndex, &tempVal, i, isSpaces, inQuote, line, sentence)
+				ret = tokenAssign(ident.Identifier == ASSIGN, ident, ret, &prevIndex, &tempVal, i)
+				ret = tokenDiv(ident.Identifier == DIV, ident, ret, &prevIndex, &tempVal, i)
+				ret = tokenAddSub(ident.Identifier == ADD, ident, ret, &prevIndex, &tempVal, i, ADD, INC)
+				ret = tokenAddSub(ident.Identifier == SUB, ident, ret, &prevIndex, &tempVal, i, SUB, DEC)
+				// ---------Special Token Part END-----------
+				if beforeChangeVal != tempVal {
+					break
 				}
+
 				// append a new Token to the variable ret
-				ret = inQuoteChange(inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, line)
+				ret = inQuoteChange(inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
 
 				isSpaces = false
 
@@ -169,12 +132,47 @@ func Lexer(sentence string) []Token {
 
 				// if the current created token is EOL,
 				// Line ++
-				if ident.Identifier == EOL {
-					line += 1
+			}
+			if len(ret) > 1 {
+				if ret[len(ret)-1].TokenType == COMMENT && len(ret)-1 != endOfComm && !inQuote {
+					if tempVal == "/" && ret[len(ret)-1].Value == "" {
+						ret[len(ret)-1].TokenType = COMMENTGROUP
+					} else if tempVal != "\n" && tempVal != "\r" {
+						ret[len(ret)-1].Value += tempVal
+					} else {
+						endOfComm = len(ret) - 1
+					}
+					canBeText = false
+					tempVal = ""
+					prevIndex = i
+					break
 				}
-				break
+				if ret[len(ret)-1].TokenType == COMMENTGROUP && len(ret)-1 != endOfCommGroup && !inQuote {
+					canBeText = false
+					if tempVal[len(tempVal)-1] == '/' {
+						break
+					} else if len(tempVal) > 1 {
+						if tempVal[len(tempVal)-2:] == "/#" {
+							endOfCommGroup = len(ret) - 1
+							tempVal = ""
+							prevIndex = i
+							break
+						} else {
+							ret[len(ret)-1].Value += tempVal
+							tempVal = ""
+							prevIndex = i
+							break
+						}
+					} else {
+						ret[len(ret)-1].Value += tempVal
+						tempVal = ""
+						prevIndex = i
+						break
+					}
+				}
 			}
 		}
+
 		// if after checking all the known syntaxe, the tempValue can still
 		// be a TEXT, we parse the tempValue backward to verifies if
 		// a substring of tempValue can also be a known syntaxe
@@ -183,35 +181,43 @@ func Lexer(sentence string) []Token {
 				for _, ident := range Identifier {
 					if ident.IsSyntaxe(tempVal[y:]) {
 						canBeText = false
-						ret = inQuoteChange(inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, line)
+						ret = inQuoteChange(inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
 						isSpaces = false
-
+						fmt.Printf("sentence: %v\n", sentence)
+						fmt.Printf("ret: %v\n", ret)
+						fmt.Printf("i: %v\n", i)
+						fmt.Printf("len: %v\nvalue: %v\n", len(tempVal), tempVal)
+						fmt.Printf("y: %v\n", y)
+						fmt.Printf("len(tempVal[y:]): %v\n\n", len(tempVal[y:]))
 						i += len(tempVal[y:]) - 2
 						prevIndex = i
+
 					}
 				}
 			}
 		}
 	}
+	// "#/ok"  #/
 	// if at the end of the sentence parse, tempVal is not "", it means that
 	// a last token of type TEXT must be appended to the return value
-	if tempVal != "" {
-		actualIndex = positionDetector(ret, prevIndex)
+	if ret[len(ret)-1].TokenType == COMMENTGROUP && tempVal == "/" {
+		ret[len(ret)-1].Value += tempVal
+	} else if tempVal != "" {
+		actualIndex, line = positionDetector(ret, prevIndex, sentence)
 		ret = append(ret, addToken(Identifier[0].Identifier, tempVal, actualIndex, line))
 
 		prevIndex += len(tempVal)
-
 	}
 
 	// created a last token of type EOF (EndOfFile)
-	actualIndex = positionDetector(ret, prevIndex)
+	actualIndex, line = positionDetector(ret, prevIndex, sentence)
 	ret = append(ret, addToken(Identifier[len(Identifier)-1].Identifier, "", actualIndex, line))
 
 	return ret
 }
 
-func inQuoteChange(inQuote bool, ret []Token, identi identifier, val string, prevIndex int, line int) []Token {
-	actualIndex := positionDetector(ret, prevIndex)
+func inQuoteChange(inQuote bool, ret []Token, identi identifier, val string, prevIndex int, sentence string) []Token {
+	actualIndex, line := positionDetector(ret, prevIndex, sentence)
 	if inQuote {
 		if len(ret) >= 1 {
 			if ret[len(ret)-1].TokenType == STRING {
@@ -228,13 +234,18 @@ func inQuoteChange(inQuote bool, ret []Token, identi identifier, val string, pre
 	return ret
 }
 
-func positionDetector(ret []Token, prevIndex int) int {
-	for _, v := range ret {
-		if v.TokenType == EOL {
-			prevIndex -= v.Position
+func positionDetector(ret []Token, prevIndex int, sentence string) (int, int) {
+	var toRet = 0
+	var line = 0
+	for _, v := range sentence[:prevIndex] {
+		if v == '\n' || v == '\r' {
+			toRet = 0
+			line += 1
+		} else {
+			toRet += 1
 		}
 	}
-	return prevIndex + 1
+	return toRet + 1, line
 }
 
 // addToken create a new token with the given parameters
@@ -246,5 +257,143 @@ func addToken(TokenType string, Value string, Position int, Line int) Token {
 	ret.Position = Position
 	ret.Line = Line
 
+	return ret
+}
+
+// tokenAddSub replace the previous token.tokenType in ret to toReplace if the current token.tokenType is equal to toFind.
+//
+// return the changed []Token
+func tokenAddSub(isIdentifier bool, ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, toFind string, toReplace string) []Token {
+	if isIdentifier {
+		if len(ret) >= 1 {
+			if ret[len(ret)-1].TokenType == toFind {
+				if len(ret) >= 2 {
+					if ret[len(ret)-2].TokenType == TEXT {
+						ret[len(ret)-1].TokenType = toReplace
+						ret[len(ret)-1].Value += *tempVal
+						*tempVal = ""
+						*prevIndex = index
+					}
+				}
+			}
+		}
+	}
+	return ret
+}
+
+// tokenAssign replace the previous token.tokenType in ret to the compose token of the current token and the previous one
+// if the current token.tokenType is ASSIGN, and if the previous one is one of the listed token able to merge with an
+// ASSIGN.
+//
+// return the changed []Token
+func tokenAssign(isIdentifier bool, ident identifier, ret []Token, prevIndex *int, tempVal *string, index int) []Token {
+	if isIdentifier {
+		if len(ret) >= 1 {
+			if concatEqual(ret[len(ret)-1].TokenType) {
+				if ret[len(ret)-1].TokenType == ASSIGN {
+					ret[len(ret)-1].TokenType = EQUAL
+				} else if ret[len(ret)-1].TokenType == ADD || ret[len(ret)-1].TokenType == SUB || ret[len(ret)-1].TokenType == MULT || ret[len(ret)-1].TokenType == DIV || ret[len(ret)-1].TokenType == QOT || ret[len(ret)-1].TokenType == MOD {
+					ret[len(ret)-1].TokenType = ret[len(ret)-1].TokenType + ident.Identifier
+				} else if ret[len(ret)-1].TokenType == LSS {
+					ret[len(ret)-1].TokenType = LEQ
+				} else if ret[len(ret)-1].TokenType == GTR {
+					ret[len(ret)-1].TokenType = GEQ
+				} else if ret[len(ret)-1].TokenType == NOT {
+					ret[len(ret)-1].TokenType = NEQ
+				}
+				ret[len(ret)-1].Value += *tempVal
+				*tempVal = ""
+				*prevIndex = index
+			}
+		}
+	}
+	return ret
+}
+
+// tokenDiv replace the previous token.tokenType in ret to the QOT token
+// if the current token.tokenType and the previous token.tokenType are DIV
+//
+// return the changed []Token
+func tokenDiv(isIdentifier bool, ident identifier, ret []Token, prevIndex *int, tempVal *string, index int) []Token {
+	if isIdentifier {
+		if len(ret) >= 1 {
+			if ret[len(ret)-1].TokenType == DIV {
+				ret[len(ret)-1].TokenType = QOT
+				ret[len(ret)-1].Value += *tempVal
+				*tempVal = ""
+				*prevIndex = index
+			}
+		}
+	}
+	return ret
+}
+
+//
+//
+// return the changed []Token
+func tokenPeriod(isIdentifier bool, ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, isSpaces bool, inQuote bool, line int, sentence string) []Token {
+	if isIdentifier {
+		if len(ret) >= 1 {
+			if ret[len(ret)-1].TokenType == INT && !isSpaces {
+				ret[len(ret)-1].Value += *tempVal
+				ret[len(ret)-1].TokenType = FLOAT
+				*tempVal = ""
+				*prevIndex = index
+			} else if !inQuote {
+				actualIndex, line := positionDetector(ret, *prevIndex, sentence)
+				ret = append(ret, addToken(ident.Identifier, *tempVal, actualIndex, line))
+				*tempVal = ""
+				*prevIndex = index
+			}
+		}
+	}
+	return ret
+}
+
+// tokenDiv replace the previous token.tokenType in ret to the QOT tokenType
+// if the current token.tokenType and the previous token.tokenType are DIV
+//
+// return the changed []Token
+func tokenInt(isIdentifier bool, ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, isSpaces bool) []Token {
+	if isIdentifier {
+		if !isSpaces {
+			if len(ret) >= 1 {
+				if ret[len(ret)-1].TokenType == INT || ret[len(ret)-1].TokenType == TEXT || ret[len(ret)-1].TokenType == FLOAT {
+					ret[len(ret)-1].Value += *tempVal
+					*tempVal = ""
+					*prevIndex = index
+				}
+			}
+		}
+
+	}
+	return ret
+}
+
+// tokenComment replace the previous token.tokenType in ret to the COMMENTGROUP tokenType
+// if the current token.tokenType is COMMENTGROUPIDENT, and of the previous one is COMMENT
+//
+// return the changed []Token
+func tokenCommentGroup(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int) []Token {
+	if ident.Identifier == COMMENTGROUPIDENT {
+		if len(ret) >= 1 {
+			if ret[len(ret)-1].TokenType == COMMENT {
+				ret[len(ret)-1].TokenType = COMMENTGROUP
+				ret[len(ret)-1].Value += ""
+				*tempVal = ""
+				*prevIndex = index
+			}
+		}
+	}
+	return ret
+}
+
+func tokenComment(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, line int, sentence string) []Token {
+	if ident.Identifier == COMMENT {
+		actualIndex, line := positionDetector(ret, *prevIndex, sentence)
+		ret = append(ret, addToken(ident.Identifier, "", actualIndex, line))
+		*tempVal = ""
+		*prevIndex = index
+	}
 	return ret
 }

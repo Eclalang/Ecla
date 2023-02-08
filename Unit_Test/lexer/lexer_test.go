@@ -14,20 +14,23 @@ func TestLexer(t *testing.T) {
 		testSpeChar,
 		testEOL,
 		testHashtag,
+		testHashtag2,
+		testHashtag3,
 	}
 	for num, tested := range GlobalTest {
+
 		result := ""
 		code := tested.input
 		expected := tested.output
 		expected_lenth := len(expected)
 		result += "\n--------------------------------------------------\n--------------------------------------------------\n\t\t---TEST" + strconv.Itoa(num) + "-INPUT---\n--------------------------------------------------\n" + code + "\n--------------------------------------------------"
-		result += "\n\t\t---DIFF LIST---"
+		result += "\n\t\t---DIFF LIST---\n--------------------------------------------------\n"
 		diff := 0
 		l := lexer.Lexer(code)
 		if l == nil {
-			result += "\n--------------------------------------------------\nExpected a lexer, got nil"
+			result += "Expected a lexer, got nil\n--------------------------------------------------\n"
 		} else if len(l) != expected_lenth {
-			result += "\n--------------------------------------------------\nExpected " + strconv.Itoa(expected_lenth) + " tokens, got " + strconv.Itoa(len(l)) + "\n--------------------------------------------------\n"
+			result += "Expected " + strconv.Itoa(expected_lenth) + " tokens, got " + strconv.Itoa(len(l))
 			diff++
 		}
 		for Position, expct := range expected {
@@ -39,12 +42,11 @@ func TestLexer(t *testing.T) {
 			}
 		}
 		if diff == 0 {
-			result += "\n\n--------------------------------------------------\n\t      ---AUCUNE ERREUR---\n--------------------------------------------------\n"
+			result += "\t      ---AUCUNE ERREUR---\n--------------------------------------------------\n"
 			t.Log(result)
 		} else {
 			result += "\n--------------------------------------------------\n"
-			t.Error(result)
-			t.Log("\ngot :\n", l)
+			t.Error(result, "\ngot :\n", l)
 		}
 	}
 }
