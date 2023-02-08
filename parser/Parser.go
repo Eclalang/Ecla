@@ -278,11 +278,10 @@ func (p *Parser) ParseIfStmt() Stmt {
 			tempIf.ElseStmt = p.ParseElseStmt()
 		} else {
 			tempIf.ElseStmt = nil
+			p.DisableEOLChecking()
 		}
 	} else {
 		tempIf.ElseStmt = nil
-	}
-	if tempIf.ElseStmt != nil {
 		p.DisableEOLChecking()
 	}
 	return tempIf
@@ -298,7 +297,6 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 			parsedIf := p.ParseIfStmt()
 			point := parsedIf.(IfStmt)
 			tempElse.IfStmt = &point
-			p.DisableEOLChecking()
 			return tempElse
 		} else {
 			tempElse.IfStmt = nil
@@ -317,7 +315,9 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 	}
 	tempElse.RightBrace = p.CurrentToken
 	p.Step()
-	p.DisableEOLChecking()
+	if tempElse.IfStmt == nil {
+		p.DisableEOLChecking()
+	}
 	return tempElse
 }
 

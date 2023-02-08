@@ -1,10 +1,27 @@
 import console;
 
 var Bool1 bool = true;
-var Bool2 bool = !(0 == 0);
 
 if (Bool1) {
-    console.paul("Bool1 is true");
+    console.println("Bool1 is true");
+}
+
+if (Bool1) {
+    console.println("Bool1 is true");
 } else {
-    console.log("Bool1 is false");
-};
+    console.println("Bool1 is false");
+}
+
+var i int = 0;
+if (Bool1) {
+    console.println("Bool1 is true");
+} else if (!Bool1) {
+    console.println("Bool1 is false");
+}
+
+
+
+
+
+
+console.print("after conditional statement");
