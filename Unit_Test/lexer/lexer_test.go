@@ -13,36 +13,41 @@ func TestLexer(t *testing.T) {
 		testDQuote,
 		testSpeChar,
 		testEOL,
+		testHashtag,
+		testHashtag2,
+		testHashtag3,
+		testHashtag4,
 	}
 	for num, tested := range GlobalTest {
 
+		result := ""
 		code := tested.input
 		expected := tested.output
 		expected_lenth := len(expected)
-		t.Log("\n\t\t---TEST" + strconv.Itoa(num) + "-INPUT---\n\t\t---\"" + code + "\"---")
-		t.Log("\n\t\t---DIFF LIST---")
+		result += "\n--------------------------------------------------\n--------------------------------------------------\n\t\t---TEST" + strconv.Itoa(num) + "-INPUT---\n--------------------------------------------------\n" + code + "\n--------------------------------------------------"
+		result += "\n\t\t---DIFF LIST---\n--------------------------------------------------\n"
 		diff := 0
 		l := lexer.Lexer(code)
 		if l == nil {
-			t.Error("Expected a lexer, got nil")
+			result += "Expected a lexer, got nil\n--------------------------------------------------\n"
 		} else if len(l) != expected_lenth {
-			t.Error("Expected "+strconv.Itoa(expected_lenth)+" tokens, got ", len(l))
+			result += "Expected " + strconv.Itoa(expected_lenth) + " tokens, got " + strconv.Itoa(len(l))
 			diff++
 		}
 		for Position, expct := range expected {
 			if Position < len(l) {
 				if expct != l[Position] {
 					diff++
-					t.Error("Diff ", diff, " Expected ", expct, " for the token n°", Position+1, " , got ", l[Position])
+					result += "\n--------------------------------------------------\nDiff " + strconv.Itoa(diff) + " Expected {" + expct.TokenType + " " + expct.Value + " " + strconv.Itoa(expct.Line) + " " + strconv.Itoa(expct.Position) + "} for the token n°" + strconv.Itoa(Position+1) + "\n       Got \t{" + l[Position].TokenType + " " + l[Position].Value + " " + strconv.Itoa(l[Position].Line) + " " + strconv.Itoa(l[Position].Position) + "}\n--------------------------------------------------\n"
 				}
 			}
 		}
 		if diff == 0 {
-			t.Log("\n\t\t\t---AUCUNE ERREUR---")
+			result += "\t      ---AUCUNE ERREUR---\n--------------------------------------------------\n"
+			t.Log(result)
+		} else {
+			result += "\n--------------------------------------------------\n"
+			t.Error(result, "\ngot :\n", l)
 		}
-		t.Log("\n\t\t---GLOBAL RESULT---\n")
-		t.Log("Expected \t", expected)
-		t.Log("Got \t", l)
-		t.Log("diff total ", diff)
 	}
 }

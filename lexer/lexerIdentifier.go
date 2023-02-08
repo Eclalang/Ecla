@@ -2,41 +2,44 @@ package lexer
 
 // each type of token
 var (
-	TEXT     = "TEXT"
-	STRING   = "STRING"
-	PRINT    = "PRINT"
-	INT      = "INT"
-	FLOAT    = "FLOAT"
-	ADD      = "ADD"
-	SUB      = "SUB"
-	MULT     = "MULT"
-	DIV      = "DIV"
-	QOT      = "QOT"
-	MOD      = "MOD"
-	INC      = "INC"
-	DEC      = "DEC"
-	ASSIGN   = "ASSIGN"
-	LSS      = "LSS"
-	GTR      = "GTR"
-	NEQ      = "NEQ"
-	LEQ      = "LEQ"
-	GEQ      = "GEQ"
-	EQUAL    = "EQUAL"
-	LPAREN   = "LPAREN"
-	RPAREN   = "RPAREN"
-	EOL      = "EOL"
-	DQUOTE   = "DQUOTE"
-	PERIOD   = "PERIOD"
-	COLON    = "COLON"
-	LBRACE   = "LBRACE"
-	RBRACE   = "RBRACE"
-	LBRACKET = "LBRACKET"
-	RBRACKET = "RBRACKET"
-	COMMA    = "COMMA"
-	NOT      = "NOT"
-	BOOL     = "BOOL"
-	MURLOC   = "MURLOC"
-	EOF      = "EOF"
+	TEXT              = "TEXT"
+	STRING            = "STRING"
+	PRINT             = "PRINT"
+	INT               = "INT"
+	FLOAT             = "FLOAT"
+	ADD               = "ADD"
+	SUB               = "SUB"
+	MULT              = "MULT"
+	DIV               = "DIV"
+	QOT               = "QOT"
+	MOD               = "MOD"
+	INC               = "INC"
+	DEC               = "DEC"
+	ASSIGN            = "ASSIGN"
+	LSS               = "LSS"
+	GTR               = "GTR"
+	NEQ               = "NEQ"
+	LEQ               = "LEQ"
+	GEQ               = "GEQ"
+	EQUAL             = "EQUAL"
+	LPAREN            = "LPAREN"
+	RPAREN            = "RPAREN"
+	EOL               = "EOL"
+	DQUOTE            = "DQUOTE"
+	PERIOD            = "PERIOD"
+	COLON             = "COLON"
+	LBRACE            = "LBRACE"
+	RBRACE            = "RBRACE"
+	LBRACKET          = "LBRACKET"
+	RBRACKET          = "RBRACKET"
+	COMMA             = "COMMA"
+	NOT               = "NOT"
+	BOOL              = "BOOL"
+	MURLOC            = "MURLOC"
+	EOF               = "EOF"
+	COMMENT           = "COMMENT"
+	COMMENTGROUP      = "COMMENTGROUP"
+	COMMENTGROUPIDENT = "COMMENTGROUPIDENT"
 )
 
 //--------------------------------------------//
@@ -183,6 +186,12 @@ var Identifier []identifier = []identifier{
 		Identifier: RBRACKET,
 		Syntaxe: []string{
 			"]",
+		},
+	},
+	{
+		Identifier: COMMENT,
+		Syntaxe: []string{
+			"#",
 		},
 	},
 	{
