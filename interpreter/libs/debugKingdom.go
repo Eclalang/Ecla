@@ -13,8 +13,7 @@ type DebugKingdom struct {
 func NewDebugKingdom() *DebugKingdom {
 	return &DebugKingdom{
 		functionMap: map[string]interface{}{
-			// TODO use the functionMap for the switch statement in Call
-			"testMap": (*DebugKingdom).Test,
+			"testMap": nil,
 		},
 	}
 }
@@ -29,16 +28,21 @@ func (d *DebugKingdom) Call(name string, args []eclaType.Type) eclaType.Type {
 	}
 	switch name {
 	case "testMap":
-		newMap, ok := newArgs[0].(map[string]string)
-		if ok {
-			d.Test(newMap)
+		tempMap, ok := newArgs[0].(map[interface{}]interface{})
+		if !ok {
+			return nil
 		}
+		newMap := make(map[string]string)
+		for k, v := range tempMap {
+			newMap[k.(string)] = v.(string)
+		}
+		d.TestMap(newMap)
 	}
 	return eclaType.Null{}
 }
 
-func (d *DebugKingdom) Test(map[string]string) {
-	for k, v := range d.functionMap {
+func (d *DebugKingdom) TestMap(test map[string]string) {
+	for k, v := range test {
 		fmt.Println(k, v)
 	}
 }
