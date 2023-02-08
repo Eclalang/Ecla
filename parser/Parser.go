@@ -567,35 +567,74 @@ func (p *Parser) ParseVariableAssign() Stmt {
 
 func (p *Parser) ParseNormalVariableAssign() Stmt {
 	Var := p.CurrentToken
-	VarName := Var.Value
-	p.Step()
+	toAssign := p.ParseVariableAssignLHS()
 	switch p.CurrentToken.TokenType {
 	case lexer.ASSIGN:
 		p.Step()
-		return VariableAssignStmt{VarToken: Var, Name: VarName, Value: p.ParseExpr()}
+		rhs := p.ParseVariableAssignRHS()
+		p.Back()
+		return VariableAssignStmt{VarToken: Var, Name: toAssign, Value: rhs}
 	case lexer.INC:
+		if len(toAssign) != 1 {
+			log.Fatal("Expected only one variable to increment")
+		}
 		p.Step()
-		return VariableIncrementStmt{VarToken: Var, Name: VarName, IncToken: p.CurrentToken}
+		return VariableIncrementStmt{VarToken: Var, Name: toAssign[0], IncToken: p.CurrentToken}
 	case lexer.DEC:
+		if len(toAssign) != 1 {
+			log.Fatal("Expected only one variable to increment")
+		}
 		p.Step()
-		return VariableDecrementStmt{VarToken: Var, Name: VarName, DecToken: p.CurrentToken}
+		return VariableDecrementStmt{VarToken: Var, Name: toAssign[0], DecToken: p.CurrentToken}
 	}
 	return nil
 }
 
+func (p *Parser) ParseVariableAssignLHS() []string {
+	var tempArray []string
+	tempArray = append(tempArray, p.CurrentToken.Value)
+	p.Step()
+	for p.CurrentToken.TokenType == lexer.COMMA {
+		p.Step()
+		tempArray = append(tempArray, p.CurrentToken.Value)
+		p.Step()
+	}
+	return tempArray
+}
+
+func (p *Parser) ParseVariableAssignRHS() []Expr {
+	var tempArray []Expr
+	tempArray = append(tempArray, p.ParseExpr())
+	for p.CurrentToken.TokenType == lexer.COMMA {
+		p.Step()
+		tempArray = append(tempArray, p.ParseExpr())
+		p.Step()
+	}
+	return tempArray
+}
+
 func (p *Parser) ParseIndexableVariableAssign() Stmt {
 	Var := p.CurrentToken
-	VarAccess := p.ParseIndexableAccessExpr()
+	toAssign := p.ParseVariableAssignRHS()
+	p.Back()
 	switch p.CurrentToken.TokenType {
 	case lexer.ASSIGN:
 		p.Step()
-		return IndexableVariableAssignStmt{VarToken: Var, IndexableAccess: VarAccess, Value: p.ParseExpr()}
+		rhs := p.ParseVariableAssignRHS()
+		p.Back()
+		return IndexableVariableAssignStmt{VarToken: Var, IndexableAccess: toAssign, Value: rhs}
 	case lexer.INC:
+		if len(toAssign) != 1 {
+			log.Fatal("Expected only one variable to increment")
+		}
 		p.Step()
-		return IndexableVariableIncrementStmt{VarToken: Var, IndexableAccess: VarAccess, IncToken: p.CurrentToken}
+		return IndexableVariableIncrementStmt{VarToken: Var, IndexableAccess: toAssign[0], IncToken: p.CurrentToken}
 	case lexer.DEC:
+		if len(toAssign) != 1 {
+			log.Fatal("Expected only one variable to increment")
+		}
 		p.Step()
-		return IndexableVariableDecrementStmt{VarToken: Var, IndexableAccess: VarAccess, DecToken: p.CurrentToken}
+		return IndexableVariableDecrementStmt{VarToken: Var, IndexableAccess: toAssign[0], DecToken: p.CurrentToken}
 	}
 	return nil
 }
