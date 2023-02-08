@@ -150,7 +150,16 @@ func (m *Map) Delete(key Type) {
 
 func (m *Map) Sub(value Type) (Type, error) {
 	switch value.(type) {
+	case *Var:
+		value = value.(*Var).Value
+	}
+	switch value.(type) {
 	case *Map:
+
+		if value.GetType() != m.Typ && m.TypKey != "string" && m.TypVal != "string" {
+			return nil, errors.New("cannot add map with " + value.GetType())
+		}
+
 		for _, v := range value.(*Map).Keys {
 			value.(*Map).Delete(v)
 		}
