@@ -72,6 +72,12 @@ func (m *Map) SetType(t string) {
 }
 
 func (m *Map) Set(key Type, value Type) {
+	if key.GetType() != m.TypKey && m.TypKey != "string" {
+		panic("key type not match")
+	}
+	if value.GetType() != m.TypVal && m.TypVal != "string" {
+		panic("value type not match")
+	}
 	for index, k := range m.Keys {
 		if k.GetString().String() == key.GetString().String() {
 			m.Values[index] = value
@@ -92,7 +98,7 @@ func (m *Map) Get(key Type) (Type, bool) {
 }
 
 func (m *Map) GetIndex(index Type) (Type, error) {
-	if index.GetType() != m.TypKey {
+	if index.GetType() != m.TypKey && m.TypKey != "string" {
 		return nil, errors.New("index type not match")
 	}
 	for i, k := range m.Keys {
@@ -114,12 +120,22 @@ func (m *Map) GetKey(value Type) (Type, bool) {
 
 func (m *Map) Add(value Type) (Type, error) {
 	switch value.(type) {
+	case *Var:
+		value = value.(*Var).Value
+	}
+	switch value.(type) {
 	case *Map:
+		if value.GetType() != m.Typ && m.TypKey != "string" && m.TypVal != "string" {
+			return nil, errors.New("cannot add map with " + value.GetType())
+		}
+
 		for index, v := range value.(*Map).Keys {
 			m.Set(v, value.(*Map).Values[index])
 		}
+
+		return m, nil
 	}
-	return m, nil
+	return nil, errors.New("cannot add map with " + value.GetType())
 }
 
 func (m *Map) Delete(key Type) {

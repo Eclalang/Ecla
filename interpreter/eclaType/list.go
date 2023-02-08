@@ -87,6 +87,10 @@ func (l *List) Len() int {
 // Add adds two Type objects  compatible with List
 func (l *List) Add(other Type) (Type, error) {
 	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
 	case *List:
 		if l.Typ == other.(*List).Typ {
 			return &List{append(l.Value, other.(*List).Value...), l.Typ}, nil
