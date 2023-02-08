@@ -19,6 +19,11 @@ if (Bool1) {
     console.println("Bool1 is false");
 }
 
+function test() {
+    console.println("test");
+    return;
+}
+
 
 
 

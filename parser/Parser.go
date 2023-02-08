@@ -745,31 +745,36 @@ func (p *Parser) ParseFunctionDecl() Node {
 		log.Fatal("Expected '('")
 	}
 	tempFunctionDecl.LeftParamParen = p.CurrentToken
-	for p.CurrentToken.TokenType != lexer.RPAREN {
+	isParen := p.Peek(1)
+	if isParen.TokenType != lexer.RPAREN {
+		for p.CurrentToken.TokenType != lexer.RPAREN {
+			p.Step()
+			// parameter in the form of "a : int, b : int"
+			ParamName := ""
+			ParamType := ""
+			ParamName = p.CurrentToken.Value
+			p.Step()
+			if p.CurrentToken.TokenType != lexer.COLON {
+				log.Fatal("Expected ':'")
+			}
+			ParamType, succes := p.ParseType()
+			if !succes {
+				log.Fatal("Type does not exist")
+			}
+			p.Back()
+			if !(DuplicateParam(tempFunctionDecl.Parameters, ParamName)) {
+				newParams := FunctionParams{Name: ParamName, Type: ParamType}
+				tempFunctionDecl.Parameters = append(tempFunctionDecl.Parameters, newParams)
+			} else {
+				log.Fatal("Duplicate argument name")
+			}
+			p.Step()
+			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+				log.Fatal("Expected ','")
+			}
+		}
+	} else {
 		p.Step()
-		// parameter in the form of "a : int, b : int"
-		ParamName := ""
-		ParamType := ""
-		ParamName = p.CurrentToken.Value
-		p.Step()
-		if p.CurrentToken.TokenType != lexer.COLON {
-			log.Fatal("Expected ':'")
-		}
-		ParamType, succes := p.ParseType()
-		if !succes {
-			log.Fatal("Type does not exist")
-		}
-		p.Back()
-		if !(DuplicateParam(tempFunctionDecl.Parameters, ParamName)) {
-			newParams := FunctionParams{Name: ParamName, Type: ParamType}
-			tempFunctionDecl.Parameters = append(tempFunctionDecl.Parameters, newParams)
-		} else {
-			log.Fatal("Duplicate argument name")
-		}
-		p.Step()
-		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-			log.Fatal("Expected ','")
-		}
 	}
 	if p.CurrentToken.TokenType != lexer.RPAREN {
 		log.Fatal("Expected ')'")
@@ -821,6 +826,9 @@ func DuplicateParam(params []FunctionParams, newParam string) bool {
 func (p *Parser) ParseReturnStmt() Node {
 	tempReturnStmt := ReturnStmt{ReturnToken: p.CurrentToken}
 	p.Step()
+	if p.CurrentToken.TokenType == lexer.EOL {
+		return tempReturnStmt
+	}
 	err := false
 	for {
 		tempReturnStmt.ReturnValues = append(tempReturnStmt.ReturnValues, p.ParseExpr())
