@@ -7,24 +7,27 @@ import (
 )
 
 type Console struct {
+	functionMap map[string]interface{}
 }
 
-var (
-	functionMap = map[string]interface{}{
-		"printf":       nil,
-		"println":      nil,
-		"print":        nil,
-		"input":        nil,
-		"printInColor": nil,
+func NewConsole() *Console {
+	return &Console{
+		functionMap: map[string]interface{}{
+			"printf":       nil,
+			"println":      nil,
+			"print":        nil,
+			"input":        nil,
+			"printInColor": nil,
+		},
 	}
-)
+}
 
 func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
 	newArgs := make([]any, len(args))
 	for k, arg := range args {
 		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
-	if _, ok := functionMap[name]; !ok {
+	if _, ok := c.functionMap[name]; !ok {
 		return nil
 	}
 	switch name {

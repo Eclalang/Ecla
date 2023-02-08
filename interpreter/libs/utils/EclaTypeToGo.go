@@ -20,6 +20,12 @@ func EclaTypeToGo(arg eclaType.Type) any {
 			types = append(types, EclaTypeToGo(val))
 		}
 		return types
+	case *eclaType.Map:
+		var types = make(map[any]any)
+		for i := 0; i < len(arg.(*eclaType.Map).Keys); i++ {
+			types[EclaTypeToGo(arg.(*eclaType.Map).Keys[i])] = EclaTypeToGo(arg.(*eclaType.Map).Values[i])
+		}
+		return types
 	default:
 		return nil
 	}
