@@ -45,7 +45,7 @@ var (
 //--------------------------------------------//
 // Need to be optimized
 // Change for a switch case of a hashmap
-// -------------------------------------------//
+//--------------------------------------------//
 
 // link between syntax and token
 var Identifier []identifier = []identifier{
@@ -229,6 +229,8 @@ type identifier struct {
 }
 
 // IsSyntaxe verify is the string tempVal exist in the current identifier
+//
+// return a true false value
 func (ident identifier) IsSyntaxe(tempVal string) bool {
 	for _, syntaxe := range ident.Syntaxe {
 		if syntaxe == tempVal {
@@ -240,6 +242,8 @@ func (ident identifier) IsSyntaxe(tempVal string) bool {
 
 // concatEqual verify is the string str is equal with one of the
 // mathematical opperand
+//
+// return a true false value
 func concatEqual(str string) bool {
 	switch str {
 	case ADD:
