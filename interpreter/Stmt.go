@@ -50,13 +50,15 @@ func RunVariableIncrementStmt(tree parser.VariableIncrementStmt, env *Env) {
 
 // RunVariableAssignStmt Run assigns a variable.
 func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
-	v, ok := env.GetVar(tree.Name)
-	if !ok {
-		panic(errors.New("variable not found"))
-	}
-	err := v.SetVar(RunTree(tree.Value, env))
-	if err != nil {
-		panic(err)
+	if len(tree.Name) == 1 {
+		v, ok := env.GetVar(tree.Name[0])
+		if !ok {
+			panic(errors.New("variable not found"))
+		}
+		err := v.SetVar(RunTree(tree.Value[0], env))
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -174,9 +176,9 @@ func RunReturnStmt(tree parser.ReturnStmt, env *Env) eclaType.Type {
 func RunIndexableVariableAssignStmt(tree parser.IndexableVariableAssignStmt, env *Env) eclaType.Type {
 	var index parser.IndexableAccessExpr
 
-	switch tree.IndexableAccess.(type) {
+	switch tree.IndexableAccess[0].(type) {
 	case parser.IndexableAccessExpr:
-		index = tree.IndexableAccess.(parser.IndexableAccessExpr)
+		index = tree.IndexableAccess[0].(parser.IndexableAccessExpr)
 	default:
 		panic(errors.New("indexable variable assign: indexable access not found"))
 	}
@@ -212,6 +214,6 @@ func RunIndexableVariableAssignStmt(tree parser.IndexableVariableAssignStmt, env
 			panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
 		}
 	}
-	*temp = RunTree(tree.Value, env)
+	*temp = RunTree(tree.Value[0], env)
 	return nil
 }
