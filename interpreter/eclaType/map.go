@@ -92,7 +92,15 @@ func (m *Map) Get(key Type) (Type, bool) {
 }
 
 func (m *Map) GetIndex(index Type) (Type, error) {
-	return nil, nil
+	if index.GetType() != m.TypKey {
+		return nil, errors.New("index type not match")
+	}
+	for i, k := range m.Keys {
+		if k.GetString().String() == index.GetString().String() {
+			return m.Values[i], nil
+		}
+	}
+	return nil, errors.New("index not found")
 }
 
 func (m *Map) GetKey(value Type) (Type, bool) {
