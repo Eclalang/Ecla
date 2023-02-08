@@ -9,10 +9,12 @@ type Map struct {
 	Keys   []Type
 	Values []Type
 	Typ    string
+	TypKey string
+	TypVal string
 }
 
 func NewMap() *Map {
-	return &Map{[]Type{}, []Type{}, ""}
+	return &Map{[]Type{}, []Type{}, "", "", ""}
 }
 
 func (m *Map) SetAutoType() {
@@ -21,6 +23,8 @@ func (m *Map) SetAutoType() {
 		typ = "empty"
 	} else {
 		typ = "map[" + m.Keys[0].GetType() + "]" + m.Values[0].GetType()
+		m.TypKey = m.Keys[0].GetType()
+		m.TypVal = m.Values[0].GetType()
 	}
 	m.Typ = typ
 }
@@ -64,6 +68,7 @@ func (m *Map) GetType() string {
 
 func (m *Map) SetType(t string) {
 	m.Typ = t
+	m.TypKey, m.TypVal = GetTypeOfKeyAndValue(t)
 }
 
 func (m *Map) Set(key Type, value Type) {
@@ -220,4 +225,22 @@ func IsMap(typ string) bool {
 		return false
 	}
 	return true
+}
+
+func GetTypeOfKeyAndValue(v string) (string, string) {
+	val := ""
+	count := 0
+	for i := 4; i < len(v); i++ {
+		if v[i] == '[' {
+			count++
+		}
+		if v[i] == ']' {
+			count--
+		}
+		if count == 0 && v[i] == ']' {
+			val = v[i+1:]
+			break
+		}
+	}
+	return v[4 : len(v)-len(val)-1], val
 }
