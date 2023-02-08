@@ -16,6 +16,7 @@ func TestLexer(t *testing.T) {
 		testHashtag,
 		testHashtag2,
 		testHashtag3,
+		testHashtag4,
 	}
 	for num, tested := range GlobalTest {
 

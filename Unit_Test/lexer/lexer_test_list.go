@@ -446,7 +446,7 @@ var (
 		},
 	}
 	testHashtag4 = testList{
-		input: "\"prout\"",
+		input: "\"#/prout/#\"",
 		output: []lexer.Token{
 			{
 				TokenType: lexer.DQUOTE,

@@ -195,12 +195,6 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
-		Identifier: COMMENTGROUPIDENT,
-		Syntaxe: []string{
-			"/",
-		},
-	},
-	{
 		Identifier: "",
 		Syntaxe: []string{
 			" ",
