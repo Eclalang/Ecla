@@ -201,8 +201,8 @@ func (v VariableDecl) declNode() {}
 
 type VariableAssignStmt struct {
 	VarToken lexer.Token
-	Name     string
-	Value    Expr
+	Name     []string
+	Value    []Expr
 }
 
 func (v VariableAssignStmt) StartPos() int {
@@ -210,7 +210,7 @@ func (v VariableAssignStmt) StartPos() int {
 }
 
 func (v VariableAssignStmt) EndPos() int {
-	return v.Value.EndPos()
+	return v.Value[len(v.Value)-1].EndPos()
 }
 
 func (v VariableAssignStmt) stmtNode() {}
@@ -251,8 +251,8 @@ func (v VariableDecrementStmt) stmtNode() {}
 
 type IndexableVariableAssignStmt struct {
 	VarToken        lexer.Token
-	IndexableAccess Expr
-	Value           Expr
+	IndexableAccess []Expr
+	Value           []Expr
 }
 
 func (v IndexableVariableAssignStmt) StartPos() int {
@@ -260,7 +260,7 @@ func (v IndexableVariableAssignStmt) StartPos() int {
 }
 
 func (v IndexableVariableAssignStmt) EndPos() int {
-	return v.Value.EndPos()
+	return v.Value[len(v.Value)-1].EndPos()
 }
 
 func (v IndexableVariableAssignStmt) stmtNode() {}
