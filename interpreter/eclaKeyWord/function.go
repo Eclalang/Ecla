@@ -8,12 +8,12 @@ import (
 
 type Function struct {
 	Name   string
-	Args   map[string]string
+	Args   []parser.FunctionParams
 	Body   []parser.Node
 	Return []string
 }
 
-func NewFunction(name string, args map[string]string, body []parser.Node, ret []string) *Function {
+func NewFunction(name string, args []parser.FunctionParams, body []parser.Node, ret []string) *Function {
 	return &Function{
 		Name:   name,
 		Args:   args,
@@ -32,21 +32,23 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []eclaType.Type) (bool, map
 	}
 	var i int = 0
 	var argsType = make(map[string]*eclaType.Var)
-	for name, arg := range f.Args {
+	for _, arg := range f.Args {
+		paramName := arg.Name
+		paramType := arg.Type
 		elem := args[i]
 		switch elem.(type) {
 		case *eclaType.Var:
 			elem = elem.(*eclaType.Var).Value
 		}
 		tp := elem.GetType()
-		if tp != arg {
+		if tp != paramType {
 			return false, nil
 		}
-		v, err := eclaType.NewVar(name, tp, elem)
+		v, err := eclaType.NewVar(paramName, tp, elem)
 		if err != nil {
 			panic(err)
 		}
-		argsType[name] = v
+		argsType[paramName] = v
 		i++
 	}
 	return true, argsType

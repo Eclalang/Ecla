@@ -438,12 +438,17 @@ func (i ImportStmt) EndPos() int {
 
 func (i ImportStmt) stmtNode() {}
 
+type FunctionParams struct {
+	Name string
+	Type string
+}
+
 type FunctionDecl struct {
 	FunctionToken   lexer.Token
 	Name            string
 	LeftParamParen  lexer.Token
 	RightParamParen lexer.Token
-	Parameters      map[string]string
+	Parameters      []FunctionParams
 	LeftRetsParen   lexer.Token
 	RightRetsParen  lexer.Token
 	ReturnTypes     []string

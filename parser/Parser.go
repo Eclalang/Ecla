@@ -736,7 +736,6 @@ func (p *Parser) ParseImportStmt() Stmt {
 // ParseFunctionDecl parses a function declaration
 func (p *Parser) ParseFunctionDecl() Node {
 	tempFunctionDecl := FunctionDecl{FunctionToken: p.CurrentToken}
-	tempFunctionDecl.Parameters = make(map[string]string)
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.TEXT {
 		log.Fatal("Expected function name")
@@ -762,8 +761,9 @@ func (p *Parser) ParseFunctionDecl() Node {
 			log.Fatal("Type does not exist")
 		}
 		p.Back()
-		if _, ok := tempFunctionDecl.Parameters[ParamName]; !ok {
-			tempFunctionDecl.Parameters[ParamName] = ParamType
+		if !(DuplicateParam(tempFunctionDecl.Parameters, ParamName)) {
+			newParams := FunctionParams{Name: ParamName, Type: ParamType}
+			tempFunctionDecl.Parameters = append(tempFunctionDecl.Parameters, newParams)
 		} else {
 			log.Fatal("Duplicate argument name")
 		}
@@ -807,6 +807,15 @@ func (p *Parser) ParseFunctionDecl() Node {
 	p.CurrentFile.FunctionDecl = append(p.CurrentFile.FunctionDecl, tempFunctionDecl.Name)
 	p.DisableEOLChecking()
 	return tempFunctionDecl
+}
+
+func DuplicateParam(params []FunctionParams, newParam string) bool {
+	for _, paramName := range params {
+		if paramName.Name == newParam {
+			return true
+		}
+	}
+	return false
 }
 
 // ParseReturnStmt parses a return statement
