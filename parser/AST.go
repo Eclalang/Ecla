@@ -6,8 +6,9 @@ type AST struct {
 }
 
 type File struct {
-	ParseTree    *AST
-	Imports      []string
+	ParseTree *AST
+	Imports   []string
+	// TODO: use a map instead of a slice for better performance
 	Dependencies []string
 	VariableDecl []string
 	FunctionDecl []string
@@ -25,6 +26,12 @@ func (f *File) DepChecker() (bool, []string) {
 		return false, Unresolved
 	}
 	return true, Unresolved
+}
+
+func (f *File) AddDependency(dep string) {
+	if !contains(dep, f.Dependencies) {
+		f.Dependencies = append(f.Dependencies, dep)
+	}
 }
 
 func contains(needle string, haystack []string) bool {

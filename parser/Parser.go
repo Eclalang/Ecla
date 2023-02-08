@@ -447,13 +447,12 @@ func (p *Parser) ParseVariableDecl() Decl {
 	tempDecl.Value = p.ParseExpr()
 	p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
 	return tempDecl
-
 }
 
 // ParseMethodCallExpr parses a method call expression
 func (p *Parser) ParseMethodCallExpr() Expr {
 	tempMethodCall := MethodCallExpr{MethodCallToken: p.CurrentToken, ObjectName: p.CurrentToken.Value}
-	p.CurrentFile.Dependencies = append(p.CurrentFile.Dependencies, p.CurrentToken.Value)
+	p.CurrentFile.AddDependency(p.CurrentToken.Value)
 	p.MultiStep(2)
 	tempFunctionCall := p.ParseFunctionCallExpr()
 	tempMethodCall.FunctionCall = tempFunctionCall.(FunctionCallExpr)
