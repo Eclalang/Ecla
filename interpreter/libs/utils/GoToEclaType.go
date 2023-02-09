@@ -17,7 +17,17 @@ func GoToEclaType(arg any) eclaType.Type {
 		for _, val := range arg.([]any) {
 			types = append(types, GoToEclaType(val))
 		}
+		//TODO: Generate the type of the list
 		return &eclaType.List{Value: types}
+	case map[any]any:
+		var keys []eclaType.Type
+		var values []eclaType.Type
+		for key, val := range arg.(map[any]any) {
+			keys = append(keys, GoToEclaType(key))
+			values = append(values, GoToEclaType(val))
+		}
+		//TODO: Generate the type of the keys, values and full types
+		return &eclaType.Map{Keys: keys, Values: values}
 	default:
 		return eclaType.Null{}
 	}
