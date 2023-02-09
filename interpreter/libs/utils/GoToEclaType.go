@@ -1,33 +1,40 @@
 package utils
 
-import "github.com/tot0p/Ecla/interpreter/eclaType"
+import (
+	"fmt"
+	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"reflect"
+)
 
 func GoToEclaType(arg any) eclaType.Type {
-	switch arg.(type) {
-	case int:
+	//TODO: Refactor the use of Reflect because it may be slow
+	switch reflect.TypeOf(arg).Kind() {
+	case reflect.Int:
 		return eclaType.Int(arg.(int))
-	case float64:
+	case reflect.Float64:
 		return eclaType.Float(arg.(float32))
-	case string:
+	case reflect.String:
 		return eclaType.String(arg.(string))
-	case bool:
+	case reflect.Bool:
 		return eclaType.Bool(arg.(bool))
-	case []any:
+	case reflect.Slice:
+		//TODO: Refactor the use of Reflect because it may be slow
 		var types []eclaType.Type
-		for _, val := range arg.([]any) {
-			types = append(types, GoToEclaType(val))
+		newList := reflect.ValueOf(arg)
+		for i := 0; i < newList.Len(); i++ {
+			types = append(types, GoToEclaType(reflect.ValueOf(newList.Index(i).Interface()).Interface()))
 		}
-		//TODO: Generate the type of the list
-		return &eclaType.List{Value: types}
-	case map[any]any:
+		return &eclaType.List{Value: types, Typ: fmt.Sprint(reflect.TypeOf(arg))}
+	case reflect.Map:
+		//TODO: Refactor the use of Reflect because it may be slow
 		var keys []eclaType.Type
 		var values []eclaType.Type
-		for key, val := range arg.(map[any]any) {
-			keys = append(keys, GoToEclaType(key))
-			values = append(values, GoToEclaType(val))
+		newMap := reflect.ValueOf(arg)
+		for i := 0; i < newMap.Len(); i++ {
+			keys = append(keys, GoToEclaType(reflect.ValueOf(newMap.MapKeys()[i].Interface()).Interface()))
+			values = append(values, GoToEclaType(reflect.ValueOf(newMap.MapIndex(newMap.MapKeys()[i]).Interface()).Interface()))
 		}
-		//TODO: Generate the type of the keys, values and full types
-		return &eclaType.Map{Keys: keys, Values: values}
+		return &eclaType.Map{Keys: keys, Values: values, Typ: fmt.Sprint(reflect.TypeOf(arg)), TypKey: reflect.TypeOf(arg).Key().String(), TypVal: reflect.TypeOf(arg).Elem().String()}
 	default:
 		return eclaType.Null{}
 	}
