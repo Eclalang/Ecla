@@ -1,59 +1,81 @@
 import console;
+import encoding;
 
-function interpret(code : string , memory : []int , memoryPointer : int) (int) {
+function interpret(code : string, debug : bool) {
+    var memory []int = [0,0,0,0,0];
+    var memoryPointer int = 0;
     var codePointer int = 0;
-    while (codePointer < len(code)){
-        console.print(codePointer);
-        var c string = code[codePointer];
-        if (c == ">"){
-            memoryPointer++;
-        } else if (c == "<"){
-            memoryPointer--;
-        } else if (c == "+"){
+    var instruction string;
+    var codeLen int = strLen(code);
+    while (codePointer < codeLen){
+        instruction = code[codePointer];
+        if (debug){
+            console.println("instruction: ",instruction);
+            console.println("memory: ",memory);
+            console.println("          "+"  "*memoryPointer+"^");
+            console.input("press enter to continue");
+        }
+        if (instruction == "+"){
             memory[memoryPointer] = memory[memoryPointer] + 1;
-        } else if (c == "-"){
+        } else if (instruction == "-"){
             memory[memoryPointer] = memory[memoryPointer] - 1;
-        } else if (c == "."){
-            console.print(memory[memoryPointer]);
-        } else if (c == ","){
-            console.print("Not implemented");
-        } else if (c == "["){
+        } else if (instruction == ">"){
+            memoryPointer++;
+            if (memoryPointer >= intArrLen(memory)){
+                memory = memory + [0];
+            }
+        } else if (instruction == "<"){
+            memoryPointer--;
+        } else if (instruction == "."){
+            console.print(encoding.asciiToString([memory[memoryPointer]]));
+        } else if (instruction == ","){
+            console.println("not implemented yet");
+        } else if (instruction == "["){
             if (memory[memoryPointer] == 0){
-                var count int = 1;
-                while (count > 0){
+                var depth int = 1;
+                while (depth > 0){
                     codePointer++;
                     if (code[codePointer] == "["){
-                        count++;
+                        depth++;
                     } else if (code[codePointer] == "]"){
-                        count--;
-                    };
-                };
-            };
-        } else if (c == "]"){
+                        depth--;
+                    }
+                }
+            }
+        } else if (instruction == "]"){
             if (memory[memoryPointer] != 0){
-                var count int = 1;
-                while (count > 0){
+                var depth int = 1;
+                while (depth > 0){
                     codePointer--;
                     if (code[codePointer] == "]"){
-                        count++;
+                        depth++;
                     } else if (code[codePointer] == "["){
-                        count--;
-                    };
-                };
-            };
-        };
+                        depth--;
+                    }
+                }
+            }
+        }
         codePointer++;
-    };
-    return 0;
-};
+    }
+}
 
-function len(s : string) (int) {
+function strLen(s : string) (int) {
     var count int = 0;
     for (x,y range s){
         count++;
     }
     return count;
-};
+}
 
-interpret("++++++++[>++++[>++>+++>+++>+<<<<-]>+.-.", [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 0);
+function intArrLen(a : []int) (int) {
+    var count int = 0;
+    for (x,y range a){
+        count++;
+    }
+    return count;
+}
+var debug bool = false;
+
+interpret("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++<<+++++++++++++++.>.+++.------.--------.>+.>.",debug);
+
 

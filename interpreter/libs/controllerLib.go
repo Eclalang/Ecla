@@ -9,11 +9,13 @@ type Lib interface {
 var (
 	console_      *Console
 	debugKingdom_ *DebugKingdom
+	encoding_     *Encoding
 )
 
 func init() {
 	console_ = NewConsole()
 	debugKingdom_ = NewDebugKingdom()
+	encoding_ = NewEncoding()
 }
 
 func Import(name string) Lib {
@@ -22,6 +24,8 @@ func Import(name string) Lib {
 		return console_
 	case "debugKingdom":
 		return debugKingdom_
+	case "encoding":
+		return encoding_
 	default:
 		return nil
 	}

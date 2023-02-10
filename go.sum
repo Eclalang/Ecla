@@ -1,2 +1,4 @@
 github.com/Eclalang/console v0.0.0-20230111110004-cc28e980e63e h1:aW5MhKNHXZPqKS6igHkM+IbshCloGsd4uYgbu6JkoQk=
 github.com/Eclalang/console v0.0.0-20230111110004-cc28e980e63e/go.mod h1:RHRoUAVzxpcTVzX/rPm5VFjOUrshw4v9pBVDlCEmwQM=
+github.com/Eclalang/encoding v0.0.0-20230208224054-881a20b705c8 h1:uvI3+JojulALzaky7GwAomveO35O044JH6PdMwCl3J0=
+github.com/Eclalang/encoding v0.0.0-20230208224054-881a20b705c8/go.mod h1:fc3/K5xxbEf8fRSBhxunDFRerN3Wr6CXJ2lyA1nbxWA=

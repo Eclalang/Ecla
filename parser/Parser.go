@@ -138,6 +138,7 @@ func (p *Parser) ParseNode() Node {
 		} else {
 			tempExpr := p.ParseText()
 			if p.CurrentToken.TokenType != lexer.EOL && !EndOfBrace {
+				p.PrintBacktrace()
 				log.Fatal("Expected EOL"+p.CurrentToken.Value, p.CurrentToken.TokenType)
 			}
 			if EndOfBrace {
@@ -603,11 +604,16 @@ func (p *Parser) ParseVariableAssignLHS() []string {
 }
 
 func (p *Parser) ParseVariableAssignRHS() []Expr {
+	entered := false
 	var tempArray []Expr
 	tempArray = append(tempArray, p.ParseExpr())
 	for p.CurrentToken.TokenType == lexer.COMMA {
+		entered = true
 		p.Step()
 		tempArray = append(tempArray, p.ParseExpr())
+		p.Step()
+	}
+	if !entered {
 		p.Step()
 	}
 	return tempArray
