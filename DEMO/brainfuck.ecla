@@ -1,6 +1,7 @@
 import console;
 import encoding;
 
+# this is an implementation of a brainfuck interpreter using the ECLA programing language
 function interpret(code : string, debug : bool) {
     var memory []int = [0,0,0,0,0];
     var memoryPointer int = 0;
@@ -70,16 +71,17 @@ function interpret(code : string, debug : bool) {
     }
 }
 
-
+# this is a function that returns the length of a string
 function strLen(s : string) (int) {
     var count int = 0;
-    # this is a function that returns the length of a string
+
     for (x,y range s){
         count++;
     }
     return count;
 }
 
+# this is a function that returns the length of an array
 function intArrLen(a : []int) (int) {
     var count int = 0;
     for (x,y range a){
@@ -87,6 +89,10 @@ function intArrLen(a : []int) (int) {
     }
     return count;
 }
+
+
+# ------------------ test code ------------------
+
 var NoDebug bool = false;
 var Debug bool = true;
 
