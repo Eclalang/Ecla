@@ -92,7 +92,10 @@ It also runs the dependency checker to find any missing dependencies and notifie
 func (p *Parser) Parse() *File {
 	p.TokenIndex = -1
 	p.Step()
+	tempFile := new(File)
+	p.Tokens = tempFile.ConsumeComments(p.Tokens)
 	file := p.ParseFile()
+	file.ConsumedComments = tempFile.ConsumedComments
 	ok, UnresolvedDep := file.DepChecker()
 	if !ok {
 		Unresolved := ""
