@@ -1,0 +1,7 @@
+import console;
+
+function DoNothing() {-
+    console.println("this function does nothing but test if a function can be called with no arguments");
+}
+
+DoNothing();

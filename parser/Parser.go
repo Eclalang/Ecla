@@ -472,15 +472,20 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 	}
 	tempFunctionCall.LeftParen = p.CurrentToken
 	var exprArray []Expr
-	for p.CurrentToken.TokenType != lexer.RPAREN {
-		p.Step()
-		tempExpr := p.ParseExpr()
-		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-			p.PrintBacktrace()
-			log.Fatal("Expected comma between function call arguments" + p.CurrentToken.Value)
+	if p.Peek(1).TokenType != lexer.RPAREN {
+		for p.CurrentToken.TokenType != lexer.RPAREN {
+			p.Step()
+			tempExpr := p.ParseExpr()
+			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+				p.PrintBacktrace()
+				log.Fatal("Expected comma between function call arguments" + p.CurrentToken.Value)
+			}
+			exprArray = append(exprArray, tempExpr)
 		}
-		exprArray = append(exprArray, tempExpr)
+	} else {
+		p.Step()
 	}
+
 	tempFunctionCall.Args = exprArray
 	if p.CurrentToken.TokenType != lexer.RPAREN {
 		log.Fatal("Expected Function call RPAREN")
