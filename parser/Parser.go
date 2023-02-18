@@ -591,7 +591,7 @@ func (p *Parser) ParseNormalVariableAssign() Stmt {
 		return VariableIncrementStmt{VarToken: Var, Name: toAssign[0], IncToken: p.CurrentToken}
 	case lexer.DEC:
 		if len(toAssign) != 1 {
-			log.Fatal("Expected only one variable to increment")
+			log.Fatal("Expected only one variable to decrement")
 		}
 		p.Step()
 		return VariableDecrementStmt{VarToken: Var, Name: toAssign[0], DecToken: p.CurrentToken}
@@ -645,7 +645,7 @@ func (p *Parser) ParseIndexableVariableAssign() Stmt {
 		return IndexableVariableIncrementStmt{VarToken: Var, IndexableAccess: toAssign[0], IncToken: p.CurrentToken}
 	case lexer.DEC:
 		if len(toAssign) != 1 {
-			log.Fatal("Expected only one variable to increment")
+			log.Fatal("Expected only one variable to decrement")
 		}
 		p.Step()
 		return IndexableVariableDecrementStmt{VarToken: Var, IndexableAccess: toAssign[0], DecToken: p.CurrentToken}
