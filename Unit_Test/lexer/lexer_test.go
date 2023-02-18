@@ -17,6 +17,7 @@ func TestLexer(t *testing.T) {
 		testHashtag2,
 		testHashtag3,
 		testHashtag4,
+		testBoolOpperand,
 	}
 	for num, tested := range GlobalTest {
 
@@ -38,7 +39,7 @@ func TestLexer(t *testing.T) {
 			if Position < len(l) {
 				if expct != l[Position] {
 					diff++
-					result += "\n--------------------------------------------------\nDiff " + strconv.Itoa(diff) + " Expected {" + expct.TokenType + " " + expct.Value + " " + strconv.Itoa(expct.Line) + " " + strconv.Itoa(expct.Position) + "} for the token n°" + strconv.Itoa(Position+1) + "\n       Got \t{" + l[Position].TokenType + " " + l[Position].Value + " " + strconv.Itoa(l[Position].Line) + " " + strconv.Itoa(l[Position].Position) + "}\n--------------------------------------------------\n"
+					result += "\n--------------------------------------------------\nDiff " + strconv.Itoa(diff) + " Expected {" + expct.TokenType + " " + expct.Value + " " + strconv.Itoa(expct.Position) + " " + strconv.Itoa(expct.Line) + "} for the token n°" + strconv.Itoa(Position+1) + "\n       Got \t{" + l[Position].TokenType + " " + l[Position].Value + " " + strconv.Itoa(l[Position].Position) + " " + strconv.Itoa(l[Position].Line) + "}\n--------------------------------------------------\n"
 				}
 			}
 		}

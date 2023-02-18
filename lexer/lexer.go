@@ -251,9 +251,9 @@ func inQuoteChange(inQuote bool, ret []Token, identi identifier, val string, pre
 // return position, line
 func positionDetector(ret []Token, prevIndex int, sentence string) (int, int) {
 	var toRet = 0
-	var line = 0
+	var line = 1
 	for _, v := range sentence[:prevIndex] {
-		if v == '\n' || v == '\r' {
+		if v == '\n' {
 			toRet = 0
 			line += 1
 		} else {

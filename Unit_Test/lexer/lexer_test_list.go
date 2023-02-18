@@ -474,4 +474,51 @@ var (
 			},
 		},
 	}
+	testBoolOpperand = testList{
+		input: "&& || ^ \"&& || ^\"",
+		output: []lexer.Token{
+			{
+				TokenType: lexer.AND,
+				Value:     `&&`,
+				Position:  1,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.OR,
+				Value:     `||`,
+				Position:  4,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.XOR,
+				Value:     `^`,
+				Position:  7,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.DQUOTE,
+				Value:     `"`,
+				Position:  9,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.STRING,
+				Value:     `&& || ^`,
+				Position:  10,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.XOR,
+				Value:     `"`,
+				Position:  17,
+				Line:      0,
+			},
+			{
+				TokenType: lexer.EOF,
+				Value:     ``,
+				Position:  18,
+				Line:      0,
+			},
+		},
+	}
 )

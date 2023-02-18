@@ -21,6 +21,9 @@ var (
 	NEQ               = "NEQ"
 	LEQ               = "LEQ"
 	GEQ               = "GEQ"
+	XOR               = "XOR"
+	OR                = "OR"
+	AND               = "AND"
 	EQUAL             = "EQUAL"
 	LPAREN            = "LPAREN"
 	RPAREN            = "RPAREN"
@@ -114,6 +117,24 @@ var Identifier []identifier = []identifier{
 		Identifier: LSS,
 		Syntaxe: []string{
 			"<",
+		},
+	},
+	{
+		Identifier: XOR,
+		Syntaxe: []string{
+			"^",
+		},
+	},
+	{
+		Identifier: AND,
+		Syntaxe: []string{
+			"&&",
+		},
+	},
+	{
+		Identifier: OR,
+		Syntaxe: []string{
+			"||",
 		},
 	},
 	{
