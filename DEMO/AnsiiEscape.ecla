@@ -1,0 +1,2 @@
+import console;
+console.println("\x1Bc");
