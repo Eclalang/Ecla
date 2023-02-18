@@ -84,7 +84,7 @@ func (p ParenExpr) precedence() int {
 	return HighestPrecedence
 }
 
-func (u ParenExpr) exprNode() {}
+func (p ParenExpr) exprNode() {}
 
 type ArrayLiteral struct {
 	LBRACKET lexer.Token
@@ -105,6 +105,48 @@ func (p ArrayLiteral) precedence() int {
 }
 
 func (p ArrayLiteral) exprNode() {}
+
+type MapLiteral struct {
+	LBRACE lexer.Token
+	Keys   []Expr
+	Values []Expr
+	RBRACE lexer.Token
+}
+
+func (m MapLiteral) StartPos() int {
+	return m.LBRACE.Position
+}
+
+func (m MapLiteral) EndPos() int {
+	return m.RBRACE.Position
+}
+
+func (m MapLiteral) precedence() int {
+	return HighestPrecedence
+}
+
+func (m MapLiteral) exprNode() {}
+
+type IndexableAccessExpr struct {
+	VariableToken lexer.Token
+	VariableName  string
+	Indexes       []Expr
+	LastBracket   lexer.Token
+}
+
+func (a IndexableAccessExpr) StartPos() int {
+	return a.VariableToken.Position
+}
+
+func (a IndexableAccessExpr) EndPos() int {
+	return a.LastBracket.Position
+}
+
+func (a IndexableAccessExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (a IndexableAccessExpr) exprNode() {}
 
 type PrintStmt struct {
 	PrintToken lexer.Token
@@ -159,8 +201,8 @@ func (v VariableDecl) declNode() {}
 
 type VariableAssignStmt struct {
 	VarToken lexer.Token
-	Name     string
-	Value    Expr
+	Name     []string
+	Value    []Expr
 }
 
 func (v VariableAssignStmt) StartPos() int {
@@ -168,7 +210,7 @@ func (v VariableAssignStmt) StartPos() int {
 }
 
 func (v VariableAssignStmt) EndPos() int {
-	return v.Value.EndPos()
+	return v.Value[len(v.Value)-1].EndPos()
 }
 
 func (v VariableAssignStmt) stmtNode() {}
@@ -204,6 +246,56 @@ func (v VariableDecrementStmt) EndPos() int {
 }
 
 func (v VariableDecrementStmt) stmtNode() {}
+
+// Indexable variable assignements
+
+type IndexableVariableAssignStmt struct {
+	VarToken        lexer.Token
+	IndexableAccess []Expr
+	Value           []Expr
+}
+
+func (v IndexableVariableAssignStmt) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v IndexableVariableAssignStmt) EndPos() int {
+	return v.Value[len(v.Value)-1].EndPos()
+}
+
+func (v IndexableVariableAssignStmt) stmtNode() {}
+
+type IndexableVariableIncrementStmt struct {
+	VarToken        lexer.Token
+	IndexableAccess Expr
+	IncToken        lexer.Token
+}
+
+func (v IndexableVariableIncrementStmt) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v IndexableVariableIncrementStmt) EndPos() int {
+	return v.IncToken.Position
+}
+
+func (v IndexableVariableIncrementStmt) stmtNode() {}
+
+type IndexableVariableDecrementStmt struct {
+	VarToken        lexer.Token
+	IndexableAccess Expr
+	DecToken        lexer.Token
+}
+
+func (v IndexableVariableDecrementStmt) StartPos() int {
+	return v.VarToken.Position
+}
+
+func (v IndexableVariableDecrementStmt) EndPos() int {
+	return v.DecToken.Position
+}
+
+func (v IndexableVariableDecrementStmt) stmtNode() {}
 
 type IfStmt struct {
 	IfToken    lexer.Token
@@ -346,12 +438,17 @@ func (i ImportStmt) EndPos() int {
 
 func (i ImportStmt) stmtNode() {}
 
+type FunctionParams struct {
+	Name string
+	Type string
+}
+
 type FunctionDecl struct {
 	FunctionToken   lexer.Token
 	Name            string
 	LeftParamParen  lexer.Token
 	RightParamParen lexer.Token
-	Parameters      map[string]string
+	Parameters      []FunctionParams
 	LeftRetsParen   lexer.Token
 	RightRetsParen  lexer.Token
 	ReturnTypes     []string

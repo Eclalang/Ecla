@@ -66,6 +66,25 @@ func (s String) GetType() string {
 	return "string"
 }
 
+// GetIndex returns a single character
+func (s String) GetIndex(other Type) (Type, error) {
+
+	if other.GetType() == "int" {
+		ind := int(other.GetValue().(Int))
+		if ind >= len(s) || ind < 0 {
+			return nil, errors.New("Index out of range")
+		}
+		res := String(string(s)[ind])
+		return res, nil
+	}
+	return nil, errors.New("index must be an integer")
+}
+
+// Len returns the length of a string
+func (s String) Len() int {
+	return len(s)
+}
+
 // Add adds two Type objects
 func (s String) Add(other Type) (Type, error) {
 	return s + other.GetString(), nil
@@ -214,4 +233,8 @@ func (s String) Append(other Type) (Type, error) {
 		return s + other.GetString(), nil
 	}
 	return nil, errors.New("cannot append string")
+}
+
+func (s String) IsNull() bool {
+	return false
 }

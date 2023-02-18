@@ -6,6 +6,7 @@ type Type interface {
 	String() string
 	GetString() String
 	GetType() string
+	GetIndex(index Type) (Type, error)
 	//Add : +
 	Add(other Type) (Type, error)
 	//Sub : -
@@ -36,6 +37,8 @@ type Type interface {
 	Or(other Type) (Type, error)
 	//Not : !
 	Not() (Type, error)
+	// IsNull : returns true if the value is null
+	IsNull() bool
 	// append : temporary
 	Append(other Type) (Type, error)
 }

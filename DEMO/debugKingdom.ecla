@@ -1,0 +1,11 @@
+import debugKingdom;
+import console;
+
+var testList []string = ["test1","test2","test3"];
+var testMap map[string]string = {"test1":"10","test2":"20","test3":"30"};
+
+console.println(debugKingdom.testMapRet({"test1":"10","test2":"20","test3":"30"}));
+type(debugKingdom.testListRet(["test1","test2","test3"]));
+type(testList);
+type(debugKingdom.testMapRet({"test1":"10","test2":"20","test3":"30"}));
+type(testMap);

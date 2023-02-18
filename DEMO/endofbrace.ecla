@@ -1,0 +1,32 @@
+import console;
+
+var Bool1 bool = true;
+
+if (Bool1) {
+    console.println("Bool1 is true");
+}
+
+if (Bool1) {
+    console.println("Bool1 is true");
+} else {
+    console.println("Bool1 is false");
+}
+
+var i int = 0;
+if (Bool1) {
+    console.println("Bool1 is true");
+} else if (!Bool1) {
+    console.println("Bool1 is false");
+}
+
+function test() {
+    console.println("test");
+    return;
+}
+
+
+
+
+
+
+console.print("after conditional statement");

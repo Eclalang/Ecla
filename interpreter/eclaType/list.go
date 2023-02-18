@@ -3,7 +3,6 @@ package eclaType
 import (
 	"errors"
 	"fmt"
-	"strings"
 )
 
 func NewList(t string) (Type, error) {
@@ -22,21 +21,21 @@ func (l *List) GetValue() any {
 
 // SetValue
 func (l *List) SetValue(v any) error {
+
 	switch v.(type) {
 	case []Type:
-		/*
-			if l.Typ == v.([]Type)[0].GetType() {
-				l.Value = v.([]Type)
-				return nil
-			}
-		*/
-		l.Value = v.([]Type)
-		return nil
+		var typ string
+		typ = "[]" + v.([]Type)[0].GetType()
+		if l.Typ == typ {
+			l.Value = v.([]Type)
+			return nil
+		}
 	case *List:
-
 		t := v.(*List)
 		*l = *t
 		return nil
+	default:
+		fmt.Sprintf("cannot set value of list to %T", v)
 	}
 	return errors.New("cannot set value of list")
 }
@@ -60,11 +59,37 @@ func (l *List) GetString() String {
 
 // GetType returns the type List
 func (l *List) GetType() string {
-	return "list"
+	return l.Typ
+}
+
+func (l *List) SetType(other string) {
+	l.Typ = other
+}
+
+func (l *List) GetIndex(index Type) (Type, error) {
+
+	if index.GetType() == "int" {
+		ind := int(index.GetValue().(Int))
+		if ind >= len(l.Value) || ind < 0 {
+			return nil, errors.New("Index out of range")
+		}
+		return l.Value[ind], nil
+	}
+	return nil, errors.New("index must be an integer")
+
+}
+
+// Len returns the length of a list
+func (l *List) Len() int {
+	return len(l.Value)
 }
 
 // Add adds two Type objects  compatible with List
 func (l *List) Add(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if l.Typ == other.(*List).Typ {
@@ -226,30 +251,17 @@ func (l *List) Not() (Type, error) {
 	return nil, errors.New("cannot opposite list")
 }
 
-func IsList(t string) bool {
-	/*
-		if strings.Contains(t, "[") {
-			return true, nil
-		}
-		return false, errors.New("not a list")
-	*/
-	return strings.Contains(t, "[")
-}
-
-// append to list
+// Append to list
 func (l *List) Append(other Type) (Type, error) {
-	if other.GetType() == "list" {
-		if l.Typ == other.(*List).Typ {
-			l.Value = append(l.Value, other.(*List).Value...)
-			return l, nil
-		}
-	} else {
-		if l.Typ == other.GetType() {
-			l.Value = append(l.Value, other)
-			return l, nil
-		}
+	if l.Typ == other.GetType() {
+		l.Value = append(l.Value, other)
+		return l, nil
 	}
 	return nil, errors.New("cannot append to list")
+}
+
+func (l *List) IsNull() bool {
+	return false
 }
 
 // utils Functions for lists trainmen
@@ -261,4 +273,14 @@ func CheckTypeOfList(l *List, t string) bool {
 		}
 	}
 	return true
+}
+
+func IsList(t string) bool {
+	// via []int or []string [][]int ,string int map[string]int []map[string]int
+	if !(len(t) <= 2) {
+		if t[0] == '[' && t[1] == ']' {
+			return true
+		}
+	}
+	return false
 }
