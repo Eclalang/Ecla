@@ -60,8 +60,8 @@ func (env *Env) GetVar(name string) (*eclaType.Var, bool) {
 	return v, ok
 }
 
-func (env *Env) NewScope() {
-	env.Vars.GoDeep()
+func (env *Env) NewScope(Type ScopeType) {
+	env.Vars.GoDeep(Type)
 }
 
 func (env *Env) EndScope() {

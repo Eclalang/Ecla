@@ -64,7 +64,7 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 
 // RunWhileStmt
 func RunWhileStmt(tree parser.WhileStmt, env *Env) {
-	env.NewScope()
+	env.NewScope(SCOPE_LOOP)
 	defer env.EndScope()
 	while := eclaKeyWord.NewWhile(tree.Cond, tree.Body)
 	for RunTree(while.Condition, env).GetString() == "true" { //TODO add error
@@ -75,7 +75,7 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) {
 }
 
 func RunForStmt(For parser.ForStmt, env *Env) {
-	env.NewScope()
+	env.NewScope(SCOPE_LOOP)
 	defer env.EndScope()
 	tokenEmpty := lexer.Token{}
 	if For.RangeToken != tokenEmpty {
@@ -147,7 +147,7 @@ func RunForStmt(For parser.ForStmt, env *Env) {
 // RunIfStmt
 func RunIfStmt(tree parser.IfStmt, env *Env) {
 	if RunTree(tree.Cond, env).GetString() == "true" { //TODO add error
-		env.NewScope()
+		env.NewScope(SCOPE_CONDITION)
 		defer env.EndScope()
 		for _, stmt := range tree.Body {
 			RunTree(stmt, env)
@@ -156,7 +156,7 @@ func RunIfStmt(tree parser.IfStmt, env *Env) {
 		if tree.ElseStmt.IfStmt != nil {
 			RunIfStmt(*tree.ElseStmt.IfStmt, env)
 		} else {
-			env.NewScope()
+			env.NewScope(SCOPE_CONDITION)
 			defer env.EndScope()
 			for _, stmt := range tree.ElseStmt.Body {
 				RunTree(stmt, env)

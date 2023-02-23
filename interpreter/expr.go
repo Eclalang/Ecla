@@ -179,7 +179,7 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) eclaType.Type {
 }
 
 func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
-	env.NewScope()
+	env.NewScope(SCOPE_FUNCTION)
 	defer env.EndScope()
 	var args []eclaType.Type
 	for _, v := range tree.Args {
