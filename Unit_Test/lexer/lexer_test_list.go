@@ -44,27 +44,15 @@ var (
 				Line:      1,
 			},
 			{
-				TokenType: lexer.ADD,
-				Value:     `+`,
+				TokenType: lexer.INC,
+				Value:     `++`,
 				Position:  16,
 				Line:      1,
 			},
 			{
-				TokenType: lexer.ADD,
-				Value:     `+`,
-				Position:  17,
-				Line:      1,
-			},
-			{
-				TokenType: lexer.SUB,
-				Value:     `-`,
+				TokenType: lexer.DEC,
+				Value:     `--`,
 				Position:  19,
-				Line:      1,
-			},
-			{
-				TokenType: lexer.SUB,
-				Value:     `-`,
-				Position:  20,
 				Line:      1,
 			},
 			{
