@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/tot0p/Ecla/errorHandler"
 	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs"
@@ -13,25 +14,27 @@ import (
 
 // Env is the environment in which the code is executed.
 type Env struct {
-	Vars       *Scope
-	OS         string
-	ARCH       string
-	SyntaxTree *parser.File
-	Tokens     []lexer.Token
-	File       string
-	Code       string
-	Libs       map[string]libs.Lib
-	Func       map[string]*eclaKeyWord.Function
+	Vars        *Scope
+	OS          string
+	ARCH        string
+	SyntaxTree  *parser.File
+	Tokens      []lexer.Token
+	File        string
+	Code        string
+	Libs        map[string]libs.Lib
+	Func        map[string]*eclaKeyWord.Function
+	ErrorHandle *errorHandler.ErrorHandler
 }
 
 // NewEnv returns a new Env.
 func NewEnv() *Env {
 	return &Env{
-		OS:   runtime.GOOS,
-		ARCH: runtime.GOARCH,
-		Vars: NewScopeMain(),
-		Libs: make(map[string]libs.Lib),
-		Func: make(map[string]*eclaKeyWord.Function),
+		OS:          runtime.GOOS,
+		ARCH:        runtime.GOARCH,
+		Vars:        NewScopeMain(),
+		Libs:        make(map[string]libs.Lib),
+		Func:        make(map[string]*eclaKeyWord.Function),
+		ErrorHandle: errorHandler.NewHandler(),
 	}
 }
 
@@ -81,24 +84,18 @@ func (env *Env) GetFunction(name string) (*eclaKeyWord.Function, bool) {
 
 // Execute executes Env.Code or Env.File.
 func (env *Env) Execute() {
+	go env.ErrorHandle.HandleError()
 	if env.File != "" {
 		env.Code = readFile(env.File)
 	}
 	// Lexing
-	// TODO: SUPPORT FOR MULTIPLE FILES
 	env.Tokens = lexer.Lexer(env.Code)
-	//DEBUG
-	//now use -dl for debug lexer
-	//fmt.Println("TOKENS:", env.Tokens)
+
 	// Parsing
-	// TODO: SUPPORT FOR MULTIPLE FILES
-	pars := parser.Parser{Tokens: env.Tokens}
+	pars := parser.Parser{Tokens: env.Tokens, ErrorChannel: env.ErrorHandle.ErrorChannel}
 	env.SyntaxTree = pars.Parse()
-	//DEBUG
-	// now use -dp for debug parser
-	//txt, _ := json.MarshalIndent(env.SyntaxTree, "", "  ")
-	//fmt.Println("SYNTAX TREE:", string(txt))
-	//TODO: execute code
+
+	// Execute
 	Run(env)
 }
 

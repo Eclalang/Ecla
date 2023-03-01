@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"github.com/tot0p/Ecla/errorHandler"
 	"github.com/tot0p/Ecla/lexer"
 	"log"
 )
@@ -13,6 +14,7 @@ var (
 // Parser is the parser for the Ecla language
 
 type Parser struct {
+	ErrorChannel chan errorHandler.Error
 	Tokens       []lexer.Token
 	TokenIndex   int
 	CurrentToken lexer.Token
