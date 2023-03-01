@@ -284,14 +284,12 @@ func tokenAddSub(isIdentifier bool, ident identifier, ret []Token, prevIndex *in
 	if isIdentifier {
 		if len(ret) >= 1 {
 			if ret[len(ret)-1].TokenType == toFind {
-				if len(ret) >= 2 {
-					if ret[len(ret)-2].TokenType == TEXT {
-						ret[len(ret)-1].TokenType = toReplace
-						ret[len(ret)-1].Value += *tempVal
-						*tempVal = ""
-						*prevIndex = index
-					}
-				}
+
+				ret[len(ret)-1].TokenType = toReplace
+				ret[len(ret)-1].Value += *tempVal
+				*tempVal = ""
+				*prevIndex = index
+
 			}
 		}
 	}
