@@ -567,47 +567,43 @@ func (p *Parser) ParseMapType() string {
 
 // ParseVariableAssign parses a variable assignment
 func (p *Parser) ParseVariableAssign() Stmt {
-	if p.Peek(1).TokenType == lexer.LBRACKET {
-		return p.ParseIndexableVariableAssign()
-	} else {
-		return p.ParseNormalVariableAssign()
-	}
-}
 
-func (p *Parser) ParseNormalVariableAssign() Stmt {
 	Var := p.CurrentToken
+	Opp := ""
 	toAssign := p.ParseVariableAssignLHS()
-	switch p.CurrentToken.TokenType {
-	case lexer.ASSIGN:
-		p.Step()
-		rhs := p.ParseVariableAssignRHS()
-		p.Back()
-		return VariableAssignStmt{VarToken: Var, Name: toAssign, Value: rhs}
-	case lexer.INC:
-		if len(toAssign) != 1 {
-			panic("Expected only one variable to increment")
-		}
-		p.Step()
-		return VariableIncrementStmt{VarToken: Var, Name: toAssign[0], IncToken: p.CurrentToken}
-	case lexer.DEC:
-		if len(toAssign) != 1 {
-			panic("Expected only one variable to decrement")
-		}
-		p.Step()
-		return VariableDecrementStmt{VarToken: Var, Name: toAssign[0], DecToken: p.CurrentToken}
+	p.Back()
+	if _, ok := AssignOperators[p.CurrentToken.Value]; ok {
+		Opp = p.CurrentToken.Value
+	} else {
+		panic("Unknown opperator\" " + p.CurrentToken.Value + " in variable assignement")
 	}
-	return nil
+	p.Step()
+	if p.CurrentToken.TokenType == lexer.EOL || p.CurrentToken.TokenType == lexer.EOF {
+		return VariableAssignStmt{
+			VarToken: Var,
+			Names:    toAssign,
+			Operator: Opp,
+			Values:   []Expr{nil},
+		}
+	}
+	rhs := p.ParseVariableAssignRHS()
+	p.Back()
+	return VariableAssignStmt{
+		VarToken: Var,
+		Names:    toAssign,
+		Operator: Opp,
+		Values:   rhs,
+	}
 }
 
-func (p *Parser) ParseVariableAssignLHS() []string {
-	var tempArray []string
-	tempArray = append(tempArray, p.CurrentToken.Value)
-	p.Step()
+func (p *Parser) ParseVariableAssignLHS() []Expr {
+	var tempArray []Expr
+	tempArray = append(tempArray, p.ParseExpr())
 	for p.CurrentToken.TokenType == lexer.COMMA {
 		p.Step()
-		tempArray = append(tempArray, p.CurrentToken.Value)
-		p.Step()
+		tempArray = append(tempArray, p.ParseExpr())
 	}
+	p.Step()
 	return tempArray
 }
 
@@ -625,32 +621,6 @@ func (p *Parser) ParseVariableAssignRHS() []Expr {
 		p.Step()
 	}
 	return tempArray
-}
-
-func (p *Parser) ParseIndexableVariableAssign() Stmt {
-	Var := p.CurrentToken
-	toAssign := p.ParseVariableAssignRHS()
-	p.Back()
-	switch p.CurrentToken.TokenType {
-	case lexer.ASSIGN:
-		p.Step()
-		rhs := p.ParseVariableAssignRHS()
-		p.Back()
-		return IndexableVariableAssignStmt{VarToken: Var, IndexableAccess: toAssign, Value: rhs}
-	case lexer.INC:
-		if len(toAssign) != 1 {
-			panic("Expected only one variable to increment")
-		}
-		p.Step()
-		return IndexableVariableIncrementStmt{VarToken: Var, IndexableAccess: toAssign[0], IncToken: p.CurrentToken}
-	case lexer.DEC:
-		if len(toAssign) != 1 {
-			panic("Expected only one variable to decrement")
-		}
-		p.Step()
-		return IndexableVariableDecrementStmt{VarToken: Var, IndexableAccess: toAssign[0], DecToken: p.CurrentToken}
-	}
-	return nil
 }
 
 // ParseExpr parse an expression

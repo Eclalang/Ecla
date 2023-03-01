@@ -201,8 +201,9 @@ func (v VariableDecl) declNode() {}
 
 type VariableAssignStmt struct {
 	VarToken lexer.Token
-	Name     []string
-	Value    []Expr
+	Names    []Expr
+	Operator string
+	Values   []Expr
 }
 
 func (v VariableAssignStmt) StartPos() int {
@@ -210,92 +211,10 @@ func (v VariableAssignStmt) StartPos() int {
 }
 
 func (v VariableAssignStmt) EndPos() int {
-	return v.Value[len(v.Value)-1].EndPos()
+	return v.Values[len(v.Values)-1].EndPos()
 }
 
 func (v VariableAssignStmt) stmtNode() {}
-
-type VariableIncrementStmt struct {
-	VarToken lexer.Token
-	Name     string
-	IncToken lexer.Token
-}
-
-func (v VariableIncrementStmt) StartPos() int {
-	return v.VarToken.Position
-}
-
-func (v VariableIncrementStmt) EndPos() int {
-	return v.IncToken.Position
-}
-
-func (v VariableIncrementStmt) stmtNode() {}
-
-type VariableDecrementStmt struct {
-	VarToken lexer.Token
-	Name     string
-	DecToken lexer.Token
-}
-
-func (v VariableDecrementStmt) StartPos() int {
-	return v.VarToken.Position
-}
-
-func (v VariableDecrementStmt) EndPos() int {
-	return v.DecToken.Position
-}
-
-func (v VariableDecrementStmt) stmtNode() {}
-
-// Indexable variable assignements
-
-type IndexableVariableAssignStmt struct {
-	VarToken        lexer.Token
-	IndexableAccess []Expr
-	Value           []Expr
-}
-
-func (v IndexableVariableAssignStmt) StartPos() int {
-	return v.VarToken.Position
-}
-
-func (v IndexableVariableAssignStmt) EndPos() int {
-	return v.Value[len(v.Value)-1].EndPos()
-}
-
-func (v IndexableVariableAssignStmt) stmtNode() {}
-
-type IndexableVariableIncrementStmt struct {
-	VarToken        lexer.Token
-	IndexableAccess Expr
-	IncToken        lexer.Token
-}
-
-func (v IndexableVariableIncrementStmt) StartPos() int {
-	return v.VarToken.Position
-}
-
-func (v IndexableVariableIncrementStmt) EndPos() int {
-	return v.IncToken.Position
-}
-
-func (v IndexableVariableIncrementStmt) stmtNode() {}
-
-type IndexableVariableDecrementStmt struct {
-	VarToken        lexer.Token
-	IndexableAccess Expr
-	DecToken        lexer.Token
-}
-
-func (v IndexableVariableDecrementStmt) StartPos() int {
-	return v.VarToken.Position
-}
-
-func (v IndexableVariableDecrementStmt) EndPos() int {
-	return v.DecToken.Position
-}
-
-func (v IndexableVariableDecrementStmt) stmtNode() {}
 
 type IfStmt struct {
 	IfToken    lexer.Token

@@ -78,3 +78,14 @@ func (s *Scope) SetNextScope(next *Scope) {
 func (s *Scope) GetNextScope() *Scope {
 	return s.next
 }
+
+func (s *Scope) GetFunctionScope() *Scope {
+	cursor := s
+	for cursor.Type != SCOPE_FUNCTION && cursor.previous != nil {
+		cursor = cursor.previous
+	}
+	if cursor.Type != SCOPE_FUNCTION {
+		return nil
+	}
+	return cursor
+}

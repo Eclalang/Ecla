@@ -1,7 +1,39 @@
+import console;
+#/
+var test [][]int = [[14],[15, 1+1]];
+console.print(test[0][0] + "\n");
+
+test[0][0]--;
+console.print(test[0][0] + "\n");
+/#
+var t int = 1;
+var t2 int = 2;
+var t3 int = 3;
+
+var arr []int = [2,2,2];
+var arr2 []int = [2,2,2];
+var arr3 []int = [2,2,2];
+
+var mp map[string]int = {"a":2,"b":2,"c":2};
 
 
-var lst []int = [1,2,3];
 
-lst[0] = 4;
+console.print("before : "+t + t2 + t3 + "\n");
+t , t2 , t3 = 1;
+console.print("after : "+t + t2 + t3 + "\n");
 
-print(lst);
+console.print("before : "+arr + arr2 + arr3 + "\n");
+arr[1] , arr2[1] , arr3[1] = 1;
+console.print("after : "+arr + arr2 + arr3 + "\n");
+
+console.print("before : "+mp + "\n");
+mp["a"],mp["b"],mp["b"] = 9;
+console.print("after : "+mp + "\n");
+
+
+var test2 int = 42;
+console.print(test2 + "\n");
+
+test2--;
+console.print(test2 + "\n");
+

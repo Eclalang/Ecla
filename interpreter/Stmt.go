@@ -30,36 +30,256 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) eclaType.Type {
 	//return eclaType.NewString(RunTree(tree.Expression, env).GetType())
 }
 
-// RunVariableDecrementStmt Run decrements a variable.
-func RunVariableDecrementStmt(tree parser.VariableDecrementStmt, env *Env) {
-	v, ok := env.GetVar(tree.Name)
+// RunVariableAssignStmt Run assigns a variable.
+func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
+	lValueEqualOne := len(tree.Values) == 1
+	if len(tree.Names) == 1 {
+		if !lValueEqualOne {
+			panic(errors.New("invalid assignment"))
+		}
+		switch tree.Names[0].(type) {
+		case parser.IndexableAccessExpr:
+			switch tree.Operator {
+			case parser.ASSIGN:
+				RunIndexableVariableAssignStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
+			case parser.INCREMENT:
+				RunIndexableVariableIncrementStmt(tree.Names[0].(parser.IndexableAccessExpr), env)
+			case parser.DECREMENT:
+				RunIndexableVariableDecrementStmt(tree.Names[0].(parser.IndexableAccessExpr), env)
+			case parser.ADDASSIGN:
+				RunIndexableVariableAddAssignStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
+			}
+		case parser.Literal:
+			if tree.Names[0].(parser.Literal).Type == "VAR" {
+				switch tree.Operator {
+				case parser.ASSIGN:
+					RunVariableNonIndexableAssignStmt(tree, tree.Names[0].(parser.Literal), env)
+				case parser.INCREMENT:
+					RunVariableIncrementStmt(tree.Names[0].(parser.Literal), env)
+				case parser.DECREMENT:
+					RunVariableDecrementStmt(tree.Names[0].(parser.Literal), env)
+				case parser.ADDASSIGN: //TODO Change by method
+					RunVariableAddAssignStmt(tree, tree.Names[0].(parser.Literal), env)
+				default:
+					fmt.Println(tree.Operator == "")
+					panic(errors.New("invalid assignment"))
+				}
+			} else {
+				panic(errors.New("invalid assignment"))
+			}
+		default:
+			fmt.Printf("%T", tree.Names[0])
+		}
+	} else if lValueEqualOne {
+		for Name := range tree.Names {
+			switch tree.Names[Name].(type) {
+			case parser.IndexableAccessExpr:
+				switch tree.Operator {
+				case parser.ASSIGN:
+					RunIndexableVariableAssignStmt(tree, tree.Names[Name].(parser.IndexableAccessExpr), env)
+				}
+			case parser.Literal:
+				if tree.Names[Name].(parser.Literal).Type == "VAR" {
+					switch tree.Operator {
+					case parser.ASSIGN:
+						RunVariableNonIndexableAssignStmt(tree, tree.Names[Name].(parser.Literal), env)
+					}
+				} else {
+					panic(errors.New("invalid assignment"))
+				}
+			}
+		}
+	} else {
+		//TODO
+		fmt.Println("multiple values, multiple names")
+	}
+}
+
+func RunIndexableVariableAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) eclaType.Type {
+	v, ok := env.GetVar(index.VariableName)
+	if !ok {
+		panic(errors.New("indexable variable assign: variable not found"))
+	}
+	var temp *eclaType.Type
+	switch v.Value.(type) {
+	case *eclaType.List:
+		temp = &v.Value
+	default:
+		panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
+	}
+	for i := range index.Indexes {
+		elem := RunTree(index.Indexes[i], env)
+		switch elem.(type) {
+		case *eclaType.Var:
+			elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
+		}
+		if elem.GetType() != "int" {
+			panic(fmt.Sprintf("Index must be an integer"))
+		}
+		switch (*temp).(type) {
+		case *eclaType.List:
+			temp = &((*temp).(*eclaType.List).Value[elem.(eclaType.Int)])
+		default:
+			panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
+		}
+	}
+	*temp = RunTree(tree.Values[0], env)
+	return nil
+}
+
+func RunVariableNonIndexableAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
+	v, ok := env.GetVar(variable.Value)
 	if !ok {
 		panic(errors.New("variable not found"))
 	}
-	v.Decrement()
+	temp := RunTree(tree.Values[0], env)
+	err := v.SetVar(temp)
+	if err != nil {
+		panic(err)
+	}
 }
 
-// RunVariableIncrementStmt Run increments a variable.
-func RunVariableIncrementStmt(tree parser.VariableIncrementStmt, env *Env) {
-	v, ok := env.GetVar(tree.Name)
+func RunIndexableVariableIncrementStmt(index parser.IndexableAccessExpr, env *Env) {
+	v, ok := env.GetVar(index.VariableName)
+	if !ok {
+		panic(errors.New("indexable variable assign: variable not found"))
+	}
+	var temp *eclaType.Type
+	switch v.Value.(type) {
+	case *eclaType.List:
+		temp = &v.Value
+	default:
+		panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
+	}
+	for i := range index.Indexes {
+		elem := RunTree(index.Indexes[i], env)
+		switch elem.(type) {
+		case *eclaType.Var:
+			elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
+		}
+		if elem.GetType() != "int" {
+			panic(fmt.Sprintf("Index must be an integer"))
+		}
+		switch (*temp).(type) {
+		case *eclaType.List:
+			temp = &((*temp).(*eclaType.List).Value[elem.(eclaType.Int)])
+		default:
+			panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
+		}
+	}
+	switch (*temp).(type) {
+	case eclaType.Int:
+		*temp = (*temp).(eclaType.Int) + 1
+	case eclaType.Float:
+		*temp = (*temp).(eclaType.Float) + 1
+	default:
+
+		panic(fmt.Sprintf("Variable %s is not incrementable", index.VariableName))
+	}
+}
+
+func RunVariableIncrementStmt(variable parser.Literal, env *Env) {
+	v, ok := env.GetVar(variable.Value)
 	if !ok {
 		panic(errors.New("variable not found"))
 	}
 	v.Increment()
 }
 
-// RunVariableAssignStmt Run assigns a variable.
-func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
-	if len(tree.Name) == 1 {
-		v, ok := env.GetVar(tree.Name[0])
-		if !ok {
-			panic(errors.New("variable not found"))
+func RunIndexableVariableDecrementStmt(index parser.IndexableAccessExpr, env *Env) {
+	v, ok := env.GetVar(index.VariableName)
+	if !ok {
+		panic(errors.New("indexable variable assign: variable not found"))
+	}
+	var temp *eclaType.Type
+	switch v.Value.(type) {
+	case *eclaType.List:
+		temp = &v.Value
+	default:
+		panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
+	}
+	for i := range index.Indexes {
+		elem := RunTree(index.Indexes[i], env)
+		switch elem.(type) {
+		case *eclaType.Var:
+			elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
 		}
-		err := v.SetVar(RunTree(tree.Value[0], env))
-		if err != nil {
-			panic(err)
+		if elem.GetType() != "int" {
+			panic(fmt.Sprintf("Index must be an integer"))
+		}
+		switch (*temp).(type) {
+		case *eclaType.List:
+			temp = &((*temp).(*eclaType.List).Value[elem.(eclaType.Int)])
+		default:
+			panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
 		}
 	}
+	switch (*temp).(type) {
+	case eclaType.Int:
+		*temp = (*temp).(eclaType.Int) - 1
+	case eclaType.Float:
+		*temp = (*temp).(eclaType.Float) - 1
+	default:
+		panic(fmt.Sprintf("Variable %s is not decrementable", index.VariableName))
+	}
+}
+
+func RunVariableDecrementStmt(variable parser.Literal, env *Env) {
+	v, ok := env.GetVar(variable.Value)
+	if !ok {
+		panic(errors.New("variable not found"))
+	}
+	v.Decrement()
+}
+
+func RunIndexableVariableAddAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
+	v, ok := env.GetVar(index.VariableName)
+	if !ok {
+		panic(errors.New("indexable variable assign: variable not found"))
+	}
+	var temp *eclaType.Type
+	switch v.Value.(type) {
+	case *eclaType.List:
+		temp = &v.Value
+	default:
+		panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
+	}
+	for i := range index.Indexes {
+		elem := RunTree(index.Indexes[i], env)
+		switch elem.(type) {
+		case *eclaType.Var:
+			elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
+		}
+		if elem.GetType() != "int" {
+			panic(fmt.Sprintf("Index must be an integer"))
+		}
+		switch (*temp).(type) {
+		case *eclaType.List:
+			temp = &((*temp).(*eclaType.List).Value[elem.(eclaType.Int)])
+		default:
+			panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
+		}
+	}
+	switch (*temp).(type) {
+	case *eclaType.Int:
+		*(*temp).(*eclaType.Int) += RunTree(tree.Values[0], env).(eclaType.Int)
+	case *eclaType.Float:
+		*(*temp).(*eclaType.Float) += RunTree(tree.Values[0], env).(eclaType.Float)
+	default:
+		panic(fmt.Sprintf("Variable %s is not incrementable", index.VariableName))
+	}
+}
+
+func RunVariableAddAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
+	v, ok := env.GetVar(variable.Value)
+	if !ok {
+		panic(errors.New("variable not found"))
+	}
+	t, err := v.Add(RunTree(tree.Values[0], env))
+	if err != nil {
+		panic(err)
+	}
+	v.SetValue(t)
 }
 
 // RunWhileStmt
@@ -171,49 +391,4 @@ func RunReturnStmt(tree parser.ReturnStmt, env *Env) eclaType.Type {
 		l = append(l, RunTree(expr, env))
 	}
 	return l[0]
-}
-
-func RunIndexableVariableAssignStmt(tree parser.IndexableVariableAssignStmt, env *Env) eclaType.Type {
-	var index parser.IndexableAccessExpr
-
-	switch tree.IndexableAccess[0].(type) {
-	case parser.IndexableAccessExpr:
-		index = tree.IndexableAccess[0].(parser.IndexableAccessExpr)
-	default:
-		panic(errors.New("indexable variable assign: indexable access not found"))
-	}
-
-	v, ok := env.GetVar(index.VariableName)
-	if !ok {
-		panic(errors.New("indexable variable assign: variable not found"))
-	}
-
-	var temp *eclaType.Type
-
-	switch v.Value.(type) {
-	case *eclaType.List:
-		temp = &v.Value
-	default:
-		panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
-	}
-
-	for i := range index.Indexes {
-		elem := RunTree(index.Indexes[i], env)
-		switch elem.(type) {
-		case *eclaType.Var:
-			elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
-		}
-		if elem.GetType() != "int" {
-			panic(fmt.Sprintf("Index must be an integer"))
-		}
-
-		switch (*temp).(type) {
-		case *eclaType.List:
-			temp = &((*temp).(*eclaType.List).Value[elem.(eclaType.Int)])
-		default:
-			panic(fmt.Sprintf("Variable %s is not indexable", index.VariableName))
-		}
-	}
-	*temp = RunTree(tree.Value[0], env)
-	return nil
 }

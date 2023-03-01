@@ -26,10 +26,6 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		return RunTypeStmt(tree.(parser.TypeStmt), env)
 	case parser.VariableDecl:
 		return RunVariableDecl(tree.(parser.VariableDecl), env)
-	case parser.VariableDecrementStmt:
-		RunVariableDecrementStmt(tree.(parser.VariableDecrementStmt), env)
-	case parser.VariableIncrementStmt:
-		RunVariableIncrementStmt(tree.(parser.VariableIncrementStmt), env)
 	case parser.VariableAssignStmt:
 		RunVariableAssignStmt(tree.(parser.VariableAssignStmt), env)
 	case parser.WhileStmt:
@@ -50,8 +46,6 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		return RunFunctionCallExpr(tree.(parser.FunctionCallExpr), env)
 	case parser.IndexableAccessExpr:
 		return RunIndexableAccessExpr(tree.(parser.IndexableAccessExpr), env)
-	case parser.IndexableVariableAssignStmt:
-		RunIndexableVariableAssignStmt(tree.(parser.IndexableVariableAssignStmt), env)
 	case parser.MapLiteral:
 		return RunMapLiteral(tree.(parser.MapLiteral), env)
 	}
