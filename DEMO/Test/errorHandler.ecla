@@ -1,0 +1,4 @@
+import console;
+
+console.println("this should throw an error")
+console.println("and this should not print");

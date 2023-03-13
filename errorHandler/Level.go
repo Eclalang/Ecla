@@ -18,7 +18,7 @@ func LevelToString(level Level) string {
 	case LevelError:
 		return "Error"
 	case LevelFatal:
-		return "Fatal"
+		return "Fatal Error"
 	default:
 		return ""
 	}

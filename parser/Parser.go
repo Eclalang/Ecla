@@ -14,7 +14,7 @@ var (
 // Parser is the parser for the Ecla language
 
 type Parser struct {
-	ErrorChannel chan errorHandler.Error
+	ErrorHandler *errorHandler.ErrorHandler
 	Tokens       []lexer.Token
 	TokenIndex   int
 	CurrentToken lexer.Token
@@ -144,7 +144,8 @@ func (p *Parser) ParseNode() Node {
 			tempExpr := p.ParseText()
 			if p.CurrentToken.TokenType != lexer.EOL && !EndOfBrace {
 				p.PrintBacktrace()
-				panic("Expected EOL" + p.CurrentToken.Value + " " + p.CurrentToken.TokenType)
+				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected End Of Line", errorHandler.LevelFatal)
+				fmt.Println("This should not print")
 			}
 			if EndOfBrace {
 				EndOfBrace = false

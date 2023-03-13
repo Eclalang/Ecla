@@ -84,7 +84,6 @@ func (env *Env) GetFunction(name string) (*eclaKeyWord.Function, bool) {
 
 // Execute executes Env.Code or Env.File.
 func (env *Env) Execute() {
-	go env.ErrorHandle.HandleError()
 	if env.File != "" {
 		env.Code = readFile(env.File)
 	}
@@ -92,7 +91,7 @@ func (env *Env) Execute() {
 	env.Tokens = lexer.Lexer(env.Code)
 
 	// Parsing
-	pars := parser.Parser{Tokens: env.Tokens, ErrorChannel: env.ErrorHandle.ErrorChannel}
+	pars := parser.Parser{Tokens: env.Tokens, ErrorHandler: env.ErrorHandle}
 	env.SyntaxTree = pars.Parse()
 
 	// Execute
