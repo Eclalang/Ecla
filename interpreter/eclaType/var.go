@@ -168,6 +168,18 @@ func (v *Var) IsNull() bool {
 	return v.Value.IsNull()
 }
 
+func (v *Var) IsFunction() bool {
+	return v.Value.GetType() == "function"
+}
+
+func (v *Var) GetFunction() *Function {
+	switch v.Value.(type) {
+	case *Function:
+		return v.Value.(*Function)
+	}
+	return nil
+}
+
 // NewVar creates a new variable
 func NewVar(name string, Type string, value Type) (*Var, error) {
 	if Type == parser.String {

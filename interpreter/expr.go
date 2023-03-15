@@ -2,7 +2,6 @@ package interpreter
 
 import (
 	"fmt"
-	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
@@ -204,7 +203,7 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
 	return r
 }
 
-func RunBodyFunction(fn *eclaKeyWord.Function, env *Env) (eclaType.Type, error) {
+func RunBodyFunction(fn *eclaType.Function, env *Env) (eclaType.Type, error) {
 	for _, v := range fn.Body {
 		switch v.(type) {
 		case parser.ReturnStmt:

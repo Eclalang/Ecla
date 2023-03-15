@@ -3,7 +3,6 @@ package interpreter
 import (
 	"fmt"
 	"github.com/tot0p/Ecla/errorHandler"
-	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs"
 	"github.com/tot0p/Ecla/lexer"
@@ -14,32 +13,32 @@ import (
 
 // Env is the environment in which the code is executed.
 type Env struct {
-	Vars        *Scope
-	OS          string
-	ARCH        string
-	SyntaxTree  *parser.File
-	Tokens      []lexer.Token
-	File        string
-	Code        string
-	Libs        map[string]libs.Lib
-	Func        map[string]*eclaKeyWord.Function
+	Vars       *Scope
+	OS         string
+	ARCH       string
+	SyntaxTree *parser.File
+	Tokens     []lexer.Token
+	File       string
+	Code       string
+	Libs       map[string]libs.Lib
+	//Func        map[string]*eclaKeyWord.Function
 	ErrorHandle *errorHandler.ErrorHandler
 }
 
 // NewEnv returns a new Env.
 func NewEnv() *Env {
 	return &Env{
-		OS:          runtime.GOOS,
-		ARCH:        runtime.GOARCH,
-		Vars:        NewScopeMain(),
-		Libs:        make(map[string]libs.Lib),
-		Func:        make(map[string]*eclaKeyWord.Function),
+		OS:   runtime.GOOS,
+		ARCH: runtime.GOARCH,
+		Vars: NewScopeMain(),
+		Libs: make(map[string]libs.Lib),
+		//Func:        make(map[string]*eclaKeyWord.Function),
 		ErrorHandle: errorHandler.NewHandler(),
 	}
 }
 
 func (env *Env) String() string {
-	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s , VAR : %s, FUNC : %s}", env.OS, env.ARCH, env.Code, env.Vars, env.Func)
+	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s , VAR : %s}", env.OS, env.ARCH, env.Code, env.Vars)
 }
 
 // SetCode sets the code to be executed.
@@ -72,14 +71,28 @@ func (env *Env) EndScope() {
 }
 
 // SetFunction sets the function with the given name.
-func (env *Env) SetFunction(name string, f *eclaKeyWord.Function) {
-	env.Func[name] = f
+func (env *Env) SetFunction(name string, f *eclaType.Function) {
+	v, err := eclaType.NewVar(name, f.GetType(), f)
+	if err != nil {
+		panic(err)
+	}
+	env.Vars.Set(name, v)
 }
 
 // GetFunction returns the function with the given name.
-func (env *Env) GetFunction(name string) (*eclaKeyWord.Function, bool) {
-	f, ok := env.Func[name]
-	return f, ok
+func (env *Env) GetFunction(name string) (*eclaType.Function, bool) {
+	f, ok := env.Vars.Get(name)
+	if !ok {
+		return nil, false
+	}
+	if f.IsFunction() {
+		fn := f.GetFunction()
+		if fn == nil {
+			panic("function is nil")
+		}
+		return fn, true
+	}
+	return nil, false
 }
 
 // Execute executes Env.Code or Env.File.

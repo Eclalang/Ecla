@@ -6,6 +6,7 @@ import (
 )
 
 type Function struct {
+	Name   string
 	Args   []parser.FunctionParams
 	Body   []parser.Node
 	Return []string
@@ -102,13 +103,14 @@ func (f *Function) Append(other Type) (Type, error) {
 }
 
 func (f *Function) IsNull() bool {
-	return true
+	return false
 }
 
 // End of Function Method for interface Type
 
-func NewFunction(args []parser.FunctionParams, body []parser.Node, ret []string) *Function {
+func NewFunction(Name string, args []parser.FunctionParams, body []parser.Node, ret []string) *Function {
 	return &Function{
+		Name:   Name,
 		Args:   args,
 		Body:   body,
 		Return: ret,
