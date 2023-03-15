@@ -346,18 +346,22 @@ func RunVariableMultAssignStmt(tree parser.VariableAssignStmt, variable parser.L
 }
 
 // RunWhileStmt
-func RunWhileStmt(tree parser.WhileStmt, env *Env) {
+func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 	env.NewScope(SCOPE_LOOP)
 	defer env.EndScope()
 	while := eclaKeyWord.NewWhile(tree.Cond, tree.Body)
 	for RunTree(while.Condition, env).GetVal().GetString() == "true" { //TODO add error
 		for _, stmt := range while.Body {
-			RunTree(stmt, env)
+			temp := RunTree(stmt, env)
+			if temp.IsReturn() {
+				return temp
+			}
 		}
 	}
+	return NewNoneBus()
 }
 
-func RunForStmt(For parser.ForStmt, env *Env) {
+func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 	env.NewScope(SCOPE_LOOP)
 	defer env.EndScope()
 	tokenEmpty := lexer.Token{}
@@ -412,7 +416,10 @@ func RunForStmt(For parser.ForStmt, env *Env) {
 				panic(err)
 			}
 			for _, stmt := range f.Body {
-				RunTree(stmt, env)
+				temp := RunTree(stmt, env)
+				if temp.IsReturn() {
+					return temp
+				}
 			}
 		}
 	} else {
@@ -420,11 +427,15 @@ func RunForStmt(For parser.ForStmt, env *Env) {
 		RunTree(For.InitDecl, env)
 		for RunTree(f.Condition, env).GetVal().GetString() == "true" { //TODO add error
 			for _, stmt := range f.Body {
-				RunTree(stmt, env)
+				temp := RunTree(stmt, env)
+				if temp.IsReturn() {
+					return temp
+				}
 			}
 			RunTree(f.Post, env)
 		}
 	}
+	return NewNoneBus()
 }
 
 // RunIfStmt

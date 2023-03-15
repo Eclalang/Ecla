@@ -29,9 +29,9 @@ func RunTree(tree parser.Node, env *Env) *Bus {
 	case parser.VariableAssignStmt:
 		RunVariableAssignStmt(tree.(parser.VariableAssignStmt), env)
 	case parser.WhileStmt:
-		RunWhileStmt(tree.(parser.WhileStmt), env)
+		return RunWhileStmt(tree.(parser.WhileStmt), env)
 	case parser.ForStmt:
-		RunForStmt(tree.(parser.ForStmt), env)
+		return RunForStmt(tree.(parser.ForStmt), env)
 	case parser.IfStmt:
 		return RunIfStmt(tree.(parser.IfStmt), env)
 	case parser.ArrayLiteral:
