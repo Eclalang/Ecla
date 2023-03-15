@@ -2,13 +2,14 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/tot0p/Ecla/errorHandler"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
 )
 
 // RunTree executes a parser.Tree.
-func RunTree(tree parser.Node, env *Env) eclaType.Type {
+func RunTree(tree parser.Node, env *Env) *Bus {
 	//fmt.Printf("%T\n", tree)
 	switch tree.(type) {
 	case parser.Literal:
@@ -20,11 +21,11 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 	case parser.ParenExpr:
 		return RunTree(tree.(parser.ParenExpr).Expression, env)
 	case parser.PrintStmt:
-		return RunPrintStmt(tree.(parser.PrintStmt), env)
+		RunPrintStmt(tree.(parser.PrintStmt), env)
 	case parser.TypeStmt:
-		return RunTypeStmt(tree.(parser.TypeStmt), env)
+		RunTypeStmt(tree.(parser.TypeStmt), env)
 	case parser.VariableDecl:
-		return RunVariableDecl(tree.(parser.VariableDecl), env)
+		RunVariableDecl(tree.(parser.VariableDecl), env)
 	case parser.VariableAssignStmt:
 		RunVariableAssignStmt(tree.(parser.VariableAssignStmt), env)
 	case parser.WhileStmt:
@@ -54,15 +55,15 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		if !ok {
 			panic("Return type of function" + fn.Name + "is incorrect")
 		}
-		return r
+		return NewReturnBus(r)
 	}
-	return nil
+	return NewNoneBus()
 }
 
-func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) eclaType.Type {
+func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) *Bus {
 	var args []eclaType.Type
 	for _, v := range expr.FunctionCall.Args {
-		temp := RunTree(v, env)
+		temp := RunTree(v, env).GetVal()
 		switch temp.(type) {
 		case *eclaType.Var:
 			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
@@ -73,118 +74,76 @@ func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) eclaType.Type {
 	if call == nil {
 		panic(fmt.Sprintf("Method %s not found in module %s", expr.FunctionCall.Name, expr.ObjectName))
 	}
-	return call
+	return NewMainBus(call)
 }
 
 // RunBinaryExpr executes a parser.BinaryExpr.
-func RunBinaryExpr(tree parser.BinaryExpr, env *Env) eclaType.Type {
-	//fmt.Printf("%T\n", tree)
-	left := RunTree(tree.LeftExpr, env)
-	right := RunTree(tree.RightExpr, env)
+func RunBinaryExpr(tree parser.BinaryExpr, env *Env) *Bus {
+	left := RunTree(tree.LeftExpr, env).GetVal()
+	right := RunTree(tree.RightExpr, env).GetVal()
+	var t eclaType.Type
+	var err error
 	switch tree.Operator.TokenType {
 	case lexer.ADD:
-		t, err := left.Add(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.Add(right)
 	case lexer.SUB:
-		t, err := left.Sub(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.Sub(right)
 	case lexer.MULT:
-		t, err := left.Mul(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.Mul(right)
 	case lexer.DIV:
-		t, err := left.Div(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.Div(right)
 	case lexer.MOD:
-		t, err := left.Mod(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.Mod(right)
 	case lexer.QOT:
-		t, err := left.DivEc(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.DivEc(right)
 	case lexer.EQUAL:
-		t, err := left.Eq(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.Eq(right)
 	case lexer.LSS:
-		t, err := left.Lw(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.Lw(right)
 	case lexer.LEQ:
-		t, err := left.LwEq(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.LwEq(right)
 	case lexer.GTR:
-		t, err := left.Gt(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.Gt(right)
 	case lexer.GEQ:
-		t, err := left.GtEq(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.GtEq(right)
 	case lexer.NEQ:
-		t, err := left.NotEq(right)
-		if err != nil {
-			panic(err)
-		}
-		return t
+		t, err = left.NotEq(right)
+	default:
+		return NewNoneBus()
 	}
-	return nil
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+	}
+	return NewMainBus(t)
 }
 
 // RUnUnaryExpr executes a parser.UnaryExpr.
-func RunUnaryExpr(tree parser.UnaryExpr, env *Env) eclaType.Type {
+func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 	switch tree.Operator.TokenType {
 	case lexer.SUB:
-		t, err := eclaType.Int(0).Sub(RunTree(tree.RightExpr, env)) // TODO: Fix this
+		t, err := eclaType.Int(0).Sub(RunTree(tree.RightExpr, env).GetVal()) // TODO: Fix this
 		if err != nil {
 			panic(err)
 		}
-		return t
+		return NewMainBus(t)
 	case lexer.ADD:
 		return RunTree(tree.RightExpr, env)
 	case lexer.NOT:
-		t, err := RunTree(tree.RightExpr, env).Not()
+		t, err := RunTree(tree.RightExpr, env).GetVal().Not()
 		if err != nil {
 			panic(err)
 		}
-		return t
+		return NewMainBus(t)
 	}
-	return nil
+	return NewNoneBus()
 }
 
-func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
+func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) *Bus {
 	env.NewScope(SCOPE_FUNCTION)
 	defer env.EndScope()
 	var args []eclaType.Type
 	for _, v := range tree.Args {
-		temp := RunTree(v, env)
+		temp := RunTree(v, env).GetVal()
 		switch temp.(type) {
 		case *eclaType.Var:
 			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
@@ -209,34 +168,35 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
 	if err != nil {
 		panic(err)
 	}
-	return r
+	return NewMainBus(r)
 }
 
 func RunBodyFunction(fn *eclaType.Function, env *Env) (eclaType.Type, error) {
 	for _, v := range fn.Body {
-
 		temp := RunTree(v, env)
-		if temp != nil {
-			return temp.GetValue().(eclaType.Type), nil
+		if temp.IsReturn() {
+			return temp.GetVal().GetValue().(eclaType.Type), nil
 		}
-
 	}
 	return nil, nil
 }
 
-func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) eclaType.Type {
+func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 	v, ok := env.GetVar(tree.VariableName)
 	if !ok {
 		panic(fmt.Sprintf("Variable %s not found", tree.VariableName))
 	}
 	var result eclaType.Type = v
 	for i := range tree.Indexes {
-		elem := RunTree(tree.Indexes[i], env)
+		elem := RunTree(tree.Indexes[i], env).GetVal()
+		//fmt.Printf("%s\n", elem.GetValue())
 		var err error
+		//fmt.Printf("%T\n", result.GetValue())
 		result, err = result.GetIndex(elem)
+
 		if err != nil {
 			panic(err)
 		}
 	}
-	return result
+	return NewMainBus(result)
 }

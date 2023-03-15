@@ -9,31 +9,32 @@ import (
 )
 
 // New returns a new eclaType.Type from a parser.Literal.
-func New(t parser.Literal, env *Env) eclaType.Type {
+func New(t parser.Literal, env *Env) *Bus {
 	switch t.Type {
 	case lexer.INT:
-		return eclaType.NewInt(t.Value)
+		return NewMainBus(eclaType.NewInt(t.Value))
 	case lexer.STRING:
-		return eclaType.NewString(t.Value)
+		return NewMainBus(eclaType.NewString(t.Value))
 	case lexer.BOOL:
-		return eclaType.NewBool(t.Value)
+		return NewMainBus(eclaType.NewBool(t.Value))
 	case lexer.FLOAT:
-		return eclaType.NewFloat(t.Value)
+		return NewMainBus(eclaType.NewFloat(t.Value))
 	case "VAR":
 		v, ok := env.GetVar(t.Value)
 		if !ok {
 			panic(errors.New("variable not found"))
 		}
-		return v
+		return NewMainBus(v)
 	case "NULL":
-		return eclaType.NewNull()
+		return NewMainBus(eclaType.NewNull())
 	default:
 		panic("Unknown type")
+		return NewNoneBus()
 	}
 }
 
 // RunVariableDecl executes a parser.VariableDecl.
-func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
+func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 	if tree.Value == nil {
 		switch tree.Type {
 		case parser.Int:
@@ -81,19 +82,18 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) eclaType.Type {
 			env.SetVar(tree.Name, v)
 		}
 	} else {
-		v, err := eclaType.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env))
+		v, err := eclaType.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env).GetVal())
 		if err != nil {
 			panic(err)
 		}
 		env.SetVar(tree.Name, v)
 	}
-	return nil
 }
 
-func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) eclaType.Type {
+func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 	var values []eclaType.Type
 	for _, v := range tree.Values {
-		values = append(values, RunTree(v, env))
+		values = append(values, RunTree(v, env).GetVal())
 	}
 	//Modif typ par tree.$type
 	/*
@@ -114,7 +114,7 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) eclaType.Type {
 		fmt.Println("non")
 		panic(err)
 	}
-	return l
+	return NewMainBus(l)
 }
 
 func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
@@ -125,18 +125,18 @@ func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
 	env.SetFunction(tree.Name, fn)
 }
 
-func RunMapLiteral(tree parser.MapLiteral, env *Env) eclaType.Type {
+func RunMapLiteral(tree parser.MapLiteral, env *Env) *Bus {
 	var keys []eclaType.Type
 	var values []eclaType.Type
 	for _, v := range tree.Values {
-		values = append(values, RunTree(v, env))
+		values = append(values, RunTree(v, env).GetVal())
 	}
 	for _, k := range tree.Keys {
-		keys = append(keys, RunTree(k, env))
+		keys = append(keys, RunTree(k, env).GetVal())
 	}
 	m := eclaType.NewMap()
 	m.Keys = keys
 	m.Values = values
 	m.SetAutoType()
-	return m
+	return NewMainBus(m)
 }
