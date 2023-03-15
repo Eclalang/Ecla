@@ -581,7 +581,7 @@ func (p *Parser) ParseVariableAssign() Stmt {
 		panic("Unknown opperator\" " + p.CurrentToken.Value + " in variable assignement")
 	}
 	p.Step()
-	if p.CurrentToken.TokenType == lexer.EOL || p.CurrentToken.TokenType == lexer.EOF {
+	if p.CurrentToken.TokenType == lexer.EOL || p.CurrentToken.TokenType == lexer.EOF || p.CurrentToken.TokenType == lexer.RPAREN || p.CurrentToken.TokenType == lexer.RBRACKET || p.CurrentToken.TokenType == lexer.RBRACE {
 		return VariableAssignStmt{
 			VarToken: Var,
 			Names:    toAssign,
