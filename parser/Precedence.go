@@ -17,9 +17,9 @@ func TokenPrecedence(tok lexer.Token) int {
 		return 2
 	case lexer.EQUAL, lexer.NEQ, lexer.LSS, lexer.LEQ, lexer.GTR, lexer.GEQ:
 		return 3
-	case lexer.ADD, lexer.SUB:
+	case lexer.ADD, lexer.SUB, lexer.OR:
 		return 4
-	case lexer.MULT, lexer.DIV, lexer.MOD, lexer.QOT:
+	case lexer.MULT, lexer.DIV, lexer.MOD, lexer.QOT, lexer.AND:
 		return 5
 	}
 	return LowestPrecedence

@@ -37,3 +37,8 @@ console.print(test2 + "\n");
 test2--;
 console.print(test2 + "\n");
 
+
+console.println("Hello, World!");
+
+console.println(true && false);
+console.println(true || false);

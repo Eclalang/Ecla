@@ -1,0 +1,5 @@
+import console;
+
+for (var i int = 0, true || false , i++) {
+    console.println(i);
+}

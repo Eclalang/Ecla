@@ -108,6 +108,10 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) *Bus {
 		t, err = left.GtEq(right)
 	case lexer.NEQ:
 		t, err = left.NotEq(right)
+	case lexer.AND:
+		t, err = left.And(right)
+	case lexer.OR:
+		t, err = left.Or(right)
 	default:
 		return NewNoneBus()
 	}
