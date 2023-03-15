@@ -172,14 +172,11 @@ func RunVariableNonIndexableAssignStmt(tree parser.VariableAssignStmt, variable 
 
 func RunIndexableVariableIncrementStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignementChecks(tree, index, env)
-	switch (*temp).(type) {
-	case eclaType.Int:
-		*temp = (*temp).(eclaType.Int) + 1
-	case eclaType.Float:
-		*temp = (*temp).(eclaType.Float) + 1
-	default:
-		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not incrementable", index.VariableName), errorHandler.LevelFatal)
+	res, err := (*temp).Add(eclaType.Int(1))
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
+	*temp = res
 }
 func RunVariableIncrementStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
@@ -191,14 +188,11 @@ func RunVariableIncrementStmt(tree parser.VariableAssignStmt, variable parser.Li
 
 func RunIndexableVariableDecrementStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignementChecks(tree, index, env)
-	switch (*temp).(type) {
-	case eclaType.Int:
-		*temp = (*temp).(eclaType.Int) - 1
-	case eclaType.Float:
-		*temp = (*temp).(eclaType.Float) - 1
-	default:
-		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not decrementable", index.VariableName), errorHandler.LevelFatal)
+	res, err := (*temp).Sub(eclaType.Int(1))
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
+	*temp = res
 }
 
 func RunVariableDecrementStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
@@ -211,16 +205,11 @@ func RunVariableDecrementStmt(tree parser.VariableAssignStmt, variable parser.Li
 
 func RunIndexableVariableAddAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignementChecks(tree, index, env)
-	switch (*temp).(type) {
-	case eclaType.Int:
-		res, _ := (*temp).(eclaType.Int).Add(RunTree(tree.Values[0], env))
-		*temp = res
-	case eclaType.Float:
-		res, _ := (*temp).(eclaType.Float).Add(RunTree(tree.Values[0], env))
-		*temp = res
-	default:
-		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not addable %s", index.VariableName, (*temp).GetType()), errorHandler.LevelFatal)
+	res, err := (*temp).Add(RunTree(tree.Values[0], env))
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
+	*temp = res
 }
 
 func RunVariableAddAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
@@ -231,7 +220,6 @@ func RunVariableAddAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	t, err := v.Add(RunTree(tree.Values[0], env))
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
-
 	}
 	err = v.SetVar(t)
 	if err != nil {
@@ -241,16 +229,11 @@ func RunVariableAddAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 
 func RunIndexableVariableSubAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignementChecks(tree, index, env)
-	switch (*temp).(type) {
-	case eclaType.Int:
-		res, _ := (*temp).(eclaType.Int).Sub(RunTree(tree.Values[0], env))
-		*temp = res
-	case eclaType.Float:
-		res, _ := (*temp).(eclaType.Float).Sub(RunTree(tree.Values[0], env))
-		*temp = res
-	default:
-		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not subable", index.VariableName), errorHandler.LevelFatal)
+	res, err := (*temp).Sub(RunTree(tree.Values[0], env))
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
+	*temp = res
 }
 
 func RunVariableSubAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
@@ -261,7 +244,6 @@ func RunVariableSubAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	t, err := v.Sub(RunTree(tree.Values[0], env))
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
-
 	}
 	err = v.SetVar(t)
 	if err != nil {
@@ -271,16 +253,11 @@ func RunVariableSubAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 
 func RunIndexableVariableDivAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignementChecks(tree, index, env)
-	switch (*temp).(type) {
-	case eclaType.Int:
-		res, _ := (*temp).(eclaType.Int).Div(RunTree(tree.Values[0], env))
-		*temp = res
-	case eclaType.Float:
-		res, _ := (*temp).(eclaType.Float).Div(RunTree(tree.Values[0], env))
-		*temp = res
-	default:
-		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not divable", index.VariableName), errorHandler.LevelFatal)
+	res, err := (*temp).Div(RunTree(tree.Values[0], env))
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
+	*temp = res
 }
 
 func RunVariableDivAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
@@ -291,7 +268,6 @@ func RunVariableDivAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	t, err := v.Div(RunTree(tree.Values[0], env))
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
-
 	}
 	err = v.SetVar(t)
 	if err != nil {
@@ -301,13 +277,11 @@ func RunVariableDivAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 
 func RunIndexableVariableModAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignementChecks(tree, index, env)
-	switch (*temp).(type) {
-	case eclaType.Int:
-		res, _ := (*temp).(eclaType.Int).Mod(RunTree(tree.Values[0], env))
-		*temp = res
-	default:
-		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not modable", index.VariableName), errorHandler.LevelFatal)
+	res, err := (*temp).Mod(RunTree(tree.Values[0], env))
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
+	*temp = res
 }
 
 func RunVariableModAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
@@ -318,7 +292,6 @@ func RunVariableModAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	t, err := v.Mod(RunTree(tree.Values[0], env))
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
-
 	}
 	err = v.SetVar(t)
 	if err != nil {
@@ -328,13 +301,11 @@ func RunVariableModAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 
 func RunIndexableVariableQotAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignementChecks(tree, index, env)
-	switch (*temp).(type) {
-	case eclaType.Int:
-		res, _ := (*temp).(eclaType.Int).DivEc(RunTree(tree.Values[0], env))
-		*temp = res
-	default:
-		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not qotable", index.VariableName), errorHandler.LevelFatal)
+	res, err := (*temp).DivEc(RunTree(tree.Values[0], env))
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
+	*temp = res
 }
 
 func RunVariableQotAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
@@ -345,7 +316,6 @@ func RunVariableQotAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	t, err := v.DivEc(RunTree(tree.Values[0], env))
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
-
 	}
 	err = v.SetVar(t)
 	if err != nil {
@@ -355,16 +325,11 @@ func RunVariableQotAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 
 func RunIndexableVariableMultAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignementChecks(tree, index, env)
-	switch (*temp).(type) {
-	case eclaType.Int:
-		res, _ := (*temp).(eclaType.Int).Mul(RunTree(tree.Values[0], env))
-		*temp = res
-	case eclaType.Float:
-		res, _ := (*temp).(eclaType.Float).Mul(RunTree(tree.Values[0], env))
-		*temp = res
-	default:
-		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not addable", index.VariableName), errorHandler.LevelFatal)
+	res, err := (*temp).Mul(RunTree(tree.Values[0], env))
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
+	*temp = res
 }
 
 func RunVariableMultAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
@@ -375,7 +340,6 @@ func RunVariableMultAssignStmt(tree parser.VariableAssignStmt, variable parser.L
 	t, err := v.Mul(RunTree(tree.Values[0], env))
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
-
 	}
 	err = v.SetVar(t)
 	if err != nil {

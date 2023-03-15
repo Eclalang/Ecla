@@ -96,3 +96,45 @@ console.println("mod[0] is " + mod[0]+" and should be 1");
 console.println("qot[0] is " + qot[0]+" and should be 5");
 console.println("mult[0] is " + mult[0]+" and should be 20");
 console.println("---------------------------------------------------");
+
+var assign [][]int = [[10]];
+var inc [][]int = [[10]];
+var dec [][]int = [[10]];
+var add [][]int = [[10]];
+var sub [][]int = [[10]];
+var div [][]float = [[10.0]];
+var mod [][]int = [[10]];
+var qot [][]int = [[10]];
+var mult [][]int = [[10]];
+
+assign[0][0] = 20;
+inc[0][0]++;
+dec[0][0]--;
+add[0][0] += 10;
+sub[0][0] -= 10;
+div[0][0] /= 3;
+mod[0][0] %= 3;
+qot[0][0] //= 2;
+mult[0][0] *= 2;
+
+console.println("-------------------Double Indexable assign-------------------");
+console.println("assign[0] is " + assign[0]+" and should be 20");
+console.println("inc[0] is " + inc[0]+" and should be 11");
+console.println("dec[0] is " + dec[0]+" and should be 9");
+console.println("add[0] is " + add[0]+" and should be 20");
+console.println("sub[0] is " + sub[0]+" and should be 0");
+console.println("div[0] is " + div[0]+" and should be 3.333333");
+console.println("mod[0] is " + mod[0]+" and should be 1");
+console.println("qot[0] is " + qot[0]+" and should be 5");
+console.println("mult[0] is " + mult[0]+" and should be 20");
+console.println("---------------------------------------------------");
+
+var assign [][]int = [[10]];
+var assign2 [][]int = [[10]];
+var str string = "test";
+
+assign[0] += assign2[0];
+str *= 2;
+
+console.println(assign);
+console.println(str);
