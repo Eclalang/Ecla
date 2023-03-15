@@ -1,0 +1,98 @@
+import console;
+
+var assign int = 10;
+var inc int = 10;
+var dec int = 10;
+var add int = 10;
+var sub int = 10;
+var div float = 10.0;
+var mod int = 10;
+var qot int = 10;
+var mult int = 10;
+
+
+assign = 20;
+inc++;
+dec--;
+add += 10;
+sub -= 10;
+div /= 3;
+mod %= 3;
+qot //= 2;
+mult *= 2;
+
+console.println("-------------------Normal assign-------------------");
+console.println("assign is " + assign+" and should be 20");
+console.println("inc is " + inc+" and should be 11");
+console.println("dec is " + dec+" and should be 9");
+console.println("add is " + add+" and should be 20");
+console.println("sub is " + sub+" and should be 0");
+console.println("div is " + div+" and should be 3.333333");
+console.println("mod is " + mod+" and should be 1");
+console.println("qot is " + qot+" and should be 5");
+console.println("mult is " + mult+" and should be 20");
+console.println("---------------------------------------------------");
+
+var assign []int = [10];
+var inc []int = [10];
+var dec []int = [10];
+var add []int = [10];
+var sub []int = [10];
+var div []float = [10.0];
+var mod []int = [10];
+var qot []int = [10];
+var mult []int = [10];
+
+assign[0] = 20;
+inc[0]++;
+dec[0]--;
+add[0] += 10;
+sub[0] -= 10;
+div[0] /= 3;
+mod[0] %= 3;
+qot[0] //= 2;
+mult[0] *= 2;
+
+console.println("-------------------Indexable assign-------------------");
+console.println("assign[0] is " + assign[0]+" and should be 20");
+console.println("inc[0] is " + inc[0]+" and should be 11");
+console.println("dec[0] is " + dec[0]+" and should be 9");
+console.println("add[0] is " + add[0]+" and should be 20");
+console.println("sub[0] is " + sub[0]+" and should be 0");
+console.println("div[0] is " + div[0]+" and should be 3.333333");
+console.println("mod[0] is " + mod[0]+" and should be 1");
+console.println("qot[0] is " + qot[0]+" and should be 5");
+console.println("mult[0] is " + mult[0]+" and should be 20");
+console.println("---------------------------------------------------");
+
+var assign []int = [10];
+var inc []int = [10];
+var dec []int = [10];
+var add []int = [10];
+var sub []int = [10];
+var div []float = [10.0];
+var mod []int = [10];
+var qot []int = [10];
+var mult []int = [10];
+
+assign[0] = 20;
+inc[0]++;
+dec[0]--;
+add[0] += 10;
+sub[0] -= 10;
+div[0] /= 3;
+mod[0] %= 3;
+qot[0] //= 2;
+mult[0] *= 2;
+
+console.println("-------------------Indexable assign-------------------");
+console.println("assign[0] is " + assign[0]+" and should be 20");
+console.println("inc[0] is " + inc[0]+" and should be 11");
+console.println("dec[0] is " + dec[0]+" and should be 9");
+console.println("add[0] is " + add[0]+" and should be 20");
+console.println("sub[0] is " + sub[0]+" and should be 0");
+console.println("div[0] is " + div[0]+" and should be 3.333333");
+console.println("mod[0] is " + mod[0]+" and should be 1");
+console.println("qot[0] is " + qot[0]+" and should be 5");
+console.println("mult[0] is " + mult[0]+" and should be 20");
+console.println("---------------------------------------------------");

@@ -2,6 +2,7 @@ import console;
 
 function testFunction(a : int , b : int) (int){
     if (a == 1){
+        "helloworld";
         return 1;
     }
     return a+b;

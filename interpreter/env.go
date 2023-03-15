@@ -13,27 +13,27 @@ import (
 
 // Env is the environment in which the code is executed.
 type Env struct {
-	Vars       *Scope
-	OS         string
-	ARCH       string
-	SyntaxTree *parser.File
-	Tokens     []lexer.Token
-	File       string
-	Code       string
-	Libs       map[string]libs.Lib
-	//Func        map[string]*eclaKeyWord.Function
-	ErrorHandle *errorHandler.ErrorHandler
+	Vars         *Scope
+	OS           string
+	ARCH         string
+	SyntaxTree   *parser.File
+	Tokens       []lexer.Token
+	File         string
+	Code         string
+	Libs         map[string]libs.Lib
+	ErrorHandle  *errorHandler.ErrorHandler
+	ExecutedFunc []*eclaType.Function
 }
 
 // NewEnv returns a new Env.
 func NewEnv() *Env {
 	return &Env{
-		OS:   runtime.GOOS,
-		ARCH: runtime.GOARCH,
-		Vars: NewScopeMain(),
-		Libs: make(map[string]libs.Lib),
-		//Func:        make(map[string]*eclaKeyWord.Function),
-		ErrorHandle: errorHandler.NewHandler(),
+		OS:           runtime.GOOS,
+		ARCH:         runtime.GOARCH,
+		Vars:         NewScopeMain(),
+		Libs:         make(map[string]libs.Lib),
+		ErrorHandle:  errorHandler.NewHandler(),
+		ExecutedFunc: []*eclaType.Function{},
 	}
 }
 
@@ -113,6 +113,18 @@ func (env *Env) Execute() {
 
 func (env *Env) Import(file string) {
 	env.Libs[file] = libs.Import(file)
+}
+
+func (env *Env) AddFunctionExecuted(f *eclaType.Function) {
+	env.ExecutedFunc = append(env.ExecutedFunc, f)
+}
+
+func (env *Env) GetFunctionExecuted() *eclaType.Function {
+	return env.ExecutedFunc[len(env.ExecutedFunc)-1]
+}
+
+func (env *Env) RemoveFunctionExecuted() {
+	env.ExecutedFunc = env.ExecutedFunc[:len(env.ExecutedFunc)-1]
 }
 
 // readFile reads the file at the given path and returns its contents as a string.

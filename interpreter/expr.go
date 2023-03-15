@@ -32,7 +32,7 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 	case parser.ForStmt:
 		RunForStmt(tree.(parser.ForStmt), env)
 	case parser.IfStmt:
-		RunIfStmt(tree.(parser.IfStmt), env)
+		return RunIfStmt(tree.(parser.IfStmt), env)
 	case parser.ArrayLiteral:
 		return RunArrayLiteral(tree.(parser.ArrayLiteral), env)
 	case parser.ImportStmt:
@@ -47,6 +47,14 @@ func RunTree(tree parser.Node, env *Env) eclaType.Type {
 		return RunIndexableAccessExpr(tree.(parser.IndexableAccessExpr), env)
 	case parser.MapLiteral:
 		return RunMapLiteral(tree.(parser.MapLiteral), env)
+	case parser.ReturnStmt:
+		r := RunReturnStmt(tree.(parser.ReturnStmt), env)
+		fn := env.GetFunctionExecuted()
+		ok := fn.CheckReturn([]eclaType.Type{r})
+		if !ok {
+			panic("Return type of function" + fn.Name + "is incorrect")
+		}
+		return r
 	}
 	return nil
 }
@@ -195,7 +203,8 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
 	for i, v := range argsList {
 		env.SetVar(i, v)
 	}
-
+	env.AddFunctionExecuted(fn)
+	defer env.RemoveFunctionExecuted()
 	r, err := RunBodyFunction(fn, env)
 	if err != nil {
 		panic(err)
@@ -205,16 +214,12 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) eclaType.Type {
 
 func RunBodyFunction(fn *eclaType.Function, env *Env) (eclaType.Type, error) {
 	for _, v := range fn.Body {
-		switch v.(type) {
-		case parser.ReturnStmt:
-			r := RunReturnStmt(v.(parser.ReturnStmt), env)
-			ok := fn.CheckReturn([]eclaType.Type{r})
-			if !ok {
-				return nil, fmt.Errorf("Return type of function %s is incorrect", fn.Name)
-			}
-			return r, nil
+
+		temp := RunTree(v, env)
+		if temp != nil {
+			return temp.GetValue().(eclaType.Type), nil
 		}
-		RunTree(v, env)
+
 	}
 	return nil, nil
 }
@@ -225,7 +230,6 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) eclaType.
 		panic(fmt.Sprintf("Variable %s not found", tree.VariableName))
 	}
 	var result eclaType.Type = v
-
 	for i := range tree.Indexes {
 		elem := RunTree(tree.Indexes[i], env)
 		var err error

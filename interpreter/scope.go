@@ -9,6 +9,9 @@ const (
 	SCOPE_FUNCTION
 	SCOPE_LOOP
 	SCOPE_CONDITION
+	SCOPE_TRY
+	SCOPE_CATCH
+	SCOPE_FINALLY
 )
 
 type Scope struct {
@@ -16,6 +19,7 @@ type Scope struct {
 	next     *Scope
 	previous *Scope
 	Type     ScopeType
+	InFunc   bool
 }
 
 func NewScopeMain() *Scope {
@@ -24,6 +28,7 @@ func NewScopeMain() *Scope {
 		next:     nil,
 		previous: nil,
 		Type:     SCOPE_MAIN,
+		InFunc:   false,
 	}
 }
 func (s *Scope) Set(name string, value *eclaType.Var) {
@@ -53,11 +58,16 @@ func (s *Scope) GoDeep(Type ScopeType) {
 	for cursor.next != nil {
 		cursor = cursor.next
 	}
+	InFunc := cursor.InFunc
+	if Type == SCOPE_FUNCTION {
+		InFunc = true
+	}
 	cursor.next = &Scope{
 		Var:      make(map[string]*eclaType.Var),
 		next:     nil,
 		previous: cursor,
 		Type:     Type,
+		InFunc:   InFunc,
 	}
 }
 
@@ -88,4 +98,8 @@ func (s *Scope) GetFunctionScope() *Scope {
 		return nil
 	}
 	return cursor
+}
+
+func (s *Scope) InFunction() bool {
+	return s.InFunc
 }
