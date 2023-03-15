@@ -34,7 +34,7 @@ func (n Null) GetType() string {
 	return n.typ
 }
 
-func (n Null) GetIndex(number Type) (Type, error) {
+func (n Null) GetIndex(number Type) (*Type, error) {
 	return nil, nil
 }
 

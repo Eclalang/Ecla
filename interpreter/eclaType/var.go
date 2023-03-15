@@ -31,7 +31,7 @@ func (v *Var) GetType() string {
 	return v.Value.GetType()
 }
 
-func (v *Var) GetIndex(i Type) (Type, error) {
+func (v *Var) GetIndex(i Type) (*Type, error) {
 	return v.Value.GetIndex(i)
 }
 

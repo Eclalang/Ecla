@@ -8,7 +8,7 @@ function testFunction(a : int , b : int) (int){
 }
 
 function testFunction2(a : int , b : int) (int){
-    while (true) {
+    while (true && true) {
         return 1;
     }
     return a+b;

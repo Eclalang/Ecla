@@ -123,27 +123,15 @@ func IndexableAssignementChecks(tree parser.VariableAssignStmt, index parser.Ind
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: variable not found", errorHandler.LevelFatal)
 	}
-	var temp *eclaType.Type
-	switch v.Value.(type) {
-	case *eclaType.List:
-		temp = &v.Value
-	default:
-		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not indexable", index.VariableName), errorHandler.LevelFatal)
-	}
+	t := eclaType.Type(v)
+	var temp = &t
 	for i := range index.Indexes {
 		elem := RunTree(index.Indexes[i], env).GetVal()
-		switch elem.(type) {
-		case *eclaType.Var:
-			elem = elem.(*eclaType.Var).GetValue().(eclaType.Type)
-		}
-		if elem.GetType() != "int" {
-			env.ErrorHandle.HandleError(0, tree.StartPos(), "Index must be an integer", errorHandler.LevelFatal)
-		}
-		switch (*temp).(type) {
-		case *eclaType.List:
-			temp = &((*temp).(*eclaType.List).Value[elem.(eclaType.Int)])
-		default:
-			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s is not indexable", index.VariableName), errorHandler.LevelFatal)
+		var err error
+		//fmt.Printf("%T\n", result.GetValue())
+		temp, err = (*temp).GetIndex(elem)
+		if err != nil {
+			panic(err)
 		}
 	}
 	return temp
@@ -411,7 +399,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			if err != nil {
 				panic(err)
 			}
-			err = v.SetVar(val)
+			err = v.SetVar(*val)
 			if err != nil {
 				panic(err)
 			}

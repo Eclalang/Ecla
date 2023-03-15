@@ -38,7 +38,7 @@ func (i Int) GetType() string {
 }
 
 // returns error
-func (i Int) GetIndex(other Type) (Type, error) {
+func (i Int) GetIndex(other Type) (*Type, error) {
 	return nil, errors.New("cannot get index from int")
 }
 

@@ -42,7 +42,7 @@ func (f Float) GetType() string {
 }
 
 // returns error
-func (f Float) GetIndex(other Type) (Type, error) {
+func (f Float) GetIndex(other Type) (*Type, error) {
 	return nil, errors.New("cannot get index from float")
 }
 

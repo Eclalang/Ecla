@@ -41,7 +41,7 @@ func (b Bool) GetType() string {
 }
 
 // returns error
-func (b Bool) GetIndex(other Type) (Type, error) {
+func (b Bool) GetIndex(other Type) (*Type, error) {
 	return nil, errors.New("cannot get index from bool")
 }
 

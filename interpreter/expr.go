@@ -190,9 +190,10 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 	for i := range tree.Indexes {
 		elem := RunTree(tree.Indexes[i], env).GetVal()
 		//fmt.Printf("%s\n", elem.GetValue())
-		var err error
 		//fmt.Printf("%T\n", result.GetValue())
-		result, err = result.GetIndex(elem)
+		temp, err := result.GetIndex(elem)
+
+		result = *temp
 
 		if err != nil {
 			panic(err)

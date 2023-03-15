@@ -67,7 +67,7 @@ func (s String) GetType() string {
 }
 
 // GetIndex returns a single character
-func (s String) GetIndex(other Type) (Type, error) {
+func (s String) GetIndex(other Type) (*Type, error) {
 
 	if other.GetType() == "int" {
 		ind := int(other.GetValue().(Int))
@@ -75,7 +75,8 @@ func (s String) GetIndex(other Type) (Type, error) {
 			return nil, errors.New("Index out of range")
 		}
 		res := String(string(s)[ind])
-		return res, nil
+		temp := Type(res)
+		return &temp, nil
 	}
 	return nil, errors.New("index must be an integer")
 }

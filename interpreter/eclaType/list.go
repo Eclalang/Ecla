@@ -66,14 +66,14 @@ func (l *List) SetType(other string) {
 	l.Typ = other
 }
 
-func (l *List) GetIndex(index Type) (Type, error) {
+func (l *List) GetIndex(index Type) (*Type, error) {
 
 	if index.GetType() == "int" {
 		ind := int(index.GetValue().(Int))
 		if ind >= len(l.Value) || ind < 0 {
 			return nil, errors.New("Index out of range")
 		}
-		return l.Value[ind], nil
+		return &l.Value[ind], nil
 	}
 	return nil, errors.New("index must be an integer")
 
