@@ -7,9 +7,7 @@ import (
 	"log"
 )
 
-var (
-	EndOfBrace = false
-)
+var ()
 
 // Parser is the parser for the Ecla language
 
@@ -19,6 +17,7 @@ type Parser struct {
 	TokenIndex   int
 	CurrentToken lexer.Token
 	CurrentFile  *File
+	IsEndOfBrace bool
 }
 
 // Step moves the parser to the next token
@@ -67,6 +66,7 @@ func (p *Parser) Peek(lookAhead int) lexer.Token {
 	return p.Tokens[p.TokenIndex+lookAhead]
 }
 
+// PrintBacktrace prints the last 10 tokens for debugging purposes
 func (p *Parser) PrintBacktrace() {
 	// print back the 10 last token values
 	p.MultiBack(10)
@@ -77,8 +77,9 @@ func (p *Parser) PrintBacktrace() {
 	fmt.Println()
 }
 
+// DisableEOLChecking disables the EOL checking for the parser to allow for semicolon-less syntax on conditionals statements and loops
 func (p *Parser) DisableEOLChecking() {
-	EndOfBrace = true
+	p.IsEndOfBrace = true
 	if p.CurrentToken.TokenType != lexer.EOL {
 		p.Back()
 	} else {
@@ -142,13 +143,13 @@ func (p *Parser) ParseNode() Node {
 			return nil
 		} else {
 			tempExpr := p.ParseText()
-			if p.CurrentToken.TokenType != lexer.EOL && !EndOfBrace {
+			if p.CurrentToken.TokenType != lexer.EOL && !p.IsEndOfBrace {
 				p.PrintBacktrace()
 				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected End Of Line", errorHandler.LevelFatal)
 				fmt.Println("This should not print")
 			}
-			if EndOfBrace {
-				EndOfBrace = false
+			if p.IsEndOfBrace {
+				p.IsEndOfBrace = false
 			}
 			return tempExpr
 		}
@@ -599,6 +600,7 @@ func (p *Parser) ParseVariableAssign() Stmt {
 	}
 }
 
+// ParseVariableAssignLHS parses the left hand side of a variable assignment
 func (p *Parser) ParseVariableAssignLHS() []Expr {
 	var tempArray []Expr
 	tempArray = append(tempArray, p.ParseExpr())
@@ -610,6 +612,7 @@ func (p *Parser) ParseVariableAssignLHS() []Expr {
 	return tempArray
 }
 
+// ParseVariableAssignRHS parses the right hand side of a variable assignment
 func (p *Parser) ParseVariableAssignRHS() []Expr {
 	entered := false
 	var tempArray []Expr
@@ -839,15 +842,6 @@ func (p *Parser) ParseFunctionDecl() Node {
 	return tempFunctionDecl
 }
 
-func DuplicateParam(params []FunctionParams, newParam string) bool {
-	for _, paramName := range params {
-		if paramName.Name == newParam {
-			return true
-		}
-	}
-	return false
-}
-
 // ParseReturnStmt parses a return statement
 func (p *Parser) ParseReturnStmt() Node {
 	tempReturnStmt := ReturnStmt{ReturnToken: p.CurrentToken}
@@ -884,6 +878,7 @@ func (p *Parser) ParseIndexableAccessExpr() Expr {
 	return tempIndexableAccessExpr
 }
 
+// ParseVariableAccess parses a variable access
 func (p *Parser) ParseVariableAccess() Expr {
 	if p.Peek(1).TokenType == lexer.LBRACKET {
 		temp := p.ParseIndexableAccessExpr()
@@ -947,4 +942,14 @@ func (p *Parser) ParseLiteral() Expr {
 	p.PrintBacktrace()
 	panic("Expected literal instead of " + p.CurrentToken.Value)
 	return nil
+}
+
+// DuplicateParam checks if a parameter is already in the list of function parameters
+func DuplicateParam(params []FunctionParams, newParam string) bool {
+	for _, paramName := range params {
+		if paramName.Name == newParam {
+			return true
+		}
+	}
+	return false
 }
