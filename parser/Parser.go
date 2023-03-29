@@ -7,8 +7,6 @@ import (
 	"log"
 )
 
-var ()
-
 // Parser is the parser for the Ecla language
 
 type Parser struct {
