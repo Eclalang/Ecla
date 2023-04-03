@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs/utils"
+	"math/rand"
 )
 
 type DebugKingdom struct {
@@ -17,6 +18,8 @@ func NewDebugKingdom() *DebugKingdom {
 			"testMapRet":  nil,
 			"testList":    nil,
 			"testListRet": nil,
+			"randInt":     nil,
+			"clear":       nil,
 		},
 	}
 }
@@ -70,8 +73,25 @@ func (d *DebugKingdom) Call(name string, args []eclaType.Type) eclaType.Type {
 			newList[k] = v.(string)
 		}
 		return utils.GoToEclaType(d.TestListRet(newList))
+	case "randInt":
+		min, ok := newArgs[0].(int)
+		if !ok {
+			return eclaType.Null{}
+		}
+		max, ok := newArgs[1].(int)
+		if !ok {
+			return eclaType.Null{}
+		}
+		return utils.GoToEclaType(d.RandInt(min, max))
+	case "clear":
+		fmt.Print("\033[H\033[2J")
 	}
 	return eclaType.Null{}
+}
+
+func (d *DebugKingdom) RandInt(min int, max int) int {
+	// generate a random number between min and max
+	return rand.Intn(max-min) + min
 }
 
 func (d *DebugKingdom) TestMap(test map[string]string) {

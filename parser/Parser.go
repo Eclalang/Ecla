@@ -769,6 +769,7 @@ func (p *Parser) ParseFunctionDecl() Node {
 	tempFunctionDecl.Name = p.CurrentToken.Value
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
+		p.PrintBacktrace()
 		panic("Expected '('")
 	}
 	tempFunctionDecl.LeftParamParen = p.CurrentToken
