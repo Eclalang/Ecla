@@ -193,14 +193,17 @@ func Lexer(sentence string) []Token {
 		if canBeText {
 			for y := len(tempVal) - 1; y >= 0; y-- {
 				for _, ident := range Identifier {
-					if ident.IsSyntaxe(tempVal[y:]) {
-						canBeText = false
-						ret = inQuoteChange(inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
-						isSpaces = false
-						i += len(tempVal[y:]) - 2
-						prevIndex = i
+					if ident.Identifier != INT {
+						if ident.IsSyntaxe(tempVal[y:]) {
+							canBeText = false
+							ret = inQuoteChange(inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
+							isSpaces = false
+							i += len(tempVal[y:]) - 2
+							prevIndex = i
 
+						}
 					}
+
 				}
 			}
 		}
