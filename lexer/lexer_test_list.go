@@ -458,9 +458,6 @@ var (
 			},
 		},
 	}
-	testHashtag5 = testList{
-		input: "#prout = 2",
-	}
 	testBoolOpperand = testList{
 		input: "&& || ^ \"&& || ^\"",
 		output: []Token{

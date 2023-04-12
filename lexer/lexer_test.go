@@ -61,10 +61,6 @@ func TestHashtag4(t *testing.T) {
 	tLexer(t, testHashtag4, " testHashtag4")
 }
 
-//func TestHashtag5(t *testing.T) {
-//	tLexer(t, testHashtag5, " testHashtag5")
-//}
-
 func TestMurloc(t *testing.T) {
 	tLexer(t, testMurloc, " testMurloc")
 }

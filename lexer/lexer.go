@@ -198,10 +198,9 @@ func Lexer(sentence string) []Token {
 						if ident.IsSyntaxe(tempVal[y:]) {
 							canBeText = false
 							ret = inQuoteChange(inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
+							i += y - len(tempVal)
 							isSpaces = false
-							i += len(tempVal[y:]) - 2
 							prevIndex = i
-
 						}
 					}
 
