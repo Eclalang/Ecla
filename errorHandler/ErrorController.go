@@ -6,16 +6,19 @@ import (
 	"os"
 )
 
+// ErrorHandler is the error handler of ecla.
 type ErrorHandler struct {
 	Errors []Error
 }
 
+// NewHandler returns a new ErrorHandler.
 func NewHandler() *ErrorHandler {
 	return &ErrorHandler{
 		Errors: []Error{},
 	}
 }
 
+// HandleError handles an error.
 func (e ErrorHandler) HandleError(Line, Col int, Message string, LogLevel Level) {
 	err := Error{
 		Line:  Line,

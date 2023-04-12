@@ -1,5 +1,6 @@
 package errorHandler
 
+// Level is the level of an error.
 type Level int
 
 const (
@@ -11,6 +12,7 @@ const (
 	LevelFatal
 )
 
+// LevelToString returns the string representation of a level.
 func LevelToString(level Level) string {
 	switch level {
 	case LevelWarning:
@@ -24,6 +26,7 @@ func LevelToString(level Level) string {
 	}
 }
 
+// StringToLevel returns the level of a string.
 func StringToLevel(level string) Level {
 	switch level {
 	case "Warning":
@@ -37,6 +40,7 @@ func StringToLevel(level string) Level {
 	}
 }
 
+// String returns the string representation of a level.
 func (l Level) String() string {
 	return LevelToString(l)
 }
