@@ -62,10 +62,12 @@ func (env *Env) GetVar(name string) (*eclaType.Var, bool) {
 	return v, ok
 }
 
+// NewScope creates a new scope.
 func (env *Env) NewScope(Type ScopeType) {
 	env.Vars.GoDeep(Type)
 }
 
+// EndScope ends the current scope.
 func (env *Env) EndScope() {
 	env.Vars.GoUp()
 }

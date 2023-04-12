@@ -6,6 +6,7 @@ import (
 	"reflect"
 )
 
+// GoToEclaType converts a go type to an eclaType.
 func GoToEclaType(arg any) eclaType.Type {
 	//TODO: Refactor the use of Reflect because it may be slow
 	switch reflect.TypeOf(arg).Kind() {

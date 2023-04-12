@@ -60,6 +60,7 @@ func RunTree(tree parser.Node, env *Env) *Bus {
 	return NewNoneBus()
 }
 
+// RunMethodCallExpr executes a parser.MethodCallExpr.
 func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) *Bus {
 	var args []eclaType.Type
 	for _, v := range expr.FunctionCall.Args {
@@ -121,7 +122,7 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) *Bus {
 	return NewMainBus(t)
 }
 
-// RUnUnaryExpr executes a parser.UnaryExpr.
+// RunUnaryExpr executes a parser.UnaryExpr.
 func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 	switch tree.Operator.TokenType {
 	case lexer.SUB:

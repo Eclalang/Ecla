@@ -16,6 +16,7 @@ func RunPrintStmt(tree parser.PrintStmt, env *Env) {
 	fmt.Print(RunTree(tree.Expression, env).GetVal().GetString())
 }
 
+// RunImportStmt executes a parser.ImportStmt.
 func RunImportStmt(stmt parser.ImportStmt, env *Env) {
 	env.Import(stmt.ModulePath)
 }
@@ -118,7 +119,8 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 	}
 }
 
-func IndexableAssignementChecks(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) *eclaType.Type {
+// IndexableAssignmentChecks checks if the indexable variable is valid
+func IndexableAssignmentChecks(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) *eclaType.Type {
 	v, ok := env.GetVar(index.VariableName)
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: variable not found", errorHandler.LevelFatal)
@@ -137,12 +139,14 @@ func IndexableAssignementChecks(tree parser.VariableAssignStmt, index parser.Ind
 	return temp
 }
 
+// RunIndexableVariableAssignStmt runs the indexable variable assignment
 func RunIndexableVariableAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) eclaType.Type {
-	temp := IndexableAssignementChecks(tree, index, env)
+	temp := IndexableAssignmentChecks(tree, index, env)
 	*temp = RunTree(tree.Values[0], env).GetVal()
 	return nil
 }
 
+// RunVariableNonIndexableAssignStmt runs the variable assignment
 func RunVariableNonIndexableAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
 	if !ok {
@@ -156,14 +160,17 @@ func RunVariableNonIndexableAssignStmt(tree parser.VariableAssignStmt, variable 
 	}
 }
 
+// RunIndexableVariableIncrementStmt runs the indexable variable increment
 func RunIndexableVariableIncrementStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
-	temp := IndexableAssignementChecks(tree, index, env)
+	temp := IndexableAssignmentChecks(tree, index, env)
 	res, err := (*temp).Add(eclaType.Int(1))
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
 	*temp = res
 }
+
+// RunVariableIncrementStmt runs the variable increment
 func RunVariableIncrementStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
 	if !ok {
@@ -172,8 +179,9 @@ func RunVariableIncrementStmt(tree parser.VariableAssignStmt, variable parser.Li
 	v.Increment()
 }
 
+// RunIndexableVariableDecrementStmt runs the indexable variable decrement
 func RunIndexableVariableDecrementStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
-	temp := IndexableAssignementChecks(tree, index, env)
+	temp := IndexableAssignmentChecks(tree, index, env)
 	res, err := (*temp).Sub(eclaType.Int(1))
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -181,6 +189,7 @@ func RunIndexableVariableDecrementStmt(tree parser.VariableAssignStmt, index par
 	*temp = res
 }
 
+// RunVariableDecrementStmt runs the variable decrement
 func RunVariableDecrementStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
 	if !ok {
@@ -189,8 +198,9 @@ func RunVariableDecrementStmt(tree parser.VariableAssignStmt, variable parser.Li
 	v.Decrement()
 }
 
+// RunIndexableVariableAddAssignStmt runs the indexable variable add assign
 func RunIndexableVariableAddAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
-	temp := IndexableAssignementChecks(tree, index, env)
+	temp := IndexableAssignmentChecks(tree, index, env)
 	res, err := (*temp).Add(RunTree(tree.Values[0], env).GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -198,6 +208,7 @@ func RunIndexableVariableAddAssignStmt(tree parser.VariableAssignStmt, index par
 	*temp = res
 }
 
+// RunVariableAddAssignStmt runs the variable add assign
 func RunVariableAddAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
 	if !ok {
@@ -213,8 +224,9 @@ func RunVariableAddAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	}
 }
 
+// RunIndexableVariableSubAssignStmt runs the indexable variable sub assign
 func RunIndexableVariableSubAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
-	temp := IndexableAssignementChecks(tree, index, env)
+	temp := IndexableAssignmentChecks(tree, index, env)
 	res, err := (*temp).Sub(RunTree(tree.Values[0], env).GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -222,6 +234,7 @@ func RunIndexableVariableSubAssignStmt(tree parser.VariableAssignStmt, index par
 	*temp = res
 }
 
+// RunVariableSubAssignStmt runs the variable sub assign
 func RunVariableSubAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
 	if !ok {
@@ -237,8 +250,9 @@ func RunVariableSubAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	}
 }
 
+// RunIndexableVariableDivAssignStmt runs the indexable variable div assign
 func RunIndexableVariableDivAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
-	temp := IndexableAssignementChecks(tree, index, env)
+	temp := IndexableAssignmentChecks(tree, index, env)
 	res, err := (*temp).Div(RunTree(tree.Values[0], env).GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -246,6 +260,7 @@ func RunIndexableVariableDivAssignStmt(tree parser.VariableAssignStmt, index par
 	*temp = res
 }
 
+// RunVariableDivAssignStmt runs the variable div assign
 func RunVariableDivAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
 	if !ok {
@@ -261,8 +276,9 @@ func RunVariableDivAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	}
 }
 
+// RunIndexableVariableModAssignStmt runs the indexable variable mod assign
 func RunIndexableVariableModAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
-	temp := IndexableAssignementChecks(tree, index, env)
+	temp := IndexableAssignmentChecks(tree, index, env)
 	res, err := (*temp).Mod(RunTree(tree.Values[0], env).GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -270,6 +286,7 @@ func RunIndexableVariableModAssignStmt(tree parser.VariableAssignStmt, index par
 	*temp = res
 }
 
+// RunVariableModAssignStmt runs the variable mod assign
 func RunVariableModAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
 	if !ok {
@@ -285,8 +302,9 @@ func RunVariableModAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	}
 }
 
+// RunIndexableVariableQotAssignStmt runs the indexable variable qot assign
 func RunIndexableVariableQotAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
-	temp := IndexableAssignementChecks(tree, index, env)
+	temp := IndexableAssignmentChecks(tree, index, env)
 	res, err := (*temp).DivEc(RunTree(tree.Values[0], env).GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -294,6 +312,7 @@ func RunIndexableVariableQotAssignStmt(tree parser.VariableAssignStmt, index par
 	*temp = res
 }
 
+// RunVariableQotAssignStmt runs the variable qot assign
 func RunVariableQotAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
 	if !ok {
@@ -309,8 +328,9 @@ func RunVariableQotAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	}
 }
 
+// RunIndexableVariableMultAssignStmt runs the indexable variable mult assign
 func RunIndexableVariableMultAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
-	temp := IndexableAssignementChecks(tree, index, env)
+	temp := IndexableAssignmentChecks(tree, index, env)
 	res, err := (*temp).Mul(RunTree(tree.Values[0], env).GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -318,6 +338,7 @@ func RunIndexableVariableMultAssignStmt(tree parser.VariableAssignStmt, index pa
 	*temp = res
 }
 
+// RunVariableMultAssignStmt runs the variable mult assign
 func RunVariableMultAssignStmt(tree parser.VariableAssignStmt, variable parser.Literal, env *Env) {
 	v, ok := env.GetVar(variable.Value)
 	if !ok {
@@ -333,7 +354,7 @@ func RunVariableMultAssignStmt(tree parser.VariableAssignStmt, variable parser.L
 	}
 }
 
-// RunWhileStmt
+// RunWhileStmt runs the while statement
 func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 	env.NewScope(SCOPE_LOOP)
 	defer env.EndScope()
@@ -349,6 +370,7 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 	return NewNoneBus()
 }
 
+// RunForStmt runs the for statement
 func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 	env.NewScope(SCOPE_LOOP)
 	defer env.EndScope()
@@ -426,7 +448,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 	return NewNoneBus()
 }
 
-// RunIfStmt
+// RunIfStmt runs the if statement
 func RunIfStmt(tree parser.IfStmt, env *Env) *Bus {
 	if RunTree(tree.Cond, env).GetVal().GetString() == "true" { //TODO add error
 		env.NewScope(SCOPE_CONDITION)
@@ -454,6 +476,7 @@ func RunIfStmt(tree parser.IfStmt, env *Env) *Bus {
 	return NewNoneBus()
 }
 
+// RunReturnStmt runs the return statement
 func RunReturnStmt(tree parser.ReturnStmt, env *Env) eclaType.Type {
 	l := []eclaType.Type{}
 	for _, expr := range tree.ReturnValues {

@@ -15,7 +15,7 @@ function getPlayerInputX()(int){
     var x string = "";
 
     while (x != "1" && x != "2" && x != "3"){
-        console.println("Player " + turn + ", choose your x coordinate (1, 2, or 3): ");
+        console.println("Player " + turn + ", choose your y coordinate (1, 2, or 3): ");
         temp = console.input();
         x = temp[0];
         if (x != "1" && x != "2" && x != "3"){
@@ -30,7 +30,7 @@ function getPlayerInputY()(int){
     var y string = "";
 
     while (y != "1" && y != "2" && y != "3"){
-        console.println("Player " + turn + ", choose your y coordinate (1, 2, or 3): ");
+        console.println("Player " + turn + ", choose your x coordinate (1, 2, or 3): ");
         temp = console.input();
         y = temp[0];
         if (y != "1" && y != "2" && y != "3"){

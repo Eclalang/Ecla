@@ -90,6 +90,7 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 	}
 }
 
+// RunArrayLiteral executes a parser.ArrayLiteral.
 func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 	var values []eclaType.Type
 	for _, v := range tree.Values {
@@ -117,14 +118,13 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 	return NewMainBus(l)
 }
 
+// RunFunctionDecl executes a parser.FunctionDecl.
 func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
-	//fn := eclaKeyWord.NewFunction(tree.Name, tree.Parameters, tree.Body, tree.ReturnTypes)
-
 	fn := eclaType.NewFunction(tree.Name, tree.Parameters, tree.Body, tree.ReturnTypes)
-
 	env.SetFunction(tree.Name, fn)
 }
 
+// RunMapLiteral executes a parser.MapLiteral.
 func RunMapLiteral(tree parser.MapLiteral, env *Env) *Bus {
 	var keys []eclaType.Type
 	var values []eclaType.Type

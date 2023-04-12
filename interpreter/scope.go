@@ -2,6 +2,7 @@ package interpreter
 
 import "github.com/tot0p/Ecla/interpreter/eclaType"
 
+// ScopeType is the type of a scope.
 type ScopeType int
 
 const (
@@ -14,6 +15,7 @@ const (
 	SCOPE_FINALLY
 )
 
+// Scope is a scope.
 type Scope struct {
 	Var      map[string]*eclaType.Var
 	next     *Scope
@@ -22,6 +24,7 @@ type Scope struct {
 	InFunc   bool
 }
 
+// NewScopeMain returns a new main scope.
 func NewScopeMain() *Scope {
 	return &Scope{
 		Var:      make(map[string]*eclaType.Var),
@@ -31,6 +34,8 @@ func NewScopeMain() *Scope {
 		InFunc:   false,
 	}
 }
+
+// Set sets the value of the variable with the given name.
 func (s *Scope) Set(name string, value *eclaType.Var) {
 	cursor := s
 	for cursor.next != nil {
@@ -39,6 +44,7 @@ func (s *Scope) Set(name string, value *eclaType.Var) {
 	cursor.Var[name] = value
 }
 
+// Get returns the value of the variable with the given name.
 func (s *Scope) Get(name string) (*eclaType.Var, bool) {
 	cursor := s
 	for cursor.next != nil {
@@ -53,6 +59,7 @@ func (s *Scope) Get(name string) (*eclaType.Var, bool) {
 	return v, ok
 }
 
+// GoDeep creates a new scope was is deeper than the current one.
 func (s *Scope) GoDeep(Type ScopeType) {
 	cursor := s
 	for cursor.next != nil {
@@ -71,6 +78,7 @@ func (s *Scope) GoDeep(Type ScopeType) {
 	}
 }
 
+// GoUp goes up in the scope and deletes the current one.
 func (s *Scope) GoUp() {
 	cursor := s
 	if cursor.next != nil {
@@ -81,14 +89,17 @@ func (s *Scope) GoUp() {
 	cursor.next = nil
 }
 
+// SetNextScope sets the next scope.
 func (s *Scope) SetNextScope(next *Scope) {
 	s.next = next
 }
 
+// GetNextScope returns the next scope.
 func (s *Scope) GetNextScope() *Scope {
 	return s.next
 }
 
+// GetFunctionScope returns the function scope.
 func (s *Scope) GetFunctionScope() *Scope {
 	cursor := s
 	for cursor.Type != SCOPE_FUNCTION && cursor.previous != nil {
@@ -100,6 +111,7 @@ func (s *Scope) GetFunctionScope() *Scope {
 	return cursor
 }
 
+// InFunction returns true if the scope is in a function.
 func (s *Scope) InFunction() bool {
 	return s.InFunc
 }

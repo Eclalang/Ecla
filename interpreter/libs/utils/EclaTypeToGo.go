@@ -4,6 +4,7 @@ import (
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 )
 
+// EclaTypeToGo converts an eclaType to a go type.
 func EclaTypeToGo(arg eclaType.Type) any {
 	switch arg.(type) {
 	case eclaType.Int:
