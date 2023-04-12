@@ -1,0 +1,283 @@
+import console;
+
+
+#test Print
+console.println("Test Print");
+console.println("Hello World");
+console.println("Test Print Past");
+
+
+# test add
+console.println("Test Add");
+console.println("1+1 = ",1+1);
+console.println("1+\"hello\" = ",1+"hello");
+console.println("\"hello\"+1 = ","hello"+1);
+console.println("\"hello\"+\"world\" = ","hello"+"world");
+console.println("1.3+0.2 = ",1.3+0.2);
+console.println("1.3+\"hello\" = ",1.3+"hello");
+console.println("\"hello\"+1.3 = ","hello"+1.3);
+console.println("1 + 1.3 = ",1+1.3);
+console.println("1.3 + 1 = ",1.3+1);
+console.println("\"hello\"+true = ","hello"+true);
+console.println("true+\"hello\" = ",true+"hello");
+
+
+# test sub
+console.println("Test sub");
+console.println("1-1 = ",1-1);
+console.println("5.3-0.2 = ",1.3-0.2);
+console.println("2.0-1 = ",2.0-1);
+console.println("1-2.0 = ",1-2.0);
+
+# test div
+console.println("Test div");
+console.println("10/5 = ",10/5);
+console.println("2.5/2.0 = ",2.5/2.0);
+console.println("2.5/2 = ",2.5/2);
+console.println("2/2.5 = ",2/2.5);
+
+# test qot
+console.println("Test qot");
+console.println("10//3 = ",10//3);
+
+# test mod
+console.println("Test mod");
+console.println("10%3 = ",10%3);
+
+# test mult
+console.println("Test mult");
+console.println("10*3 = ",10*3);
+console.println("2.5*2.0 = ",2.5*2.0);
+console.println("2.5*2 = ",2.5*2);
+console.println("2*2.5 = ",2*2.5);
+console.println("\"a\"*2 = ","a"*2);
+console.println("2*\"a\" = ",2*"a");
+
+
+# var test
+console.println("Test Var int");
+var a int;
+console.println("a is :",a);
+var b int = 10;
+console.println("b is :",b);
+console.println("Test Var float");
+var c float;
+console.println("c is :",c);
+var d float = 20.1;
+console.println("d is :",d);
+console.println("Test Var string");
+var e string;
+console.println("e is :",e);
+var f string = "Hello World";
+console.println("f is :",f);
+console.println("Test Var bool");
+var g bool;
+console.println("g is :",g);
+var h bool = true;
+console.println("h is :",h);
+
+# test add var
+console.println("Test add var");
+console.println("Test add int");
+console.println("a+b = ",a+b,"result should be 10");
+console.println("b+1 = ",b+1,"result should be 11");
+console.println("1+b = ",1+b,"result should be 11");
+console.println("b+1.1 = ",b+1.1,"result should be 11.1");
+console.println("1.1+b = ",1.1+b,"result should be 11.1");
+console.println("b+\"hello\" = ",b+"hello","result should be 10hello");
+console.println("\"hello\"+b = ","hello"+b,"result should be hello10");
+
+console.println("Test add float");
+console.println("c+d = ",c+d,"result should be 20.1");
+console.println("d+1 = ",d+1,"result should be 21.1");
+console.println("1+d = ",1+d,"result should be 21.1");
+console.println("d+1.1 = ",d+1.1,"result should be 21.2");
+console.println("1.1+d = ",1.1+d,"result should be 21.2");
+console.println("d+\"hello\" = ",d+"hello","result should be 20.1hello");
+console.println("\"hello\"+d = ","hello"+d,"result should be hello20.1");
+
+console.println("Test add string");
+console.println("e+f = ",e+f,"result should be Hello World");
+console.println("f+\"hello\" = ",f+"hello","result should be Hello Worldhello");
+console.println("\"hello\"+f = ","hello"+f,"result should be helloHello World");
+
+#/
+console.println("Test add bool");
+console.println("h+\"hello\" = ",h+"hello","result should be truehello");
+console.println("\"hello\"+h = ","hello"+h,"result should be hellotrue");
+/#
+
+# test sub var
+console.println("Test sub var");
+console.println("Test sub int");
+console.println("b-a = ",b-a,"result should be 10");
+console.println("b-1 = ",b-1,"result should be 9");
+console.println("1-b = ",1-b,"result should be -9");
+console.println("b-1.1 = ",b-1.1,"result should be 8.9");
+console.println("1.1-b = ",1.1-b,"result should be -8.9");
+
+console.println("Test sub float");
+console.println("d-c = ",d-c,"result should be 20.1");
+console.println("d-1 = ",d-1,"result should be 19.1");
+console.println("1-d = ",1-d,"result should be -19.1");
+console.println("d-1.1 = ",d-1.1,"result should be 19");
+console.println("1.1-d = ",1.1-d,"result should be -19");
+
+# test div var
+console.println("Test div var");
+console.println("Test div int");
+console.println("a/b = ",a/b,"result should be 0");
+console.println("b/1 = ",b/1,"result should be 10");
+console.println("1/b = ",1/b,"result should be 0.1");
+console.println("b/1.1 = ",b/1.1,"result should be 9.09");
+console.println("1.1/b = ",1.1/b,"result should be 0.11");
+
+console.println("Test div float");
+console.println("c/d = ",c/d,"result should be 0");
+console.println("d/1 = ",d/1,"result should be 20.1");
+console.println("1/d = ",1/d,"result should be 0.049");
+console.println("d/1.1 = ",d/1.1,"result should be 18.2");
+console.println("1.1/d = ",1.1/d,"result should be 0.054");
+
+# test qot var
+console.println("Test qot var");
+console.println("Test qot int");
+console.println("a//b = ",a//b,"result should be 0");
+console.println("b//1 = ",b//1,"result should be 10");
+console.println("1//b = ",1//b,"result should be 0");
+
+# test mod var
+console.println("Test mod var");
+console.println("Test mod int");
+console.println("a%b = ",a%b,"result should be 0");
+console.println("b%1 = ",b%1,"result should be 0");
+console.println("1%b = ",1%b,"result should be 1");
+
+# test mult var
+console.println("Test mult var");
+console.println("Test mult int");
+console.println("a*b = ",a*b,"result should be 0");
+console.println("b*1 = ",b*1,"result should be 10");
+console.println("1*b = ",1*b,"result should be 10");
+console.println("b*1.1 = ",b*1.1,"result should be 11");
+console.println("1.1*b = ",1.1*b,"result should be 11");
+
+console.println("Test mult float");
+console.println("c*d = ",c*d,"result should be 0");
+console.println("d*1 = ",d*1,"result should be 20.1");
+console.println("1*d = ",1*d,"result should be 20.1");
+console.println("d*1.1 = ",d*1.1,"result should be 22.11");
+console.println("1.1*d = ",1.1*d,"result should be 22.11");
+
+# test Array
+# ----------------------------------------------------------------------------------------------------------------
+
+console.println("Test Array");
+console.println("Test Array int");
+console.println([1,2,3,4,5]);
+console.println("Test Array float");
+console.println([1.1,2.2,3.3,4.4,5.5]);
+console.println("Test Array string");
+console.println(["hello","world","!"]);
+console.println("Test Array bool");
+console.println([true,false,true,false,true]);
+console.println("test array array int");
+console.println([[1,2,3],[4,5,6],[7,8,9]]);
+console.println("test array var");
+var table []int;
+console.println(table," is empty");
+var table2 []int = [1,2,3,4,5];
+console.println(table2, "is [1,2,3,4,5]");
+
+console.println("test array assign index");
+table2[0] = 10;
+console.println(table2, "is [10,2,3,4,5]");
+
+console.println("test array add index");
+table2 = table2 + [6,7,8,9,10];
+console.println(table2, "is [10,2,3,4,5,6,7,8,9,10]");
+
+table2 = [1,2,3,4,5] + table2;
+console.println(table2, "is [1,2,3,4,5,10,2,3,4,5,6,7,8,9,10]");
+
+console.println("test array mult index");
+table2 = table2 * 2;
+console.println(table2, "is [1,2,3,4,5,10,2,3,4,5,6,7,8,9,10,1,2,3,4,5,10,2,3,4,5,6,7,8,9,10]");
+
+# ----------------------------------------------------------------------------------------------------------------
+
+
+# test if
+# ----------------------------------------------------------------------------------------------------------------
+
+console.println("Test if");
+
+if (true) {
+    console.println("true");
+}
+
+if (false) {
+    console.println("false");
+}
+
+if (true) {
+    console.println("true");
+} else {
+    console.println("false");
+}
+
+if (false) {
+    console.println("false");
+} else {
+    console.println("true");
+}
+
+if (true) {
+    console.println("true");
+} else if (false) {
+    console.println("false");
+}
+
+if (false) {
+    console.println("false");
+} else if (true) {
+    console.println("true");
+}
+
+if (false) {
+    console.println("false");
+} else if (false) {
+    console.println("false");
+} else {
+    console.println("true");
+}
+
+
+if (true) {
+    console.println("true");
+} else if (true) {
+    console.println("true");
+} else {
+    console.println("false");
+}
+
+if (false) {
+    console.println("false");
+} else if (false) {
+    console.println("false");
+} else if (true) {
+    console.println("true");
+} else {
+    console.println("false");
+}
+
+# ----------------------------------------------------------------------------------------------------------------
+
+
+# test for i
+# ----------------------------------------------------------------------------------------------------------------
+
+for (var i int = 0, i < 10, i++) {
+    console.println(i);
+}
+
