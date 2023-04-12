@@ -1,0 +1,66 @@
+import console;
+
+var Game bool = true;
+
+function PickRandomWord() (string) {
+    var Word string = "";
+    var words []string = ["clavier","table"];
+    Word = words[1];
+    return Word;
+}
+
+function CheckLetter(letter : string, WordToFind : string) (int) {
+    var result int = -1;
+    for (index,elem range WordToFind) {
+        if (letter[0] == elem) {
+            result = index;
+        }
+    }
+    return result;
+}
+
+function main() (bool) {
+    var WordToFind string = PickRandomWord();
+    var WordLength int = 0;
+    var result string = "";
+    var tries int = 10;
+    for (index,letter range WordToFind) {
+        WordLength++;
+    }
+    console.println("Your game is gonna start");
+    console.println("Your word is " + WordLength + " letters long");
+    console.println("You are allowed 10 errors to find the word");
+    console.println("Good luck");
+    for (var i int, i < WordLength, i++) {
+        result += "_";
+    }
+    console.println(result);
+    while (tries > 0) {
+        if (result == WordToFind) {
+            console.println("You won !");
+            return false;
+        }
+        var letter string = console.input("Enter a letter : ");
+        var Index int = CheckLetter(letter, WordToFind);
+        var temp string = "";
+        if (Index != -1) {
+            for (id,elem range result) {
+                if (id == Index) {
+                    temp = temp + letter[0];
+                } else {
+                    temp = temp + elem;
+                }
+            }
+            result = temp;
+            console.println(result);
+        } else {
+            tries--;
+            console.println("You have " + tries + " tries left");
+        }
+    }
+    console.println("You lost !");
+    return false;
+}
+
+while (main()) {
+}
