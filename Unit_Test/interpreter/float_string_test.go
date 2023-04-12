@@ -1,7 +1,9 @@
 package interpreter
 
 import (
+	"fmt"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"strconv"
 	"testing"
 )
 
@@ -13,7 +15,12 @@ func TestAddFloatString(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != eclaType.String("3.14hello") {
-		t.Error("Expected 3.14hello, got ", result)
+	expect1, _ := strconv.ParseFloat("3.14", 32)
+	Newexpect1 := fmt.Sprintf("%6f", expect1)
+	expect2 := "hello"
+	expect := Newexpect1 + expect2
+	expected := eclaType.String(expect)
+	if result.GetValue() != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
 	}
 }

@@ -15,7 +15,7 @@ func TestScope(t *testing.T) {
 		t.Error(err)
 	}
 	scope.Set("a", v1)
-	scope.GoDeep()
+	scope.GoDeep(interpreter.SCOPE_MAIN)
 	v2, err := eclaType.NewVar("v1", "int", eclaType.Int(1))
 	if err != nil {
 		t.Error(err)
