@@ -46,7 +46,7 @@ And context-free grammar means that the parser uses a grammar which as the follo
 
 - V a finite set of symbols such that V is a set of non-terminals symbols.
 - Σ is a finite set of symbols such that V∩Σ=∅ and Σ is a set of terminal symbols.
-- P is a set of production rules in the form A→w where A∈V and w∈(V∪Σ)*.
+- P is a set of production rules in the form A→w where A ∈ V and w ∈ (V ∪ Σ)*.
 - And S is the start symbol such that S∈V.
 
 ### Inner structure
@@ -97,11 +97,27 @@ The parsing process is composed of 3 main steps :
 #### Preprocessing
 During the preprocessing step, the Ecla parser will remove all the comments from the input.  
 This is done by the `File` structure which contains the `ConsumeComments` method.  
-All the comments are stored in the `File` structure in the `Comments` field.
+All the comments are stored inside the `File` structure in the `Comments` field.
 #### The parsing operations
 During the parsing operations step, the `Parser` will parse the input and build the AST.  
-Add details about the parsing operations here.  
-After the parsing operations step, the `Parser` will have built the AST in the `File` structure.  
+Since the 'Parser' is a recursive descent parser, it will use the `Parse` method to parse the input.  
+During the parsing operations, the `Parser` will try to parse the input following the grammar rules.  
+The last valid grammar rule that can be parsed is a 'Literal' Node if the input does not match this rule since it is the last one it will throw an error.
+Also when inside a parsing method, the `Parser` can throw errors if the subsequent tokens are not what is expected for the current grammar rule.  
+For example :
+    
+```ecla
+import console;
+```
+In the above example the method `ParseImportStmt` will not throw an error since the syntax is correct.
+But if the input was :
+    
+```ecla
+import "con"+"sole";
+```
+The method `ParseImportStmt` will throw an error.  
+In fact it is valid because you can concatenate strings but since the parser expects a static text and not an expression so it will throw an error.  
+After the parsing operations step, the `Parser` will have built the AST and be ready to run the postprocessing step onto it.
 
 #### Postprocessing
 During the postprocessing step, the Ecla parser will check for dependencies resolution.  
