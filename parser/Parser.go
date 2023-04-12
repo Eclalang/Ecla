@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/tot0p/Ecla/errorHandler"
 	"github.com/tot0p/Ecla/lexer"
-	"log"
 )
 
 // Parser is the parser for the Ecla language
@@ -81,7 +80,7 @@ func (p *Parser) DisableEOLChecking() {
 	if p.CurrentToken.TokenType != lexer.EOL {
 		p.Back()
 	} else {
-		log.Println("Warning: Superfluous semicolon at line ", p.CurrentToken.Line, ":", p.CurrentToken.Position)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, fmt.Sprintf("Superfluous semicolon at line %v:%v", p.CurrentToken.Line, p.CurrentToken.Position), errorHandler.LevelWarning)
 	}
 }
 
@@ -107,7 +106,7 @@ func (p *Parser) Parse() *File {
 				Unresolved += dep
 			}
 		}
-		panic("Unresolved dependencies: " + fmt.Sprintf("%v", Unresolved))
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Unresolved dependencies: "+fmt.Sprintf("%v", Unresolved), errorHandler.LevelFatal)
 	}
 	return file
 }
@@ -137,7 +136,7 @@ func (p *Parser) ParseNode() Node {
 		return tempExpr
 	} else {
 		if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
-			log.Println("Warning: nil node added to AST")
+			p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "nil node added to AST", errorHandler.LevelWarning)
 			return nil
 		} else {
 			tempExpr := p.ParseText()
@@ -202,7 +201,7 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "import" {
 		return p.ParseImportStmt()
 	}
-	panic("Unexpected Keyword " + p.CurrentToken.Value)
+	p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Unknown keyword: "+p.CurrentToken.Value, errorHandler.LevelFatal)
 	return nil
 }
 
@@ -222,13 +221,13 @@ func (p *Parser) ParsePrintStmt() Stmt {
 	tempPrint := PrintStmt{PrintToken: p.CurrentToken}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		panic("Expected Print LPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Print LPAREN", errorHandler.LevelFatal)
 	}
 	tempPrint.Lparen = p.CurrentToken
 	p.Step()
 	tempPrint.Expression = p.ParseExpr()
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected Print RPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Print RPAREN", errorHandler.LevelFatal)
 	}
 	tempPrint.Rparen = p.CurrentToken
 	p.Step()
@@ -240,13 +239,13 @@ func (p *Parser) ParseTypeStmt() Stmt {
 	tempType := TypeStmt{TypeToken: p.CurrentToken}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		panic("Expected Type LPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Type LPAREN", errorHandler.LevelFatal)
 	}
 	tempType.Lparen = p.CurrentToken
 	p.Step()
 	tempType.Expression = p.ParseExpr()
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected Type RPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Type RPAREN", errorHandler.LevelFatal)
 	}
 	tempType.Rparen = p.CurrentToken
 	p.Step()
@@ -258,24 +257,24 @@ func (p *Parser) ParseIfStmt() Stmt {
 	tempIf := IfStmt{IfToken: p.CurrentToken}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		panic("Expected If LPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected If LPAREN", errorHandler.LevelFatal)
 	}
 	tempIf.LeftParen = p.CurrentToken
 	p.Step()
 	tempIf.Cond = p.ParseExpr()
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected If RPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected If RPAREN", errorHandler.LevelFatal)
 	}
 	tempIf.RightParen = p.CurrentToken
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LBRACE {
-		panic("Expected If LBRACE")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected If LBRACE", errorHandler.LevelFatal)
 	}
 	tempIf.LeftBrace = p.CurrentToken
 	p.Step()
 	tempIf.Body = p.ParseBody()
 	if p.CurrentToken.TokenType != lexer.RBRACE {
-		panic("Expected If RBRACE")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected If RBRACE", errorHandler.LevelFatal)
 	}
 	tempIf.RightBrace = p.CurrentToken
 	p.Step()
@@ -311,13 +310,13 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 		tempElse.IfStmt = nil
 	}
 	if p.CurrentToken.TokenType != lexer.LBRACE {
-		panic("Expected Else LBRACE")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Else LBRACE", errorHandler.LevelFatal)
 	}
 	tempElse.LeftBrace = p.CurrentToken
 	p.Step()
 	tempElse.Body = p.ParseBody()
 	if p.CurrentToken.TokenType != lexer.RBRACE {
-		panic("Expected Else RBRACE")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Else RBRACE", errorHandler.LevelFatal)
 	}
 	tempElse.RightBrace = p.CurrentToken
 	p.Step()
@@ -332,24 +331,24 @@ func (p *Parser) ParseWhileStmt() Stmt {
 	tempWhile := WhileStmt{WhileToken: p.CurrentToken}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		panic("Expected While LPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected While LPAREN", errorHandler.LevelFatal)
 	}
 	tempWhile.LeftParen = p.CurrentToken
 	p.Step()
 	tempWhile.Cond = p.ParseExpr()
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected While RPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected While RPAREN", errorHandler.LevelFatal)
 	}
 	tempWhile.RightParen = p.CurrentToken
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LBRACE {
-		panic("Expected While LBRACE")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected While LBRACE", errorHandler.LevelFatal)
 	}
 	tempWhile.LeftBrace = p.CurrentToken
 	p.Step()
 	tempWhile.Body = p.ParseBody()
 	if p.CurrentToken.TokenType != lexer.RBRACE {
-		panic("Expected While RBRACE")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected While RBRACE", errorHandler.LevelFatal)
 	}
 	tempWhile.RightBrace = p.CurrentToken
 	p.Step()
@@ -363,7 +362,7 @@ func (p *Parser) ParseForStmt() Stmt {
 	tempFor.ForToken = p.CurrentToken
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		panic("Expected For LPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected For LPAREN", errorHandler.LevelFatal)
 	}
 	tempFor.LeftParen = p.CurrentToken
 	p.Step()
@@ -372,13 +371,13 @@ func (p *Parser) ParseForStmt() Stmt {
 		tempFor.RangeToken = lexer.Token{}
 		tempFor.InitDecl = p.ParseVariableDecl()
 		if p.CurrentToken.TokenType != lexer.COMMA {
-			panic("Expected Condition Expression instead of " + p.CurrentToken.Value)
+			p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Condition Expression instead of "+p.CurrentToken.Value, errorHandler.LevelFatal)
 		}
 		p.Step()
 		tempFor.CondExpr = p.ParseExpr()
 
 		if p.CurrentToken.TokenType != lexer.COMMA {
-			panic("Expected Post Expression")
+			p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Post Expression", errorHandler.LevelFatal)
 		}
 		p.Step()
 		tempFor.PostAssignStmt = p.ParseVariableAssign()
@@ -386,34 +385,34 @@ func (p *Parser) ParseForStmt() Stmt {
 		tempFor.KeyToken = p.CurrentToken
 		p.Step()
 		if p.CurrentToken.TokenType != lexer.COMMA {
-			panic("Expected For COMMA")
+			p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected For COMMA", errorHandler.LevelFatal)
 		}
 		p.Step()
 		tempFor.ValueToken = p.CurrentToken
 		p.Step()
 		if p.CurrentToken.TokenType != lexer.TEXT {
-			panic("Unexpected Token : " + p.CurrentToken.Value)
+			p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Unexpected token "+p.CurrentToken.Value, errorHandler.LevelFatal)
 		}
 		if p.CurrentToken.Value != "range" {
-			panic("Expected range")
+			p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected For range instead of "+p.CurrentToken.Value, errorHandler.LevelFatal)
 		}
 		tempFor.RangeToken = p.CurrentToken
 		p.Step()
 		tempFor.RangeExpr = p.ParseExpr()
 	}
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected For RPAREN instead of " + p.CurrentToken.Value)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected For RPAREN", errorHandler.LevelFatal)
 	}
 	tempFor.RightParen = p.CurrentToken
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LBRACE {
-		panic("Expected For LBRACE instead of " + p.CurrentToken.Value)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected For LBRACE", errorHandler.LevelFatal)
 	}
 	tempFor.LeftBrace = p.CurrentToken
 	p.Step()
 	tempFor.Body = p.ParseBody()
 	if p.CurrentToken.TokenType != lexer.RBRACE {
-		panic("Expected For RBRACE instead of " + p.CurrentToken.Value)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected For RBRACE", errorHandler.LevelFatal)
 	}
 	tempFor.RightBrace = p.CurrentToken
 	p.Step()
@@ -426,22 +425,22 @@ func (p *Parser) ParseVariableDecl() Decl {
 	tempDecl := VariableDecl{VarToken: p.CurrentToken}
 	p.Step()
 	if _, ok := Keywords[p.CurrentToken.Value]; ok {
-		panic("Variable name cannot be a keyword")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Cannot use keyword "+p.CurrentToken.Value+" as variable name", errorHandler.LevelFatal)
 	}
 	if p.CurrentToken.TokenType != lexer.TEXT {
-		panic("Expected variable name instead of " + p.CurrentToken.Value)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected variable name instead of "+p.CurrentToken.Value, errorHandler.LevelFatal)
 	}
 	tempDecl.Name = p.CurrentToken.Value
 	typeName, success := p.ParseType()
 	if !success {
-		panic("Expected variable type instead of " + p.CurrentToken.Value)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected variable type instead of "+p.CurrentToken.Value, errorHandler.LevelFatal)
 	}
 	tempDecl.Type = typeName
 	if p.CurrentToken.TokenType != lexer.ASSIGN {
 		if p.CurrentToken.TokenType != lexer.COMMA {
 			if p.CurrentToken.TokenType != lexer.EOL {
 				if p.CurrentToken.TokenType != lexer.EOF {
-					panic("Expected variable assignment instead of " + p.CurrentToken.Value)
+					p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected variable assignment instead of "+p.CurrentToken.Value, errorHandler.LevelFatal)
 				}
 			}
 		}
@@ -470,7 +469,7 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 	tempFunctionCall := FunctionCallExpr{FunctionCallToken: p.CurrentToken, Name: p.CurrentToken.Value}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		panic("Expected Function call LPAREN" + p.CurrentToken.Value)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Function call LPAREN", errorHandler.LevelFatal)
 	}
 	tempFunctionCall.LeftParen = p.CurrentToken
 	var exprArray []Expr
@@ -480,7 +479,7 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 			tempExpr := p.ParseExpr()
 			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
 				p.PrintBacktrace()
-				panic("Expected comma between function call arguments" + p.CurrentToken.Value)
+				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected comma between function call arguments", errorHandler.LevelFatal)
 			}
 			exprArray = append(exprArray, tempExpr)
 		}
@@ -490,7 +489,7 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 
 	tempFunctionCall.Args = exprArray
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected Function call RPAREN")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected Function call RPAREN", errorHandler.LevelFatal)
 	}
 	tempFunctionCall.RightParen = p.CurrentToken
 	p.Step()
@@ -577,7 +576,7 @@ func (p *Parser) ParseVariableAssign() Stmt {
 	if _, ok := AssignOperators[p.CurrentToken.Value]; ok {
 		Opp = p.CurrentToken.Value
 	} else {
-		panic("Unknown opperator\" " + p.CurrentToken.Value + " in variable assignement")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Unknown opperator\" "+p.CurrentToken.Value+" in variable assignement", errorHandler.LevelFatal)
 	}
 	p.Step()
 	if p.CurrentToken.TokenType == lexer.EOL || p.CurrentToken.TokenType == lexer.EOF || p.CurrentToken.TokenType == lexer.RPAREN || p.CurrentToken.TokenType == lexer.RBRACKET || p.CurrentToken.TokenType == lexer.RBRACE {
@@ -693,7 +692,7 @@ func (p *Parser) ParseParenExpr() Expr {
 	p.Step()
 	tempParentExpr.Expression = p.ParseExpr()
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected ')'")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected ')'", errorHandler.LevelFatal)
 	}
 	tempParentExpr.Rparen = p.CurrentToken
 	p.Step()
@@ -713,7 +712,7 @@ func (p *Parser) ParseArrayLiteral() Expr {
 		p.Step()
 	}
 	if p.CurrentToken.TokenType != lexer.RBRACKET {
-		panic("Expected ']'")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected ']'", errorHandler.LevelFatal)
 	}
 	tempArrayExpr.RBRACKET = p.CurrentToken
 	p.Step()
@@ -728,7 +727,7 @@ func (p *Parser) ParseMapLiteral() Expr {
 	for {
 		tempMapLiteral.Keys = append(tempMapLiteral.Keys, p.ParseExpr())
 		if p.CurrentToken.TokenType != lexer.COLON {
-			panic("Expected ':'")
+			p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected ':'", errorHandler.LevelFatal)
 		}
 		p.Step()
 		tempMapLiteral.Values = append(tempMapLiteral.Values, p.ParseExpr())
@@ -738,7 +737,7 @@ func (p *Parser) ParseMapLiteral() Expr {
 		p.Step()
 	}
 	if p.CurrentToken.TokenType != lexer.RBRACE {
-		panic("Expected '}'")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected '}'", errorHandler.LevelFatal)
 	}
 	tempMapLiteral.RBRACE = p.CurrentToken
 	p.Step()
@@ -751,7 +750,7 @@ func (p *Parser) ParseImportStmt() Stmt {
 	tempImportStmt.ImportToken = p.CurrentToken
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.TEXT {
-		panic("Expected import path")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected module name", errorHandler.LevelFatal)
 	}
 	tempImportStmt.ModulePath = p.CurrentToken.Value
 	p.CurrentFile.Imports = append(p.CurrentFile.Imports, tempImportStmt.ModulePath)
@@ -764,13 +763,13 @@ func (p *Parser) ParseFunctionDecl() Node {
 	tempFunctionDecl := FunctionDecl{FunctionToken: p.CurrentToken}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.TEXT {
-		panic("Expected function name")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected function name", errorHandler.LevelFatal)
 	}
 	tempFunctionDecl.Name = p.CurrentToken.Value
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
 		p.PrintBacktrace()
-		panic("Expected '('")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected '('", errorHandler.LevelFatal)
 	}
 	tempFunctionDecl.LeftParamParen = p.CurrentToken
 	isParen := p.Peek(1)
@@ -783,29 +782,29 @@ func (p *Parser) ParseFunctionDecl() Node {
 			ParamName = p.CurrentToken.Value
 			p.Step()
 			if p.CurrentToken.TokenType != lexer.COLON {
-				panic("Expected ':'")
+				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected ':'", errorHandler.LevelFatal)
 			}
 			ParamType, succes := p.ParseType()
 			if !succes {
-				panic("Type does not exist")
+				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Unknown type", errorHandler.LevelFatal)
 			}
 			p.Back()
 			if !(DuplicateParam(tempFunctionDecl.Parameters, ParamName)) {
 				newParams := FunctionParams{Name: ParamName, Type: ParamType}
 				tempFunctionDecl.Parameters = append(tempFunctionDecl.Parameters, newParams)
 			} else {
-				panic("Duplicate argument name")
+				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Duplicate parameter name", errorHandler.LevelFatal)
 			}
 			p.Step()
 			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-				panic("Expected ','")
+				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected ','", errorHandler.LevelFatal)
 			}
 		}
 	} else {
 		p.Step()
 	}
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		panic("Expected ')'")
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected ')'", errorHandler.LevelFatal)
 	}
 	tempFunctionDecl.RightParamParen = p.CurrentToken
 	if p.Peek(1).TokenType == lexer.LPAREN {
@@ -814,26 +813,26 @@ func (p *Parser) ParseFunctionDecl() Node {
 		for p.CurrentToken.TokenType != lexer.RPAREN {
 			retType, success := p.ParseType()
 			if !success {
-				panic("Type does not exist")
+				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Unknown type", errorHandler.LevelFatal)
 			}
 			tempFunctionDecl.ReturnTypes = append(tempFunctionDecl.ReturnTypes, retType)
 			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-				panic("Expected ','" + p.CurrentToken.Value + " " + p.CurrentToken.TokenType)
+				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected ','", errorHandler.LevelFatal)
 			}
 		}
 		if p.CurrentToken.TokenType != lexer.RPAREN {
-			panic("Expected ')'")
+			p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected ')'", errorHandler.LevelFatal)
 		}
 	}
 	p.Step()
 	tempFunctionDecl.RightRetsParen = p.CurrentToken
 	if p.CurrentToken.TokenType != lexer.LBRACE {
-		panic("Expected '{' instead of " + p.CurrentToken.Value)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected '{'", errorHandler.LevelFatal)
 	}
 	p.Step()
 	tempFunctionDecl.Body = p.ParseBody()
 	if p.CurrentToken.TokenType != lexer.RBRACE {
-		panic("Expected '}'" + p.CurrentToken.Value)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected '}'", errorHandler.LevelFatal)
 	}
 	p.Step()
 	p.CurrentFile.FunctionDecl = append(p.CurrentFile.FunctionDecl, tempFunctionDecl.Name)
@@ -860,7 +859,7 @@ func (p *Parser) ParseReturnStmt() Node {
 		p.Step()
 	}
 	if err {
-		panic("Unexpected token in return statement" + p.CurrentToken.Value + " " + p.CurrentToken.TokenType)
+		p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Unexpected token in return statement", errorHandler.LevelFatal)
 	}
 	return tempReturnStmt
 }
@@ -915,14 +914,14 @@ func (p *Parser) ParseLiteral() Expr {
 		} else {
 			if p.CurrentToken.TokenType != lexer.STRING {
 				p.PrintBacktrace()
-				panic("Expected string")
+				p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected string", errorHandler.LevelFatal)
 			}
 			tempLiteral = Literal{Token: p.CurrentToken, Type: lexer.STRING, Value: p.CurrentToken.Value}
 		}
 
 		p.Step()
 		if p.CurrentToken.TokenType != lexer.DQUOTE {
-			panic("Expected '\"'")
+			p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected '\"'", errorHandler.LevelFatal)
 		}
 		p.Step()
 		return tempLiteral
@@ -939,7 +938,7 @@ func (p *Parser) ParseLiteral() Expr {
 		return p.ParseMapLiteral()
 	}
 	p.PrintBacktrace()
-	panic("Expected literal instead of " + p.CurrentToken.Value)
+	p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, "Expected literal", errorHandler.LevelFatal)
 	return nil
 }
 
