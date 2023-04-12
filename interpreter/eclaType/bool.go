@@ -47,6 +47,9 @@ func (b Bool) GetIndex(other Type) (*Type, error) {
 
 // returns error
 func (b Bool) Add(other Type) (Type, error) {
+	if other.GetType() == "string" {
+		return b.GetString() + other.GetString(), nil
+	}
 	return nil, errors.New("cannot add to bool")
 }
 
