@@ -207,6 +207,7 @@ console.println(table2, "is [1,2,3,4,5,10,2,3,4,5,6,7,8,9,10,1,2,3,4,5,10,2,3,4,
 # ----------------------------------------------------------------------------------------------------------------
 
 
+
 # test if
 # ----------------------------------------------------------------------------------------------------------------
 
@@ -277,7 +278,128 @@ if (false) {
 # test for i
 # ----------------------------------------------------------------------------------------------------------------
 
+console.println("for 1");
 for (var i int = 0, i < 10, i++) {
     console.println(i);
 }
 
+console.println("for 2");
+for (var i int = 0, i > 10, i--) {
+    console.println(i);
+}
+
+console.println("for 3");
+for (var i int = 0, i <= 10, i++) {
+    console.println(i);
+}
+
+console.println("for 4");
+for (var i int = 0, i >= 10, i--) {
+    console.println(i);
+}
+
+# ----------------------------------------------------------------------------------------------------------------
+
+
+# test for range
+# ----------------------------------------------------------------------------------------------------------------
+
+var teststr string = "hello world!";
+var testlist []int = [4,3,2,1];
+var testmap map[string]string = {"key1":"elem1","key2":"elem2","key3":"elem3"};
+
+console.println("range over string");
+for (index,elem range teststr) {
+    console.println(index,elem);
+}
+
+console.println("range over list");
+for (index,elem range testlist) {
+    console.println(index,elem);
+}
+
+#/
+console.println("range over map");
+for (key,elem range testmap) {
+    console.println(key,elem);
+}
+/#
+
+# ----------------------------------------------------------------------------------------------------------------
+
+# test while
+# ----------------------------------------------------------------------------------------------------------------
+
+var aa int;
+var bb int = 5;
+var cc int;
+var dd int = 5;
+
+
+console.println("while 1");
+while(aa < 5) {
+    console.println(aa);
+    aa++;
+}
+
+console.println("while 2");
+while(bb > 0) {
+    console.println(bb);
+    bb--;
+}
+
+console.println("while 3");
+while(cc <= 5) {
+    console.println(cc);
+    cc++;
+}
+
+console.println("while 4");
+while(dd >= 0) {
+    console.println(dd);
+    dd--;
+}
+
+
+# ----------------------------------------------------------------------------------------------------------------
+
+# test function
+# ----------------------------------------------------------------------------------------------------------------
+
+function testfunc1() {
+    console.println("testfunc1");
+}
+
+testfunc1();
+
+
+function testfunc2(a : int) {
+    console.println("testfunc2");
+    console.println(a);
+}
+
+testfunc2(10);
+testfunc2(1+1);
+
+function testfunc3(a : int, b : int) (int) {
+    console.println("testfunc3");
+    console.println(a);
+    console.println(b);
+     return a+b;
+}
+
+
+console.println(testfunc3(10,20));
+console.println(testfunc3(1+1,2+2));
+
+function testfunc4(a : int, b: string) (string) {
+    console.println("testfunc4");
+    console.println(a);
+    console.println(b);
+    return a+b;
+}
+
+console.println(testfunc4(10,"hello"));
+console.println(testfunc4(1+1,"world"));
+
+# ----------------------------------------------------------------------------------------------------------------
