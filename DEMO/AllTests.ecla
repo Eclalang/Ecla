@@ -101,11 +101,9 @@ console.println("e+f = ",e+f,"result should be Hello World");
 console.println("f+\"hello\" = ",f+"hello","result should be Hello Worldhello");
 console.println("\"hello\"+f = ","hello"+f,"result should be helloHello World");
 
-#/
 console.println("Test add bool");
 console.println("h+\"hello\" = ",h+"hello","result should be truehello");
 console.println("\"hello\"+h = ","hello"+h,"result should be hellotrue");
-/#
 
 # test sub var
 console.println("Test sub var");
