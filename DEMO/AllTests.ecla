@@ -491,4 +491,17 @@ function testfunc4(a : int, b: string) (string) {
 console.println(testfunc4(10,"hello"));
 console.println(testfunc4(1+1,"world"));
 
+
+function testfunc5(a : int, b: string) (string) {
+    function testfunc6(a : int, b: string) (string) {
+        console.println("testfunc6");
+        console.println(a);
+        console.println(b);
+        return a+b;
+    }
+    return testfunc6(a,b);
+}
+
+console.println(testfunc5(10,"hello"));
+
 # ----------------------------------------------------------------------------------------------------------------
