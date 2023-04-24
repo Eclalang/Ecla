@@ -13,7 +13,7 @@ import (
 
 // RunPrintStmt executes a parser.PrintStmt.
 func RunPrintStmt(tree parser.PrintStmt, env *Env) {
-	fmt.Print(RunTree(tree.Expression, env).GetVal().GetString())
+	fmt.Print(RunTree(tree.Expression, env)[0].GetVal().GetString())
 }
 
 // RunImportStmt executes a parser.ImportStmt.
@@ -23,7 +23,7 @@ func RunImportStmt(stmt parser.ImportStmt, env *Env) {
 
 // RunTypeStmt executes a parser.TypeStmt.
 func RunTypeStmt(tree parser.TypeStmt, env *Env) {
-	t := RunTree(tree.Expression, env).GetVal()
+	t := RunTree(tree.Expression, env)[0].GetVal()
 	var typ string
 	typ = t.GetType()
 	fmt.Println(typ)
@@ -128,12 +128,17 @@ func IndexableAssignmentChecks(tree parser.VariableAssignStmt, index parser.Inde
 	t := eclaType.Type(v)
 	var temp = &t
 	for i := range index.Indexes {
-		elem := RunTree(index.Indexes[i], env).GetVal()
+		busCollection := RunTree(index.Indexes[i], env)
+		if IsMultipleBus(busCollection) {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: MULTIPLE BUS IN INDEXABLEASSIGMENTCHECK", errorHandler.LevelFatal)
+			return nil
+		}
+		elem := busCollection[0].GetVal()
 		var err error
 		//fmt.Printf("%T\n", result.GetValue())
 		temp, err = (*temp).GetIndex(elem)
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
 		}
 	}
 	return temp
@@ -142,7 +147,12 @@ func IndexableAssignmentChecks(tree parser.VariableAssignStmt, index parser.Inde
 // RunIndexableVariableAssignStmt runs the indexable variable assignment
 func RunIndexableVariableAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) eclaType.Type {
 	temp := IndexableAssignmentChecks(tree, index, env)
-	*temp = RunTree(tree.Values[0], env).GetVal()
+	busCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(busCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: MULTIPLE BUS IN IndexableVariableAssignStmt", errorHandler.LevelFatal)
+		return nil
+	}
+	*temp = busCollection[0].GetVal()
 	return nil
 }
 
@@ -152,7 +162,12 @@ func RunVariableNonIndexableAssignStmt(tree parser.VariableAssignStmt, variable 
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
 	}
-	temp := RunTree(tree.Values[0], env).GetVal()
+	BusCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable assign: MULTIPLE BUS IN VariableNonIndexableAssignStmt", errorHandler.LevelFatal)
+		return
+	}
+	temp := BusCollection[0].GetVal()
 	err := v.SetVar(temp)
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -201,7 +216,11 @@ func RunVariableDecrementStmt(tree parser.VariableAssignStmt, variable parser.Li
 // RunIndexableVariableAddAssignStmt runs the indexable variable add assign
 func RunIndexableVariableAddAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignmentChecks(tree, index, env)
-	res, err := (*temp).Add(RunTree(tree.Values[0], env).GetVal())
+	busCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(busCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: MULTIPLE BUS IN IndexableVariableAddAssignStmt", errorHandler.LevelFatal)
+	}
+	res, err := (*temp).Add(busCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -214,7 +233,11 @@ func RunVariableAddAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
 	}
-	t, err := v.Add(RunTree(tree.Values[0], env).GetVal())
+	BusCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable assign: MULTIPLE BUS IN RunVariableAddAssignStmt", errorHandler.LevelFatal)
+	}
+	t, err := v.Add(BusCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -227,7 +250,11 @@ func RunVariableAddAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 // RunIndexableVariableSubAssignStmt runs the indexable variable sub assign
 func RunIndexableVariableSubAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignmentChecks(tree, index, env)
-	res, err := (*temp).Sub(RunTree(tree.Values[0], env).GetVal())
+	busCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(busCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: MULTIPLE BUS IN IndexableVariableSubAssignStmt", errorHandler.LevelFatal)
+	}
+	res, err := (*temp).Sub(busCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -240,7 +267,11 @@ func RunVariableSubAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
 	}
-	t, err := v.Sub(RunTree(tree.Values[0], env).GetVal())
+	BusCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable assign: MULTIPLE BUS IN RunVariableSubAssignStmt", errorHandler.LevelFatal)
+	}
+	t, err := v.Sub(BusCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -253,7 +284,11 @@ func RunVariableSubAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 // RunIndexableVariableDivAssignStmt runs the indexable variable div assign
 func RunIndexableVariableDivAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignmentChecks(tree, index, env)
-	res, err := (*temp).Div(RunTree(tree.Values[0], env).GetVal())
+	busCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(busCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: MULTIPLE BUS IN IndexableVariableDivAssignStmt", errorHandler.LevelFatal)
+	}
+	res, err := (*temp).Div(busCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -266,7 +301,11 @@ func RunVariableDivAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
 	}
-	t, err := v.Div(RunTree(tree.Values[0], env).GetVal())
+	BusCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable assign: MULTIPLE BUS IN RunVariableDivAssignStmt", errorHandler.LevelFatal)
+	}
+	t, err := v.Div(BusCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -279,7 +318,11 @@ func RunVariableDivAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 // RunIndexableVariableModAssignStmt runs the indexable variable mod assign
 func RunIndexableVariableModAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignmentChecks(tree, index, env)
-	res, err := (*temp).Mod(RunTree(tree.Values[0], env).GetVal())
+	busCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(busCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: MULTIPLE BUS IN IndexableVariableModAssignStmt", errorHandler.LevelFatal)
+	}
+	res, err := (*temp).Mod(busCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -292,7 +335,11 @@ func RunVariableModAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
 	}
-	t, err := v.Mod(RunTree(tree.Values[0], env).GetVal())
+	BusCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable assign: MULTIPLE BUS IN RunVariableModAssignStmt", errorHandler.LevelFatal)
+	}
+	t, err := v.Mod(BusCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -305,7 +352,11 @@ func RunVariableModAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 // RunIndexableVariableQotAssignStmt runs the indexable variable qot assign
 func RunIndexableVariableQotAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignmentChecks(tree, index, env)
-	res, err := (*temp).DivEc(RunTree(tree.Values[0], env).GetVal())
+	busCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(busCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: MULTIPLE BUS IN IndexableVariableQotAssignStmt", errorHandler.LevelFatal)
+	}
+	res, err := (*temp).DivEc(busCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -318,7 +369,11 @@ func RunVariableQotAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
 	}
-	t, err := v.DivEc(RunTree(tree.Values[0], env).GetVal())
+	BusCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable assign: MULTIPLE BUS IN RunVariableQotAssignStmt", errorHandler.LevelFatal)
+	}
+	t, err := v.DivEc(BusCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -331,7 +386,11 @@ func RunVariableQotAssignStmt(tree parser.VariableAssignStmt, variable parser.Li
 // RunIndexableVariableMultAssignStmt runs the indexable variable mult assign
 func RunIndexableVariableMultAssignStmt(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) {
 	temp := IndexableAssignmentChecks(tree, index, env)
-	res, err := (*temp).Mul(RunTree(tree.Values[0], env).GetVal())
+	busCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(busCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: MULTIPLE BUS IN IndexableVariableMultAssignStmt", errorHandler.LevelFatal)
+	}
+	res, err := (*temp).Mul(busCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -344,7 +403,11 @@ func RunVariableMultAssignStmt(tree parser.VariableAssignStmt, variable parser.L
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
 	}
-	t, err := v.Mul(RunTree(tree.Values[0], env).GetVal())
+	busCollection := RunTree(tree.Values[0], env)
+	if IsMultipleBus(busCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "variable assign: MULTIPLE BUS IN RunVariableMultAssignStmt", errorHandler.LevelFatal)
+	}
+	t, err := v.Mul(busCollection[0].GetVal())
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
@@ -359,12 +422,26 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 	env.NewScope(SCOPE_LOOP)
 	defer env.EndScope()
 	while := eclaKeyWord.NewWhile(tree.Cond, tree.Body)
-	for RunTree(while.Condition, env).GetVal().GetString() == "true" { //TODO add error
+	BusCollection := RunTree(while.Condition, env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "while: MULTIPLE BUS IN RunWhileStmt", errorHandler.LevelFatal)
+	}
+	for BusCollection[0].GetVal().GetString() == "true" { //TODO add error
 		for _, stmt := range while.Body {
-			temp := RunTree(stmt, env)
+			BusCollection2 := RunTree(stmt, env)
+			if IsMultipleBus(BusCollection2) {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), "while: MULTIPLE BUS IN RunWhileStmt", errorHandler.LevelFatal)
+			}
+			temp := BusCollection2[0]
+			// TODO: add break and continue
+			// TODO add multiple bus
 			if temp.IsReturn() {
 				return temp
 			}
+		}
+		BusCollection = RunTree(while.Condition, env)
+		if IsMultipleBus(BusCollection) {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "while: MULTIPLE BUS IN RunWhileStmt", errorHandler.LevelFatal)
 		}
 	}
 	return NewNoneBus()
@@ -381,7 +458,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 		if err != nil {
 			panic(err)
 		}
-		list := RunTree(f.RangeExpr, env).GetVal()
+		BusCollection := RunTree(f.RangeExpr, env)
+		if IsMultipleBus(BusCollection) {
+			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "MULTIPLE BUS IN RunForStmt", errorHandler.LevelFatal)
+		}
+		list := BusCollection[0].GetVal()
 		var typ string
 		var l int //...
 		//fmt.Printf("%T", list)
@@ -416,7 +497,10 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 		}
 		env.SetVar(f.ValueToken.Value, v)
 		for i := 0; i < l; i++ {
-			k.SetVar(eclaType.NewInt(strconv.Itoa(i)))
+			err := k.SetVar(eclaType.NewInt(strconv.Itoa(i)))
+			if err != nil {
+				return nil
+			}
 			val, err := list.GetIndex(eclaType.Int(i))
 			if err != nil {
 				panic(err)
@@ -426,7 +510,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				panic(err)
 			}
 			for _, stmt := range f.Body {
-				temp := RunTree(stmt, env)
+				BusCollection2 := RunTree(stmt, env)
+				if IsMultipleBus(BusCollection2) {
+					env.ErrorHandle.HandleError(0, stmt.StartPos(), "MULTIPLE BUS IN RunForStmt", errorHandler.LevelFatal)
+				}
+				temp := BusCollection2[0]
 				if temp.IsReturn() {
 					return temp
 				}
@@ -435,14 +523,27 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 	} else {
 		f := eclaKeyWord.NewForI([]eclaType.Type{}, For.Body, For.CondExpr, For.PostAssignStmt)
 		RunTree(For.InitDecl, env)
-		for RunTree(f.Condition, env).GetVal().GetString() == "true" { //TODO add error
+		BusCollection := RunTree(f.Condition, env)
+		if IsMultipleBus(BusCollection) {
+			env.ErrorHandle.HandleError(0, f.Condition.StartPos(), "for: MULTIPLE BUS IN RunForStmt", errorHandler.LevelFatal)
+		}
+		fmt.Println(BusCollection[0].GetVal())
+		for BusCollection[0].GetVal().GetString() == "true" {
 			for _, stmt := range f.Body {
-				temp := RunTree(stmt, env)
+				BusCollection2 := RunTree(stmt, env)
+				if IsMultipleBus(BusCollection2) {
+					env.ErrorHandle.HandleError(0, stmt.StartPos(), "MULTIPLE BUS IN RunForStmt", errorHandler.LevelFatal)
+				}
+				temp := BusCollection2[0]
 				if temp.IsReturn() {
 					return temp
 				}
 			}
 			RunTree(f.Post, env)
+			BusCollection = RunTree(f.Condition, env)
+			if IsMultipleBus(BusCollection) {
+				env.ErrorHandle.HandleError(0, f.Condition.StartPos(), "for: MULTIPLE BUS IN RunForStmt", errorHandler.LevelFatal)
+			}
 		}
 	}
 	return NewNoneBus()
@@ -450,11 +551,19 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 
 // RunIfStmt runs the if statement
 func RunIfStmt(tree parser.IfStmt, env *Env) *Bus {
-	if RunTree(tree.Cond, env).GetVal().GetString() == "true" { //TODO add error
+	BusCollection := RunTree(tree.Cond, env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "if: MULTIPLE BUS IN RunIfStmt", errorHandler.LevelFatal)
+	}
+	if BusCollection[0].GetVal().GetString() == "true" { //TODO add error
 		env.NewScope(SCOPE_CONDITION)
 		defer env.EndScope()
 		for _, stmt := range tree.Body {
-			temp := RunTree(stmt, env)
+			BusCollection := RunTree(stmt, env)
+			if IsMultipleBus(BusCollection) {
+				env.ErrorHandle.HandleError(0, stmt.StartPos(), "MULTIPLE BUS IN RunIfStmt", errorHandler.LevelFatal)
+			}
+			temp := BusCollection[0]
 			if temp.IsReturn() {
 				return temp
 			}
@@ -466,7 +575,11 @@ func RunIfStmt(tree parser.IfStmt, env *Env) *Bus {
 			env.NewScope(SCOPE_CONDITION)
 			defer env.EndScope()
 			for _, stmt := range tree.ElseStmt.Body {
-				temp := RunTree(stmt, env)
+				BusCollection := RunTree(stmt, env)
+				if IsMultipleBus(BusCollection) {
+					env.ErrorHandle.HandleError(0, stmt.StartPos(), "MULTIPLE BUS IN RunIfStmt", errorHandler.LevelFatal)
+				}
+				temp := BusCollection[0]
 				if temp.IsReturn() {
 					return temp
 				}
@@ -480,7 +593,11 @@ func RunIfStmt(tree parser.IfStmt, env *Env) *Bus {
 func RunReturnStmt(tree parser.ReturnStmt, env *Env) eclaType.Type {
 	l := []eclaType.Type{}
 	for _, expr := range tree.ReturnValues {
-		l = append(l, RunTree(expr, env).GetVal())
+		BusCollection := RunTree(expr, env)
+		if IsMultipleBus(BusCollection) {
+			env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunReturnStmt", errorHandler.LevelFatal)
+		}
+		l = append(l, BusCollection[0].GetVal())
 	}
 	return l[0]
 }

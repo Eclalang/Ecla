@@ -2,7 +2,7 @@ package interpreter
 
 import "github.com/tot0p/Ecla/interpreter/eclaType"
 
-// BusType is the type of a bus.
+// BusType is the type of bus.
 type BusType int
 
 const (
@@ -66,4 +66,9 @@ func NewReturnBus(Val eclaType.Type) *Bus {
 // NewNoneBus returns the Global none bus.
 func NewNoneBus() *Bus {
 	return &noneBus
+}
+
+// IsMultipleBus returns true if the bus is a multiple bus.
+func IsMultipleBus(b []*Bus) bool {
+	return len(b) > 1
 }

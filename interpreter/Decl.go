@@ -3,6 +3,7 @@ package interpreter
 import (
 	"errors"
 	"fmt"
+	"github.com/tot0p/Ecla/errorHandler"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
@@ -82,7 +83,11 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 			env.SetVar(tree.Name, v)
 		}
 	} else {
-		v, err := eclaType.NewVar(tree.Name, tree.Type, RunTree(tree.Value, env).GetVal())
+		busCollection := RunTree(tree.Value, env)
+		if IsMultipleBus(busCollection) {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "variable decl : MULTIPLE BUS IN RunVariableDecl", errorHandler.LevelFatal)
+		}
+		v, err := eclaType.NewVar(tree.Name, tree.Type, busCollection[0].GetVal())
 		if err != nil {
 			panic(err)
 		}
@@ -94,7 +99,11 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 	var values []eclaType.Type
 	for _, v := range tree.Values {
-		values = append(values, RunTree(v, env).GetVal())
+		busCollection := RunTree(v, env)
+		if IsMultipleBus(busCollection) {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "variable decl : MULTIPLE BUS IN RunVariableDecl", errorHandler.LevelFatal)
+		}
+		values = append(values, busCollection[0].GetVal())
 	}
 	//Modif typ par tree.$type
 	/*
@@ -129,10 +138,18 @@ func RunMapLiteral(tree parser.MapLiteral, env *Env) *Bus {
 	var keys []eclaType.Type
 	var values []eclaType.Type
 	for _, v := range tree.Values {
-		values = append(values, RunTree(v, env).GetVal())
+		busCollection := RunTree(v, env)
+		if IsMultipleBus(busCollection) {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "variable decl : MULTIPLE BUS IN RunVariableDecl", errorHandler.LevelFatal)
+		}
+		values = append(values, busCollection[0].GetVal())
 	}
 	for _, k := range tree.Keys {
-		keys = append(keys, RunTree(k, env).GetVal())
+		busCollection := RunTree(k, env)
+		if IsMultipleBus(busCollection) {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "variable decl : MULTIPLE BUS IN RunVariableDecl", errorHandler.LevelFatal)
+		}
+		keys = append(keys, busCollection[0].GetVal())
 	}
 	m := eclaType.NewMap()
 	m.Keys = keys

@@ -120,8 +120,14 @@ func (i Int) Div(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
+		if other.(Int) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return i / other.(Int), nil
 	case Float:
+		if other.(Float) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return Float(i) / other.(Float), nil
 	default:
 		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")

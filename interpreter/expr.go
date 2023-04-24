@@ -9,15 +9,15 @@ import (
 )
 
 // RunTree executes a parser.Tree.
-func RunTree(tree parser.Node, env *Env) *Bus {
+func RunTree(tree parser.Node, env *Env) []*Bus {
 	//fmt.Printf("%T\n", tree)
 	switch tree.(type) {
 	case parser.Literal:
-		return New(tree.(parser.Literal), env)
+		return []*Bus{New(tree.(parser.Literal), env)}
 	case parser.BinaryExpr:
-		return RunBinaryExpr(tree.(parser.BinaryExpr), env)
+		return []*Bus{RunBinaryExpr(tree.(parser.BinaryExpr), env)}
 	case parser.UnaryExpr:
-		return RunUnaryExpr(tree.(parser.UnaryExpr), env)
+		return []*Bus{RunUnaryExpr(tree.(parser.UnaryExpr), env)}
 	case parser.ParenExpr:
 		return RunTree(tree.(parser.ParenExpr).Expression, env)
 	case parser.PrintStmt:
@@ -29,25 +29,25 @@ func RunTree(tree parser.Node, env *Env) *Bus {
 	case parser.VariableAssignStmt:
 		RunVariableAssignStmt(tree.(parser.VariableAssignStmt), env)
 	case parser.WhileStmt:
-		return RunWhileStmt(tree.(parser.WhileStmt), env)
+		return []*Bus{RunWhileStmt(tree.(parser.WhileStmt), env)}
 	case parser.ForStmt:
-		return RunForStmt(tree.(parser.ForStmt), env)
+		return []*Bus{RunForStmt(tree.(parser.ForStmt), env)}
 	case parser.IfStmt:
-		return RunIfStmt(tree.(parser.IfStmt), env)
+		return []*Bus{RunIfStmt(tree.(parser.IfStmt), env)}
 	case parser.ArrayLiteral:
-		return RunArrayLiteral(tree.(parser.ArrayLiteral), env)
+		return []*Bus{RunArrayLiteral(tree.(parser.ArrayLiteral), env)}
 	case parser.ImportStmt:
 		RunImportStmt(tree.(parser.ImportStmt), env)
 	case parser.MethodCallExpr:
-		return RunMethodCallExpr(tree.(parser.MethodCallExpr), env)
+		return []*Bus{RunMethodCallExpr(tree.(parser.MethodCallExpr), env)}
 	case parser.FunctionDecl:
 		RunFunctionDecl(tree.(parser.FunctionDecl), env)
 	case parser.FunctionCallExpr:
-		return RunFunctionCallExpr(tree.(parser.FunctionCallExpr), env)
+		return []*Bus{RunFunctionCallExpr(tree.(parser.FunctionCallExpr), env)}
 	case parser.IndexableAccessExpr:
-		return RunIndexableAccessExpr(tree.(parser.IndexableAccessExpr), env)
+		return []*Bus{RunIndexableAccessExpr(tree.(parser.IndexableAccessExpr), env)}
 	case parser.MapLiteral:
-		return RunMapLiteral(tree.(parser.MapLiteral), env)
+		return []*Bus{RunMapLiteral(tree.(parser.MapLiteral), env)}
 	case parser.ReturnStmt:
 		r := RunReturnStmt(tree.(parser.ReturnStmt), env)
 		fn := env.GetFunctionExecuted()
@@ -55,16 +55,20 @@ func RunTree(tree parser.Node, env *Env) *Bus {
 		if !ok {
 			panic("Return type of function" + fn.Name + "is incorrect")
 		}
-		return NewReturnBus(r)
+		return []*Bus{NewReturnBus(r)}
 	}
-	return NewNoneBus()
+	return []*Bus{NewNoneBus()}
 }
 
 // RunMethodCallExpr executes a parser.MethodCallExpr.
 func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) *Bus {
 	var args []eclaType.Type
 	for _, v := range expr.FunctionCall.Args {
-		temp := RunTree(v, env).GetVal()
+		BusCollection := RunTree(v, env)
+		if IsMultipleBus(BusCollection) {
+			env.ErrorHandle.HandleError(0, v.StartPos(), "MULTIPLE BUS IN MethodCall expr", errorHandler.LevelFatal)
+		}
+		temp := BusCollection[0].GetVal()
 		switch temp.(type) {
 		case *eclaType.Var:
 			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
@@ -80,8 +84,16 @@ func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) *Bus {
 
 // RunBinaryExpr executes a parser.BinaryExpr.
 func RunBinaryExpr(tree parser.BinaryExpr, env *Env) *Bus {
-	left := RunTree(tree.LeftExpr, env).GetVal()
-	right := RunTree(tree.RightExpr, env).GetVal()
+	BusCollection := RunTree(tree.LeftExpr, env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.LeftExpr.StartPos(), "MULTIPLE BUS IN RunBinaryExpr", errorHandler.LevelFatal)
+	}
+	left := BusCollection[0].GetVal()
+	BusCollection = RunTree(tree.RightExpr, env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.RightExpr.StartPos(), "MULTIPLE BUS IN RunBinaryExpr", errorHandler.LevelFatal)
+	}
+	right := BusCollection[0].GetVal()
 	var t eclaType.Type
 	var err error
 	switch tree.Operator.TokenType {
@@ -124,19 +136,23 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) *Bus {
 
 // RunUnaryExpr executes a parser.UnaryExpr.
 func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
+	BusCollection := RunTree(tree.RightExpr, env)
+	if IsMultipleBus(BusCollection) {
+		env.ErrorHandle.HandleError(0, tree.RightExpr.StartPos(), "MULTIPLE BUS IN RunUnaryExpr", errorHandler.LevelFatal)
+	}
 	switch tree.Operator.TokenType {
 	case lexer.SUB:
-		t, err := eclaType.Int(0).Sub(RunTree(tree.RightExpr, env).GetVal()) // TODO: Fix this
+		t, err := eclaType.Int(0).Sub(BusCollection[0].GetVal()) // TODO: Fix this
 		if err != nil {
 			panic(err)
 		}
 		return NewMainBus(t)
 	case lexer.ADD:
-		return RunTree(tree.RightExpr, env)
+		return BusCollection[0]
 	case lexer.NOT:
-		t, err := RunTree(tree.RightExpr, env).GetVal().Not()
+		t, err := BusCollection[0].GetVal().Not()
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, tree.RightExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 		return NewMainBus(t)
 	}
@@ -148,7 +164,11 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) *Bus {
 	defer env.EndScope()
 	var args []eclaType.Type
 	for _, v := range tree.Args {
-		temp := RunTree(v, env).GetVal()
+		BusCollection := RunTree(v, env)
+		if IsMultipleBus(BusCollection) {
+			env.ErrorHandle.HandleError(0, v.StartPos(), "MULTIPLE BUS IN RunFunctionCallExpr", errorHandler.LevelFatal)
+		}
+		temp := BusCollection[0].GetVal()
 		switch temp.(type) {
 		case *eclaType.Var:
 			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
@@ -178,7 +198,11 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) *Bus {
 
 func RunBodyFunction(fn *eclaType.Function, env *Env) (eclaType.Type, error) {
 	for _, v := range fn.Body {
-		temp := RunTree(v, env)
+		BusCollection := RunTree(v, env)
+		if IsMultipleBus(BusCollection) {
+			env.ErrorHandle.HandleError(0, v.StartPos(), "MULTIPLE BUS IN RunBodyFunction", errorHandler.LevelFatal)
+		}
+		temp := BusCollection[0]
 		if temp.IsReturn() {
 			return temp.GetVal().GetValue().(eclaType.Type), nil
 		}
@@ -193,7 +217,11 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 	}
 	var result eclaType.Type = v
 	for i := range tree.Indexes {
-		elem := RunTree(tree.Indexes[i], env).GetVal()
+		BusCollection := RunTree(tree.Indexes[i], env)
+		if IsMultipleBus(BusCollection) {
+			env.ErrorHandle.HandleError(0, tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
+		}
+		elem := BusCollection[0].GetVal()
 		//fmt.Printf("%s\n", elem.GetValue())
 		//fmt.Printf("%T\n", result.GetValue())
 		temp, err := result.GetIndex(elem)

@@ -2,7 +2,7 @@ package interpreter
 
 import "github.com/tot0p/Ecla/interpreter/eclaType"
 
-// ScopeType is the type of a scope.
+// ScopeType is the type of scope.
 type ScopeType int
 
 const (

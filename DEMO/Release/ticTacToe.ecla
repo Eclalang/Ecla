@@ -149,7 +149,9 @@ function game(){
     while (PAchoice != "X" && PAchoice != "O"){
         console.println("Player 1, choose your symbol (X or O): ");
         temp = console.input();
+        console.println("arr",temp);
         PAchoice = temp[0];
+        console.println("choice",PAchoice);
         if (PAchoice != "X" && PAchoice != "O"){
             console.println("Invalid choice, please choose X or O");
         }

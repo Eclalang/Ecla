@@ -207,6 +207,97 @@ console.println(table2, "is [1,2,3,4,5,10,2,3,4,5,6,7,8,9,10,1,2,3,4,5,10,2,3,4,
 # ----------------------------------------------------------------------------------------------------------------
 
 
+# test Map
+# ----------------------------------------------------------------------------------------------------------------
+
+
+console.println("Test Map");
+console.println("Test Map int int");
+console.println({1:1, 2:2, 3:3});
+console.println("Test Map int float");
+console.println({1:1.1, 2:2.2, 3:3.3});
+console.println("Test Map int string");
+console.println({1:"1", 2:"2", 3:"3"});
+console.println("Test Map int bool");
+console.println({1:true, 2:false, 3:true});
+console.println("Test Map int array");
+console.println({1:[1,2,3], 2:[4,5,6], 3:[7,8,9]});
+console.println("Test Map int map");
+console.println({1:{1:1, 2:2, 3:3}, 2:{4:4, 5:5, 6:6}, 3:{7:7, 8:8, 9:9}});
+
+
+console.println("Test Map float int");
+console.println({1.1:1, 2.2:2, 3.3:3});
+console.println("Test Map float float");
+console.println({1.1:1.1, 2.2:2.2, 3.3:3.3});
+console.println("Test Map float string");
+console.println({1.1:"1", 2.2:"2", 3.3:"3"});
+console.println("Test Map float bool");
+console.println({1.1:true, 2.2:false, 3.3:true});
+console.println("Test Map float array");
+console.println({1.1:[1,2,3], 2.2:[4,5,6], 3.3:[7,8,9]});
+console.println("Test Map float map");
+console.println({1.1:{1:1, 2:2, 3:3}, 2.2:{4:4, 5:5, 6:6}, 3.3:{7:7, 8:8, 9:9}});
+
+
+console.println("Test Map string int");
+console.println({"1":1, "2":2, "3":3});
+console.println("Test Map string float");
+console.println({"1":1.1, "2":2.2, "3":3.3});
+console.println("Test Map string string");
+console.println({"1":"1", "2":"2", "3":"3"});
+console.println("Test Map string bool");
+console.println({"1":true, "2":false, "3":true});
+console.println("Test Map string array");
+console.println({"1":[1,2,3], "2":[4,5,6], "3":[7,8,9]});
+console.println("Test Map string map");
+console.println({"1":{"1":1, "2":2, "3":3}, "2":{"4":4, "5":5, "6":6}, "3":{"7":7, "8":8, "9":9}});
+
+
+console.println("Test Map bool int");
+console.println({true:1, false:2});
+console.println("Test Map bool float");
+console.println({true:1.1, false:2.2});
+console.println("Test Map bool string");
+console.println({true:"1", false:"2"});
+console.println("Test Map bool bool");
+console.println({true:true, false:false});
+console.println("Test Map bool array");
+console.println({true:[1,2,3], false:[4,5,6]});
+console.println("Test Map bool map");
+console.println({true:{1:1, 2:2, 3:3}, false:{4:4, 5:5, 6:6}});
+
+#/
+console.println("Test Map array int");
+console.println([[1,2,3]:1, [4,5,6]:2, [7,8,9]:3]);
+console.println("Test Map array float");
+console.println([[1,2,3]:1.1, [4,5,6]:2.2, [7,8,9]:3.3]);
+console.println("Test Map array string");
+console.println([[1,2,3]:"1", [4,5,6]:"2", [7,8,9]:"3"]);
+console.println("Test Map array bool");
+console.println([[1,2,3]:true, [4,5,6]:false, [7,8,9]:true]);
+console.println("Test Map array array");
+console.println([[1,2,3]:[1,2,3], [4,5,6]:[4,5,6], [7,8,9]:[7,8,9]]);
+console.println("Test Map array map");
+console.println([[1,2,3]:{1:1, 2:2, 3:3}, [4,5,6]:{4:4, 5:5, 6:6}, [7,8,9]:{7:7, 8:8, 9:9}});
+
+
+console.println("Test Map map int");
+console.println([{1:1, 2:2, 3:3}:1, {4:4, 5:5, 6:6}:2, {7:7, 8:8, 9:9}:3]);
+console.println("Test Map map float");
+console.println([{1:1, 2:2, 3:3}:1.1, {4:4, 5:5, 6:6}:2.2, {7:7, 8:8, 9:9}:3.3]);
+console.println("Test Map map string");
+console.println([{1:1, 2:2, 3:3}:"1", {4:4, 5:5, 6:6}:"2", {7:7, 8:8, 9:9}:"3"]);
+console.println("Test Map map bool");
+console.println([{1:1, 2:2, 3:3}:true, {4:4, 5:5, 6:6}:false, {7:7, 8:8, 9:9}:true]);
+console.println("Test Map map array");
+console.println([{1:1, 2:2, 3:3}:[1,2,3], {4:4, 5:5, 6:6}:[4,5,6], {7:7, 8:8, 9:9}:[7,8,9]]);
+console.println("Test Map map map");
+console.println([{1:1, 2:2, 3:3}:{1:1, 2:2, 3:3}, {4:4, 5:5, 6:6}:{4:4, 5:5, 6:6}, {7:7, 8:8, 9:9}:{7:7, 8:8, 9:9}]);
+/#
+
+# ----------------------------------------------------------------------------------------------------------------
+
 
 # test if
 # ----------------------------------------------------------------------------------------------------------------
