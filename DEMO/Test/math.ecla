@@ -1,0 +1,11 @@
+import console;
+import math;
+
+console.println("Start");
+
+var a float = math.pi();
+console.println(a);
+var b float = math.pow(2.2, 3.2);
+console.println(b);
+
+console.print("End");
