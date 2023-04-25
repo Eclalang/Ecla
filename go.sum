@@ -6,6 +6,8 @@ github.com/Eclalang/hash v0.0.0-20230412075750-64b0e5c5265f h1:sS4I2LJbWvT1wFDT0
 github.com/Eclalang/hash v0.0.0-20230412075750-64b0e5c5265f/go.mod h1:/ZoCq7JP9TBYTl79nIvL2X+VowFnarTwa8/fa9APK/w=
 github.com/Eclalang/json v0.0.0-20230412080015-0eb60c596892 h1:G+VMJaqfNngzTYItN7V1uMr2C8tjHb7bpHOKzl2ggms=
 github.com/Eclalang/json v0.0.0-20230412080015-0eb60c596892/go.mod h1:FH/nXnNXMThd0LVoajFWBTRMjWVvjN1CIG2BkZ1z8mE=
+github.com/Eclalang/math v0.0.0-20230412092841-4e85a290315c h1:njEuoeii6LgCW7IEPOTBuIuPVotl+6ROjhBp3+xafek=
+github.com/Eclalang/math v0.0.0-20230412092841-4e85a290315c/go.mod h1:fsm8hu/CrnnYL1HNvftRyQp47ENW4QRs5AC+f2V+hOc=
 github.com/Eclalang/os v0.0.0-20230412080141-90c64a283c44 h1:qB0RWqDOMWzyFcTsGZny8tmdMzhr6VJTJQCem7MrvSM=
 github.com/Eclalang/os v0.0.0-20230412080141-90c64a283c44/go.mod h1:aOlOP4WanamjHncVvr4hRCUkF0FRh6Yud1Suu9EviRo=
 github.com/Eclalang/regex v0.0.0-20230412080238-d04497c06e2a h1:pcfPdmyk16qjlJfdTuQvL0xK+KYfsStevoAgtvS6w+U=
