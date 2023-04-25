@@ -16,6 +16,7 @@ var (
 	hash_         *Hash         // Hash is the hash lib.
 	regex_        *Regex        // Regex is the regex lib.
 	math_         *Math         // Math is the math lib.
+	strings_      *Strings      // Strings is the strings lib.
 )
 
 // InitLibs initializes the libs.
@@ -28,6 +29,7 @@ func init() {
 	hash_ = NewHash()
 	regex_ = NewRegex()
 	math_ = NewMath()
+	strings_ = NewStrings()
 }
 
 // Import imports the lib with the given name.
@@ -49,6 +51,8 @@ func Import(name string) Lib {
 		return regex_
 	case "math":
 		return math_
+	case "strings":
+		return strings_
 	default:
 		return nil
 	}
