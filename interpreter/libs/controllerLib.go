@@ -17,6 +17,7 @@ var (
 	regex_        *Regex        // Regex is the regex lib.
 	math_         *Math         // Math is the math lib.
 	strings_      *Strings      // Strings is the strings lib.
+	cast_         *Cast         // Cast is the cast lib.
 )
 
 // InitLibs initializes the libs.
@@ -30,6 +31,7 @@ func init() {
 	regex_ = NewRegex()
 	math_ = NewMath()
 	strings_ = NewStrings()
+	cast_ = NewCast()
 }
 
 // Import imports the lib with the given name.
@@ -53,6 +55,8 @@ func Import(name string) Lib {
 		return math_
 	case "strings":
 		return strings_
+	case "cast":
+		return cast_
 	default:
 		return nil
 	}

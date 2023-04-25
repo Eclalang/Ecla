@@ -1,3 +1,5 @@
+github.com/Eclalang/cast v0.0.0-20230412075237-1628861597c7 h1:pKeX3GmAplWLKg6uKvkBY//kZFzKASk2YjLeiCoMeV4=
+github.com/Eclalang/cast v0.0.0-20230412075237-1628861597c7/go.mod h1:RJAiwgqiEPT3kmoSYTBK+JhpGOI8YXRdxrQ99zJyA00=
 github.com/Eclalang/console v0.0.0-20230412145904-e88489fbc97d h1:Xf5MWfgpnhCbzmrmCMec7QCxNHB/Q5VcX/dId5XmgLo=
 github.com/Eclalang/console v0.0.0-20230412145904-e88489fbc97d/go.mod h1:RHRoUAVzxpcTVzX/rPm5VFjOUrshw4v9pBVDlCEmwQM=
 github.com/Eclalang/encoding v0.0.0-20230208224054-881a20b705c8 h1:uvI3+JojulALzaky7GwAomveO35O044JH6PdMwCl3J0=
