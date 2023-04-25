@@ -43,7 +43,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 	case parser.FunctionDecl:
 		RunFunctionDecl(tree.(parser.FunctionDecl), env)
 	case parser.FunctionCallExpr:
-		return []*Bus{RunFunctionCallExpr(tree.(parser.FunctionCallExpr), env)}
+		return RunFunctionCallExpr(tree.(parser.FunctionCallExpr), env)
 	case parser.IndexableAccessExpr:
 		return []*Bus{RunIndexableAccessExpr(tree.(parser.IndexableAccessExpr), env)}
 	case parser.MapLiteral:
@@ -51,11 +51,15 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 	case parser.ReturnStmt:
 		r := RunReturnStmt(tree.(parser.ReturnStmt), env)
 		fn := env.GetFunctionExecuted()
-		ok := fn.CheckReturn([]eclaType.Type{r})
+		ok := fn.CheckReturn(r)
 		if !ok {
 			panic("Return type of function" + fn.Name + "is incorrect")
 		}
-		return []*Bus{NewReturnBus(r)}
+		var temp []*Bus
+		for _, v := range r {
+			temp = append(temp, NewReturnBus(v))
+		}
+		return temp
 	}
 	return []*Bus{NewNoneBus()}
 }
@@ -159,7 +163,7 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 	return NewNoneBus()
 }
 
-func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) *Bus {
+func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 	env.NewScope(SCOPE_FUNCTION)
 	defer env.EndScope()
 	var args []eclaType.Type
@@ -193,18 +197,32 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) *Bus {
 	if err != nil {
 		panic(err)
 	}
-	return NewMainBus(r)
+	var retValues []*Bus
+	for _, v := range r {
+		retValues = append(retValues, NewMainBus(v))
+	}
+	return retValues
 }
 
-func RunBodyFunction(fn *eclaType.Function, env *Env) (eclaType.Type, error) {
+func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
 	for _, v := range fn.Body {
 		BusCollection := RunTree(v, env)
 		if IsMultipleBus(BusCollection) {
-			env.ErrorHandle.HandleError(0, v.StartPos(), "MULTIPLE BUS IN RunBodyFunction", errorHandler.LevelFatal)
+			ret := true
+			var retVal []eclaType.Type
+			for _, bus := range BusCollection {
+				if !bus.IsReturn() {
+					ret = false
+				}
+				retVal = append(retVal, bus.GetVal().GetValue().(eclaType.Type))
+			}
+			if ret {
+				return retVal, nil
+			}
 		}
 		temp := BusCollection[0]
 		if temp.IsReturn() {
-			return temp.GetVal().GetValue().(eclaType.Type), nil
+			return []eclaType.Type{temp.GetVal().GetValue().(eclaType.Type)}, nil
 		}
 	}
 	return nil, nil

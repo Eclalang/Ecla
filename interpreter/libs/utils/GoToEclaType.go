@@ -13,7 +13,7 @@ func GoToEclaType(arg any) eclaType.Type {
 	case reflect.Int:
 		return eclaType.Int(arg.(int))
 	case reflect.Float64:
-		return eclaType.Float(float32(arg.(float64)))
+		return eclaType.Float(arg.(float32))
 	case reflect.String:
 		return eclaType.String(arg.(string))
 	case reflect.Bool:

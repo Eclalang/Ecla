@@ -32,6 +32,92 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) {
 
 // RunVariableAssignStmt Run assigns a variable.
 func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
+	var exprPreExec []*Bus
+	var vars []*eclaType.Type
+	for _, v := range tree.Values {
+		exprPreExec = append(exprPreExec, RunTree(v, env)...)
+	}
+	for _, v := range tree.Names {
+		switch v.(type) {
+		case parser.IndexableAccessExpr:
+			temp := IndexableAssignmentChecks(tree, v.(parser.IndexableAccessExpr), env)
+			vars = append(vars, temp)
+		case parser.Literal:
+			if tree.Names[0].(parser.Literal).Type == "VAR" {
+				variable, ok := env.GetVar(tree.Names[0].(parser.Literal).Value)
+				if !ok {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: variable not found", errorHandler.LevelFatal)
+				}
+				vars = append(vars, &(variable.Value))
+			} else {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Cant run assignement on type %s", tree.Names[0].(parser.Literal).Type), errorHandler.LevelFatal)
+			}
+
+		}
+	}
+
+	fmt.Println(exprPreExec, vars)
+
+	PreExecLen := len(exprPreExec)
+	NamesLen := len(tree.Names)
+	opp := tree.Operator
+
+	if PreExecLen == NamesLen {
+		switch opp {
+		case parser.ASSIGN:
+			for i, v := range vars {
+				val := exprPreExec[i].GetVal()
+				*v = val
+			}
+		case parser.ADDASSIGN:
+
+		case parser.SUBASSIGN:
+
+		case parser.DIVASSIGN:
+
+		case parser.MODASSIGN:
+
+		case parser.QOTASSIGN:
+
+		case parser.MULTASSIGN:
+
+		default:
+			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("%s is not a valid assignement operator", tree.Operator), errorHandler.LevelFatal)
+		}
+
+	} else if PreExecLen == 1 && NamesLen > 1 {
+		switch opp {
+		case parser.ASSIGN:
+
+		case parser.ADDASSIGN:
+
+		case parser.SUBASSIGN:
+
+		case parser.DIVASSIGN:
+
+		case parser.MODASSIGN:
+
+		case parser.QOTASSIGN:
+
+		case parser.MULTASSIGN:
+
+		default:
+			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("%s is not a valid assignement operator", tree.Operator), errorHandler.LevelFatal)
+		}
+	} else if PreExecLen == 0 && NamesLen > 1 {
+		switch opp {
+
+		case parser.INCREMENT:
+
+		case parser.DECREMENT:
+		default:
+			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("%s is not a valid assignement operator", tree.Operator), errorHandler.LevelFatal)
+		}
+
+	} else {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Invalid assignment: %d rValues to %d lValues", PreExecLen, NamesLen), errorHandler.LevelFatal)
+	}
+
 	lValueEqualOne := len(tree.Values) == 1
 	if len(tree.Names) == 1 {
 		if !lValueEqualOne {
@@ -590,14 +676,13 @@ func RunIfStmt(tree parser.IfStmt, env *Env) *Bus {
 }
 
 // RunReturnStmt runs the return statement
-func RunReturnStmt(tree parser.ReturnStmt, env *Env) eclaType.Type {
-	l := []eclaType.Type{}
+func RunReturnStmt(tree parser.ReturnStmt, env *Env) []eclaType.Type {
+	var l []eclaType.Type
 	for _, expr := range tree.ReturnValues {
 		BusCollection := RunTree(expr, env)
-		if IsMultipleBus(BusCollection) {
-			env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunReturnStmt", errorHandler.LevelFatal)
+		for _, bus := range BusCollection {
+			l = append(l, bus.GetVal())
 		}
-		l = append(l, BusCollection[0].GetVal())
 	}
-	return l[0]
+	return l
 }

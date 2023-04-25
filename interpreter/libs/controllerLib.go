@@ -11,14 +11,6 @@ var (
 	console_      *Console      // Console is the console lib.
 	debugKingdom_ *DebugKingdom // DebugKingdom is the debugKingdom lib.
 	encoding_     *Encoding     // Encoding is the encoding lib.
-	json_         *Json         // Json is the json lib.
-	os_           *Os           // Os is the os lib.
-	hash_         *Hash         // Hash is the hash lib.
-	regex_        *Regex        // Regex is the regex lib.
-	math_         *Math         // Math is the math lib.
-	strings_      *Strings      // Strings is the strings lib.
-	cast_         *Cast         // Cast is the cast lib.
-	time_         *Time         // Time is the time lib.
 )
 
 // InitLibs initializes the libs.
@@ -26,14 +18,6 @@ func init() {
 	console_ = NewConsole()
 	debugKingdom_ = NewDebugKingdom()
 	encoding_ = NewEncoding()
-	json_ = NewJson()
-	os_ = NewOs()
-	hash_ = NewHash()
-	regex_ = NewRegex()
-	math_ = NewMath()
-	strings_ = NewStrings()
-	cast_ = NewCast()
-	time_ = NewTime()
 }
 
 // Import imports the lib with the given name.
@@ -45,22 +29,6 @@ func Import(name string) Lib {
 		return debugKingdom_
 	case "encoding":
 		return encoding_
-	case "json":
-		return json_
-	case "os":
-		return os_
-	case "hash":
-		return hash_
-	case "regex":
-		return regex_
-	case "math":
-		return math_
-	case "strings":
-		return strings_
-	case "cast":
-		return cast_
-	case "time":
-		return time_
 	default:
 		return nil
 	}
