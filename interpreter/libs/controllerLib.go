@@ -13,6 +13,7 @@ var (
 	encoding_     *Encoding     // Encoding is the encoding lib.
 	json_         *Json         // Json is the json lib.
 	os_           *Os           // Os is the os lib.
+	hash_         *Hash         // Hash is the hash lib.
 )
 
 // InitLibs initializes the libs.
@@ -22,6 +23,7 @@ func init() {
 	encoding_ = NewEncoding()
 	json_ = NewJson()
 	os_ = NewOs()
+	hash_ = NewHash()
 }
 
 // Import imports the lib with the given name.
@@ -37,6 +39,8 @@ func Import(name string) Lib {
 		return json_
 	case "os":
 		return os_
+	case "hash":
+		return hash_
 	default:
 		return nil
 	}
