@@ -18,6 +18,7 @@ var (
 	math_         *Math         // Math is the math lib.
 	strings_      *Strings      // Strings is the strings lib.
 	cast_         *Cast         // Cast is the cast lib.
+	time_         *Time         // Time is the time lib.
 )
 
 // InitLibs initializes the libs.
@@ -32,6 +33,7 @@ func init() {
 	math_ = NewMath()
 	strings_ = NewStrings()
 	cast_ = NewCast()
+	time_ = NewTime()
 }
 
 // Import imports the lib with the given name.
@@ -57,6 +59,8 @@ func Import(name string) Lib {
 		return strings_
 	case "cast":
 		return cast_
+	case "time":
+		return time_
 	default:
 		return nil
 	}
