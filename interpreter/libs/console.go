@@ -45,6 +45,8 @@ func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
 		// To add later
 		//case "printlnInColor":
 		//	console.PrintlnInColor(newArgs[0].(string), newArgs[1:]...)
+	default:
+		return nil
 	}
 
 	return eclaType.Null{}

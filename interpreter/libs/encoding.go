@@ -37,6 +37,8 @@ func (e *Encoding) Call(name string, args []eclaType.Type) eclaType.Type {
 		return utils.GoToEclaType(enc.AsciiToString(arg2))
 	case "stringToAscii":
 		return utils.GoToEclaType(enc.StringToAscii(newArgs[0].(string)))
+	default:
+		return nil
 	}
 	return eclaType.Null{}
 }
