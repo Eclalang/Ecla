@@ -12,6 +12,7 @@ var (
 	debugKingdom_ *DebugKingdom // DebugKingdom is the debugKingdom lib.
 	encoding_     *Encoding     // Encoding is the encoding lib.
 	json_         *Json         // Json is the json lib.
+	os_           *Os           // Os is the os lib.
 )
 
 // InitLibs initializes the libs.
@@ -20,6 +21,7 @@ func init() {
 	debugKingdom_ = NewDebugKingdom()
 	encoding_ = NewEncoding()
 	json_ = NewJson()
+	os_ = NewOs()
 }
 
 // Import imports the lib with the given name.
@@ -33,6 +35,8 @@ func Import(name string) Lib {
 		return encoding_
 	case "json":
 		return json_
+	case "os":
+		return os_
 	default:
 		return nil
 	}

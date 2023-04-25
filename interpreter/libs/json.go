@@ -30,10 +30,10 @@ func (j *Json) Call(name string, args []eclaType.Type) eclaType.Type {
 	}
 	switch name {
 	case "marshal":
-		utils.GoToEclaType(json.Marshal(newArgs[0]))
+		return utils.GoToEclaType(json.Marshal(newArgs[0]))
 	case "unmarshal":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			utils.GoToEclaType(json.Unmarshal(newArgs[0].(string)))
+			return utils.GoToEclaType(json.Unmarshal(newArgs[0].(string)))
 		}
 		// TODO : Error
 	default:
