@@ -14,6 +14,7 @@ var (
 	json_         *Json         // Json is the json lib.
 	os_           *Os           // Os is the os lib.
 	hash_         *Hash         // Hash is the hash lib.
+	regex_        *Regex        // Regex is the regex lib.
 )
 
 // InitLibs initializes the libs.
@@ -24,6 +25,7 @@ func init() {
 	json_ = NewJson()
 	os_ = NewOs()
 	hash_ = NewHash()
+	regex_ = NewRegex()
 }
 
 // Import imports the lib with the given name.
@@ -41,6 +43,8 @@ func Import(name string) Lib {
 		return os_
 	case "hash":
 		return hash_
+	case "regex":
+		return regex_
 	default:
 		return nil
 	}
