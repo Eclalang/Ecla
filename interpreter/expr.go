@@ -69,15 +69,14 @@ func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) *Bus {
 	var args []eclaType.Type
 	for _, v := range expr.FunctionCall.Args {
 		BusCollection := RunTree(v, env)
-		if IsMultipleBus(BusCollection) {
-			env.ErrorHandle.HandleError(0, v.StartPos(), "MULTIPLE BUS IN MethodCall expr", errorHandler.LevelFatal)
+		for _, bus := range BusCollection {
+			temp := bus.GetVal()
+			switch temp.(type) {
+			case *eclaType.Var:
+				temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+			}
+			args = append(args, temp)
 		}
-		temp := BusCollection[0].GetVal()
-		switch temp.(type) {
-		case *eclaType.Var:
-			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
-		}
-		args = append(args, temp)
 	}
 	call := env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name, args)
 	if call == nil {
@@ -169,15 +168,15 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 	var args []eclaType.Type
 	for _, v := range tree.Args {
 		BusCollection := RunTree(v, env)
-		if IsMultipleBus(BusCollection) {
-			env.ErrorHandle.HandleError(0, v.StartPos(), "MULTIPLE BUS IN RunFunctionCallExpr", errorHandler.LevelFatal)
+		for _, bus := range BusCollection {
+			temp := bus.GetVal()
+			switch temp.(type) {
+			case *eclaType.Var:
+				temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+			}
+			args = append(args, temp)
 		}
-		temp := BusCollection[0].GetVal()
-		switch temp.(type) {
-		case *eclaType.Var:
-			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
-		}
-		args = append(args, temp)
+
 	}
 	fn, ok := env.GetFunction(tree.Name)
 	if !ok {
