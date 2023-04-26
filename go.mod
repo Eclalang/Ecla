@@ -11,6 +11,6 @@ require (
 	github.com/Eclalang/math v0.0.0-20230412092841-4e85a290315c
 	github.com/Eclalang/os v0.0.0-20230412080141-90c64a283c44
 	github.com/Eclalang/regex v0.0.0-20230412080238-d04497c06e2a
-	github.com/Eclalang/strings v0.0.0-20230412080427-128b75142fe6
+	github.com/Eclalang/strings v0.0.0-20230426085402-f6ea22be551e
 	github.com/Eclalang/time v0.0.0-20230412080614-ad9ed2a84fb1
 )

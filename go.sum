@@ -18,5 +18,7 @@ github.com/Eclalang/regex v0.0.0-20230412080238-d04497c06e2a h1:pcfPdmyk16qjlJfd
 github.com/Eclalang/regex v0.0.0-20230412080238-d04497c06e2a/go.mod h1://L9ebqTHyWDZWhmsvbmWFjfczjNUHGcRKpZj8dDR00=
 github.com/Eclalang/strings v0.0.0-20230412080427-128b75142fe6 h1:tQGfRak/W3UiRiWRzAaebMaehCg36qekGnCX2W2fiac=
 github.com/Eclalang/strings v0.0.0-20230412080427-128b75142fe6/go.mod h1:2FgmYwPkfSu/cd2gZ8Wy37QfMzv2eraF86V/dDrLLhk=
+github.com/Eclalang/strings v0.0.0-20230426085402-f6ea22be551e h1:yK1ahDhSIi9SdbKnQ8LcCipMBpvnukMlw7Mo2sKLUrk=
+github.com/Eclalang/strings v0.0.0-20230426085402-f6ea22be551e/go.mod h1:2FgmYwPkfSu/cd2gZ8Wy37QfMzv2eraF86V/dDrLLhk=
 github.com/Eclalang/time v0.0.0-20230412080614-ad9ed2a84fb1 h1:d0EBdW1690SPusWNj+tjmihWAApch/A1OtdIUToAvoY=
 github.com/Eclalang/time v0.0.0-20230412080614-ad9ed2a84fb1/go.mod h1://+Z1TD75utJJ7ob1E+D60sNezGOI3T7rhN17jYGnvM=

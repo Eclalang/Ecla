@@ -58,7 +58,7 @@ func (s *Strings) Call(name string, args []eclaType.Type) eclaType.Type {
 		}
 	case "cut":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			// TODO : Fix this
+			return utils.GoToEclaType(strings.Cut(newArgs[0].(string), newArgs[1].(string)))
 		}
 	case "hasPrefix":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
