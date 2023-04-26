@@ -39,7 +39,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 	case parser.ImportStmt:
 		RunImportStmt(tree.(parser.ImportStmt), env)
 	case parser.MethodCallExpr:
-		return []*Bus{RunMethodCallExpr(tree.(parser.MethodCallExpr), env)}
+		return RunMethodCallExpr(tree.(parser.MethodCallExpr), env)
 	case parser.FunctionDecl:
 		RunFunctionDecl(tree.(parser.FunctionDecl), env)
 	case parser.FunctionCallExpr:
@@ -65,7 +65,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 }
 
 // RunMethodCallExpr executes a parser.MethodCallExpr.
-func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) *Bus {
+func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) []*Bus {
 	var args []eclaType.Type
 	for _, v := range expr.FunctionCall.Args {
 		BusCollection := RunTree(v, env)
@@ -78,11 +78,15 @@ func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) *Bus {
 			args = append(args, temp)
 		}
 	}
-	call := env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name, args)
-	if call == nil {
-		panic(fmt.Sprintf("Method %s not found in module %s", expr.FunctionCall.Name, expr.ObjectName))
+	var returnBuses []*Bus
+	call, callErr := env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name, args)
+	if callErr != nil {
+		env.ErrorHandle.HandleError(0, expr.StartPos(), callErr.Error(), errorHandler.LevelFatal)
 	}
-	return NewMainBus(call)
+	for _, elem := range call {
+		returnBuses = append(returnBuses, NewMainBus(elem))
+	}
+	return returnBuses
 }
 
 // RunBinaryExpr executes a parser.BinaryExpr.

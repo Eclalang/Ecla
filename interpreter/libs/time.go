@@ -1,6 +1,8 @@
 package libs
 
 import (
+	"errors"
+	"fmt"
 	"github.com/Eclalang/time"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs/utils"
@@ -24,40 +26,40 @@ func NewTime() *Time {
 	}
 }
 
-func (t *Time) Call(name string, args []eclaType.Type) eclaType.Type {
+func (t *Time) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	newArgs := make([]any, len(args))
 	for k, arg := range args {
 		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
 	if _, ok := t.functionMap[name]; !ok {
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package time", name))
 	}
 	switch name {
 	case "convertRoman":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(time.ConvertRoman(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(time.ConvertRoman(newArgs[0].(string)))}, nil
 		}
 	case "date":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.Int && reflect.TypeOf(newArgs[1]).Kind() == reflect.Int && reflect.TypeOf(newArgs[2]).Kind() == reflect.Int && reflect.TypeOf(newArgs[3]).Kind() == reflect.Int && reflect.TypeOf(newArgs[4]).Kind() == reflect.Int && reflect.TypeOf(newArgs[5]).Kind() == reflect.Int {
-			return utils.GoToEclaType(time.Date(newArgs[0].(int), newArgs[1].(int), newArgs[2].(int), newArgs[3].(int), newArgs[4].(int), newArgs[5].(int)))
+			return []eclaType.Type{utils.GoToEclaType(time.Date(newArgs[0].(int), newArgs[1].(int), newArgs[2].(int), newArgs[3].(int), newArgs[4].(int), newArgs[5].(int)))}, nil
 		}
 	case "now":
-		return utils.GoToEclaType(time.Now())
+		return []eclaType.Type{utils.GoToEclaType(time.Now())}, nil
 	case "sleep":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.Int {
 			time.Sleep(newArgs[0].(int))
 		}
 	case "strftime":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(time.Strftime(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(time.Strftime(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "timer":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.Int {
 			time.Timer(newArgs[0].(int))
 		}
 	default:
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package time", name))
 	}
 
-	return eclaType.Null{}
+	return []eclaType.Type{eclaType.Null{}}, nil
 }

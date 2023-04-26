@@ -1,6 +1,8 @@
 package libs
 
 import (
+	"errors"
+	"fmt"
 	"github.com/Eclalang/console"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs/utils"
@@ -28,13 +30,13 @@ func NewConsole() *Console {
 	}
 }
 
-func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
+func (c *Console) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	newArgs := make([]any, len(args))
 	for k, arg := range args {
 		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
 	if _, ok := c.functionMap[name]; !ok {
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package console", name))
 	}
 	switch name {
 	case "printf":
@@ -45,7 +47,7 @@ func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
 	case "print":
 		console.Print(newArgs...)
 	case "input":
-		return utils.GoToEclaType(console.Input(newArgs...))
+		return []eclaType.Type{utils.GoToEclaType(console.Input(newArgs...))}, nil
 	case "printInColor":
 		console.PrintInColor(newArgs[0].(string), newArgs[1:]...)
 		// To add later
@@ -53,15 +55,15 @@ func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
 		//	console.PrintlnInColor(newArgs[0].(string), newArgs[1:]...)
 	case "inputInt":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(console.InputInt(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(console.InputInt(newArgs[0].(string)))}, nil
 		}
 	case "inputFloat":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(console.InputFloat(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(console.InputFloat(newArgs[0].(string)))}, nil
 		}
 	case "confirm":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(console.Confirm(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(console.Confirm(newArgs[0].(string)))}, nil
 		}
 	case "progressBar":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.Int {
@@ -70,8 +72,8 @@ func (c *Console) Call(name string, args []eclaType.Type) eclaType.Type {
 	case "clear":
 		console.Clear()
 	default:
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package console", name))
 	}
 
-	return eclaType.Null{}
+	return []eclaType.Type{eclaType.Null{}}, nil
 }

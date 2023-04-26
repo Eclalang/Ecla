@@ -4,7 +4,7 @@ import "github.com/tot0p/Ecla/interpreter/eclaType"
 
 // Lib is the interface of a lib.
 type Lib interface {
-	Call(name string, args []eclaType.Type) eclaType.Type
+	Call(name string, args []eclaType.Type) ([]eclaType.Type, error)
 }
 
 var (
@@ -16,7 +16,7 @@ var (
 	hash_         *Hash         // Hash is the hash lib.
 	regex_        *Regex        // Regex is the regex lib.
 	math_         *Math         // Math is the math lib.
-	strings_      *Strings      // Strings is the strings lib.
+	strings_      *Strings      // Strings is the strings' lib.
 	cast_         *Cast         // Cast is the cast lib.
 	time_         *Time         // Time is the time lib.
 )

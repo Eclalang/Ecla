@@ -1,6 +1,8 @@
 package libs
 
 import (
+	"errors"
+	"fmt"
 	"github.com/Eclalang/strings"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs/utils"
@@ -35,86 +37,86 @@ func NewStrings() *Strings {
 	}
 }
 
-func (s *Strings) Call(name string, args []eclaType.Type) eclaType.Type {
+func (s *Strings) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	newArgs := make([]any, len(args))
 	for k, arg := range args {
 		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
 	if _, ok := s.functionMap[name]; !ok {
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package strings", name))
 	}
 	switch name {
 	case "contains":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.Contains(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.Contains(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "containsAny":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.ContainsAny(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.ContainsAny(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "count":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.Count(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.Count(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "cut":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.Cut(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.Cut(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "hasPrefix":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.HasPrefix(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.HasPrefix(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "hasSuffix":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.HasSuffix(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.HasSuffix(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "indexOf":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.IndexOf(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.IndexOf(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "join":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.Slice && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.Join(newArgs[0].([]string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.Join(newArgs[0].([]string), newArgs[1].(string)))}, nil
 		}
 	case "replace":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String && reflect.TypeOf(newArgs[2]).Kind() == reflect.String && reflect.TypeOf(newArgs[3]).Kind() == reflect.Int {
-			return utils.GoToEclaType(strings.Replace(newArgs[0].(string), newArgs[1].(string), newArgs[2].(string), newArgs[3].(int)))
+			return []eclaType.Type{utils.GoToEclaType(strings.Replace(newArgs[0].(string), newArgs[1].(string), newArgs[2].(string), newArgs[3].(int)))}, nil
 		}
 	case "replaceAll":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String && reflect.TypeOf(newArgs[2]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.ReplaceAll(newArgs[0].(string), newArgs[1].(string), newArgs[2].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.ReplaceAll(newArgs[0].(string), newArgs[1].(string), newArgs[2].(string)))}, nil
 		}
 	case "split":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.Split(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.Split(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "splitAfter":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.SplitAfter(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.SplitAfter(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "splitAfterN":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String && reflect.TypeOf(newArgs[2]).Kind() == reflect.Int {
-			return utils.GoToEclaType(strings.SplitAfterN(newArgs[0].(string), newArgs[1].(string), newArgs[2].(int)))
+			return []eclaType.Type{utils.GoToEclaType(strings.SplitAfterN(newArgs[0].(string), newArgs[1].(string), newArgs[2].(int)))}, nil
 		}
 	case "splitN":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String && reflect.TypeOf(newArgs[2]).Kind() == reflect.Int {
-			return utils.GoToEclaType(strings.SplitN(newArgs[0].(string), newArgs[1].(string), newArgs[2].(int)))
+			return []eclaType.Type{utils.GoToEclaType(strings.SplitN(newArgs[0].(string), newArgs[1].(string), newArgs[2].(int)))}, nil
 		}
 	case "toLower":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.ToLower(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.ToLower(newArgs[0].(string)))}, nil
 		}
 	case "toUpper":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.ToUpper(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.ToUpper(newArgs[0].(string)))}, nil
 		}
 	case "trim":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(strings.Trim(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(strings.Trim(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	default:
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package strings", name))
 	}
 
-	return eclaType.Null{}
+	return []eclaType.Type{eclaType.Null{}}, nil
 }

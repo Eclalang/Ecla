@@ -1,6 +1,8 @@
 package libs
 
 import (
+	"errors"
+	"fmt"
 	"github.com/Eclalang/os"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs/utils"
@@ -40,13 +42,13 @@ func NewOs() *Os {
 	}
 }
 
-func (o *Os) Call(name string, args []eclaType.Type) eclaType.Type {
+func (o *Os) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	newArgs := make([]any, len(args))
 	for k, arg := range args {
 		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
 	if _, ok := o.functionMap[name]; !ok {
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package os", name))
 	}
 	switch name {
 	case "chown":
@@ -60,38 +62,38 @@ func (o *Os) Call(name string, args []eclaType.Type) eclaType.Type {
 			os.Create(newArgs[0].(string))
 		}
 	case "getegid":
-		return utils.GoToEclaType(os.Getegid())
+		return []eclaType.Type{utils.GoToEclaType(os.Getegid())}, nil
 	case "getEnv":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(os.GetEnv(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(os.GetEnv(newArgs[0].(string)))}, nil
 		}
 	case "geteuid":
-		return utils.GoToEclaType(os.Geteuid())
+		return []eclaType.Type{utils.GoToEclaType(os.Geteuid())}, nil
 	case "getgid":
-		return utils.GoToEclaType(os.Getgid())
+		return []eclaType.Type{utils.GoToEclaType(os.Getgid())}, nil
 	case "getHostname":
-		return utils.GoToEclaType(os.GetHostname())
+		return []eclaType.Type{utils.GoToEclaType(os.GetHostname())}, nil
 	case "getpid":
-		return utils.GoToEclaType(os.Getpid())
+		return []eclaType.Type{utils.GoToEclaType(os.Getpid())}, nil
 	case "getppid":
-		return utils.GoToEclaType(os.Getppid())
+		return []eclaType.Type{utils.GoToEclaType(os.Getppid())}, nil
 	case "getuid":
-		return utils.GoToEclaType(os.Getuid())
+		return []eclaType.Type{utils.GoToEclaType(os.Getuid())}, nil
 	case "getUserHomeDir":
-		return utils.GoToEclaType(os.GetUserHomeDir())
+		return []eclaType.Type{utils.GoToEclaType(os.GetUserHomeDir())}, nil
 	case "getwd":
-		return utils.GoToEclaType(os.Getwd())
+		return []eclaType.Type{utils.GoToEclaType(os.Getwd())}, nil
 	case "mkdir":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
 			os.Mkdir(newArgs[0].(string))
 		}
 	case "readDir":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(os.ReadDir(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(os.ReadDir(newArgs[0].(string)))}, nil
 		}
 	case "readFile":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(os.ReadFile(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(os.ReadFile(newArgs[0].(string)))}, nil
 		}
 	case "remove":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
@@ -118,8 +120,8 @@ func (o *Os) Call(name string, args []eclaType.Type) eclaType.Type {
 			os.WriteFile(newArgs[0].(string), newArgs[1].(string))
 		}
 	default:
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package os", name))
 	}
 
-	return eclaType.Null{}
+	return []eclaType.Type{eclaType.Null{}}, nil
 }

@@ -1,6 +1,8 @@
 package libs
 
 import (
+	"errors"
+	"fmt"
 	enc "github.com/Eclalang/encoding"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs/utils"
@@ -26,13 +28,13 @@ func NewEncoding() *Encoding {
 	}
 }
 
-func (e *Encoding) Call(name string, args []eclaType.Type) eclaType.Type {
+func (e *Encoding) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	newArgs := make([]any, len(args))
 	for k, arg := range args {
 		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
 	if _, ok := e.functionMap[name]; !ok {
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package encoding", name))
 	}
 	switch name {
 	case "asciiToString":
@@ -41,35 +43,35 @@ func (e *Encoding) Call(name string, args []eclaType.Type) eclaType.Type {
 		for _, val := range arg1 {
 			arg2 = append(arg2, val.(int))
 		}
-		return utils.GoToEclaType(enc.AsciiToString(arg2))
+		return []eclaType.Type{utils.GoToEclaType(enc.AsciiToString(arg2))}, nil
 	case "decodeBase64":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(enc.DecodeBase64(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(enc.DecodeBase64(newArgs[0].(string)))}, nil
 		}
 	case "decodeGob":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.Slice {
-			return utils.GoToEclaType(enc.DecodeGob(newArgs[0].([]int)))
+			return []eclaType.Type{utils.GoToEclaType(enc.DecodeGob(newArgs[0].([]int)))}, nil
 		}
 	case "decodeHex":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(enc.DecodeHex(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(enc.DecodeHex(newArgs[0].(string)))}, nil
 		}
 	case "encodeBase64":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.Slice {
-			return utils.GoToEclaType(enc.EncodeBase64(newArgs[0].([]int)))
+			return []eclaType.Type{utils.GoToEclaType(enc.EncodeBase64(newArgs[0].([]int)))}, nil
 		}
 	case "encodeGob":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(enc.EncodeGob(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(enc.EncodeGob(newArgs[0].(string)))}, nil
 		}
 	case "encodeHex":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.Slice {
-			return utils.GoToEclaType(enc.EncodeHex(newArgs[0].([]int)))
+			return []eclaType.Type{utils.GoToEclaType(enc.EncodeHex(newArgs[0].([]int)))}, nil
 		}
 	case "stringToAscii":
-		return utils.GoToEclaType(enc.StringToAscii(newArgs[0].(string)))
+		return []eclaType.Type{utils.GoToEclaType(enc.StringToAscii(newArgs[0].(string)))}, nil
 	default:
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package encoding", name))
 	}
-	return eclaType.Null{}
+	return []eclaType.Type{eclaType.Null{}}, nil
 }

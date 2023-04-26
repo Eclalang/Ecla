@@ -1,6 +1,7 @@
 package libs
 
 import (
+	"errors"
 	"fmt"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs/utils"
@@ -24,19 +25,19 @@ func NewDebugKingdom() *DebugKingdom {
 	}
 }
 
-func (d *DebugKingdom) Call(name string, args []eclaType.Type) eclaType.Type {
+func (d *DebugKingdom) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	newArgs := make([]any, len(args))
 	for k, arg := range args {
 		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
 	if _, ok := d.functionMap[name]; !ok {
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package debugKingdom", name))
 	}
 	switch name {
 	case "testMap":
 		tempMap, ok := newArgs[0].(map[interface{}]interface{})
 		if !ok {
-			return nil
+			return nil, errors.New("testMap: argument is not a map")
 		}
 		newMap := make(map[string]string)
 		for k, v := range tempMap {
@@ -46,17 +47,17 @@ func (d *DebugKingdom) Call(name string, args []eclaType.Type) eclaType.Type {
 	case "testMapRet":
 		tempMap, ok := newArgs[0].(map[interface{}]interface{})
 		if !ok {
-			return nil
+			return nil, errors.New("testMapRet: argument is not a map")
 		}
 		newMap := make(map[string]string)
 		for k, v := range tempMap {
 			newMap[k.(string)] = v.(string)
 		}
-		return utils.GoToEclaType(d.TestMapRet(newMap))
+		return []eclaType.Type{utils.GoToEclaType(d.TestMapRet(newMap))}, nil
 	case "testList":
 		tempList, ok := newArgs[0].([]interface{})
 		if !ok {
-			return nil
+			return nil, errors.New("testList: argument is not a list")
 		}
 		newList := make([]string, len(tempList))
 		for k, v := range tempList {
@@ -66,27 +67,27 @@ func (d *DebugKingdom) Call(name string, args []eclaType.Type) eclaType.Type {
 	case "testListRet":
 		tempList, ok := newArgs[0].([]interface{})
 		if !ok {
-			return nil
+			return nil, errors.New("testListRet: argument is not a list")
 		}
 		newList := make([]string, len(tempList))
 		for k, v := range tempList {
 			newList[k] = v.(string)
 		}
-		return utils.GoToEclaType(d.TestListRet(newList))
+		return []eclaType.Type{utils.GoToEclaType(d.TestListRet(newList))}, nil
 	case "randInt":
 		min, ok := newArgs[0].(int)
 		if !ok {
-			return eclaType.Null{}
+			return []eclaType.Type{eclaType.Null{}}, errors.New("randInt: argument is not an int")
 		}
 		max, ok := newArgs[1].(int)
 		if !ok {
-			return eclaType.Null{}
+			return []eclaType.Type{eclaType.Null{}}, errors.New("randInt: argument is not an int")
 		}
-		return utils.GoToEclaType(d.RandInt(min, max))
+		return []eclaType.Type{utils.GoToEclaType(d.RandInt(min, max))}, nil
 	case "clear":
 		fmt.Print("\033[H\033[2J")
 	}
-	return eclaType.Null{}
+	return []eclaType.Type{eclaType.Null{}}, nil
 }
 
 func (d *DebugKingdom) RandInt(min int, max int) int {

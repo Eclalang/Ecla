@@ -1,6 +1,8 @@
 package libs
 
 import (
+	"errors"
+	"fmt"
 	"github.com/Eclalang/regex"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs/utils"
@@ -24,42 +26,42 @@ func NewRegex() *Regex {
 	}
 }
 
-func (r *Regex) Call(name string, args []eclaType.Type) eclaType.Type {
+func (r *Regex) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	newArgs := make([]any, len(args))
 	for k, arg := range args {
 		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
 	if _, ok := r.functionMap[name]; !ok {
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package regex", name))
 	}
 	switch name {
 	case "find":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(regex.Find(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(regex.Find(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "findAll":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(regex.FindAll(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(regex.FindAll(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "findAllIndex":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(regex.FindAllIndex(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(regex.FindAllIndex(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "findIndex":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(regex.FindIndex(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(regex.FindIndex(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "match":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String {
-			return utils.GoToEclaType(regex.Match(newArgs[0].(string), newArgs[1].(string)))
+			return []eclaType.Type{utils.GoToEclaType(regex.Match(newArgs[0].(string), newArgs[1].(string)))}, nil
 		}
 	case "replaceAll":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String && reflect.TypeOf(newArgs[1]).Kind() == reflect.String && reflect.TypeOf(newArgs[2]).Kind() == reflect.String {
-			return utils.GoToEclaType(regex.ReplaceAll(newArgs[0].(string), newArgs[1].(string), newArgs[2].(string)))
+			return []eclaType.Type{utils.GoToEclaType(regex.ReplaceAll(newArgs[0].(string), newArgs[1].(string), newArgs[2].(string)))}, nil
 		}
 	default:
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package regex", name))
 	}
 
-	return eclaType.Null{}
+	return []eclaType.Type{eclaType.Null{}}, nil
 }

@@ -1,6 +1,8 @@
 package libs
 
 import (
+	"errors"
+	"fmt"
 	"github.com/Eclalang/json"
 	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"github.com/tot0p/Ecla/interpreter/libs/utils"
@@ -20,25 +22,25 @@ func NewJson() *Json {
 	}
 }
 
-func (j *Json) Call(name string, args []eclaType.Type) eclaType.Type {
+func (j *Json) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	newArgs := make([]any, len(args))
 	for k, arg := range args {
 		newArgs[k] = utils.EclaTypeToGo(arg)
 	}
 	if _, ok := j.functionMap[name]; !ok {
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package json", name))
 	}
 	switch name {
 	case "marshal":
-		return utils.GoToEclaType(json.Marshal(newArgs[0]))
+		return []eclaType.Type{utils.GoToEclaType(json.Marshal(newArgs[0]))}, nil
 	case "unmarshal":
 		if reflect.TypeOf(newArgs[0]).Kind() == reflect.String {
-			return utils.GoToEclaType(json.Unmarshal(newArgs[0].(string)))
+			return []eclaType.Type{utils.GoToEclaType(json.Unmarshal(newArgs[0].(string)))}, nil
 		}
 		// TODO : Error
 	default:
-		return nil
+		return nil, errors.New(fmt.Sprintf("Method %s not found in package json", name))
 	}
 
-	return eclaType.Null{}
+	return []eclaType.Type{eclaType.Null{}}, nil
 }
