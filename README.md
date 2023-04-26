@@ -24,3 +24,13 @@ go build .
 - **dl** for debug lexer mode
 
 - **dp** for debug parser mode
+
+# Thanks for using Ecla
+
+# License
+
+MIT License
+
+# Contributors
+
+[![](https://contributors-img.web.app/image?repo=tot0p/Ecla)](https://github.com/tot0p/Ecla/graphs/contributors)
