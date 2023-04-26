@@ -1,18 +1,26 @@
 # Ecla
 
 
+## How to run
+
 for run the project 
 
 ```bash
 go run . path/to/file
 ```
 
-flag
+for build the project
 
--t for get time
+```bash
+go build .
+```
 
--d for debug mode
+### flags :
 
--dl for debug lexer mode
+- **t** for get time
 
--dp for debug parser mode
+- **d** for debug mode
+
+- **dl** for debug lexer mode
+
+- **dp** for debug parser mode
