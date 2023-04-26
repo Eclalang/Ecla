@@ -158,6 +158,7 @@ func (p *Parser) ParseNode() Node {
 			tempExpr := p.ParseText()
 			if p.CurrentToken.TokenType != lexer.EOL && !p.IsEndOfBrace {
 				p.PrintBacktrace()
+				fmt.Println(p.CurrentToken.TokenType, p.CurrentToken.Value)
 				p.HandleFatal("Expected End Of Line")
 			}
 			if p.IsEndOfBrace {
@@ -582,8 +583,7 @@ func (p *Parser) ParseVariableAssign() Stmt {
 
 	Var := p.CurrentToken
 	Opp := ""
-	toAssign := p.ParseVariableAssignLHS()
-	p.Back()
+	toAssign := p.ParseVariableAssignSide()
 	if _, ok := AssignOperators[p.CurrentToken.Value]; ok {
 		Opp = p.CurrentToken.Value
 	} else {
@@ -598,8 +598,7 @@ func (p *Parser) ParseVariableAssign() Stmt {
 			Values:   []Expr{nil},
 		}
 	}
-	rhs := p.ParseVariableAssignRHS()
-	p.Back()
+	rhs := p.ParseVariableAssignSide()
 	return VariableAssignStmt{
 		VarToken: Var,
 		Names:    toAssign,
@@ -608,31 +607,13 @@ func (p *Parser) ParseVariableAssign() Stmt {
 	}
 }
 
-// ParseVariableAssignLHS parses the left hand side of a variable assignment
-func (p *Parser) ParseVariableAssignLHS() []Expr {
+// ParseVariableAssignSide parses the right hand side or the left hand side of a variable assignment
+func (p *Parser) ParseVariableAssignSide() []Expr {
 	var tempArray []Expr
 	tempArray = append(tempArray, p.ParseExpr())
 	for p.CurrentToken.TokenType == lexer.COMMA {
 		p.Step()
 		tempArray = append(tempArray, p.ParseExpr())
-	}
-	p.Step()
-	return tempArray
-}
-
-// ParseVariableAssignRHS parses the right hand side of a variable assignment
-func (p *Parser) ParseVariableAssignRHS() []Expr {
-	entered := false
-	var tempArray []Expr
-	tempArray = append(tempArray, p.ParseExpr())
-	for p.CurrentToken.TokenType == lexer.COMMA {
-		entered = true
-		p.Step()
-		tempArray = append(tempArray, p.ParseExpr())
-		p.Step()
-	}
-	if !entered {
-		p.Step()
 	}
 	return tempArray
 }

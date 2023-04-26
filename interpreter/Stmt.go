@@ -30,25 +30,56 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) {
 	//return eclaType.NewString(RunTree(tree.Expression, env).GetType())
 }
 
+func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) {
+	if type1 != type2 {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Can't assign %s to %s", type2, type1), errorHandler.LevelFatal)
+	}
+}
+
+func HandleError(tree parser.VariableAssignStmt, err error, env *Env) {
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+	}
+}
+
 // RunVariableAssignStmt Run assigns a variable.
 func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
-	var exprPreExec []*Bus
+	var exprs []eclaType.Type
+	var exprsTypes []string
 	var vars []*eclaType.Type
+	var varsTypes []string
 	for _, v := range tree.Values {
-		exprPreExec = append(exprPreExec, RunTree(v, env)...)
+		busses := RunTree(v, env)
+		for _, bus := range busses {
+			busVal := bus.GetVal()
+			switch busVal.(type) {
+			case *eclaType.List:
+				continue
+			case *eclaType.Map:
+				continue
+			case *eclaType.Var:
+				busVal.GetType()
+				busVal = busVal.GetValue().(eclaType.Type)
+			}
+			exprs = append(exprs, busVal)
+			exprsTypes = append(exprsTypes, busVal.GetType())
+		}
+
 	}
 	for _, v := range tree.Names {
 		switch v.(type) {
 		case parser.IndexableAccessExpr:
 			temp := IndexableAssignmentChecks(tree, v.(parser.IndexableAccessExpr), env)
 			vars = append(vars, temp)
+			varsTypes = append(varsTypes, (*temp).GetType())
 		case parser.Literal:
-			if tree.Names[0].(parser.Literal).Type == "VAR" {
-				variable, ok := env.GetVar(tree.Names[0].(parser.Literal).Value)
+			if v.(parser.Literal).Type == "VAR" {
+				variable, ok := env.GetVar(v.(parser.Literal).Value)
 				if !ok {
 					env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: variable not found", errorHandler.LevelFatal)
 				}
 				vars = append(vars, &(variable.Value))
+				varsTypes = append(varsTypes, variable.Value.GetType())
 			} else {
 				env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Cant run assignement on type %s", tree.Names[0].(parser.Literal).Type), errorHandler.LevelFatal)
 			}
@@ -56,30 +87,63 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 		}
 	}
 
-	fmt.Println(exprPreExec, vars)
+	fmt.Println(exprs, vars)
+	fmt.Println(exprsTypes, varsTypes)
 
-	PreExecLen := len(exprPreExec)
+	PreExecLen := len(exprs)
 	NamesLen := len(tree.Names)
 	opp := tree.Operator
 
 	if PreExecLen == NamesLen {
 		switch opp {
 		case parser.ASSIGN:
-			for i, v := range vars {
-				val := exprPreExec[i].GetVal()
-				*v = val
+			for i := 0; i < NamesLen; i++ {
+				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+				*vars[i] = exprs[i]
 			}
 		case parser.ADDASSIGN:
-
+			for i := 0; i < NamesLen; i++ {
+				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+				temp, err := (*vars[i]).Add(exprs[i])
+				HandleError(tree, err, env)
+				*vars[i] = temp
+			}
 		case parser.SUBASSIGN:
-
+			for i := 0; i < NamesLen; i++ {
+				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+				temp, err := (*vars[i]).Sub(exprs[i])
+				HandleError(tree, err, env)
+				*vars[i] = temp
+			}
 		case parser.DIVASSIGN:
-
+			for i := 0; i < NamesLen; i++ {
+				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+				temp, err := (*vars[i]).Div(exprs[i])
+				HandleError(tree, err, env)
+				*vars[i] = temp
+			}
 		case parser.MODASSIGN:
-
+			for i := 0; i < NamesLen; i++ {
+				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+				temp, err := (*vars[i]).Mod(exprs[i])
+				HandleError(tree, err, env)
+				*vars[i] = temp
+			}
 		case parser.QOTASSIGN:
+			for i := 0; i < NamesLen; i++ {
+				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+				temp, err := (*vars[i]).DivEc(exprs[i])
+				HandleError(tree, err, env)
+				*vars[i] = temp
+			}
 
 		case parser.MULTASSIGN:
+			for i := 0; i < NamesLen; i++ {
+				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+				temp, err := (*vars[i]).Mul(exprs[i])
+				HandleError(tree, err, env)
+				*vars[i] = temp
+			}
 
 		default:
 			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("%s is not a valid assignement operator", tree.Operator), errorHandler.LevelFatal)
@@ -104,7 +168,7 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 		default:
 			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("%s is not a valid assignement operator", tree.Operator), errorHandler.LevelFatal)
 		}
-	} else if PreExecLen == 0 && NamesLen > 1 {
+	} else if PreExecLen == 0 && NamesLen >= 1 {
 		switch opp {
 
 		case parser.INCREMENT:
@@ -116,92 +180,6 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 
 	} else {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Invalid assignment: %d rValues to %d lValues", PreExecLen, NamesLen), errorHandler.LevelFatal)
-	}
-
-	lValueEqualOne := len(tree.Values) == 1
-	if len(tree.Names) == 1 {
-		if !lValueEqualOne {
-			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Can't assign %d rValues to 1 lValue", len(tree.Values)), errorHandler.LevelFatal)
-		}
-		switch tree.Names[0].(type) {
-		case parser.IndexableAccessExpr:
-			switch tree.Operator {
-			case parser.ASSIGN:
-				RunIndexableVariableAssignStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
-			case parser.INCREMENT:
-				RunIndexableVariableIncrementStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
-			case parser.DECREMENT:
-				RunIndexableVariableDecrementStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
-			case parser.ADDASSIGN:
-				RunIndexableVariableAddAssignStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
-			case parser.SUBASSIGN:
-				RunIndexableVariableSubAssignStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
-			case parser.DIVASSIGN:
-				RunIndexableVariableDivAssignStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
-			case parser.MODASSIGN:
-				RunIndexableVariableModAssignStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
-			case parser.QOTASSIGN:
-				RunIndexableVariableQotAssignStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
-			case parser.MULTASSIGN:
-				RunIndexableVariableMultAssignStmt(tree, tree.Names[0].(parser.IndexableAccessExpr), env)
-			default:
-				env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("%s is not a valid assignement operator", tree.Operator), errorHandler.LevelFatal)
-			}
-		case parser.Literal:
-			if tree.Names[0].(parser.Literal).Type == "VAR" {
-				switch tree.Operator {
-				case parser.ASSIGN:
-					RunVariableNonIndexableAssignStmt(tree, tree.Names[0].(parser.Literal), env)
-				case parser.INCREMENT:
-					RunVariableIncrementStmt(tree, tree.Names[0].(parser.Literal), env)
-				case parser.DECREMENT:
-					RunVariableDecrementStmt(tree, tree.Names[0].(parser.Literal), env)
-				case parser.ADDASSIGN: //TODO Change by method
-					RunVariableAddAssignStmt(tree, tree.Names[0].(parser.Literal), env)
-				case parser.SUBASSIGN:
-					RunVariableSubAssignStmt(tree, tree.Names[0].(parser.Literal), env)
-				case parser.DIVASSIGN:
-					RunVariableDivAssignStmt(tree, tree.Names[0].(parser.Literal), env)
-				case parser.MODASSIGN:
-					RunVariableModAssignStmt(tree, tree.Names[0].(parser.Literal), env)
-				case parser.QOTASSIGN:
-					RunVariableQotAssignStmt(tree, tree.Names[0].(parser.Literal), env)
-				case parser.MULTASSIGN:
-					RunVariableMultAssignStmt(tree, tree.Names[0].(parser.Literal), env)
-
-				default:
-					env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("%s is not a valid assignement operator", tree.Operator), errorHandler.LevelFatal)
-				}
-			} else {
-				env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Cant run assignement on type %s", tree.Names[0].(parser.Literal).Type), errorHandler.LevelFatal)
-			}
-		default:
-			fmt.Printf("%T", tree.Names[0])
-		}
-	} else if lValueEqualOne {
-		for Name := range tree.Names {
-			switch tree.Names[Name].(type) {
-			case parser.IndexableAccessExpr:
-				switch tree.Operator {
-				case parser.ASSIGN:
-					RunIndexableVariableAssignStmt(tree, tree.Names[Name].(parser.IndexableAccessExpr), env)
-				}
-			case parser.Literal:
-				if tree.Names[Name].(parser.Literal).Type == "VAR" {
-					switch tree.Operator {
-					case parser.ASSIGN:
-						RunVariableNonIndexableAssignStmt(tree, tree.Names[Name].(parser.Literal), env)
-					default:
-						env.ErrorHandle.HandleError(0, tree.StartPos(), "invalid assignment", errorHandler.LevelFatal)
-					}
-				} else {
-					env.ErrorHandle.HandleError(0, tree.StartPos(), "invalid assignment", errorHandler.LevelFatal)
-				}
-			}
-		}
-	} else {
-		//TODO
-		fmt.Println("multiple values, multiple names")
 	}
 }
 
