@@ -6,6 +6,10 @@ github.com/Eclalang/encoding v0.0.0-20230208224054-881a20b705c8 h1:uvI3+JojulALz
 github.com/Eclalang/encoding v0.0.0-20230208224054-881a20b705c8/go.mod h1:fc3/K5xxbEf8fRSBhxunDFRerN3Wr6CXJ2lyA1nbxWA=
 github.com/Eclalang/encoding v0.0.0-20230412075018-57cd0ab5098f h1:zTm6aJ02ozFGzuczxcRRosNTY24GNNy8OZty7Ldutns=
 github.com/Eclalang/encoding v0.0.0-20230412075018-57cd0ab5098f/go.mod h1:fc3/K5xxbEf8fRSBhxunDFRerN3Wr6CXJ2lyA1nbxWA=
+github.com/Eclalang/encoding v0.0.0-20230425204800-b6cf1ddd2340 h1:TL97hVKNJIl5o+03QeEs0fInO1zSmuOfP8BF+NwLEnY=
+github.com/Eclalang/encoding v0.0.0-20230425204800-b6cf1ddd2340/go.mod h1:fc3/K5xxbEf8fRSBhxunDFRerN3Wr6CXJ2lyA1nbxWA=
+github.com/Eclalang/encoding v0.0.0-20230426103355-d5d8ac9cebd8 h1:WqTJN7ui5vYITJeiinOba/x40IXuKYPuyLkTKpQk/X0=
+github.com/Eclalang/encoding v0.0.0-20230426103355-d5d8ac9cebd8/go.mod h1:fc3/K5xxbEf8fRSBhxunDFRerN3Wr6CXJ2lyA1nbxWA=
 github.com/Eclalang/hash v0.0.0-20230412075750-64b0e5c5265f h1:sS4I2LJbWvT1wFDT0IyZhbZ1i1JxnY9Lw7Vei+Pp9gI=
 github.com/Eclalang/hash v0.0.0-20230412075750-64b0e5c5265f/go.mod h1:/ZoCq7JP9TBYTl79nIvL2X+VowFnarTwa8/fa9APK/w=
 github.com/Eclalang/json v0.0.0-20230412080015-0eb60c596892 h1:G+VMJaqfNngzTYItN7V1uMr2C8tjHb7bpHOKzl2ggms=

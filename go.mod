@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/Eclalang/cast v0.0.0-20230412075237-1628861597c7
 	github.com/Eclalang/console v0.0.0-20230412145904-e88489fbc97d
-	github.com/Eclalang/encoding v0.0.0-20230412075018-57cd0ab5098f
+	github.com/Eclalang/encoding v0.0.0-20230426103355-d5d8ac9cebd8
 	github.com/Eclalang/hash v0.0.0-20230412075750-64b0e5c5265f
 	github.com/Eclalang/json v0.0.0-20230412080015-0eb60c596892
 	github.com/Eclalang/math v0.0.0-20230412092841-4e85a290315c
