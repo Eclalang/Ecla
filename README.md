@@ -2,7 +2,7 @@
 
 **Ecla** is a programming language that is designed to be easy to learn and use. It is a general purpose language that can be used for many different things.
 
-> **Help us** by starring this project , sharing it with your friends! 🙏
+> **Help us** by starring this project and sharing it with your friends! 🙏
 
 ## How to run
 
