@@ -126,7 +126,7 @@ func Lexer(sentence string) []Token {
 				ret = tokenCommentGroup(ident, ret, &prevIndex, &tempVal, i)
 				ret = tokenComment(ident, ret, &prevIndex, &tempVal, i, line, sentence)
 				ret = tokenInt(ident, ret, &prevIndex, &tempVal, i, isSpaces)
-				ret = tokenPeriod(ident, ret, &prevIndex, &tempVal, i, isSpaces, inQuote, line, sentence)
+				ret = tokenPeriod(ident, ret, &prevIndex, &tempVal, i, isSpaces, inQuote, sentence)
 				ret = tokenAssign(ident, ret, &prevIndex, &tempVal, i)
 				ret = tokenDiv(ident, ret, &prevIndex, &tempVal, i)
 				ret = tokenAddSub(ident.Identifier == ADD, ret, &prevIndex, &tempVal, i, ADD, INC)
@@ -213,8 +213,15 @@ func Lexer(sentence string) []Token {
 	//
 	// if at the end of the sentence parse, tempVal is not "", it means that
 	// a last token of type TEXT must be appended to the return value
-	if ret[len(ret)-1].TokenType == COMMENTGROUP && tempVal == "/" {
-		ret[len(ret)-1].Value += tempVal
+	if len(ret) > 0 {
+		if ret[len(ret)-1].TokenType == COMMENTGROUP && tempVal == "/" {
+			ret[len(ret)-1].Value += tempVal
+		} else if tempVal != "" {
+			actualIndex, line = positionDetector(prevIndex, sentence)
+			ret = append(ret, addToken(Identifier[0].Identifier, tempVal, actualIndex, line))
+
+			prevIndex += len(tempVal)
+		}
 	} else if tempVal != "" {
 		actualIndex, line = positionDetector(prevIndex, sentence)
 		ret = append(ret, addToken(Identifier[0].Identifier, tempVal, actualIndex, line))
@@ -352,7 +359,7 @@ func tokenDiv(ident identifier, ret []Token, prevIndex *int, tempVal *string, in
 // if we are in a string, ignore this behavior
 //
 // return the changed []Token
-func tokenPeriod(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, isSpaces bool, inQuote bool, line int, sentence string) []Token {
+func tokenPeriod(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, isSpaces bool, inQuote bool, sentence string) []Token {
 	if ident.Identifier == PERIOD {
 		if len(ret) >= 1 {
 			if ret[len(ret)-1].TokenType == INT && !isSpaces {
