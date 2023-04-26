@@ -11,5 +11,6 @@ var b int = 2;
 var c int = 3;
 
 console.println(a,b,c);
-a,b,c++;
+a,b,arr[0] = testFunction(a,b),12;
 console.println(a,b,c);
+console.println(arr);

@@ -55,11 +55,10 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 				busVal := bus.GetVal()
 				switch busVal.(type) {
 				case *eclaType.List:
-					continue
+					busVal = busVal.GetValue().(eclaType.Type)
 				case *eclaType.Map:
-					continue
+					busVal = busVal.GetValue().(eclaType.Type)
 				case *eclaType.Var:
-					busVal.GetType()
 					busVal = busVal.GetValue().(eclaType.Type)
 				}
 				exprs = append(exprs, busVal)
