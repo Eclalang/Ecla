@@ -11,5 +11,5 @@ var b int = 2;
 var c int = 3;
 
 console.println(a,b,c);
-a,b,c = c,b,a;
+a,b,c++;
 console.println(a,b,c);
