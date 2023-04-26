@@ -213,8 +213,15 @@ func Lexer(sentence string) []Token {
 	//
 	// if at the end of the sentence parse, tempVal is not "", it means that
 	// a last token of type TEXT must be appended to the return value
-	if ret[len(ret)-1].TokenType == COMMENTGROUP && tempVal == "/" {
-		ret[len(ret)-1].Value += tempVal
+	if len(ret) > 0 {
+		if ret[len(ret)-1].TokenType == COMMENTGROUP && tempVal == "/" {
+			ret[len(ret)-1].Value += tempVal
+		} else if tempVal != "" {
+			actualIndex, line = positionDetector(prevIndex, sentence)
+			ret = append(ret, addToken(Identifier[0].Identifier, tempVal, actualIndex, line))
+
+			prevIndex += len(tempVal)
+		}
 	} else if tempVal != "" {
 		actualIndex, line = positionDetector(prevIndex, sentence)
 		ret = append(ret, addToken(Identifier[0].Identifier, tempVal, actualIndex, line))
