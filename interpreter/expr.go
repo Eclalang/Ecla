@@ -223,10 +223,6 @@ func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
 				return retVal, nil
 			}
 		}
-		temp := BusCollection[0]
-		if temp.IsReturn() {
-			return []eclaType.Type{temp.GetVal().GetValue().(eclaType.Type)}, nil
-		}
 	}
 	return nil, nil
 }
