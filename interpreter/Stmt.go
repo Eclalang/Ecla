@@ -362,7 +362,6 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 		if IsMultipleBus(BusCollection) {
 			env.ErrorHandle.HandleError(0, f.Condition.StartPos(), "for: MULTIPLE BUS IN RunForStmt", errorHandler.LevelFatal)
 		}
-		fmt.Println(BusCollection[0].GetVal())
 		for BusCollection[0].GetVal().GetString() == "true" {
 			for _, stmt := range f.Body {
 				BusCollection2 := RunTree(stmt, env)
