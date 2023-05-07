@@ -226,11 +226,9 @@ func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
 			if BusCollection[0].IsReturn() {
 				return []eclaType.Type{BusCollection[0].GetVal().GetValue().(eclaType.Type)}, nil
 			}
-		} else {
-			return []eclaType.Type{eclaType.Null{}}, nil
 		}
 	}
-	return nil, nil
+	return []eclaType.Type{eclaType.Null{}}, nil
 }
 
 func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
