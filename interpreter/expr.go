@@ -222,6 +222,12 @@ func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
 			if ret {
 				return retVal, nil
 			}
+		} else if len(BusCollection) == 1 {
+			if BusCollection[0].IsReturn() {
+				return []eclaType.Type{BusCollection[0].GetVal().GetValue().(eclaType.Type)}, nil
+			}
+		} else {
+			return []eclaType.Type{eclaType.Null{}}, nil
 		}
 	}
 	return nil, nil
