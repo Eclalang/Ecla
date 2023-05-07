@@ -1,7 +1,10 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/tot0p/Ecla/lexer"
+	"path/filepath"
+	"strings"
 )
 
 // The AST struct contains all the information needed for the interpreter to run
@@ -41,6 +44,13 @@ func (f *File) AddDependency(dep string) {
 	}
 }
 
+func (f *File) AddImport(imp string) {
+	imp = GetPackageNameByPath(imp)
+	if !contains(imp, f.Imports) {
+		f.Imports = append(f.Imports, imp)
+	}
+}
+
 // ConsumeComments examines all the tokens, consumes them and deletes them from the token slice
 func (f *File) ConsumeComments(tokens []lexer.Token) []lexer.Token {
 	var tempTokens []lexer.Token
@@ -62,4 +72,13 @@ func contains(needle string, haystack []string) bool {
 		}
 	}
 	return false
+}
+
+func GetPackageNameByPath(path string) string {
+	_, fPath := filepath.Split(path)
+	temp := strings.Split(fPath, ".")
+	if len(temp) == 0 {
+		fmt.Println("invalid file path")
+	}
+	return temp[0]
 }

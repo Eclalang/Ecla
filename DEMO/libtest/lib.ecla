@@ -1,0 +1,20 @@
+import "console";
+
+import "lib2.ecla";
+
+var coucou string = "coucou";
+
+function test() {
+    lib2.test();
+}
+function testParam(in:string){
+    console.println(in);
+}
+
+function testReturn()(string){
+    return "coucou";
+}
+
+function testAll(a:int,b:int)(int){
+    return a+b;
+}

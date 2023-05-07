@@ -749,7 +749,7 @@ func (p *Parser) ParseImportStmt() Stmt {
 		p.HandleFatal("Expected package name")
 	}
 	tempImportStmt.ModulePath = p.CurrentToken.Value
-	p.CurrentFile.Imports = append(p.CurrentFile.Imports, tempImportStmt.ModulePath)
+	p.CurrentFile.AddImport(p.CurrentToken.Value)
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.DQUOTE {
 		p.HandleFatal("Missing string closing double quote")

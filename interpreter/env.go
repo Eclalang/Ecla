@@ -8,6 +8,7 @@ import (
 	"github.com/tot0p/Ecla/lexer"
 	"github.com/tot0p/Ecla/parser"
 	"os"
+	"path/filepath"
 	"runtime"
 )
 
@@ -33,6 +34,17 @@ func NewEnv() *Env {
 		Vars:         NewScopeMain(),
 		Libs:         make(map[string]libs.Lib),
 		ErrorHandle:  errorHandler.NewHandler(),
+		ExecutedFunc: []*eclaType.Function{},
+	}
+}
+
+func NewTemporaryEnv(ErrorHandler *errorHandler.ErrorHandler) *Env {
+	return &Env{
+		OS:           runtime.GOOS,
+		ARCH:         runtime.GOARCH,
+		Vars:         NewScopeMain(),
+		Libs:         make(map[string]libs.Lib),
+		ErrorHandle:  ErrorHandler,
 		ExecutedFunc: []*eclaType.Function{},
 	}
 }
@@ -113,8 +125,38 @@ func (env *Env) Execute() {
 	Run(env)
 }
 
-func (env *Env) Import(file string) {
-	env.Libs[file] = libs.Import(file)
+// Load the file
+func (env *Env) Load() {
+	env.Code = readFile(env.File)
+	// Lexing
+	env.Tokens = lexer.Lexer(env.Code)
+
+	// Parsing
+	pars := parser.Parser{Tokens: env.Tokens, ErrorHandler: env.ErrorHandle}
+	env.SyntaxTree = pars.Parse()
+
+	Load(env)
+}
+
+func (env *Env) Import(stmt parser.ImportStmt) {
+	file := stmt.ModulePath
+	temp := libs.Import(file)
+	if temp == nil {
+		if !filepath.IsAbs(file) {
+			file = filepath.Join(filepath.Dir(env.File), stmt.ModulePath)
+		}
+		if _, err := os.Stat(file); os.IsNotExist(err) {
+			env.ErrorHandle.HandleError(stmt.ImportToken.Line, 0, fmt.Sprintf("module '%s' not found", file), errorHandler.LevelFatal)
+		} else if err != nil {
+			env.ErrorHandle.HandleError(stmt.ImportToken.Line, 0, err.Error(), errorHandler.LevelFatal)
+		}
+		tempsEnv := NewTemporaryEnv(env.ErrorHandle)
+		tempsEnv.SetFile(file)
+		tempsEnv.Load()
+
+		temp = tempsEnv.ConvertToLib(env)
+	}
+	env.Libs[parser.GetPackageNameByPath(file)] = temp
 }
 
 func (env *Env) AddFunctionExecuted(f *eclaType.Function) {
@@ -127,6 +169,41 @@ func (env *Env) GetFunctionExecuted() *eclaType.Function {
 
 func (env *Env) RemoveFunctionExecuted() {
 	env.ExecutedFunc = env.ExecutedFunc[:len(env.ExecutedFunc)-1]
+}
+
+type envLib struct {
+	Var  *Scope
+	Libs map[string]libs.Lib
+	env  *Env
+}
+
+// Call calls the function with the given name and arguments.
+func (lib *envLib) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
+	function, ok := lib.Var.Get(name)
+	if !ok {
+		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("function '%s' not found", name), errorHandler.LevelFatal)
+	}
+	if !function.IsFunction() {
+		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("'%s' is not a function", name), errorHandler.LevelFatal)
+	}
+	f := function.GetFunction()
+	if f == nil {
+		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("function '%s' is nil", name), errorHandler.LevelFatal)
+	}
+	temps := lib.env.Libs
+	lib.env.Libs = lib.Libs
+	r1, r2 := RunFunctionCallExprWithArgs(name, lib.env, f, args)
+	lib.env.Libs = temps
+	return r1, r2
+}
+
+// ConvertToLib converts the Env to a Lib.
+func (env *Env) ConvertToLib(MainEnv *Env) libs.Lib {
+	return &envLib{
+		Var:  env.Vars,
+		Libs: env.Libs,
+		env:  MainEnv,
+	}
 }
 
 // readFile reads the file at the given path and returns its contents as a string.

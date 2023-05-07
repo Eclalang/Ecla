@@ -18,7 +18,7 @@ func RunPrintStmt(tree parser.PrintStmt, env *Env) {
 
 // RunImportStmt executes a parser.ImportStmt.
 func RunImportStmt(stmt parser.ImportStmt, env *Env) {
-	env.Import(stmt.ModulePath)
+	env.Import(stmt)
 }
 
 // RunTypeStmt executes a parser.TypeStmt.

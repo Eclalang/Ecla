@@ -1,0 +1,7 @@
+import "D:\prog\Ecla\DEMO\libtest\lib.ecla";
+
+#console.println("debug debug debug");
+lib.test();
+#lib.testParam("coucou totop");
+#console.println(lib.testReturn());
+#console.println(lib.testAll(2,2));

@@ -6,3 +6,9 @@ func Run(env *Env) {
 		RunTree(v, env)
 	}
 }
+
+func Load(env *Env) {
+	for _, v := range env.SyntaxTree.ParseTree.Operations {
+		RunTreeLoad(v, env)
+	}
+}

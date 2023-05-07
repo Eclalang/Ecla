@@ -64,6 +64,18 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 	return []*Bus{NewNoneBus()}
 }
 
+func RunTreeLoad(tree parser.Node, env *Env) []*Bus {
+	switch tree.(type) {
+	case parser.VariableDecl:
+		RunVariableDecl(tree.(parser.VariableDecl), env)
+	case parser.FunctionDecl:
+		RunFunctionDecl(tree.(parser.FunctionDecl), env)
+	case parser.ImportStmt:
+		RunImportStmt(tree.(parser.ImportStmt), env)
+	}
+	return []*Bus{NewNoneBus()}
+}
+
 // RunMethodCallExpr executes a parser.MethodCallExpr.
 func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) []*Bus {
 	var args []eclaType.Type
@@ -167,8 +179,6 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 }
 
 func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
-	env.NewScope(SCOPE_FUNCTION)
-	defer env.EndScope()
 	var args []eclaType.Type
 	for _, v := range tree.Args {
 		BusCollection := RunTree(v, env)
@@ -186,17 +196,7 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 	if !ok {
 		panic(fmt.Sprintf("Function %s not found", tree.Name))
 	}
-	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args)
-	if !ok {
-		panic(fmt.Sprintf("Function %s called with incorrect arguments", tree.Name))
-	}
-
-	for i, v := range argsList {
-		env.SetVar(i, v)
-	}
-	env.AddFunctionExecuted(fn)
-	defer env.RemoveFunctionExecuted()
-	r, err := RunBodyFunction(fn, env)
+	r, err := RunFunctionCallExprWithArgs(tree.Name, env, fn, args)
 	if err != nil {
 		panic(err)
 	}
@@ -205,6 +205,23 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 		retValues = append(retValues, NewMainBus(v))
 	}
 	return retValues
+}
+
+func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, args []eclaType.Type) ([]eclaType.Type, error) {
+	env.NewScope(SCOPE_FUNCTION)
+	defer env.EndScope()
+	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args)
+	if !ok {
+		panic(fmt.Sprintf("Function %s called with incorrect arguments", Name))
+	}
+
+	for i, v := range argsList {
+		env.SetVar(i, v)
+	}
+	env.AddFunctionExecuted(fn)
+	defer env.RemoveFunctionExecuted()
+
+	return RunBodyFunction(fn, env)
 }
 
 func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {

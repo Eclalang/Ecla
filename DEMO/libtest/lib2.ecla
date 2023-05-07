@@ -1,0 +1,5 @@
+import "console";
+
+function test() {
+    console.print("test");
+}
