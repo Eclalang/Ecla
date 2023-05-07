@@ -1,4 +1,4 @@
-import console;
+import "console";
 
 var test [][]int = [[14],[15, 1+1]];
 console.print(test[0][0] + "\n");

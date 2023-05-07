@@ -1,5 +1,5 @@
-import console;
-import encoding;
+import "console";
+import "encoding";
 
 # this is an implementation of a brainfuck interpreter using the ECLA programing language
 function interpret(code : string, debug : bool) {

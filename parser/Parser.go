@@ -741,11 +741,20 @@ func (p *Parser) ParseImportStmt() Stmt {
 	tempImportStmt := ImportStmt{}
 	tempImportStmt.ImportToken = p.CurrentToken
 	p.Step()
-	if p.CurrentToken.TokenType != lexer.TEXT {
-		p.HandleFatal("Expected module name")
+	if p.CurrentToken.TokenType != lexer.DQUOTE {
+		p.HandleFatal("Missing string opening double quote")
+	}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.STRING {
+		p.HandleFatal("Expected package name")
 	}
 	tempImportStmt.ModulePath = p.CurrentToken.Value
 	p.CurrentFile.Imports = append(p.CurrentFile.Imports, tempImportStmt.ModulePath)
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.DQUOTE {
+		p.HandleFatal("Missing string closing double quote")
+	}
+
 	p.Step()
 	return tempImportStmt
 }

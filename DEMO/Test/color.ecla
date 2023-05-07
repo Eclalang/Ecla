@@ -1,4 +1,4 @@
-import console;
+import "console";
 console.printInColor("red", "This is red text\n");
 console.printInColor("green", "This is green text\n");
 console.printInColor("blue", "This is blue text\n");

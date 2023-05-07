@@ -1,4 +1,4 @@
-import console;
+import "console";
 
 var nb1 int = 2;
 var nb2 int = 8;

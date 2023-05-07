@@ -1,6 +1,8 @@
 package parser
 
-import "github.com/tot0p/Ecla/lexer"
+import (
+	"github.com/tot0p/Ecla/lexer"
+)
 
 // The AST struct contains all the information needed for the interpreter to run
 type AST struct {
@@ -20,7 +22,7 @@ type File struct {
 
 // DepChecker checks if all dependencies in the current file are resolved by the specified imports
 func (f *File) DepChecker() (bool, []string) {
-	Unresolved := []string{}
+	var Unresolved []string
 	for _, value := range f.Dependencies {
 		if !contains(value, f.Imports) {
 			Unresolved = append(Unresolved, value)

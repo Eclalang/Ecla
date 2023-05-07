@@ -1,4 +1,4 @@
-import console;
+import "console";
 
 var assign int = 10;
 var inc int = 10;

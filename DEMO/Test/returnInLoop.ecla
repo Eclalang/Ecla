@@ -1,4 +1,4 @@
-import console;
+import "console";
 
 function testFunction(a : int , b : int) (int){
     for (var i int = 0, i < 10, i++) {

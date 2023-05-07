@@ -1,2 +1,2 @@
-import console;
+import "console";
 console.println("\x1Bc");

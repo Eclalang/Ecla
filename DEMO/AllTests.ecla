@@ -1,4 +1,4 @@
-import console;
+import "console";
 
 
 #test Print

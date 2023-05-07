@@ -1,4 +1,4 @@
-import console;
+import "console";
 
 # This function returns the nth number in the Fibonacci sequence
 function Fibonacci(n : int) (int) {

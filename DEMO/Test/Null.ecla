@@ -1,6 +1,6 @@
 
 
-import console;
+import "console";
 
 
 var t int = null;

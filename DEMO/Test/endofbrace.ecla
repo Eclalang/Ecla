@@ -1,4 +1,4 @@
-import console;
+import "console";
 
 var Bool1 bool = true;
 

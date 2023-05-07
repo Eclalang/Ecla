@@ -1,4 +1,4 @@
-import console;
+import "console";
 var test []map[string]string = [{"test":"test","test2":"test2",1:"testoui"},{"test":"test","test2":"test2"}];
 
 print(test[0][1]);

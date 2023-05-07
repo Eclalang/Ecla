@@ -1,4 +1,4 @@
-import console;
+import "console";
 var a bool = true;
 var b bool = false;
 if (a){

@@ -1,5 +1,5 @@
-import console;
-import debugKingdom;
+import "console";
+import "debugKingdom";
 
 var PAchoice string = "";
 var PBchoice string = "";
