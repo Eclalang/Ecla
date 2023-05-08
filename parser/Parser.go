@@ -106,10 +106,9 @@ It parses the tokens within itself and returns a File struct containing the AST 
 It also runs the dependency checker to find any missing dependencies and notifies the user
 */
 func (p *Parser) Parse() *File {
-	p.TokenIndex = -1
-	p.Step()
 	tempFile := new(File)
 	p.Tokens = tempFile.ConsumeComments(p.Tokens)
+	p.CurrentToken = p.Tokens[0]
 	file := p.ParseFile()
 	file.ConsumedComments = tempFile.ConsumedComments
 	ok, UnresolvedDep := file.DepChecker()
