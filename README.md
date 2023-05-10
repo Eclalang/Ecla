@@ -1,5 +1,8 @@
 # Ecla
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Eclalang/Ecla)](https://goreportcard.com/report/github.com/Eclalang/Ecla)
+![version](https://img.shields.io/github/go-mod/go-version/Eclalang/Ecla?style=plastic)
+
 ## What is Ecla?
 
 **Ecla** is a programming language that is designed to be **simple** and **easy** to use.  
