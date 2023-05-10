@@ -16,7 +16,7 @@ If you do, consider sharing with us your experience with the language and how we
 
 ## How to install Ecla?
 
-To install Ecla from the sources, you can follow the instructions in the [installation manual](https://github.com/tot0p/Ecla/installation.md).  
+To install Ecla from the sources, you can follow the instructions in the [installation manual](https://github.com/tot0p/Ecla/install.md).  
 For now, there is no installer for Ecla, but it will be available as soon as possible.
 
 ## After installation
