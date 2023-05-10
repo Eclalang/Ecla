@@ -2,23 +2,23 @@
 
 ## Table of content ##
 
-- Technical specifications
-    - context
-    - Inner structure
-        - Token
-        - identifier
-- Inner workings
-    - Lexer process
-        - composite and situation token
-        - both direction lexing
-        - behavior
-    - Performance
-        - Time complexity
-        - Space complexity
-        - Memory usage
-        - Performance tests
-- Grammar
-    - Table of token
+- [Technical specifications](#technical-specification)
+    - [context](#context)
+    - [Inner structure](#Inner-Structure)
+        - [Token](#token)
+        - [identifier](#identifier)
+- [Inner workings](#inner-workings)
+    - [Lexer process](#lexer-process)
+        - [composite and Involved token](#composite-and-Involved-token)
+        - [both direction lexing](#both-direction-lexing)
+        - [behavior](#behavior)
+    - [Performance](#performance)
+        - [Time complexity](#time-complexity)
+        - [Space complexity](#space-complexity)
+        - [Memory usage](#memory-usage)
+        - [Performance tests](#performance-tests)
+- [Grammar](#grammar)
+    - [Table of token](#table-of-token)
 
 ## Technical specification ##
 
@@ -155,11 +155,19 @@ the `\n` character to know the line, and position.
 
 * #### Time complexity ####
 
+(todo)
+
 * #### Space complexity ####
+
+(todo)
 
 * #### Memory usage ####
 
+(todo)
+
 * #### Performance tests ####
+
+(todo)
 
 ## Grammar ##
 
