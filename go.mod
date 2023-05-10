@@ -1,4 +1,4 @@
-module github.com/tot0p/Ecla
+module github.com/Eclalang/Ecla
 
 go 1.19
 
