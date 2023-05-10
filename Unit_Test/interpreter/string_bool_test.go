@@ -1,8 +1,9 @@
 package interpreter
 
 import (
-	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"testing"
+
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
 )
 
 func TestAddStringBool(t *testing.T) {

@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
 )
 
 // EclaTypeToGo converts an eclaType to a go type.

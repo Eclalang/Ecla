@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/tot0p/Ecla/interpreter"
 	"strings"
 	"time"
+
+	"github.com/Eclalang/Ecla/interpreter"
 )
 
 var (

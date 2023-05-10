@@ -3,12 +3,13 @@ package interpreter
 import (
 	"errors"
 	"fmt"
-	"github.com/tot0p/Ecla/errorHandler"
-	"github.com/tot0p/Ecla/interpreter/eclaKeyWord"
-	"github.com/tot0p/Ecla/interpreter/eclaType"
-	"github.com/tot0p/Ecla/lexer"
-	"github.com/tot0p/Ecla/parser"
 	"strconv"
+
+	"github.com/Eclalang/Ecla/errorHandler"
+	"github.com/Eclalang/Ecla/interpreter/eclaKeyWord"
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/lexer"
+	"github.com/Eclalang/Ecla/parser"
 )
 
 // RunPrintStmt executes a parser.PrintStmt.

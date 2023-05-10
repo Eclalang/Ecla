@@ -1,6 +1,6 @@
 package interpreter
 
-import "github.com/tot0p/Ecla/interpreter/eclaType"
+import "github.com/Eclalang/Ecla/interpreter/eclaType"
 
 // BusType is the type of bus.
 type BusType int

@@ -2,8 +2,9 @@ package utils
 
 import (
 	"fmt"
-	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"reflect"
+
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
 )
 
 // GoToEclaType converts a go type to an eclaType.

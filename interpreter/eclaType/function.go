@@ -2,7 +2,8 @@ package eclaType
 
 import (
 	"errors"
-	"github.com/tot0p/Ecla/parser"
+
+	"github.com/Eclalang/Ecla/parser"
 )
 
 type Function struct {

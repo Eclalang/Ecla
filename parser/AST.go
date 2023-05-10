@@ -2,9 +2,10 @@ package parser
 
 import (
 	"fmt"
-	"github.com/tot0p/Ecla/lexer"
 	"path/filepath"
 	"strings"
+
+	"github.com/Eclalang/Ecla/lexer"
 )
 
 // The AST struct contains all the information needed for the interpreter to run

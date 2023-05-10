@@ -3,10 +3,11 @@ package libs
 import (
 	"errors"
 	"fmt"
-	"github.com/Eclalang/regex"
-	"github.com/tot0p/Ecla/interpreter/eclaType"
-	"github.com/tot0p/Ecla/interpreter/libs/utils"
 	"reflect"
+
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/interpreter/libs/utils"
+	"github.com/Eclalang/regex"
 )
 
 type Regex struct {

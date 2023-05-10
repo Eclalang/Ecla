@@ -1,7 +1,7 @@
 package libs
 
 import (
-	"github.com/tot0p/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
 )
 
 // Lib is the interface of a lib.

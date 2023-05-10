@@ -3,10 +3,11 @@ package libs
 import (
 	"errors"
 	"fmt"
-	enc "github.com/Eclalang/encoding"
-	"github.com/tot0p/Ecla/interpreter/eclaType"
-	"github.com/tot0p/Ecla/interpreter/libs/utils"
 	"reflect"
+
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/interpreter/libs/utils"
+	enc "github.com/Eclalang/encoding"
 )
 
 type Encoding struct {

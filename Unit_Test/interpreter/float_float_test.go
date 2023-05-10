@@ -1,9 +1,10 @@
 package interpreter
 
 import (
-	"github.com/tot0p/Ecla/interpreter/eclaType"
 	"strconv"
 	"testing"
+
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
 )
 
 func TestAddFloats(t *testing.T) {

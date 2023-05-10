@@ -3,8 +3,9 @@ package libs
 import (
 	"errors"
 	"fmt"
-	"github.com/tot0p/Ecla/interpreter/eclaType"
-	"github.com/tot0p/Ecla/interpreter/libs/utils"
+
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/interpreter/libs/utils"
 )
 
 type DebugKingdom struct {

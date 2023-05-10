@@ -1,6 +1,6 @@
 package interpreter
 
-import "github.com/tot0p/Ecla/interpreter/eclaType"
+import "github.com/Eclalang/Ecla/interpreter/eclaType"
 
 // ScopeType is the type of scope.
 type ScopeType int

@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/tot0p/Ecla/lexer"
+	"github.com/Eclalang/Ecla/lexer"
 )
 
 const (

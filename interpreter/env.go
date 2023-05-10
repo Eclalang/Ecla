@@ -2,14 +2,15 @@ package interpreter
 
 import (
 	"fmt"
-	"github.com/tot0p/Ecla/errorHandler"
-	"github.com/tot0p/Ecla/interpreter/eclaType"
-	"github.com/tot0p/Ecla/interpreter/libs"
-	"github.com/tot0p/Ecla/lexer"
-	"github.com/tot0p/Ecla/parser"
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/interpreter/libs"
+	"github.com/Eclalang/Ecla/lexer"
+	"github.com/Eclalang/Ecla/parser"
+	"github.com/Eclalang/Ecla/errorHandler"
 )
 
 // Env is the environment in which the code is executed.

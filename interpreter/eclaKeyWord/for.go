@@ -1,9 +1,9 @@
 package eclaKeyWord
 
 import (
-	"github.com/tot0p/Ecla/interpreter/eclaType"
-	"github.com/tot0p/Ecla/lexer"
-	"github.com/tot0p/Ecla/parser"
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/lexer"
+	"github.com/Eclalang/Ecla/parser"
 )
 
 // ForRange is the for range statement.

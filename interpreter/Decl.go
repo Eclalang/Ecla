@@ -3,10 +3,11 @@ package interpreter
 import (
 	"errors"
 	"fmt"
-	"github.com/tot0p/Ecla/errorHandler"
-	"github.com/tot0p/Ecla/interpreter/eclaType"
-	"github.com/tot0p/Ecla/lexer"
-	"github.com/tot0p/Ecla/parser"
+
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/lexer"
+	"github.com/Eclalang/Ecla/parser"
+	"github.com/Eclalang/Ecla/errorHandler"
 )
 
 // New returns a new eclaType.Type from a parser.Literal.

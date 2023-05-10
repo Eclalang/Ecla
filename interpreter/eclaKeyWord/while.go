@@ -1,6 +1,6 @@
 package eclaKeyWord
 
-import "github.com/tot0p/Ecla/parser"
+import "github.com/Eclalang/Ecla/parser"
 
 // While is the while statement.
 type While struct {
