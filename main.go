@@ -36,7 +36,6 @@ func main() {
 		fmt.Println("invalid input")
 		return
 	}
-	fmt.Println("//--- RUN", args[0], "---")
 	Env := interpreter.NewEnv()
 	if t := strings.Split(args[0], "."); t[len(t)-1] == "ecla" || t[len(t)-1] == "eclaw" {
 		Env.SetFile(args[0])
@@ -47,7 +46,6 @@ func main() {
 		return
 	}
 	Env.Execute()
-	fmt.Println("\n//--- END", args[0], "---")
 	if Debug {
 		fmt.Println("ENV:", Env)
 	}

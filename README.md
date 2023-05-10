@@ -21,7 +21,7 @@ If you want to join us on [Discord](https://discord.gg/xYnaAjEFgs)
 
 ## How to install Ecla?
 
-To install Ecla from the sources, you can follow the instructions in the [installation manual](https://github.com/Eclalang/Ecla/blob/main/install.md).  
+To install Ecla from the sources, you can follow the instructions in the [installation manual](https://github.com/Eclalang/Ecla/blob/main/INSTALL.md).  
 For now, there is no installer for Ecla, but it will be available as soon as possible.
 
 ## After installation
