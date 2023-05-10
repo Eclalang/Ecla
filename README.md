@@ -15,7 +15,9 @@ For now, the project is in its early stages and needs to be popularized.
 We need to be recognized as a programming language by GitHub, therefore we need to have at least **200 repositories** from unique user that uses the Ecla programming language.  
 If you do, consider sharing with us your experience with the language and how we can improve it 📈. 
 
-> If you want to help us, you can star the project and share it with your friends ! ❤️
+> If you want to help us, you can star the project and share it with your friends ! ❤️  
+
+If you want to join us on [Discord](https://discord.gg/xYnaAjEFgs)
 
 ## How to install Ecla?
 
