@@ -17,7 +17,7 @@ If you do, consider sharing with us your experience with the language and how we
 
 > If you want to help us, you can star the project and share it with your friends ! ❤️  
 
-If you want to join us on Discord : https://discord.gg/xYnaAjEFgs
+If you want to join us on [Discord](https://discord.gg/xYnaAjEFgs)
 
 ## How to install Ecla?
 
