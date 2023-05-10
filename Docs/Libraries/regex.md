@@ -19,30 +19,30 @@
 ```
 Find(regex string, str string) string
 ```
-Returns Find
+Returns the first match of the regex in the string
 ### Fonction FindAll
 ```
 FindAll(regex string, str string) []string
 ```
-Returns FindAll
+Returns all matches of the regex in the string
 ### Fonction FindAllIndex
 ```
 FindAllIndex(regex string, str string) []int
 ```
-Returns FindAllIndex
+Returns the indexes of all matches of the regex in the string
 ### Fonction FindIndex
 ```
 FindIndex(regex string, str string) []int
 ```
-Returns FindIndex
+Returns the first and last index of the first match of the regex in the string
 ### Fonction Match
 ```
 Match(regex string, str string) bool
 ```
-Returns Match
+Returns true if the regex matches the string
 ### Fonction ReplaceAll
 ```
 ReplaceAll(regex string, str string, replace string) string
 ```
-Returns ReplaceAll
+Replaces all matches of the regex in the string with the new string
 ##

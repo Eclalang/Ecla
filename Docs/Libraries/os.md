@@ -35,110 +35,110 @@
 ```
 Chown(path string, uid int, gid int)
 ```
-Returns Chown
+Chown changes the owner and group of the file
 ### Fonction ClearEnv
 ```
 ClearEnv()
 ```
-Returns ClearEnv
+Clears all environment variables
 ### Fonction Create
 ```
 Create(path string)
 ```
-Returns Create
+Creates a file and returns the file object
 ### Fonction Getegid
 ```
 Getegid() int
 ```
-Returns Getegid
+Gets the effective group ID of the calling process
 ### Fonction GetEnv
 ```
 GetEnv(key string) string
 ```
-Returns GetEnv
+Returns an environment variable
 ### Fonction Geteuid
 ```
 Geteuid() int
 ```
-Returns Geteuid
+Gets the effective user ID of the calling process
 ### Fonction Getgid
 ```
 Getgid() int
 ```
-Returns Getgid
+Gets the group ID of the calling process
 ### Fonction GetHostName
 ```
 GetHostName() string
 ```
-Returns GetHostName
+Gets the hostname of the machine
 ### Fonction Getpid
 ```
 Getpid() int
 ```
-Returns Getpid
+Gets the process ID of the calling process
 ### Fonction Getppid
 ```
 Getppid() int
 ```
-Returns Getppid
+Gets the process ID of the parent of the calling process
 ### Fonction Getuid
 ```
 Getuid() int
 ```
-Returns Getuid
+Gets the user ID of the calling process
 ### Fonction GetUserHomeDir
 ```
 GetUserHomeDir() string
 ```
-Returns GetUserHomeDir
+Gets the home directory of the current user
 ### Fonction Getwd
 ```
 Getwd() string
 ```
-Returns Getwd
+Gets the current working directory
 ### Fonction Mkdir
 ```
 Mkdir(path string)
 ```
-Returns Mkdir
+Creates a new directory
 ### Fonction ReadDir
 ```
 ReadDir(path string) []string
 ```
-Returns ReadDir
+Reads a directory and returns the names of the files and directories
 ### Fonction ReadFile
 ```
 ReadFile(path string) string
 ```
-Returns ReadFile
+Returns the content of a file
 ### Fonction Remove
 ```
 Remove(path string)
 ```
-Returns Remove
+Removes a file
 ### Fonction RemoveAll
 ```
 RemoveAll(path string)
 ```
-Returns RemoveAll
+Removes a directory and all its contents
 ### Fonction SetEnv
 ```
 SetEnv(key string, value string)
 ```
-Returns SetEnv
+Sets an environment variable
 ### Fonction SetEnvByFile
 ```
 SetEnvByFile(path string)
 ```
-Returns SetEnvByFile
+Sets an environment variable by reading a file
 ### Fonction UnsetEnv
 ```
 UnsetEnv(key string)
 ```
-Returns UnsetEnv
+Unsets an environment variable
 ### Fonction WriteFile
 ```
 WriteFile(path string, data string)
 ```
-Returns WriteFile
+Writes a file with the given content
 ##

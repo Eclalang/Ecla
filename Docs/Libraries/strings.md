@@ -30,85 +30,85 @@
 ```
 Contains(str string, substr string) bool
 ```
-Returns Contains
+Returns true if the string contains the substring
 ### Fonction ContainsAny
 ```
 ContainsAny(str string, chars string) bool
 ```
-Returns ContainsAny
+Returns true if the string contains any of the characters
 ### Fonction Count
 ```
 Count(str string, substr string) int
 ```
-Returns Count
+Returns the number of non-overlapping instances of substr in str
 ### Fonction Cutset
 ```
 Cutset(str string, cutset string) string
 ```
-Returns Cutset
+Returns a string before and after the separator, and a bool if it's found or not
 ### Fonction HasPrefix
 ```
 HasPrefix(str string, prefix string) bool
 ```
-Returns HasPrefix
+Returns true if the string starts by the prefix
 ### Fonction HasSuffix
 ```
 HasSuffix(str string, suffix string) bool
 ```
-Returns HasSuffix
+Returns true if the string ends by the suffix
 ### Fonction IndexOf
 ```
 IndexOf(str string, substr string) int
 ```
-Returns IndexOf
+Returns the index of the first instance of substr in str, or -1 if not found
 ### Fonction Join
 ```
 Join(strs []string, sep string) string
 ```
-Returns Join
+Returns a concatenated string from an array of string separated by sep
 ### Fonction Replace
 ```
 Replace(str string, old string, new string) string
 ```
-Returns Replace
+Returns a string with the first instance of old replaced by new
 ### Fonction ReplaceAll
 ```
 ReplaceAll(str string, old string, new string) string
 ```
-Returns ReplaceAll
+Returns a string with all instances of old replaced by new
 ### Fonction Split
 ```
 Split(str string, sep string) []string
 ```
-Returns Split
+Returns an array of the substrings between the separator, or an array only containing str if it doesn't contains sep
 ### Fonction SplitAfter
 ```
 SplitAfter(str string, sep string) []string
 ```
-Returns SplitAfter
+Returns an array of the substrings after the separator, or an array only containing str if it doesn't contains sep
 ### Fonction SplitAfterN
 ```
 SplitAfterN(str string, sep string, n int) []string
 ```
-Returns SplitAfterN
+Returns an array of the substrings after the separator, or an array only containing str if it doesn't contains sep. The count determines the number of substrings to return
 ### Fonction SplitN
 ```
 SplitN(str string, sep string, n int) []string
 ```
-Returns SplitN
+Returns an array of the substrings between the separator, or an array only containing str if it doesn't contains sep. The count determines the number of substrings to return
 ### Fonction ToLower
 ```
 ToLower(str string) string
 ```
-Returns ToLower
+Returns a string with all characters in lowercase
 ### Fonction ToUpper
 ```
 ToUpper(str string) string
 ```
-Returns ToUpper
+Returns a string with all characters in uppercase
 ### Fonction Trim
 ```
 Trim(str string, cutset string) string
 ```
-Returns Trim
+Returns a string with all cut characters removed
 ##
