@@ -312,6 +312,17 @@ var (
 			},
 		},
 	}
+	testNoFile = testList{
+		input: "",
+		output: []Token{
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  1,
+				Line:      1,
+			},
+		},
+	}
 	testHashtag = testList{
 		input: "prout# in comment\n#/ in commentgroup\n and next ligne\n and test for / and #/ /#\nOutside of the comment group",
 		output: []Token{
@@ -442,6 +453,29 @@ var (
 				TokenType: STRING,
 				Value:     `#/prout/#`,
 				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  11,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  12,
+				Line:      1,
+			},
+		},
+	}
+	testHashtag5 = testList{
+		input: "#ok\nimport console;\n\n\n#test Print\nconsole.println(\"Test Print\");\nconsole.println(\"Hello World\");\nconsole.println(\"Test Print Past\");",
+		output: []Token{
+			{
+				TokenType: COMMENTGROUP,
+				Value:     `#prout`,
+				Position:  1,
 				Line:      1,
 			},
 			{
