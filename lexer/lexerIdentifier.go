@@ -222,7 +222,6 @@ var Identifier []identifier = []identifier{
 			"\n",
 			"\t",
 			"\r",
-			"_",
 		},
 	},
 	{
