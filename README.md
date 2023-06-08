@@ -7,12 +7,12 @@
 
 **Ecla** is a programming language that is designed to be **simple** and **easy** to use.  
 It is an interpreted language that is written using the **Go** programming language.
-Having a simple syntax and a numerous standard library, it is a language that is easy to learn and use without losing the leverage of advanced features.
+Having a simple syntax and numerous standard library, Ecla is a language designed to be easy to learn and use without losing the leverage of advanced features.
 
 ## How can you help?
 
 For now, the project is in its early stages and needs to be popularized.  
-We need to be recognized as a programming language by GitHub, therefore we need to have at least **200 repositories** from unique user that uses the Ecla programming language.  
+We need to be recognized as a programming language by GitHub, therefore we need to have at least **200 repositories** from unique users that uses the Ecla programming language.  
 If you do, consider sharing with us your experience with the language and how we can improve it 📈. 
 
 > If you want to help us, you can star the project and share it with your friends ! ❤️  
