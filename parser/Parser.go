@@ -3,8 +3,8 @@ package parser
 import (
 	"fmt"
 
-	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/errorHandler"
+	"github.com/Eclalang/Ecla/lexer"
 )
 
 // Parser is the parser for the Ecla language
