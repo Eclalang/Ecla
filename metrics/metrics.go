@@ -8,21 +8,9 @@ import (
 
 type Metrics struct {
 	// metrics variables
-	StartExecTime        time.Time
-	TotalExecTime        time.Duration
-	StartLexerTime       time.Time
-	LexerExecTime        time.Duration
-	StartParserTime      time.Time
-	ParserExecTime       time.Duration
-	StartInterpreterTime time.Time
-	InterpreterExecTime  time.Duration
-	FCalls               int
-	StackSize            int
-	HeapSize             int
-	MinMem               int
-	MaxMem               int
-	MinCpu               int
-	MaxCpu               int
+	StartExecTime, StartLexerTime, StartParserTime, StartInterpreterTime time.Time
+	TotalExecTime, LexerExecTime, ParserExecTime, InterpreterExecTime    time.Duration
+	FCalls, StackSize, HeapSize, MinMem, MaxMem, MinCpu, MaxCpu          int
 }
 
 func NewMetrics() *Metrics {
@@ -35,6 +23,7 @@ func (m *Metrics) StartTimers() {
 
 func (m *Metrics) StopTotalTimer() {
 	m.TotalExecTime = time.Since(m.StartExecTime)
+	m.Measure()
 }
 
 func (m *Metrics) StartLexerTimer() {

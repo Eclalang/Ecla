@@ -131,8 +131,7 @@ func (env *Env) ExecuteMetrics() met.Metrics {
 	if env.File != "" {
 		env.Code = readFile(env.File)
 	}
-	var m *met.Metrics
-	m = met.NewMetrics()
+	m := met.NewMetrics()
 	m.StartTimers()
 	// Lexing
 	m.StartLexerTimer()
