@@ -39,10 +39,15 @@ func (f *File) DepChecker() (bool, []string) {
 }
 
 // AddDependency adds a new dependency to the file that is currently being parsed
-func (f *File) AddDependency(dep string) {
+func (f *File) AddDependency(dep string) error {
+	// check if the dependency is satisfied by the imports
+	if !contains(dep, f.Imports) {
+		return fmt.Errorf("dependency %s is not satisfied by previous imports", dep)
+	}
 	if !contains(dep, f.Dependencies) {
 		f.Dependencies = append(f.Dependencies, dep)
 	}
+	return nil
 }
 
 func (f *File) AddImport(imp string) {
