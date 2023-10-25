@@ -6,11 +6,12 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/interpreter/libs"
 	"github.com/Eclalang/Ecla/lexer"
+	met "github.com/Eclalang/Ecla/metrics"
 	"github.com/Eclalang/Ecla/parser"
-	"github.com/Eclalang/Ecla/errorHandler"
 )
 
 // Env is the environment in which the code is executed.
@@ -124,6 +125,31 @@ func (env *Env) Execute() {
 
 	// Execute
 	Run(env)
+}
+
+func (env *Env) ExecuteMetrics() met.Metrics {
+	if env.File != "" {
+		env.Code = readFile(env.File)
+	}
+	m := met.NewMetrics()
+	m.StartTimers()
+	// Lexing
+	m.StartLexerTimer()
+	env.Tokens = lexer.Lexer(env.Code)
+	m.StopLexerTimer()
+
+	// Parsing
+	m.StartParserTimer()
+	pars := parser.Parser{Tokens: env.Tokens, ErrorHandler: env.ErrorHandle}
+	env.SyntaxTree = pars.Parse()
+	m.StopParserTimer()
+
+	// Execute
+	m.StartInterpreterTimer()
+	Run(env)
+	m.StopInterpreterTimer()
+	m.StopTotalTimer()
+	return *m
 }
 
 // Load the file

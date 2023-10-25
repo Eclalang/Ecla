@@ -16,6 +16,7 @@ var (
 	TimeExec    = time.Now()
 	lexerDebug  = false
 	parserDebug = false
+	Metrics     = false
 )
 
 func init() {
@@ -27,6 +28,8 @@ func init() {
 	flag.BoolVar(&lexerDebug, "dl", lexerDebug, "enable lexer debug mod")
 	flag.BoolVar(&parserDebug, "debugParser", parserDebug, "enable parser debug")
 	flag.BoolVar(&parserDebug, "dp", parserDebug, "enable parser debug")
+	flag.BoolVar(&Metrics, "metrics", Metrics, "enable metrics measurement")
+	flag.BoolVar(&Metrics, "m", Metrics, "enable metrics measurement")
 	flag.Parse()
 }
 
@@ -45,7 +48,20 @@ func main() {
 		fmt.Print("Ecla: invalid input file")
 		return
 	}
-	Env.Execute()
+	if Metrics {
+		m := Env.ExecuteMetrics()
+		fmt.Println("--------------------")
+		fmt.Println("Metrics:")
+		fmt.Println("Lexer execution time:", m.LexerExecTime)
+		fmt.Println("Parser execution time:", m.ParserExecTime)
+		fmt.Println("Interpreter execution time:", m.InterpreterExecTime)
+		fmt.Println("Leaked time:", m.TotalExecTime-m.LexerExecTime-m.ParserExecTime-m.InterpreterExecTime)
+		fmt.Println("Total execution time:", m.TotalExecTime)
+		fmt.Println("--------------------")
+	} else {
+		Env.Execute()
+	}
+
 	if Debug {
 		fmt.Println("ENV:", Env)
 	}

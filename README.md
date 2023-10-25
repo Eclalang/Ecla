@@ -39,5 +39,6 @@ ecla <flags> <file>
 - **d** to run in debug mode
 - **dl** to run in debug lexer mode
 - **dp** to run in debug parser mode
+- **m** to run the integrated metrics system
 
 ## Thank you for using Ecla!
