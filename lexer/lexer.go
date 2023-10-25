@@ -129,8 +129,8 @@ func Lexer(sentence string) []Token {
 				ret = tokenPeriod(ident, ret, &prevIndex, &tempVal, i, isSpaces, inQuote, sentence)
 				ret = tokenAssign(ident, ret, &prevIndex, &tempVal, i)
 				ret = tokenDiv(ident, ret, &prevIndex, &tempVal, i)
-				ret = tokenAddSub(ident.Identifier == ADD, ret, &prevIndex, &tempVal, i, ADD, INC)
-				ret = tokenAddSub(ident.Identifier == SUB, ret, &prevIndex, &tempVal, i, SUB, DEC)
+				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, ADD, INC)
+				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, SUB, DEC)
 				if beforeChangeVal != tempVal {
 					break
 				}
@@ -290,8 +290,8 @@ func addToken(TokenType string, Value string, Position int, Line int) Token {
 // tokenAddSub replace the previous token.tokenType in ret to toReplace if the current token.tokenType is equal to toFind.
 //
 // return the changed []Token
-func tokenAddSub(isIdentifier bool, ret []Token, prevIndex *int, tempVal *string, index int, toFind string, toReplace string) []Token {
-	if isIdentifier {
+func tokenAddSub(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, toFind string, toReplace string) []Token {
+	if ident.Identifier == ADD || ident.Identifier == SUB  {
 		if len(ret) >= 1 {
 			if ret[len(ret)-1].TokenType == toFind {
 
