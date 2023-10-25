@@ -158,7 +158,6 @@ func (p *Parser) ParseNode() Node {
 			tempExpr := p.ParseText()
 			if p.CurrentToken.TokenType != lexer.EOL && !p.IsEndOfBrace {
 				p.PrintBacktrace()
-				fmt.Println(p.CurrentToken.TokenType, p.CurrentToken.Value)
 				p.HandleFatal("Expected End Of Line")
 			}
 			if p.IsEndOfBrace {
