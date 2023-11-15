@@ -20,7 +20,7 @@ func (i Int) GetValue() any {
 
 // SetValue
 func (i Int) SetValue(value any) error {
-	return errors.New("cannot set value to Int")
+	return errors.New("cannot set value to int")
 }
 
 func (i Int) String() string {
