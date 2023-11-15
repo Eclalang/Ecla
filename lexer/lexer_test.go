@@ -89,6 +89,10 @@ func TestCharString(t *testing.T) {
 	tLexer(t, testCHARSTRING, "testCharString")
 }
 
+func TestCharString2(t *testing.T) {
+	tLexer(t, testCHARSTRING2, "testCharString2")
+}
+
 func TestPositionDetector_1(t *testing.T) {
 	var Expected1 = 1 //position
 	var Expected2 = 1 //line
