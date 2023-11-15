@@ -116,6 +116,7 @@ func Lexer(sentence string) []Token {
 						inQuoteStep = true
 					}
 				}
+
 				// -----------Quote Token Part END-------------
 
 				// -----------Special Token Part-------------
@@ -291,7 +292,7 @@ func addToken(TokenType string, Value string, Position int, Line int) Token {
 //
 // return the changed []Token
 func tokenAddSub(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, toFind string, toReplace string) []Token {
-	if ident.Identifier == ADD || ident.Identifier == SUB  {
+	if ident.Identifier == ADD || ident.Identifier == SUB {
 		if len(ret) >= 1 {
 			if ret[len(ret)-1].TokenType == toFind {
 
