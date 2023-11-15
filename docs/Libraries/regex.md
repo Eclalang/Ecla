@@ -17,32 +17,32 @@
 ##
 ### Fonction Find
 ```
-function Find(regex string, str string) string
+function find(regex string, str string) string
 ```
 Returns the first match of the regex in the string
 ### Fonction FindAll
 ```
-function FindAll(regex string, str string) []string
+function findAll(regex string, str string) []string
 ```
 Returns all matches of the regex in the string
 ### Fonction FindAllIndex
 ```
-function FindAllIndex(regex string, str string) []int
+function findAllIndex(regex string, str string) []int
 ```
 Returns the indexes of all matches of the regex in the string
 ### Fonction FindIndex
 ```
-function FindIndex(regex string, str string) []int
+function findIndex(regex string, str string) []int
 ```
 Returns the first and last index of the first match of the regex in the string
 ### Fonction Match
 ```
-function Match(regex string, str string) bool
+function match(regex string, str string) bool
 ```
 Returns true if the regex matches the string
 ### Fonction ReplaceAll
 ```
-function ReplaceAll(regex string, str string, replace string) string
+function replaceAll(regex string, str string, replace string) string
 ```
 Replaces all matches of the regex in the string with the new string
 ##
