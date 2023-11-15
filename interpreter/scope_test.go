@@ -3,20 +3,19 @@ package interpreter
 import (
 	"testing"
 
-	"github.com/Eclalang/Ecla/interpreter"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 )
 
 func TestScope(t *testing.T) {
 
-	scope := interpreter.NewScopeMain()
+	scope := NewScopeMain()
 
 	v1, err := eclaType.NewVar("v1", "bool", eclaType.Bool(true))
 	if err != nil {
 		t.Error(err)
 	}
 	scope.Set("a", v1)
-	scope.GoDeep(interpreter.SCOPE_MAIN)
+	scope.GoDeep(SCOPE_MAIN)
 	v2, err := eclaType.NewVar("v1", "int", eclaType.Int(1))
 	if err != nil {
 		t.Error(err)

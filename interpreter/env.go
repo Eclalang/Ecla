@@ -52,7 +52,7 @@ func NewTemporaryEnv(ErrorHandler *errorHandler.ErrorHandler) *Env {
 }
 
 func (env *Env) String() string {
-	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s , VAR : %s}", env.OS, env.ARCH, env.Code, env.Vars)
+	return fmt.Sprintf("Env{OS: %s, ARCH: %s , CODE: %s }", env.OS, env.ARCH, env.Code)
 }
 
 // SetCode sets the code to be executed.
