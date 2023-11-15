@@ -159,9 +159,21 @@ func Lexer(sentence string) []Token {
 				// append a new Token to the variable ret
 
 				if QuoteIdentifier == "\"" {
-					ret = inQuoteChange(STRING, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+					if inQuote {
+						ret = inQuoteChange(STRING, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+					} else {
+						ret = inQuoteChange(STRING, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						QuoteIdentifier = ""
+					}
+
 				} else if QuoteIdentifier == "'" {
-					ret = inQuoteChange(CHAR, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+					if inQuote {
+						ret = inQuoteChange(CHAR, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+					} else {
+						ret = inQuoteChange(CHAR, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						QuoteIdentifier = ""
+					}
+
 				}
 
 				isSpaces = false
