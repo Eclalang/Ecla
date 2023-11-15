@@ -26,6 +26,9 @@ func (p *Parser) Step() {
 	} else {
 		p.CurrentToken = p.Tokens[p.TokenIndex]
 	}
+	if p.CurrentToken.TokenType == lexer.MURLOC {
+		p.HandleFatal("Mrgle, Mmmm Uuua !")
+	}
 }
 
 // Back moves the parser back one token
@@ -35,6 +38,9 @@ func (p *Parser) Back() {
 		p.TokenIndex = 0
 	}
 	p.CurrentToken = p.Tokens[p.TokenIndex]
+	if p.CurrentToken.TokenType == lexer.MURLOC {
+		p.HandleFatal("Mrgle, Mmmm Uuua !")
+	}
 }
 
 // MultiStep moves the parser forward n times givens as parameter
@@ -44,6 +50,9 @@ func (p *Parser) MultiStep(steps int) {
 		p.CurrentToken = lexer.Token{}
 	} else {
 		p.CurrentToken = p.Tokens[p.TokenIndex]
+	}
+	if p.CurrentToken.TokenType == lexer.MURLOC {
+		p.HandleFatal("Mrgle, Mmmm Uuua !")
 	}
 }
 
