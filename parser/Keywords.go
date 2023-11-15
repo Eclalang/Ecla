@@ -22,6 +22,7 @@ var (
 		"while":    nil,
 		"if":       nil,
 		"else":     nil,
+		"null":     nil,
 	}
 	VarTypes = map[string]interface{}{
 		Int:        nil,

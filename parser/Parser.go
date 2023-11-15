@@ -219,6 +219,12 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "import" {
 		return p.ParseImportStmt()
 	}
+	if p.CurrentToken.Value == "null" {
+		fmt.Println("NULL")
+		tempLiteral := Literal{Token: p.CurrentToken, Type: "NULL", Value: p.CurrentToken.Value}
+		p.Step()
+		return tempLiteral
+	}
 	p.HandleFatal("Unknown keyword: " + p.CurrentToken.Value)
 	return nil
 }
@@ -442,10 +448,11 @@ func (p *Parser) ParseForStmt() Stmt {
 func (p *Parser) ParseVariableDecl() Decl {
 	tempDecl := VariableDecl{VarToken: p.CurrentToken}
 	p.Step()
-	if _, ok := Keywords[p.CurrentToken.Value]; ok {
-		p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
-	}
-	if p.CurrentToken.TokenType != lexer.TEXT {
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if _, ok := Keywords[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
+		}
+	} else {
 		p.HandleFatal("Expected variable name instead of " + p.CurrentToken.Value)
 	}
 	tempDecl.Name = p.CurrentToken.Value
@@ -483,6 +490,13 @@ func (p *Parser) ParseMethodCallExpr() Expr {
 
 // ParseFunctionCallExpr parse a function call expression
 func (p *Parser) ParseFunctionCallExpr() Expr {
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if _, ok := Keywords[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as function name")
+		}
+	} else {
+		p.HandleFatal("Expected function name instead of " + p.CurrentToken.Value)
+	}
 	tempFunctionCall := FunctionCallExpr{FunctionCallToken: p.CurrentToken, Name: p.CurrentToken.Value}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
@@ -768,8 +782,12 @@ func (p *Parser) ParseImportStmt() Stmt {
 func (p *Parser) ParseFunctionDecl() Node {
 	tempFunctionDecl := FunctionDecl{FunctionToken: p.CurrentToken}
 	p.Step()
-	if p.CurrentToken.TokenType != lexer.TEXT {
-		p.HandleFatal("Expected function name")
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if _, ok := Keywords[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as function name")
+		}
+	} else {
+		p.HandleFatal("Expected function name instead of " + p.CurrentToken.Value)
 	}
 	tempFunctionDecl.Name = p.CurrentToken.Value
 	p.Step()
@@ -884,11 +902,18 @@ func (p *Parser) ParseIndexableAccessExpr() Expr {
 
 // ParseVariableAccess parses a variable access
 func (p *Parser) ParseVariableAccess() Expr {
+	// check if the variable name is not in the keywords and a text
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if _, ok := Keywords[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
+		}
+	}
 	if p.Peek(1).TokenType == lexer.LBRACKET {
 		temp := p.ParseIndexableAccessExpr()
 		p.Back()
 		return temp
 	} else {
+
 		return Literal{Token: p.CurrentToken, Type: "VAR", Value: p.CurrentToken.Value}
 	}
 }
@@ -901,10 +926,13 @@ func (p *Parser) ParseLiteral() Expr {
 		return tempLiteral
 	}
 	if p.CurrentToken.TokenType == lexer.TEXT {
-		if p.CurrentToken.Value == "null" {
-			tempLiteral := Literal{Token: p.CurrentToken, Type: "NULL", Value: p.CurrentToken.Value}
-			p.Step()
-			return tempLiteral
+		if _, ok := Keywords[p.CurrentToken.Value]; ok {
+			if p.CurrentToken.Value == "null" {
+				tempLiteral := Literal{Token: p.CurrentToken, Type: "NULL", Value: p.CurrentToken.Value}
+				p.Step()
+				return tempLiteral
+			}
+			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
 		}
 		tempLiteral := p.ParseVariableAccess()
 		p.Step()
