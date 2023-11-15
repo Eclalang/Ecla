@@ -43,27 +43,27 @@
 ## Functions.
 ### Fonction Pi
 ```
-fonction Pi() float
+function Pi() float
 ```
 Returns Pi
 ### Fonction Cos
 ```
-fonction Cos(x float, hyp float) float
+function Cos(x float, hyp float) float
 ```
 Returns Cosine
 ### Fonction Sin
 ```
-fonction Sin(x float, hyp float) float
+function Sin(x float, hyp float) float
 ```
 Returns Sine
 ### Fonction Tan
 ```
-fonction Tan(opp float, adj float) float
+function Tan(opp float, adj float) float
 ```
 Returns Tangent
 ### Fonction Ln
 ```
-fonction Ln(nb float) float
+function Ln(nb float) float
 ```
 Returns Natural Logarithm
 ### Fonction Exp
@@ -73,117 +73,117 @@ focntion Exp(nb float) float
 Returns Exponential
 ### Fonction Sqrt
 ```
-fonction Sqrt(nb float) float
+function Sqrt(nb float) float
 ```
 Returns Square Root
 ### Fonction Cbrt
 ```
-fonction cbrt(nb int) int
+function cbrt(nb int) int
 ```
 Returns Cube Root
 ### Fonction Pow
 ```
-fonction Pow(nb int, pow int) int
+function Pow(nb int, pow int) int
 ```
 Returns Power
 ### Fonction Fact
 ```
-fonction Fact(nb int) int
+function Fact(nb int) int
 ```
 Returns Factorial
 ### Fonction Abs
 ```
-fonction Abs(nb int) int
+function Abs(nb int) int
 ```
 Returns Absolute Value
 ### Fonction Floor
 ```
-fonction Floor(nb float) int
+function Floor(nb float) int
 ```
 Returns Floor
 ### Fonction Ceil
 ```
-fonction Ceil(nb float) int
+function Ceil(nb float) int
 ```
 Returns Ceil
 ### Fonction Trunc
 ```
-fonction Trunc(nb float) int
+function Trunc(nb float) int
 ```
 Returns Trunc
 ### Fonction Max
 ```
-fonction Max(a float, b float) int
+function Max(a float, b float) int
 ```
 Returns Max
 ### Fonction Min
 ```
-fonction Min(a float, b float) int
+function Min(a float, b float) int
 ```
 Returns Min
 ### Fonction Log10
 ```
-fonction Log10(nb float) float
+function Log10(nb float) float
 ```
 Returns Log10
 ### Fonction Round
 ```
-fonction Round(nb float) float
+function Round(nb float) float
 ```
 Returns Round
 ### Fonction DegreesToRadians
 ```
-fonction DegreesToRadians(degrees float) float
+function DegreesToRadians(degrees float) float
 ```
 Returns Degrees To Radians
 ### Fonction RadiansToDegrees
 ```
-fonction RadiansToDegrees(radians float) float
+function RadiansToDegrees(radians float) float
 ```
 Returns Radians To Degrees
 ### Fonction Acos
 ```
-fonction Acos(x float) float
+function Acos(x float) float
 ```
 Returns Acos
 ### Fonction Asin
 ```
-fonction Asin(x float) float
+function Asin(x float) float
 ```
 Returns Asin
 ### Fonction Atan
 ```
-fonction Atan(x float) float
+function Atan(x float) float
 ```
 Returns Atan
 ### Fonction Cosh
 ```
-fonction Cosh(x float) float
+function Cosh(x float) float
 ```
 Returns Cosh
 ### Fonction Sinh
 ```
-fonction Sinh(x float) float
+function Sinh(x float) float
 ```
 Returns Sinh
 ### Fonction Tanh
 ```
-fonction Tanh(x float) float
+function Tanh(x float) float
 ```
 Returns Tanh
 ### Fonction Acosh
 ```
-fonction Acosh(x float) float
+function Acosh(x float) float
 ```
 Returns Acosh
 ### Fonction Asinh
 ```
-fonction Asinh(x float) float
+function Asinh(x float) float
 ```
 Returns Asinh
 ### Fonction Atanh
 ```
-fonction Atanh(x float) float
+function Atanh(x float) float
 ```
 Returns Atanh
 

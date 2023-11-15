@@ -33,112 +33,112 @@
 ##
 ### Fonction Chrown
 ```
-Chown(path string, uid int, gid int)
+function Chown(path string, uid int, gid int)
 ```
 Chown changes the owner and group of the file
 ### Fonction ClearEnv
 ```
-ClearEnv()
+function ClearEnv()
 ```
 Clears all environment variables
 ### Fonction Create
 ```
-Create(path string)
+function Create(path string)
 ```
 Creates a file and returns the file object
 ### Fonction Getegid
 ```
-Getegid() int
+function Getegid() int
 ```
 Gets the effective group ID of the calling process
 ### Fonction GetEnv
 ```
-GetEnv(key string) string
+function GetEnv(key string) string
 ```
 Returns an environment variable
 ### Fonction Geteuid
 ```
-Geteuid() int
+function Geteuid() int
 ```
 Gets the effective user ID of the calling process
 ### Fonction Getgid
 ```
-Getgid() int
+function Getgid() int
 ```
 Gets the group ID of the calling process
 ### Fonction GetHostName
 ```
-GetHostName() string
+function GetHostName() string
 ```
 Gets the hostname of the machine
 ### Fonction Getpid
 ```
-Getpid() int
+function Getpid() int
 ```
 Gets the process ID of the calling process
 ### Fonction Getppid
 ```
-Getppid() int
+function Getppid() int
 ```
 Gets the process ID of the parent of the calling process
 ### Fonction Getuid
 ```
-Getuid() int
+function Getuid() int
 ```
 Gets the user ID of the calling process
 ### Fonction GetUserHomeDir
 ```
-GetUserHomeDir() string
+function GetUserHomeDir() string
 ```
 Gets the home directory of the current user
 ### Fonction Getwd
 ```
-Getwd() string
+function Getwd() string
 ```
 Gets the current working directory
 ### Fonction Mkdir
 ```
-Mkdir(path string)
+function Mkdir(path string)
 ```
 Creates a new directory
 ### Fonction ReadDir
 ```
-ReadDir(path string) []string
+function ReadDir(path string) []string
 ```
 Reads a directory and returns the names of the files and directories
 ### Fonction ReadFile
 ```
-ReadFile(path string) string
+function ReadFile(path string) string
 ```
 Returns the content of a file
 ### Fonction Remove
 ```
-Remove(path string)
+function Remove(path string)
 ```
 Removes a file
 ### Fonction RemoveAll
 ```
-RemoveAll(path string)
+function RemoveAll(path string)
 ```
 Removes a directory and all its contents
 ### Fonction SetEnv
 ```
-SetEnv(key string, value string)
+function SetEnv(key string, value string)
 ```
 Sets an environment variable
 ### Fonction SetEnvByFile
 ```
-SetEnvByFile(path string)
+function SetEnvByFile(path string)
 ```
 Sets an environment variable by reading a file
 ### Fonction UnsetEnv
 ```
-UnsetEnv(key string)
+function UnsetEnv(key string)
 ```
 Unsets an environment variable
 ### Fonction WriteFile
 ```
-WriteFile(path string, data string)
+function WriteFile(path string, data string)
 ```
 Writes a file with the given content
 ##

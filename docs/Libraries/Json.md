@@ -21,7 +21,7 @@ fonction Marshal(content any) string
 Converts any type to JSON string
 ### Fonction Unmarshal
 ```
-fonction Unmarshal(content string) any
+function Unmarshal(content string) any
 ```
 Converts JSON string to any type
 

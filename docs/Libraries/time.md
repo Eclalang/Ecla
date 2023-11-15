@@ -17,27 +17,27 @@
 ##
 ### Fonction Date
 ```
-Date() string
+function Date() string
 ```
 Returns a string representation of a date
 ### Fonction Now
 ```
-Now() string
+function Now() string
 ```
 Returns a string representation of the current time
 ### Fonction Sleep
 ```
-Sleep(seconds int)
+function Sleep(seconds int)
 ```
 Pauses the current goroutine for a specified number of seconds
 ### Fonction Strftime
 ```
-Strftime(format string, t time.Time) string
+function Strftime(format string, t time.Time) string
 ```
 Returns a string representation of a date according to a specified format
 ### Fonction Timer
 ```
-Timer(seconds int)
+function Timer(seconds int)
 ```
 Waits for a specified number of seconds
 ##
