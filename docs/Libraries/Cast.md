@@ -20,31 +20,31 @@
 ### Fonction Atoi
 
 ```
-function Atoi(str string) int
+function atoi(str string) int
 ```
 Converts string to int
 ### Fonction FloatToInt
 
 ```
-function FloatToInt(f float) int
+function floatToInt(f float) int
 ```
 Converts float to int
 ### Fonction IntToFloat
 
 ```
-function IntToFloat(i int) float
+function intToFloat(i int) float
 ```
 Converts int to float
 ### Fonction ParseBool
 
 ```
-function ParseBool(str string) bool
+function parseBool(str string) bool
 ```
 Converts string to bool
 ### Fonction ParseFloat
 
 ```
-function ParseFloat(str string, bitSize int) float
+function parseFloat(str string, bitSize int) float
 ```
 Converts string to float
 

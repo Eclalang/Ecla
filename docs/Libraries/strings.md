@@ -28,87 +28,87 @@
 ##
 ### Fonction Contains
 ```
-function Contains(str string, substr string) bool
+function contains(str string, substr string) bool
 ```
 Returns true if the string contains the substring
 ### Fonction ContainsAny
 ```
-function ContainsAny(str string, chars string) bool
+function containsAny(str string, chars string) bool
 ```
 Returns true if the string contains any of the characters
 ### Fonction Count
 ```
-function Count(str string, substr string) int
+function count(str string, substr string) int
 ```
 Returns the number of non-overlapping instances of substr in str
 ### Fonction Cutset
 ```
-function Cutset(str string, cutset string) string
+function cutset(str string, cutset string) string
 ```
 Returns a string before and after the separator, and a bool if it's found or not
 ### Fonction HasPrefix
 ```
-function HasPrefix(str string, prefix string) bool
+function hasPrefix(str string, prefix string) bool
 ```
 Returns true if the string starts by the prefix
 ### Fonction HasSuffix
 ```
-function HasSuffix(str string, suffix string) bool
+function hasSuffix(str string, suffix string) bool
 ```
 Returns true if the string ends by the suffix
 ### Fonction IndexOf
 ```
-function IndexOf(str string, substr string) int
+function indexOf(str string, substr string) int
 ```
 Returns the index of the first instance of substr in str, or -1 if not found
 ### Fonction Join
 ```
-function Join(strs []string, sep string) string
+function join(strs []string, sep string) string
 ```
 Returns a concatenated string from an array of string separated by sep
 ### Fonction Replace
 ```
-function Replace(str string, old string, new string) string
+function replace(str string, old string, new string) string
 ```
 Returns a string with the first instance of old replaced by new
 ### Fonction ReplaceAll
 ```
-function ReplaceAll(str string, old string, new string) string
+function replaceAll(str string, old string, new string) string
 ```
 Returns a string with all instances of old replaced by new
 ### Fonction Split
 ```
-function Split(str string, sep string) []string
+function split(str string, sep string) []string
 ```
 Returns an array of the substrings between the separator, or an array only containing str if it doesn't contains sep
 ### Fonction SplitAfter
 ```
-function SplitAfter(str string, sep string) []string
+function splitAfter(str string, sep string) []string
 ```
 Returns an array of the substrings after the separator, or an array only containing str if it doesn't contains sep
 ### Fonction SplitAfterN
 ```
-function SplitAfterN(str string, sep string, n int) []string
+function splitAfterN(str string, sep string, n int) []string
 ```
 Returns an array of the substrings after the separator, or an array only containing str if it doesn't contains sep. The count determines the number of substrings to return
 ### Fonction SplitN
 ```
-function SplitN(str string, sep string, n int) []string
+function splitN(str string, sep string, n int) []string
 ```
 Returns an array of the substrings between the separator, or an array only containing str if it doesn't contains sep. The count determines the number of substrings to return
 ### Fonction ToLower
 ```
-function ToLower(str string) string
+function toLower(str string) string
 ```
 Returns a string with all characters in lowercase
 ### Fonction ToUpper
 ```
-function ToUpper(str string) string
+function toUpper(str string) string
 ```
 Returns a string with all characters in uppercase
 ### Fonction Trim
 ```
-function Trim(str string, cutset string) string
+function trim(str string, cutset string) string
 ```
 Returns a string with all cut characters removed
 ##

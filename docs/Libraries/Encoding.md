@@ -23,49 +23,49 @@
 ### Fonction Ascii
 
 ```
-fonction AsciiToString(intArr []int) string
+fonction asciiToString(intArr []int) string
 ```
 Converts ascii to string
 ### Fonction DecodeBase64
 
 ```
-fonction DecodeBase64(str string) []int
+fonction decodeBase64(str string) []int
 ```
 Decodes base64 to ascii
 ### Fonction DecodeGob
 
 ```
-fonction DecodeGob(intArr []int) string
+fonction decodeGob(intArr []int) string
 ```
 Decodes gob to string
 ### Fonction DecodeHex
 
 ```
-fonction DecodeHex(str string) []int
+fonction decodeHex(str string) []int
 ```
 Decodes hex to ascii
 ### Fonction EncodeBase64
 
 ```
-fonction EncodeBase64(intArr []int) string
+fonction encodeBase64(intArr []int) string
 ```
 Encodes ascii to base64
 ### Fonction EncodeGob
 
 ```
-fonction EncodeGob(str string) []int
+fonction encodeGob(str string) []int
 ```
 Encodes string to gob
 ### Fonction EncodeHex
 
 ```
-fonction EncodeHex(intArr []int) string
+fonction encodeHex(intArr []int) string
 ```
 Encodes ascii to hex
 ### Fonction StringToAscii
 
 ```
-fonction StringToAscii(str string) []int
+fonction stringToAscii(str string) []int
 ```
 Converts string to ascii
 

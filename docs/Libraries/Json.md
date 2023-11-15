@@ -16,12 +16,12 @@
 ## Functions.
 ### Fonction Marshal
 ```
-fonction Marshal(content any) string
+function marshal(content any) string
 ```
 Converts any type to JSON string
 ### Fonction Unmarshal
 ```
-function Unmarshal(content string) any
+function unmarshal(content string) any
 ```
 Converts JSON string to any type
 
