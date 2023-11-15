@@ -4,6 +4,7 @@ package lexer
 var (
 	TEXT              = "TEXT"
 	STRING            = "STRING"
+	CHAR              = "CHAR"
 	PRINT             = "PRINT"
 	INT               = "INT"
 	FLOAT             = "FLOAT"
@@ -29,6 +30,7 @@ var (
 	RPAREN            = "RPAREN"
 	EOL               = "EOL"
 	DQUOTE            = "DQUOTE"
+	SQUOTE            = "SQUOTE"
 	PERIOD            = "PERIOD"
 	COLON             = "COLON"
 	LBRACE            = "LBRACE"
@@ -54,7 +56,7 @@ var (
 var Identifier []identifier = []identifier{
 	{
 		Identifier: TEXT,
-		Syntax:    []string{},
+		Syntax:     []string{},
 	},
 	{
 		Identifier: INT,
@@ -162,6 +164,12 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
+		Identifier: SQUOTE,
+		Syntax: []string{
+			"'",
+		},
+	},
+	{
 		Identifier: MURLOC,
 		Syntax: []string{
 			"mgrlgrl",
@@ -239,13 +247,13 @@ var Identifier []identifier = []identifier{
 	},
 	{
 		Identifier: EOF,
-		Syntax:    []string{},
+		Syntax:     []string{},
 	},
 }
 
 type identifier struct {
 	Identifier string
-	Syntax    []string
+	Syntax     []string
 }
 
 // IsSyntaxe verify is the string tempVal exist in the current identifier
