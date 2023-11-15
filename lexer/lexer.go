@@ -27,6 +27,7 @@ func Lexer(sentence string) []Token {
 	var isSpaces bool
 	var inQuote bool
 	var inQuoteStep bool
+	var QuoteIdentifier string
 	var endOfComm int = -1
 	var endOfCommGroup int = -1
 
@@ -104,19 +105,35 @@ func Lexer(sentence string) []Token {
 					break
 				}
 				if ident.Identifier == DQUOTE {
-					// if the current lecture head in inside of a string, we we be carefull about \", cause
+
+					// if the current lecture head is inside a string, we must be carefull about \", cause
 					// it does not end the current string.
 					// if we have a token DQUOTE without being in a string, its the start of a new string
-					if inQuote {
+					if inQuote && QuoteIdentifier == "\"" {
 						if ret[len(ret)-1].Value[len(ret[len(ret)-1].Value)-1] != '\\' {
 							inQuote = false
 						}
 					} else {
 						inQuote = true
 						inQuoteStep = true
+						QuoteIdentifier = "\""
 					}
 				}
+				if ident.Identifier == SQUOTE && (QuoteIdentifier != "\"" && !inQuoteStep) {
 
+					// if the current lecture head is inside a char, we must be carefull about \", cause
+					// it does not end the current string.
+					// if we have a token SQUOTE without being in a char, its the start of a new char
+					if inQuote && QuoteIdentifier == "'" {
+						if ret[len(ret)-1].Value[len(ret[len(ret)-1].Value)-1] != '\\' {
+							inQuote = false
+						}
+					} else {
+						inQuote = true
+						inQuoteStep = true
+						QuoteIdentifier = "'"
+					}
+				}
 				// -----------Quote Token Part END-------------
 
 				// -----------Special Token Part-------------
@@ -140,7 +157,12 @@ func Lexer(sentence string) []Token {
 				// ---------Normal Token Part END-----------
 				//
 				// append a new Token to the variable ret
-				ret = inQuoteChange(inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+
+				if QuoteIdentifier == "\"" {
+					ret = inQuoteChange(STRING, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+				} else if QuoteIdentifier == "'" {
+					ret = inQuoteChange(CHAR, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+				}
 
 				isSpaces = false
 
@@ -198,7 +220,12 @@ func Lexer(sentence string) []Token {
 					if ident.Identifier != INT {
 						if ident.IsSyntaxe(tempVal[y:]) {
 							canBeText = false
-							ret = inQuoteChange(inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
+							if QuoteIdentifier == "\"" {
+								ret = inQuoteChange(STRING, inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
+							} else if QuoteIdentifier == "'" {
+								ret = inQuoteChange(CHAR, inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
+							}
+
 							i += y - len(tempVal)
 							isSpaces = false
 							prevIndex = i
@@ -238,17 +265,17 @@ func Lexer(sentence string) []Token {
 	// -----------End of lexer Part END-------------
 }
 
-func inQuoteChange(inQuote bool, ret []Token, identi identifier, val string, prevIndex int, sentence string) []Token {
+func inQuoteChange(ttoken string, inQuote bool, ret []Token, identi identifier, val string, prevIndex int, sentence string) []Token {
 	actualIndex, line := positionDetector(prevIndex, sentence)
 	if inQuote {
 		if len(ret) >= 1 {
-			if ret[len(ret)-1].TokenType == STRING {
+			if ret[len(ret)-1].TokenType == ttoken {
 				ret[len(ret)-1].Value += val
 			} else {
-				ret = append(ret, addToken(STRING, val, actualIndex, line))
+				ret = append(ret, addToken(ttoken, val, actualIndex, line))
 			}
 		} else {
-			ret = append(ret, addToken(STRING, val, actualIndex, line))
+			ret = append(ret, addToken(ttoken, val, actualIndex, line))
 		}
 	} else {
 		ret = append(ret, addToken(identi.Identifier, val, actualIndex, line))

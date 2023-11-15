@@ -265,6 +265,82 @@ var (
 				Line:      2,
 			}},
 	}
+	testCHAR = testList{
+		input: "'Ok'",
+		output: []Token{
+			{
+				TokenType: SQUOTE,
+				Value:     `'`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: CHAR,
+				Value:     `Ok`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: SQUOTE,
+				Value:     `'`,
+				Position:  4,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  5,
+				Line:      1,
+			},
+		},
+	}
+	testCHARSTRING = testList{
+		input: "\"Ok'\"\"'Ok\"",
+		output: []Token{
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     `Ok'`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  5,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     `'Ok`,
+				Position:  7,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  10,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  11,
+				Line:      1,
+			},
+		},
+	}
 	testEOL = testList{
 		input: "();\nmgrlgrl;\n_aa_",
 		output: []Token{
