@@ -77,7 +77,6 @@ func Lexer(sentence string) []Token {
 					}
 					// same things for the COMMENTGROUP, but with a different ending close.
 					if ret[len(ret)-1].TokenType == COMMENTGROUP && len(ret)-1 != endOfCommGroup && !inQuote {
-						println("in com")
 						if tempVal[len(tempVal)-1] == '/' {
 							break
 						} else if len(tempVal) > 1 {
@@ -112,6 +111,7 @@ func Lexer(sentence string) []Token {
 					if inQuote && QuoteIdentifier == "\"" {
 						if ret[len(ret)-1].Value[len(ret[len(ret)-1].Value)-1] != '\\' {
 							inQuote = false
+							QuoteIdentifier = ""
 						}
 					} else {
 						inQuote = true
@@ -127,6 +127,7 @@ func Lexer(sentence string) []Token {
 					if inQuote && QuoteIdentifier == "'" {
 						if ret[len(ret)-1].Value[len(ret[len(ret)-1].Value)-1] != '\\' {
 							inQuote = false
+							QuoteIdentifier = ""
 						}
 					} else {
 						inQuote = true
@@ -160,20 +161,20 @@ func Lexer(sentence string) []Token {
 
 				if QuoteIdentifier == "\"" {
 					if inQuote {
-						ret = inQuoteChange(STRING, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
 					} else {
-						ret = inQuoteChange(STRING, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
 						QuoteIdentifier = ""
 					}
-
 				} else if QuoteIdentifier == "'" {
 					if inQuote {
-						ret = inQuoteChange(CHAR, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						ret = inQuoteChange(CHAR, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
 					} else {
-						ret = inQuoteChange(CHAR, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						ret = inQuoteChange(CHAR, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
 						QuoteIdentifier = ""
 					}
-
+				} else {
+					ret = inQuoteChange(ident.Identifier, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
 				}
 
 				isSpaces = false
@@ -232,12 +233,7 @@ func Lexer(sentence string) []Token {
 					if ident.Identifier != INT {
 						if ident.IsSyntaxe(tempVal[y:]) {
 							canBeText = false
-							if QuoteIdentifier == "\"" {
-								ret = inQuoteChange(STRING, inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
-							} else if QuoteIdentifier == "'" {
-								ret = inQuoteChange(CHAR, inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
-							}
-
+							ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
 							i += y - len(tempVal)
 							isSpaces = false
 							prevIndex = i
@@ -277,17 +273,25 @@ func Lexer(sentence string) []Token {
 	// -----------End of lexer Part END-------------
 }
 
-func inQuoteChange(ttoken string, inQuote bool, ret []Token, identi identifier, val string, prevIndex int, sentence string) []Token {
+func inQuoteChange(ttoken string, PreviousQuote string, inQuote bool, ret []Token, identi identifier, val string, prevIndex int, sentence string) []Token {
 	actualIndex, line := positionDetector(prevIndex, sentence)
 	if inQuote {
 		if len(ret) >= 1 {
 			if ret[len(ret)-1].TokenType == ttoken {
 				ret[len(ret)-1].Value += val
 			} else {
-				ret = append(ret, addToken(ttoken, val, actualIndex, line))
+				if PreviousQuote == "'" {
+					ret = append(ret, addToken(CHAR, val, actualIndex, line))
+				} else if PreviousQuote == "\"" {
+					ret = append(ret, addToken(STRING, val, actualIndex, line))
+				}
 			}
 		} else {
-			ret = append(ret, addToken(ttoken, val, actualIndex, line))
+			if PreviousQuote == "'" {
+				ret = append(ret, addToken(CHAR, val, actualIndex, line))
+			} else if PreviousQuote == "\"" {
+				ret = append(ret, addToken(STRING, val, actualIndex, line))
+			}
 		}
 	} else {
 		ret = append(ret, addToken(identi.Identifier, val, actualIndex, line))
