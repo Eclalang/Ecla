@@ -3,6 +3,7 @@ package parser
 const (
 	Int        = "int"
 	String     = "string"
+	Char       = "char"
 	Float      = "float"
 	Bool       = "bool"
 	Map        = "map"
@@ -28,6 +29,7 @@ var (
 		Int:        nil,
 		Float:      nil,
 		String:     nil,
+		Char:       nil,
 		Bool:       nil,
 		Map:        nil,
 		ArrayStart: nil,
