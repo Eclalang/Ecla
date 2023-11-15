@@ -955,7 +955,29 @@ func (p *Parser) ParseLiteral() Expr {
 
 		p.Step()
 		if p.CurrentToken.TokenType != lexer.DQUOTE {
-			p.HandleFatal("Expected '\"'")
+			p.HandleFatal("Expected \"")
+		}
+		p.Step()
+		return tempLiteral
+	}
+	if p.CurrentToken.TokenType == lexer.SQUOTE {
+		p.Step()
+		tempLiteral := Literal{}
+		if p.CurrentToken.TokenType == lexer.SQUOTE {
+			tempLiteral = Literal{Token: p.CurrentToken, Type: lexer.CHAR, Value: ""}
+			p.Step()
+			return tempLiteral
+		} else {
+			if p.CurrentToken.TokenType != lexer.CHAR {
+				p.PrintBacktrace()
+				p.HandleFatal("Expected char")
+			}
+			tempLiteral = Literal{Token: p.CurrentToken, Type: lexer.CHAR, Value: p.CurrentToken.Value}
+		}
+
+		p.Step()
+		if p.CurrentToken.TokenType != lexer.SQUOTE {
+			p.HandleFatal("Expected '")
 		}
 		p.Step()
 		return tempLiteral
