@@ -74,7 +74,7 @@ func (s String) GetIndex(other Type) (*Type, error) {
 		if ind >= len(s) || ind < 0 {
 			return nil, errors.New("Index out of range")
 		}
-		res := String(string(s)[ind])
+		res := Char(s[ind])
 		temp := Type(res)
 		return &temp, nil
 	}

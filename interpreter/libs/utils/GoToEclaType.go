@@ -19,6 +19,8 @@ func GoToEclaType(arg any) eclaType.Type {
 		return eclaType.String(arg.(string))
 	case reflect.Bool:
 		return eclaType.Bool(arg.(bool))
+	case reflect.Int32:
+		return eclaType.Char(arg.(rune))
 	case reflect.Slice:
 		//TODO: Refactor the use of Reflect because it may be slow
 		var types []eclaType.Type

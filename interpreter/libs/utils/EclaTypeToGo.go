@@ -15,6 +15,8 @@ func EclaTypeToGo(arg eclaType.Type) any {
 		return string(arg.(eclaType.String))
 	case eclaType.Bool:
 		return bool(arg.(eclaType.Bool))
+	case eclaType.Char:
+		return rune(arg.(eclaType.Char))
 	case *eclaType.List:
 		var types []any
 		for _, val := range arg.(*eclaType.List).Value {

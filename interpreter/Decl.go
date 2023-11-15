@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
-	"github.com/Eclalang/Ecla/errorHandler"
 )
 
 // New returns a new eclaType.Type from a parser.Literal.
@@ -21,6 +21,8 @@ func New(t parser.Literal, env *Env) *Bus {
 		return NewMainBus(eclaType.NewBool(t.Value))
 	case lexer.FLOAT:
 		return NewMainBus(eclaType.NewFloat(t.Value))
+	case lexer.CHAR:
+		return NewMainBus(eclaType.NewChar(t.Value))
 	case "VAR":
 		v, ok := env.GetVar(t.Value)
 		if !ok {
