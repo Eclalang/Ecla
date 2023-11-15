@@ -25,62 +25,62 @@
 ### Fonction Printf
 
 ```
-fonction printf(Format string, ...any)
+function printf(Format string, ...any)
 ```
 print args as formated string to console
 ### Fonction Println
 
 ```
-fonction println(...any)
+function println(...any)
 ```
 print args to console
 ### Fonction Print
 
 ```
-fonction print(...any)
+function print(...any)
 ```
 print args to console withou newline
 ### Fonction Input
 
 ```
-fonction input(...any)
+function input(...any)
 ```
 take user input from console
 ### Fonction PrintInColor
 
 ```
-fonction printInColor(color string, ...any)
+function printInColor(color string, ...any)
 ```
 print args to console with color
 ### Fonction InputInt
 
 ```
-fonction inputInt(prompt string)
+function inputInt(prompt string)
 ```
 read Int input
 ### Fonction InputFloat
 
 ```
-fonction inputFloat(prompt string)
+function inputFloat(prompt string)
 ```
 read Float input
 
 ### Fonction Confirm
 
 ```
-fonction confirm(prompt string)
+function confirm(prompt string)
 ```
 get user confirmation
 ### Fonction ProgressBar
 
 ```
-fonction progressBar(percent int)
+function progressBar(percent int)
 ```
 display a progress bar
 ### Fonction Clear
 
 ```
-fonction clear()
+function clear()
 ```
 clear console
 ##
