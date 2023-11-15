@@ -81,6 +81,14 @@ func TestSpeChar(t *testing.T) {
 	tLexer(t, testSpeChar, " testSpeChar")
 }
 
+func TestChar(t *testing.T) {
+	tLexer(t, testCHAR, "testCHar")
+}
+
+func TestCharString(t *testing.T) {
+	tLexer(t, testCHARSTRING, "testCharString")
+}
+
 func TestPositionDetector_1(t *testing.T) {
 	var Expected1 = 1 //position
 	var Expected2 = 1 //line
@@ -183,7 +191,7 @@ func TestTokenAddSub_1(t *testing.T) {
 	}
 	var prevIndex = 1
 	var tempVal = "+"
-  var ident = identifier{"ADD",[]string{}}
+	var ident = identifier{"ADD", []string{}}
 	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, ADD, INC)
 
 	var errorString = "\n"
@@ -222,7 +230,7 @@ func TestTokenAddSub_2(t *testing.T) {
 	}
 	var prevIndex = 1
 	var tempVal = "+"
-  var ident = identifier{"ADD",[]string{}}
+	var ident = identifier{"ADD", []string{}}
 	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, ADD, INC)
 
 	var errorString = "\n"
@@ -261,7 +269,7 @@ func TestTokenAddSub_3(t *testing.T) {
 	}
 	var prevIndex = 1
 	var tempVal = "-"
-  var ident = identifier{"SUB",[]string{}}
+	var ident = identifier{"SUB", []string{}}
 	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, SUB, DEC)
 
 	var errorString = "\n"
