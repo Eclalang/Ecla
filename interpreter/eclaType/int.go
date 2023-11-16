@@ -51,6 +51,8 @@ func (i Int) Add(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return i + other.(Int), nil
+	case Char:
+		return i + Int(other.(Char)), nil
 	case Float:
 		return Float(i) + other.(Float), nil
 	case String:
@@ -69,6 +71,8 @@ func (i Int) Sub(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return i - other.(Int), nil
+	case Char:
+		return i - Int(other.(Char)), nil
 	case Float:
 		return Float(i) - other.(Float), nil
 	default:
@@ -85,6 +89,8 @@ func (i Int) Mod(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return i % other.(Int), nil
+	case Char:
+		return i % Int(other.(Char)), nil
 	default:
 		return nil, errors.New("cannot mod " + string(other.GetString()) + " by int")
 	}
@@ -99,6 +105,8 @@ func (i Int) Mul(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return i * other.(Int), nil
+	case Char:
+		return i * Int(other.(Char)), nil
 	case Float:
 		return Float(i) * other.(Float), nil
 	case String:
@@ -123,7 +131,12 @@ func (i Int) Div(other Type) (Type, error) {
 		if other.(Int) == 0 {
 			return nil, errors.New("cannot divide by zero")
 		}
-		return i / other.(Int), nil
+		return Float(i) / Float(other.(Int)), nil
+	case Char:
+		if Int(other.(Char)) == 0 {
+			return nil, errors.New("Cannot divide by zero")
+		}
+		return Float(i) / Float(other.(Char)), nil
 	case Float:
 		if other.(Float) == 0 {
 			return nil, errors.New("cannot divide by zero")
@@ -143,6 +156,8 @@ func (i Int) DivEc(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return (i - i%other.(Int)) / other.(Int), nil
+	case Char:
+		return (i - i%Int(other.(Char))) / Int(other.(Char)), nil
 	case Float:
 		return nil, errors.New("cannot divide ec by float")
 	default:
@@ -159,6 +174,8 @@ func (i Int) Eq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i == other.(Int)), nil
+	case Char:
+		return Bool(i == Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) == other.(Float)), nil
 	default:
@@ -175,6 +192,8 @@ func (i Int) NotEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i != other.(Int)), nil
+	case Char:
+		return Bool(i != Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) != other.(Float)), nil
 	default:
@@ -191,6 +210,8 @@ func (i Int) Gt(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i > other.(Int)), nil
+	case Char:
+		return Bool(i > Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) > other.(Float)), nil
 	default:
@@ -207,6 +228,8 @@ func (i Int) GtEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i >= other.(Int)), nil
+	case Char:
+		return Bool(i >= Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) >= other.(Float)), nil
 	default:
@@ -223,6 +246,8 @@ func (i Int) Lw(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i < other.(Int)), nil
+	case Char:
+		return Bool(i < Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) < other.(Float)), nil
 	default:
@@ -239,6 +264,8 @@ func (i Int) LwEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i <= other.(Int)), nil
+	case Char:
+		return Bool(i <= Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) <= other.(Float)), nil
 	default:

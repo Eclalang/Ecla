@@ -47,7 +47,7 @@ func (c Char) Add(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		return Char(int(c) + other.GetValue().(int)), nil
+		return Char(Int(c) + other.GetValue().(Int)), nil
 	case Char:
 		return c + other.(Char), nil
 	case String:
@@ -65,7 +65,7 @@ func (c Char) Sub(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		return Char(int(c) - other.GetValue().(int)), nil
+		return Char(Int(c) - other.GetValue().(Int)), nil
 	case Char:
 		return c - other.(Char), nil
 	default:
@@ -81,7 +81,7 @@ func (c Char) Mul(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		return Char(int(c) * other.GetValue().(int)), nil
+		return Char(Int(c) * other.GetValue().(Int)), nil
 	case Char:
 		return c * other.(Char), nil
 	default:
@@ -97,7 +97,7 @@ func (c Char) Div(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		return Char(int(c) / other.GetValue().(int)), nil
+		return Char(Int(c) / other.GetValue().(Int)), nil
 	case Char:
 		return c / other.(Char), nil
 	default:
@@ -113,7 +113,7 @@ func (c Char) Mod(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		return Char(int(c) % other.GetValue().(int)), nil
+		return Char(Int(c) % other.GetValue().(Int)), nil
 	case Char:
 		return c % other.(Char), nil
 	default:
