@@ -114,6 +114,12 @@ func (s String) Mul(other Type) (Type, error) {
 			result += string(s)
 		}
 		return String(result), nil
+	case Char:
+		result := ""
+		for i := 0; i < int(other.(Char)); i++ {
+			result += string(s)
+		}
+		return String(result), nil
 	default:
 		return nil, errors.New(string("cannot multiply string by " + other.GetString()))
 	}

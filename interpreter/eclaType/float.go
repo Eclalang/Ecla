@@ -59,6 +59,8 @@ func (f Float) Add(other Type) (Type, error) {
 		return f + other.(Float), nil
 	case String:
 		return f.GetString() + other.GetString(), nil
+	case Char:
+		return f + Float(Int(other.(Char))), nil
 	default:
 		return nil, errors.New("cannot add " + string(other.GetString()) + " to float")
 	}
@@ -73,6 +75,8 @@ func (f Float) Sub(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return f - Float(other.(Int)), nil
+	case Char:
+		return f - Float(Int(other.(Char))), nil
 	case Float:
 		return f - other.(Float), nil
 	default:
@@ -98,6 +102,8 @@ func (f Float) Mul(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return f * Float(other.(Int)), nil
+	case Char:
+		return f * Float(Int(other.(Char))), nil
 	case Float:
 		return f * other.(Float), nil
 	default:
@@ -114,6 +120,8 @@ func (f Float) Div(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return f / Float(other.(Int)), nil
+	case Char:
+		return f / Float(other.(Char)), nil
 	case Float:
 		return f / other.(Float), nil
 	default:
@@ -135,6 +143,8 @@ func (f Float) Eq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f == Float(other.(Int))), nil
+	case Char:
+		return Bool(f == Float(other.(Char))), nil
 	case Float:
 		return Bool(f == other.(Float)), nil
 	default:
@@ -151,6 +161,8 @@ func (f Float) NotEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f != Float(other.(Int))), nil
+	case Char:
+		return Bool(f != Float(other.(Char))), nil
 	case Float:
 		return Bool(f != other.(Float)), nil
 	default:
@@ -167,6 +179,8 @@ func (f Float) Gt(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f > Float(other.(Int))), nil
+	case Char:
+		return Bool(f > Float(other.(Char))), nil
 	case Float:
 		return Bool(f > other.(Float)), nil
 	default:
@@ -183,6 +197,8 @@ func (f Float) GtEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f >= Float(other.(Int))), nil
+	case Char:
+		return Bool(f >= Float(other.(Char))), nil
 	case Float:
 		return Bool(f >= other.(Float)), nil
 	default:
@@ -199,6 +215,8 @@ func (f Float) Lw(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f < Float(other.(Int))), nil
+	case Char:
+		return Bool(f < Float(other.(Char))), nil
 	case Float:
 		return Bool(f < other.(Float)), nil
 	default:
@@ -215,6 +233,8 @@ func (f Float) LwEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f <= Float(other.(Int))), nil
+	case Char:
+		return Bool(f <= Float(other.(Char))), nil
 	case Float:
 		return Bool(f <= other.(Float)), nil
 	default:
