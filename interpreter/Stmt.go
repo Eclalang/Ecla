@@ -31,7 +31,7 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) {
 	//return eclaType.NewString(RunTree(tree.Expression, env).GetType())
 }
 
-// TODO : Comment this function @mkarten
+// AssignementTypeChecking checks if the type of the variable is the same as the type of the expression.
 func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) {
 	if type1 != type2 {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Can't assign %s to %s", type2, type1), errorHandler.LevelFatal)
