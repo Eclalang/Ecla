@@ -787,6 +787,25 @@ func (p *Parser) ParseImportStmt() Stmt {
 	return tempImportStmt
 }
 
+func (p *Parser) ParseAnonymousFunctionDecl() Node {
+	tempAnonymousFunctionDecl := AnonymousFunctionDecl{FunctionToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		p.PrintBacktrace()
+		p.HandleFatal("Expected '('")
+	}
+	tempAnonymousFunctionDecl.Prototype = p.ParsePrototype()
+	p.Step()
+	tempAnonymousFunctionDecl.Body = p.ParseBody()
+	if p.CurrentToken.TokenType != lexer.RBRACE {
+		p.HandleFatal("Expected '}'")
+	}
+	p.Step()
+	p.DisableEOLChecking()
+	return tempAnonymousFunctionDecl
+
+}
+
 // ParseFunctionDecl parses a function declaration
 func (p *Parser) ParseFunctionDecl() Node {
 	tempFunctionDecl := FunctionDecl{FunctionToken: p.CurrentToken}
@@ -804,64 +823,7 @@ func (p *Parser) ParseFunctionDecl() Node {
 		p.PrintBacktrace()
 		p.HandleFatal("Expected '('")
 	}
-	tempFunctionDecl.LeftParamParen = p.CurrentToken
-	isParen := p.Peek(1)
-	if isParen.TokenType != lexer.RPAREN {
-		for p.CurrentToken.TokenType != lexer.RPAREN {
-			p.Step()
-			// parameter in the form of "a : int, b : int"
-			ParamName := ""
-			ParamType := ""
-			ParamName = p.CurrentToken.Value
-			p.Step()
-			if p.CurrentToken.TokenType != lexer.COLON {
-				p.HandleFatal("Expected ':'")
-			}
-			ParamType, succes := p.ParseType()
-			if !succes {
-				p.HandleFatal("Unknown type")
-			}
-			p.Back()
-			if !(DuplicateParam(tempFunctionDecl.Parameters, ParamName)) {
-				newParams := FunctionParams{Name: ParamName, Type: ParamType}
-				tempFunctionDecl.Parameters = append(tempFunctionDecl.Parameters, newParams)
-			} else {
-				p.HandleFatal("Duplicate parameter name")
-			}
-			p.Step()
-			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-				p.HandleFatal("Expected ','")
-			}
-		}
-	} else {
-		p.Step()
-	}
-	if p.CurrentToken.TokenType != lexer.RPAREN {
-		p.HandleFatal("Expected ')'")
-	}
-	tempFunctionDecl.RightParamParen = p.CurrentToken
-	if p.Peek(1).TokenType == lexer.LPAREN {
-		p.Step()
-		tempFunctionDecl.LeftRetsParen = p.CurrentToken
-		for p.CurrentToken.TokenType != lexer.RPAREN {
-			retType, success := p.ParseType()
-			if !success {
-				p.HandleFatal("Unknown type")
-			}
-			tempFunctionDecl.ReturnTypes = append(tempFunctionDecl.ReturnTypes, retType)
-			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-				p.HandleFatal("Expected ','")
-			}
-		}
-		if p.CurrentToken.TokenType != lexer.RPAREN {
-			p.HandleFatal("Expected ')'")
-		}
-	}
-	p.Step()
-	tempFunctionDecl.RightRetsParen = p.CurrentToken
-	if p.CurrentToken.TokenType != lexer.LBRACE {
-		p.HandleFatal("Expected '{'")
-	}
+	tempFunctionDecl.Prototype = p.ParsePrototype()
 	p.Step()
 	tempFunctionDecl.Body = p.ParseBody()
 	if p.CurrentToken.TokenType != lexer.RBRACE {
@@ -1015,4 +977,71 @@ func DuplicateParam(params []FunctionParams, newParam string) bool {
 		}
 	}
 	return false
+}
+
+func (p *Parser) ParsePrototype() FunctionPrototype {
+	tempFunctionPrototype := FunctionPrototype{}
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		p.PrintBacktrace()
+		p.HandleFatal("Expected '('")
+	}
+	tempFunctionPrototype.LeftParamParen = p.CurrentToken
+	isParen := p.Peek(1)
+	if isParen.TokenType != lexer.RPAREN {
+		for p.CurrentToken.TokenType != lexer.RPAREN {
+			p.Step()
+			// parameter in the form of "a : int, b : int"
+			ParamName := ""
+			ParamType := ""
+			ParamName = p.CurrentToken.Value
+			p.Step()
+			if p.CurrentToken.TokenType != lexer.COLON {
+				p.HandleFatal("Expected ':'")
+			}
+			ParamType, succes := p.ParseType()
+			if !succes {
+				p.HandleFatal("Unknown type")
+			}
+			p.Back()
+			if !(DuplicateParam(tempFunctionPrototype.Parameters, ParamName)) {
+				newParams := FunctionParams{Name: ParamName, Type: ParamType}
+				tempFunctionPrototype.Parameters = append(tempFunctionPrototype.Parameters, newParams)
+			} else {
+				p.HandleFatal("Duplicate parameter name")
+			}
+			p.Step()
+			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+				p.HandleFatal("Expected ','")
+			}
+		}
+	} else {
+		p.Step()
+	}
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		p.HandleFatal("Expected ')'")
+	}
+	tempFunctionPrototype.RightParamParen = p.CurrentToken
+	if p.Peek(1).TokenType == lexer.LPAREN {
+		p.Step()
+		tempFunctionPrototype.LeftRetsParen = p.CurrentToken
+		for p.CurrentToken.TokenType != lexer.RPAREN {
+			retType, success := p.ParseType()
+			if !success {
+				p.HandleFatal("Unknown type")
+			}
+			tempFunctionPrototype.ReturnTypes = append(tempFunctionPrototype.ReturnTypes, retType)
+			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+				p.HandleFatal("Expected ','")
+			}
+		}
+		if p.CurrentToken.TokenType != lexer.RPAREN {
+			p.HandleFatal("Expected ')'")
+		}
+	}
+	p.Step()
+	tempFunctionPrototype.RightRetsParen = p.CurrentToken
+	if p.CurrentToken.TokenType != lexer.LBRACE {
+		p.HandleFatal("Expected '{'")
+	}
+	return tempFunctionPrototype
 }

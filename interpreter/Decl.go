@@ -132,7 +132,7 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 
 // RunFunctionDecl executes a parser.FunctionDecl.
 func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
-	fn := eclaType.NewFunction(tree.Name, tree.Parameters, tree.Body, tree.ReturnTypes)
+	fn := eclaType.NewFunction(tree.Name, tree.Prototype.Parameters, tree.Body, tree.Prototype.ReturnTypes)
 	env.SetFunction(tree.Name, fn)
 }
 

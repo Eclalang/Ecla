@@ -362,9 +362,7 @@ type FunctionParams struct {
 	Type string
 }
 
-type FunctionDecl struct {
-	FunctionToken   lexer.Token
-	Name            string
+type FunctionPrototype struct {
 	LeftParamParen  lexer.Token
 	RightParamParen lexer.Token
 	Parameters      []FunctionParams
@@ -373,7 +371,13 @@ type FunctionDecl struct {
 	ReturnTypes     []string
 	LeftBrace       lexer.Token
 	RightBrace      lexer.Token
-	Body            []Node
+}
+
+type FunctionDecl struct {
+	FunctionToken lexer.Token
+	Name          string
+	Prototype     FunctionPrototype
+	Body          []Node
 }
 
 func (f FunctionDecl) StartPos() int {
@@ -381,10 +385,26 @@ func (f FunctionDecl) StartPos() int {
 }
 
 func (f FunctionDecl) EndPos() int {
-	return f.RightBrace.Position
+	return f.Prototype.RightBrace.Position
 }
 
 func (f FunctionDecl) declNode() {}
+
+type AnonymousFunctionDecl struct {
+	FunctionToken lexer.Token
+	Prototype     FunctionPrototype
+	Body          []Node
+}
+
+func (f AnonymousFunctionDecl) StartPos() int {
+	return f.FunctionToken.Position
+}
+
+func (f AnonymousFunctionDecl) EndPos() int {
+	return f.Prototype.RightBrace.Position
+}
+
+func (f AnonymousFunctionDecl) exprNode() {}
 
 type ReturnStmt struct {
 	ReturnToken  lexer.Token
