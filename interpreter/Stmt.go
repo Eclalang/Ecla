@@ -31,12 +31,14 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) {
 	//return eclaType.NewString(RunTree(tree.Expression, env).GetType())
 }
 
+// TODO : Comment this function @mkarten
 func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) {
 	if type1 != type2 {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Can't assign %s to %s", type2, type1), errorHandler.LevelFatal)
 	}
 }
 
+// TODO : Remove this function @mkarten
 func HandleError(tree parser.VariableAssignStmt, err error, env *Env) {
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)

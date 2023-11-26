@@ -40,6 +40,8 @@ func NewEnv() *Env {
 	}
 }
 
+// NewTemporaryEnv returns a new temporary Env.
+// Temporary Env are used to import modules.
 func NewTemporaryEnv(ErrorHandler *errorHandler.ErrorHandler) *Env {
 	return &Env{
 		OS:           runtime.GOOS,
@@ -165,6 +167,7 @@ func (env *Env) Load() {
 	Load(env)
 }
 
+// Import executes an import statement.
 func (env *Env) Import(stmt parser.ImportStmt) {
 	file := stmt.ModulePath
 	temp := libs.Import(file)
@@ -186,18 +189,22 @@ func (env *Env) Import(stmt parser.ImportStmt) {
 	env.Libs[parser.GetPackageNameByPath(file)] = temp
 }
 
+// AddFunctionExecuted adds a function to the pile of executed functions.
 func (env *Env) AddFunctionExecuted(f *eclaType.Function) {
 	env.ExecutedFunc = append(env.ExecutedFunc, f)
 }
 
+// GetFunctionExecuted returns the last function executed.
 func (env *Env) GetFunctionExecuted() *eclaType.Function {
 	return env.ExecutedFunc[len(env.ExecutedFunc)-1]
 }
 
+// RemoveFunctionExecuted removes the last function executed.
 func (env *Env) RemoveFunctionExecuted() {
 	env.ExecutedFunc = env.ExecutedFunc[:len(env.ExecutedFunc)-1]
 }
 
+// envLib represents a library and that uses to compartiment the scope of the library and the scope of the main program.
 type envLib struct {
 	Var  *Scope
 	Libs map[string]libs.Lib
@@ -217,9 +224,16 @@ func (lib *envLib) Call(name string, args []eclaType.Type) ([]eclaType.Type, err
 	if f == nil {
 		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("function '%s' is nil", name), errorHandler.LevelFatal)
 	}
+
+	// TODO : Change this to more clean code
+
+	// Save the current libs
 	temps := lib.env.Libs
+	// Set the libs of the lib
 	lib.env.Libs = lib.Libs
+	// Run the function
 	r1, r2 := RunFunctionCallExprWithArgs(name, lib.env, f, args)
+	// Restore the libs
 	lib.env.Libs = temps
 	return r1, r2
 }
