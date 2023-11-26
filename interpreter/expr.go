@@ -3,15 +3,14 @@ package interpreter
 import (
 	"fmt"
 
+	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
-	"github.com/Eclalang/Ecla/errorHandler"
 )
 
-// RunTree executes a parser.Tree.
+// RunTree executes a parser.Node
 func RunTree(tree parser.Node, env *Env) []*Bus {
-	//fmt.Printf("%T\n", tree)
 	switch tree.(type) {
 	case parser.Literal:
 		return []*Bus{New(tree.(parser.Literal), env)}
@@ -65,6 +64,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 	return []*Bus{NewNoneBus()}
 }
 
+// RunTreeLoad is special version of RunTree that is used to load the environment (function, variable, import)
 func RunTreeLoad(tree parser.Node, env *Env) []*Bus {
 	switch tree.(type) {
 	case parser.VariableDecl:
@@ -179,6 +179,7 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 	return NewNoneBus()
 }
 
+// RunFunctionCallExpr executes a parser.FunctionCallExpr.
 func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 	var args []eclaType.Type
 	for _, v := range tree.Args {
@@ -208,6 +209,7 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 	return retValues
 }
 
+// RunFunctionCallExprWithArgs executes a parser.FunctionCallExpr with the given arguments.
 func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, args []eclaType.Type) ([]eclaType.Type, error) {
 	env.NewScope(SCOPE_FUNCTION)
 	defer env.EndScope()
@@ -225,6 +227,7 @@ func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, a
 	return RunBodyFunction(fn, env)
 }
 
+// RunBodyFunction executes the code associated with the function.
 func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
 	for _, v := range fn.Body {
 		BusCollection := RunTree(v, env)
@@ -249,6 +252,7 @@ func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
 	return []eclaType.Type{eclaType.Null{}}, nil
 }
 
+// RunIndexableAccessExpr executes a parser.IndexableAccessExpr.
 func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 	v, ok := env.GetVar(tree.VariableName)
 	if !ok {
@@ -261,8 +265,6 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 			env.ErrorHandle.HandleError(0, tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
 		}
 		elem := BusCollection[0].GetVal()
-		//fmt.Printf("%s\n", elem.GetValue())
-		//fmt.Printf("%T\n", result.GetValue())
 		temp, err := result.GetIndex(elem)
 
 		result = *temp

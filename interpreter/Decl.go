@@ -2,8 +2,6 @@ package interpreter
 
 import (
 	"errors"
-	"fmt"
-
 	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
@@ -108,10 +106,7 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 		}
 		values = append(values, busCollection[0].GetVal())
 	}
-	//Modif typ par tree.$type
-	/*
-		[14, 15] -> x1 [ donc [], 14 -> int donc []int
-	*/
+	// Construct type of list
 	var typ string
 	if len(values) == 0 {
 		typ = "empty"
@@ -124,7 +119,6 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 	}
 	err = l.SetValue(values)
 	if err != nil {
-		fmt.Println("non")
 		panic(err)
 	}
 	return NewMainBus(l)

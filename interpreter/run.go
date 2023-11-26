@@ -7,6 +7,7 @@ func Run(env *Env) {
 	}
 }
 
+// Load executes import statements with their environment.
 func Load(env *Env) {
 	for _, v := range env.SyntaxTree.ParseTree.Operations {
 		RunTreeLoad(v, env)
