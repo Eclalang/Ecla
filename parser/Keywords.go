@@ -7,6 +7,7 @@ const (
 	Float      = "float"
 	Bool       = "bool"
 	Map        = "map"
+	Function   = "function"
 	ArrayStart = "["
 )
 
@@ -32,6 +33,7 @@ var (
 		Char:       nil,
 		Bool:       nil,
 		Map:        nil,
+		Function:   nil,
 		ArrayStart: nil,
 	}
 )

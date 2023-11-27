@@ -542,10 +542,12 @@ func (p *Parser) ParseType() (string, bool) {
 	if _, ok := VarTypes[p.CurrentToken.Value]; ok {
 		tempType := ""
 		switch p.CurrentToken.Value {
-		case "[":
+		case ArrayStart:
 			tempType = p.ParseArrayType()
-		case "map":
+		case Map:
 			tempType = p.ParseMapType()
+		case Function:
+			tempType = p.ParseFunctionType()
 		default:
 			tempType = p.CurrentToken.Value
 		}
