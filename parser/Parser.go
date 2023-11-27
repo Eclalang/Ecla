@@ -614,28 +614,36 @@ func (p *Parser) ParseFunctionType() string {
 	if p.CurrentToken.TokenType != lexer.LPAREN {
 		return ""
 	}
+	tempType += p.CurrentToken.Value
 	// parse arguments types using the parseType function
 	for p.CurrentToken.TokenType != lexer.RPAREN {
-		tempType += p.CurrentToken.Value
-		p.Step()
+		temp, success := p.ParseType()
+		if !success {
+			return ""
+		}
+		tempType += temp
 		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
 			return ""
 		}
+		tempType += p.CurrentToken.Value
 	}
-	tempType += p.CurrentToken.Value
 	p.Step()
-	if p.CurrentToken.TokenType != lexer.LPAREN {
-		return ""
-	}
-	// parse return type using the parseType function
-	for p.CurrentToken.TokenType != lexer.RPAREN {
+	// check if the function has a return type
+	if p.CurrentToken.TokenType == lexer.LPAREN {
 		tempType += p.CurrentToken.Value
-		p.Step()
-		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-			return ""
+		// parse return type using the parseType function
+		for p.CurrentToken.TokenType != lexer.RPAREN {
+			temp, success := p.ParseType()
+			if !success {
+				return ""
+			}
+			tempType += temp
+			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+				return ""
+			}
 		}
+		tempType += p.CurrentToken.Value
 	}
-	tempType += p.CurrentToken.Value
 	return tempType
 }
 
