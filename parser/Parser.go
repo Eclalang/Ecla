@@ -584,7 +584,7 @@ func (p *Parser) ParseArrayType() string {
 
 // ParseMapType parses a map type
 func (p *Parser) ParseMapType() string {
-	tempType := "map"
+	tempType := Map
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LBRACKET {
 		return ""
@@ -605,6 +605,37 @@ func (p *Parser) ParseMapType() string {
 	}
 	p.Back()
 	tempType += valueType
+	return tempType
+}
+
+func (p *Parser) ParseFunctionType() string {
+	tempType := Function
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		return ""
+	}
+	// parse arguments types using the parseType function
+	for p.CurrentToken.TokenType != lexer.RPAREN {
+		tempType += p.CurrentToken.Value
+		p.Step()
+		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+			return ""
+		}
+	}
+	tempType += p.CurrentToken.Value
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		return ""
+	}
+	// parse return type using the parseType function
+	for p.CurrentToken.TokenType != lexer.RPAREN {
+		tempType += p.CurrentToken.Value
+		p.Step()
+		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+			return ""
+		}
+	}
+	tempType += p.CurrentToken.Value
 	return tempType
 }
 
