@@ -465,18 +465,27 @@ func (p *Parser) ParseVariableDecl() Decl {
 		p.HandleFatal("Expected variable name instead of " + p.CurrentToken.Value)
 	}
 	tempDecl.Name = p.CurrentToken.Value
-	typeName, success := p.ParseType()
-	if !success {
-		p.HandleFatal("Expected variable type instead of " + p.CurrentToken.Value)
-	}
-	tempDecl.Type = typeName
-	if p.CurrentToken.TokenType != lexer.ASSIGN {
-		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.EOL && p.CurrentToken.TokenType != lexer.EOF {
-			p.HandleFatal("Expected variable assignment instead of " + p.CurrentToken.Value)
+	// make a lookahed to see if the next token is a type or an implicit variable declaration
+	lookAhead := p.Peek(1)
+	if lookAhead.TokenType != lexer.COLON {
+		typeName, success := p.ParseType()
+		if !success {
+			p.HandleFatal("Expected variable type instead of " + p.CurrentToken.Value)
 		}
-		tempDecl.Value = nil
-		p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
-		return tempDecl
+		tempDecl.Type = typeName
+		if p.CurrentToken.TokenType != lexer.ASSIGN {
+			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.EOL && p.CurrentToken.TokenType != lexer.EOF {
+				p.HandleFatal("Expected variable assignment instead of " + p.CurrentToken.Value)
+			}
+			tempDecl.Value = nil
+			p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
+			return tempDecl
+		}
+	} else {
+		p.MultiStep(2)
+		if p.CurrentToken.TokenType != lexer.ASSIGN {
+			p.HandleFatal("Expected implicit variable assignment instead of " + p.CurrentToken.Value)
+		}
 	}
 	p.Step()
 	tempDecl.Value = p.ParseExpr()

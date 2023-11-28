@@ -5,3 +5,7 @@ import "console";
 #/ this is a block comment /#
 
 console.println("Hello, World!");
+
+var x int;
+var y int = 1;
+var z := 1;
