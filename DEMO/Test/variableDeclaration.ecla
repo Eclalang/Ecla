@@ -1,0 +1,11 @@
+import "console";
+
+
+var x int;
+console.println(x);
+var y int = 1;
+console.println(y);
+var z := 1;
+console.println(z);
+u := 1;
+console.println(u);

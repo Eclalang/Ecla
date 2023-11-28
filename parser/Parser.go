@@ -244,6 +244,9 @@ func (p *Parser) ParseIdent() Node {
 		return p.ParseMethodCallExpr()
 	} else if p.Peek(1).TokenType == lexer.LPAREN {
 		return p.ParseFunctionCallExpr()
+	} else if p.Peek(1).TokenType == lexer.COLON {
+		p.Back()
+		return p.ParseVariableDecl()
 	} else {
 		return p.ParseVariableAssign()
 	}
