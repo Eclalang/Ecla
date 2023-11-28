@@ -187,3 +187,31 @@ func TestAppendStrings(t *testing.T) {
 		t.Error("Expected hello world, got ", result)
 	}
 }
+
+// String interacts with Char
+
+func TestAddStringChar(t *testing.T) {
+	t1 := String("Hello")
+	t2 := Char('A')
+
+	result, err := t1.Add(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != String("HelloA") {
+		t.Error("Expected HelloA, got ", result)
+	}
+}
+
+func TestMulStringChar(t *testing.T) {
+	t1 := String("Hello")
+	t2 := Char(2)
+
+	result, err := t1.Mul(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != String("HelloHello") {
+		t.Error("Expected HelloHello, got ", result)
+	}
+}
