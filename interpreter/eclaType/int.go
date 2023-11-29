@@ -88,8 +88,14 @@ func (i Int) Mod(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
+		if other.(Int) == 0 {
+			return nil, errors.New("cannot mod by zero")
+		}
 		return i % other.(Int), nil
 	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot mod by zero")
+		}
 		return i % Int(other.(Char)), nil
 	default:
 		return nil, errors.New("cannot mod " + string(other.GetString()) + " by int")
@@ -133,11 +139,17 @@ func (i Int) Div(other Type) (Type, error) {
 		}
 		return Float(i) / Float(other.(Int)), nil
 	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		if Int(other.(Char)) == 0 {
 			return nil, errors.New("Cannot divide by zero")
 		}
 		return Float(i) / Float(other.(Char)), nil
 	case Float:
+		if other.(Float) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		if other.(Float) == 0 {
 			return nil, errors.New("cannot divide by zero")
 		}
@@ -155,10 +167,19 @@ func (i Int) DivEc(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
+		if other.(Int) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return (i - i%other.(Int)) / other.(Int), nil
 	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return (i - i%Int(other.(Char))) / Int(other.(Char)), nil
 	case Float:
+		if other.(Float) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return nil, errors.New("cannot divide ec by float")
 	default:
 		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")
