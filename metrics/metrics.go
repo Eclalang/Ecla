@@ -13,43 +13,53 @@ type Metrics struct {
 	FCalls, StackSize, HeapSize, MinMem, MaxMem, MinCpu, MaxCpu          int
 }
 
+// NewMetrics returns a new Metrics.
 func NewMetrics() *Metrics {
 	return &Metrics{}
 }
 
+// StartTimers starts the timers.
 func (m *Metrics) StartTimers() {
 	m.StartExecTime = time.Now()
 }
 
+// StopTotalTimer stops the total timer.
 func (m *Metrics) StopTotalTimer() {
 	m.TotalExecTime = time.Since(m.StartExecTime)
 	m.Measure()
 }
 
+// StartLexerTimer starts the lexer timer.
 func (m *Metrics) StartLexerTimer() {
 	m.StartLexerTime = time.Now()
 }
 
+// StopLexerTimer stops the lexer timer.
 func (m *Metrics) StopLexerTimer() {
 	m.LexerExecTime = time.Since(m.StartLexerTime)
 }
 
+// StartParserTimer starts the parser timer.
 func (m *Metrics) StartParserTimer() {
 	m.StartParserTime = time.Now()
 }
 
+// StopParserTimer stops the parser timer.
 func (m *Metrics) StopParserTimer() {
 	m.ParserExecTime = time.Since(m.StartParserTime)
 }
 
+// StartInterpreterTimer starts the interpreter timer.
 func (m *Metrics) StartInterpreterTimer() {
 	m.StartInterpreterTime = time.Now()
 }
 
+// StopInterpreterTimer stops the interpreter timer.
 func (m *Metrics) StopInterpreterTimer() {
 	m.InterpreterExecTime = time.Since(m.StartInterpreterTime)
 }
 
+// Measure retrieves and prints the metrics.
 func (m *Metrics) Measure() {
 	// Get descriptions for all supported metrics.
 	descs := metrics.All()
@@ -93,6 +103,7 @@ func (m *Metrics) Measure() {
 	}
 }
 
+// medianBucket returns the median bucket of a histogram.
 func medianBucket(h *metrics.Float64Histogram) float64 {
 	total := uint64(0)
 	for _, count := range h.Counts {
