@@ -198,7 +198,7 @@ func TestDivIntegers(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Int(3) {
+	if result.GetValue() != Float(3) {
 		t.Error("Expected 3, got ", result)
 	}
 }
@@ -319,5 +319,163 @@ func TestMulIntString(t *testing.T) {
 	}
 	if result.GetValue() != String("hellohello") {
 		t.Error("Expected hellohello, got ", result)
+	}
+}
+
+// Int interacts with Char
+
+func TestAddIntChar(t *testing.T) {
+	t1 := Int(1)
+	t2 := Char(2)
+
+	result, err := t1.Add(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(3) {
+		t.Error("Expected 3, got ", result)
+	}
+}
+
+func TestSubIntChar(t *testing.T) {
+	t1 := Int(2)
+	t2 := Char(1)
+
+	result, err := t1.Sub(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(1) {
+		t.Error("Expected 1, got ", result)
+	}
+}
+
+func TestModIntChar(t *testing.T) {
+	t1 := Int(5)
+	t2 := Char(2)
+
+	result, err := t1.Mod(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(1) {
+		t.Error("Expected 1, got ", result)
+	}
+}
+
+func TestMulIntChar(t *testing.T) {
+	t1 := Int(2)
+	t2 := Char(3)
+
+	result, err := t1.Mul(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(6) {
+		t.Error("Expected 6, got ", result)
+	}
+}
+
+func TestDivIntChar(t *testing.T) {
+	t1 := Int(6)
+	t2 := Char(2)
+
+	result, err := t1.Div(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Float(3) {
+		t.Error("Expected 3, got ", result)
+	}
+}
+
+func TestDivEcIntChar(t *testing.T) {
+	t1 := Int(6)
+	t2 := Char(2)
+
+	result, err := t1.DivEc(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(3) {
+		t.Error("Expected 3, got ", result)
+	}
+}
+
+func TestEqIntChar(t *testing.T) {
+	t1 := Int(1)
+	t2 := Char(1)
+
+	result, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestNotEqIntChar(t *testing.T) {
+	t1 := Int(1)
+	t2 := Char(1)
+
+	result, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestGtIntChar(t *testing.T) {
+	t1 := Int(3)
+	t2 := Char(1)
+
+	result, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestGtEqIntChar(t *testing.T) {
+	t1 := Int(1)
+	t2 := Char(1)
+
+	result, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestLwIntChar(t *testing.T) {
+	t1 := Int(1)
+	t2 := Char(3)
+
+	result, err := t1.Lw(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestLwEqIntChar(t *testing.T) {
+	t1 := Int(1)
+	t2 := Char(1)
+
+	result, err := t1.LwEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
 	}
 }
