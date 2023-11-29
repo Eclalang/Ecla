@@ -2,33 +2,33 @@
 
 ## Table of content
 
-- Nodes inner workings
-  - What is a node
-  - Node types
-- Nodes documentation
-  - Expression nodes
-    - Literal node
-    - BinaryExpr node
-    - UnaryExpr node
-    - ParenExpr node
-    - ArrayLiteral node
-    - MapLiteral node
-    - IndexableAccessExpr node
-    - FunctionCallExpr node
-    - MethodCallExpr node
-  - Statement nodes
-    - PrintStmt node
-    - TypeStmt node
-    - VariableAssignStmt node
-    - IfStmt node
-    - ElseStmt node
-    - WhileStmt node
-    - ForStmt node
-    - ImportStmt node
-    - ReturnStmt node
-  - Declaration nodes
-    - VariableDecl node
-    - FunctionDecl node
+- [Nodes inner workings](#nodes-inner-workings)
+  - [What is a node](#what-is-a-node)
+  - [Node types](#node-types)
+- [Nodes documentation](#nodes-documentation)
+  - [Expression nodes](#expression-nodes)
+    - [Literal node](#literal-node)
+    - [BinaryExpr node](#binaryexpr-node)
+    - [UnaryExpr node](#unaryexpr-node)
+    - [ParenExpr node](#parenexpr-node)
+    - [ArrayLiteral node](#arrayliteral-node)
+    - [MapLiteral node](#mapliteral-node)
+    - [IndexableAccessExpr node](#indexableaccessexpr-node)
+    - [FunctionCallExpr node](#functioncallexpr-node)
+    - [MethodCallExpr node](#methodcallexpr-node)
+  - [Statement nodes](#statement-nodes)
+    - [PrintStmt node](#printstmt-node)
+    - [TypeStmt node](#typestmt-node)
+    - [VariableAssignStmt node](#variableassignstmt-node)
+    - [IfStmt node](#ifstmt-node)
+    - [ElseStmt node](#elsestmt-node)
+    - [WhileStmt node](#whilestmt-node)
+    - [ForStmt node](#forstmt-node)
+    - [ImportStmt node](#importstmt-node)
+    - [ReturnStmt node](#returnstmt-node)
+  - [Declaration nodes](#declaration-nodes)
+    - [VariableDecl node](#variabledecl-node)
+    - [FunctionDecl node](#functiondecl-node)
 
 ## Nodes inner workings
 
@@ -427,9 +427,323 @@ a variable assign statement is a statement that contains an array of names, an o
 
 for example :
 ```ecla   
-    var a = 1;
-    var a += 1;
-    var a, b += 1, 2;
+    a = 1;
+    a += 1;
 ```
 
+***
+
+#### IfStmt node
+The `IfStmt` node represents an if statement in the Ecla language.
+
+##### Fields
+The `IfStmt` node is defined as follows :
+
+```go
+    type IfStmt struct {
+        IfToken    lexer.Token
+        LeftParen  lexer.Token
+        RightParen lexer.Token
+        Cond       Expr
+        LeftBrace  lexer.Token
+        RightBrace lexer.Token
+        Body       []Node
+        ElseStmt   *ElseStmt
+    }
+```
+
+The `IfToken` field is the token that represents the if statement.
+The `LeftParen` field is the left parenthesis of the if statement.
+The `RightParen` field is the right parenthesis of the if statement.
+The `Cond` field is the condition of the if statement.
+The `LeftBrace` field is the left brace of the if statement.
+The `RightBrace` field is the right brace of the if statement.
+The `Body` field is the body of the if statement.
+The `ElseStmt` field is the else statement of the if statement.
+
+##### Code Example
+an if statement is a statement that contains a condition and a body surrounded by braces.
+
+for example :
+```ecla   
+    if (true) {
+        print("hello world");
+    }
+```
+
+***
+
+#### ElseStmt node
+The `ElseStmt` node represents an else statement in the Ecla language.
+
+##### Fields
+The `ElseStmt` node is defined as follows :
+
+```go
+    type ElseStmt struct {
+        ElseToken  lexer.Token
+        LeftBrace  lexer.Token
+        RightBrace lexer.Token
+        Body       []Node
+        IfStmt     *IfStmt
+    }
+```
+
+The `ElseToken` field is the token that represents the else statement.
+The `LeftBrace` field is the left brace of the else statement.
+The `RightBrace` field is the right brace of the else statement.
+The `Body` field is the body of the else statement.
+The `IfStmt` field is the if statement of the else statement.
+
+##### Code Example
+an else statement is a statement that contains a body surrounded by braces.
+
+for example :
+```ecla   
+    if (true) {
+        print("hello world");
+    } else {
+        print("hello world");
+    }
+    
+    if (true) {
+        print("hello world");
+    } else if (false) {
+        print("hello world");
+    }else {
+        print("hello world");
+    }
+```
+
+***
+
+#### WhileStmt node
+The `WhileStmt` node represents a while statement in the Ecla language.
+
+##### Fields
+The `WhileStmt` node is defined as follows :
+
+```go
+    type WhileStmt struct {
+        WhileToken lexer.Token
+        LeftParen  lexer.Token
+        RightParen lexer.Token
+        Cond       Expr
+        LeftBrace  lexer.Token
+        RightBrace lexer.Token
+        Body       []Node
+    }
+```
+
+The `WhileToken` field is the token that represents the while statement.
+The `LeftParen` field is the left parenthesis of the while statement.
+The `RightParen` field is the right parenthesis of the while statement.
+The `Cond` field is the condition of the while statement.
+The `LeftBrace` field is the left brace of the while statement.
+The `RightBrace` field is the right brace of the while statement.
+The `Body` field is the body of the while statement.
+
+##### Code Example
+a while statement is a statement that contains a condition and a body surrounded by braces.
+
+for example :
+```ecla   
+    while (true) {
+        print("hello world");
+    }
+```
+
+***
+
+#### ForStmt node
+The `ForStmt` node represents a for statement in the Ecla language.
+
+##### Fields
+The `ForStmt` node is defined as follows :
+
+```go
+    type ForStmt struct {
+        ForToken             lexer.Token
+        LeftParen            lexer.Token
+        RightParen           lexer.Token
+        InitDecl             Decl
+        CondExpr             Expr
+        PostAssignStmt       Stmt
+        KeyToken, ValueToken lexer.Token
+        RangeToken           lexer.Token
+        RangeExpr            Expr
+        LeftBrace            lexer.Token
+        RightBrace           lexer.Token
+        Body                 []Node
+    }
+```
+
+The `ForToken` field is the token that represents the for statement.
+The `LeftParen` field is the left parenthesis of the for statement.
+The `RightParen` field is the right parenthesis of the for statement.
+The `InitDecl` field is the init declaration of the for statement.
+The `CondExpr` field is the condition expression of the for statement.
+The `PostAssignStmt` field is the post assign statement of the for statement.
+The `KeyToken` field is the key token of the for statement.
+The `ValueToken` field is the value token of the for statement.
+The `RangeToken` field is the range token of the for statement.
+The `RangeExpr` field is the range expression of the for statement.
+The `LeftBrace` field is the left brace of the for statement.
+The `RightBrace` field is the right brace of the for statement.
+The `Body` field is the body of the for statement.
+
+##### Code Example
+a for statement is a statement that contains an init declaration, a condition expression, a post assign statement and a body surrounded by braces.
+
+for example :
+```ecla   
+    for (var i int = 0; i < 10; i += 1) {
+        print("hello world");
+    }
+```
+
+***
+
+#### ImportStmt node
+The `ImportStmt` node represents an import statement in the Ecla language.
+
+##### Fields
+The `ImportStmt` node is defined as follows :
+
+```go
+    type ImportStmt struct {
+        ImportToken lexer.Token
+        ModulePath  string
+    }
+```
+
+The `ImportToken` field is the token that represents the import statement.
+The `ModulePath` field is the module path of the import statement.
+
+##### Code Example
+an import statement is a statement that contains a module path.
+
+for example :
+```ecla   
+    import "console"
+```
+
+***
+
+#### ReturnStmt node
+The `ReturnStmt` node represents a return statement in the Ecla language.
+
+##### Fields
+The `ReturnStmt` node is defined as follows :
+
+```go
+    type ReturnStmt struct {
+        ReturnToken  lexer.Token
+        ReturnValues []Expr
+    }
+```
+
+The `ReturnToken` field is the token that represents the return statement.
+The `ReturnValues` field is the return values of the return statement.
+
+##### Code Example
+a return statement is a statement that contains an array of return values.
+
+for example :
+```ecla   
+    return 1;
+    return 1, 2;
+```
+
+***
+
+### Declaration nodes
+This part of the documentation will cover all the declaration nodes.
+
+***
+
+#### VariableDecl node
+The `VariableDecl` node represents a variable declaration in the Ecla language.
+
+##### Fields
+The `VariableDecl` node is defined as follows :
+
+```go
+    type VariableDecl struct {
+        VarToken lexer.Token
+        Name     string
+        Type     string
+        Value    Expr
+    }
+```
+
+The `VarToken` field is the token that represents the variable declaration.
+The `Name` field is the name of the variable.
+The `Type` field is the type of the variable.
+The `Value` field is the value of the variable.
+
+##### Code Example
+a variable declaration is a declaration that contains a name, a type and a value.
+
+for example :
+```ecla
+    var a int;
+    var a int = 1;
+    a := 1;
+```
+
+***
+
+#### FunctionDecl node
+The `FunctionDecl` node represents a function declaration in the Ecla language.
+
+##### Fields
+The `FunctionDecl` node is defined as follows :
+
+```go
+    type FunctionDecl struct {
+        FunctionToken   lexer.Token
+        Name            string
+        LeftParamParen  lexer.Token
+        RightParamParen lexer.Token
+        Parameters      []FunctionParams
+        LeftRetsParen   lexer.Token
+        RightRetsParen  lexer.Token
+        ReturnTypes     []string
+        LeftBrace       lexer.Token
+        RightBrace      lexer.Token
+        Body            []Node
+    }
+```
+
+The `FunctionToken` field is the token that represents the function declaration.
+The `Name` field is the name of the function.
+The `LeftParamParen` field is the left parenthesis of the function declaration.
+The `RightParamParen` field is the right parenthesis of the function declaration.
+The `Parameters` field is the parameters of the function declaration.
+The `LeftRetsParen` field is the left parenthesis of the function declaration.
+The `RightRetsParen` field is the right parenthesis of the function declaration.
+The `ReturnTypes` field is the return types of the function declaration.
+The `LeftBrace` field is the left brace of the function declaration.
+The `RightBrace` field is the right brace of the function declaration.
+The `Body` field is the body of the function declaration.
+
+##### Code Example
+a function declaration is a declaration that contains a name, an array of parameters, an array of return types and a body surrounded by braces.
+
+for example :
+```ecla
+    function add(a int, b int) (int) {
+        return a + b;
+    }
+    
+    function concat(a string, b string) (string) {
+        return a + b;
+    }
+    
+    function doNothing() {
+    }
+```
+
+***
 
