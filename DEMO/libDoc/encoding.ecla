@@ -70,4 +70,4 @@ function testStringToAscii() {
     var intArr []int = encoding.stringToAscii(str);
     console.println(intArr);
 }
-##testStringToAscii();
+testStringToAscii();
