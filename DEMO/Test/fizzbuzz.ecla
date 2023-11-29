@@ -1,16 +1,17 @@
+import "console";
 var i int = 1;
 while (i < 51) {
    if (i % 3 == 0) {
        if (i % 5 == 0) {
-           print("FizzBuzz\n");
+           console.print("FizzBuzz\n");
        } else {
-           print("Fizz\n");
+           console.print("Fizz\n");
        };
    } else if (i % 5 == 0) {
-       print("Buzz\n");
+       console.print("Buzz\n");
    } else {
-       print(i);
-       print("\n");
+       console.print(i);
+       console.print("\n");
    };
    i++;
 };

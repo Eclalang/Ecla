@@ -1,26 +1,26 @@
-
+import "console";
 var i int = 100;
 var k int = 200;
 
 for (var i int = 0, i < 10, i++) {
-    print(i + "\n");
+    console.print(i + "\n");
     
 };
 
-print(i + "\n");
+console.print(i + "\n");
 
-print("=====================================" + "\n");
+console.print("=====================================" + "\n");
 
 
 var list []int =[1,2,3,4];
 
 for (test,test2 range list ) {
     var k int = 100;
-    print(k + "\n");
-    print("Key : " + test);
-    print("\n");
-    print("Value : " + test2);
-    print("\n");
+    console.print(k + "\n");
+    console.print("Key : " + test);
+    console.print("\n");
+    console.print("Value : " + test2);
+    console.print("\n");
 };
 
-print(k + "\n");
+console.print(k + "\n");

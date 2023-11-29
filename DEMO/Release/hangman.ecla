@@ -3,7 +3,7 @@ import "console";
 var Game bool = true;
 
 function PickRandomWord() (string) {
-    var Word string = "";
+    var Word string = "";F
     var words []string = ["clavier","table"];
     Word = words[1];
     return Word;

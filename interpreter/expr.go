@@ -20,8 +20,6 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		return []*Bus{RunUnaryExpr(tree.(parser.UnaryExpr), env)}
 	case parser.ParenExpr:
 		return RunTree(tree.(parser.ParenExpr).Expression, env)
-	case parser.PrintStmt:
-		RunPrintStmt(tree.(parser.PrintStmt), env)
 	case parser.TypeStmt:
 		RunTypeStmt(tree.(parser.TypeStmt), env)
 	case parser.VariableDecl:

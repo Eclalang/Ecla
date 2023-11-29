@@ -1,1 +1,2 @@
-print(--1+"\n");
+import "console";
+console.print(--1+"\n");

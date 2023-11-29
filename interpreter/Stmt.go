@@ -11,11 +11,6 @@ import (
 	"github.com/Eclalang/Ecla/parser"
 )
 
-// RunPrintStmt executes a parser.PrintStmt.
-func RunPrintStmt(tree parser.PrintStmt, env *Env) {
-	fmt.Print(RunTree(tree.Expression, env)[0].GetVal().GetString())
-}
-
 // RunImportStmt executes a parser.ImportStmt.
 func RunImportStmt(stmt parser.ImportStmt, env *Env) {
 	env.Import(stmt)

@@ -210,9 +210,6 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == "return" {
 		return p.ParseReturnStmt()
 	}
-	if p.CurrentToken.Value == "print" {
-		return p.ParsePrintStmt()
-	}
 	if p.CurrentToken.Value == "type" {
 		return p.ParseTypeStmt()
 	}
@@ -250,24 +247,6 @@ func (p *Parser) ParseIdent() Node {
 	} else {
 		return p.ParseVariableAssign()
 	}
-}
-
-// ParsePrintStmt 'Deprecated function' parses a print statement
-func (p *Parser) ParsePrintStmt() Stmt {
-	tempPrint := PrintStmt{PrintToken: p.CurrentToken}
-	p.Step()
-	if p.CurrentToken.TokenType != lexer.LPAREN {
-		p.HandleFatal("Expected Print LPAREN")
-	}
-	tempPrint.Lparen = p.CurrentToken
-	p.Step()
-	tempPrint.Expression = p.ParseExpr()
-	if p.CurrentToken.TokenType != lexer.RPAREN {
-		p.HandleFatal("Expected Print RPAREN")
-	}
-	tempPrint.Rparen = p.CurrentToken
-	p.Step()
-	return tempPrint
 }
 
 // ParseTypeStmt parses a type statement

@@ -1,60 +1,61 @@
+import "console";
 for (var i int = 0, i < 10, i++) {
-    print(i + "\n");
+    console.print(i + "\n");
 };
 
-print("==================\n");
+console.print("==================\n");
 
 for (var i int, i < 10, i++) {
-    print(i + "\n");
+    console.print(i + "\n");
 };
 
-print("==================\n");
+console.print("==================\n");
 
 for (test,test2 range [1,2,3,4]) {
-    print("Key : " + test);
-    print("\n");
-    print("Value : " + test2);
-    print("\n");
+    console.print("Key : " + test);
+    console.print("\n");
+    console.print("Value : " + test2);
+    console.print("\n");
 };
 
-print("==================\n");
+console.print("==================\n");
 
 var list []int = [42, 20, 10];
 
 for (test,test2 range list) {
-    print("Key : " + test);
-    print("\n");
-    print("Value : " + test2);
-    print("\n");
+    console.print("Key : " + test);
+    console.print("\n");
+    console.print("Value : " + test2);
+    console.print("\n");
 };
 
-print("==================\n");
+console.print("==================\n");
 
 var list2 [][]int = [[42, 20], [10]];
 
 for (test,test2 range list2) {
-    print("Key : " + test);
-    print("\n");
-    print("Value : " + test2);
-    print("\n");
+    console.print("Key : " + test);
+    console.print("\n");
+    console.print("Value : " + test2);
+    console.print("\n");
 };
 
-print("==================\n");
+console.print("==================\n");
 
 var str string = "hello totop you like mundo";
 
 for (test,test2 range str) {
-    print("Key : " + test);
-    print("\n");
-    print("Value : " + test2);
-    print("\n");
+    console.print("Key : " + test);
+    console.print("\n");
+    console.print("Value : " + test2);
+    console.print("\n");
 };
 
-print("==================\n");
+console.print("==================\n");
 
 for (test,test2 range "hello totop you like mundo") {
-    print("Key : " + test);
-    print("\n");
-    print("Value : " + test2);
-    print("\n");
+    console.print("Key : " + test);
+    console.print("\n");
+    console.print("Value : " + test2);
+    console.print("\n");
 };
