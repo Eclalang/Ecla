@@ -19,11 +19,35 @@ function hashmd5(str string) string
 ```
 Hashes string with md5
 
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashmd5() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashmd5(str);
+    console.println(hashed);
+}
+```
+
 ## Hashsha1
 ```
 function hashsha1(str string) string
 ```
 Hashes string with sha1
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha1() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha1(str);
+    console.println(hashed);
+}
+```
 
 ## Hashsha224
 ```
@@ -31,11 +55,35 @@ function hashsha224(str string) string
 ```
 Hashes string with sha224
 
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha224() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha224(str);
+    console.println(hashed);
+}
+```
+
 ## Hashsha256
 ```  
 function hashsha256(str string) string
 ```
 Hashes string with sha256
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha256() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha256(str);
+    console.println(hashed);
+}
+```
 
 ## Hashsha384
 ```
@@ -43,11 +91,35 @@ function hashsha384(str string) string
 ```
 Hashes string with sha384
 
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha384() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha384(str);
+    console.println(hashed);
+}
+```
+
 ## Hashsha512
 ```
 function hashsha512(str string) string
 ```
 Hashes string with sha512
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha512() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha512(str);
+    console.println(hashed);
+}
+```
 
 ## Hashsha512_224
 ```
@@ -55,8 +127,32 @@ function hashsha512_224(str string) string
 ```
 Hashes string with sha512_224
 
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha512_224() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha512_224(str);
+    console.println(hashed);
+}
+```
+
 ## Hashsha512_256
 ```
 function hashsha512_256(str string) string
 ```
 Hashes string with sha512_256
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha512_256() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha512_256(str);
+    console.println(hashed);
+}
+```
