@@ -36,6 +36,8 @@ function testClear() {
 ```
 function confirm(prompt string) bool
 ```
+> deprecated
+
 Get user confirmation
 
 ### Example :
@@ -166,6 +168,8 @@ function testPrintln() {
 ```
 function progressBar(percent int)
 ```
+> deprecated
+  
 Display a progress bar
 
 ### Example :
