@@ -309,7 +309,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			typ = list.(*eclaType.List).GetType()[2:]
 			l = list.(*eclaType.List).Len()
 		case eclaType.String:
-			typ = list.GetType()
+			typ = "char"
 			l = list.(eclaType.String).Len()
 		case *eclaType.Var:
 			temp := list.(*eclaType.Var).GetValue()
@@ -319,7 +319,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				typ = temp.(*eclaType.List).GetType()[2:]
 				l = temp.(*eclaType.List).Len()
 			case eclaType.String:
-				typ = temp.(eclaType.String).GetType()
+				typ = "char"
 				l = temp.(eclaType.String).Len()
 			default:
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "for range: type "+list.GetType()+" not supported", errorHandler.LevelFatal)

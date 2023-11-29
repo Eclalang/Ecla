@@ -2,7 +2,6 @@ package eclaType
 
 import (
 	"errors"
-
 	"github.com/Eclalang/Ecla/parser"
 )
 
