@@ -1,65 +1,62 @@
-# HASH
+# Hash
 
-***
-##  Documentation.
-### Golang package for dealing with hashing. Light on deps and a simple API.
-###
+Golang package for dealing with hashing.
 
-***
-## Index.
+## Index
 
-* [fonction Hashmd5(str string) string](#fonction-hashmd5)
-* [fonction Hashsha1(str string) string](#fonction-hashsha1)
-* [fonction Hashsha224(str string) string](#fonction-hashsha224)
-* [fonction Hashsha256(str string) string](#fonction-hashsha256)
-* [fonction Hashsha384(str string) string](#fonction-hashsha384)
-* [fonction Hashsha512(str string) string](#fonction-hashsha512)
-* [fonction Hashsha512_224(str string) string](#fonction-hashsha512_224)
-* [fonction Hashsha512_256(str string) string](#fonction-hashsha512_256)
-##
+- [Hashmd5(str string) string](#hashmd5)
+- [Hashsha1(str string) string](#hashsha1)
+- [Hashsha224(str string) string](#hashsha224)
+- [Hashsha256(str string) string](#hashsha256)
+- [Hashsha384(str string) string](#hashsha384)
+- [Hashsha512(str string) string](#hashsha512)
+- [Hashsha512_224(str string) string](#hashsha512224)
+- [Hashsha512_256(str string) string](#hashsha512256)
 
-***
-## Functions.
-### Fonction Hashmd5
+## Hashmd5
 ```
-fonction hashmd5(str string) string
+function hashmd5(str string) string
 ```
 Hashes string with md5
-### Fonction Hashsha1
+
+## Hashsha1
 ```
-fonction hashsha1(str string) string
+function hashsha1(str string) string
 ```
 Hashes string with sha1
-### Fonction Hashsha224
+
+## Hashsha224
 ```
-fonction hashsha224(str string) string
+function hashsha224(str string) string
 ```
 Hashes string with sha224
-### Fonction Hashsha256
-```
-    
-fonction hashsha256(str string) string
+
+## Hashsha256
+```  
+function hashsha256(str string) string
 ```
 Hashes string with sha256
-### Fonction Hashsha384
+
+## Hashsha384
 ```
-fonction hashsha384(str string) string
+function hashsha384(str string) string
 ```
 Hashes string with sha384
-### Fonction Hashsha512
+
+## Hashsha512
 ```
-fonction hashsha512(str string) string
+function hashsha512(str string) string
 ```
-Hashes string with sha512   
-### Fonction Hashsha512_224
+Hashes string with sha512
+
+## Hashsha512_224
 ```
-fonction hashsha512_224(str string) string
+function hashsha512_224(str string) string
 ```
 Hashes string with sha512_224
-### Fonction Hashsha512_256
+
+## Hashsha512_256
 ```
-fonction hashsha512_256(str string) string
+function hashsha512_256(str string) string
 ```
 Hashes string with sha512_256
-
-##
