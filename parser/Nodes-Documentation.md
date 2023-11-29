@@ -17,7 +17,18 @@
     - FunctionCallExpr node
     - MethodCallExpr node
   - Statement nodes
+    - PrintStmt node
+    - TypeStmt node
+    - VariableAssignStmt node
+    - IfStmt node
+    - ElseStmt node
+    - WhileStmt node
+    - ForStmt node
+    - ImportStmt node
+    - ReturnStmt node
   - Declaration nodes
+    - VariableDecl node
+    - FunctionDecl node
 
 ## Nodes inner workings
 
@@ -42,6 +53,8 @@ for example, the `BinaryExpr` node implements the `Expr` interface via the `expr
 This part of the documentation will cover all the expression nodes.
 All the expression nodes implement the `Expr` interface via the `exprNode` method and the `precedence` method.
 The `precedence` method is used to determine the precedence of the expression node in the AST.
+
+***
 
 #### Literal node
 The `Literal` node represents a literal value in the Ecla language.
@@ -320,5 +333,103 @@ for example :
 ```
 
 ***
+
+### Statement nodes
+This part of the documentation will cover all the statement nodes.
+All the statement nodes implement the `Stmt` interface via the `stmtNode` method.
+
+***
+
+#### PrintStmt node
+The `PrintStmt` node represents a print statement in the Ecla language.
+
+##### Fields
+The `PrintStmt` node is defined as follows :
+
+```go
+    type PrintStmt struct {
+        PrintToken lexer.Token
+        Lparen     lexer.Token
+        Rparen     lexer.Token
+        Expression Expr
+    }
+```
+
+The `PrintToken` field is the token that represents the print statement.
+The `Lparen` field is the left parenthesis of the print statement.
+The `Rparen` field is the right parenthesis of the print statement.
+The `Expression` field is the expression of the print statement.
+
+##### Code Example
+a print statement is a statement that contains an expression surrounded by parenthesis.
+
+for example :
+```ecla   
+    print(1);
+    print("hello world");
+```
+
+***
+
+#### TypeStmt node
+The `TypeStmt` node represents a type statement in the Ecla language.
+
+##### Fields
+The `TypeStmt` node is defined as follows :
+
+```go
+    type TypeStmt struct {
+        TypeToken  lexer.Token
+        Lparen     lexer.Token
+        Rparen     lexer.Token
+        Expression Expr
+    }
+```
+
+The `TypeToken` field is the token that represents the type statement.
+The `Lparen` field is the left parenthesis of the type statement.
+The `Rparen` field is the right parenthesis of the type statement.
+The `Expression` field is the expression of the type statement.
+
+##### Code Example
+a type statement is a statement that contains an expression surrounded by parenthesis.
+
+for example :
+```ecla   
+    type(1);
+    type("hello world");
+```
+
+***
+
+#### VariableAssignStmt node
+The `VariableAssignStmt` node represents a variable assign statement in the Ecla language.
+
+##### Fields
+The `VariableAssignStmt` node is defined as follows :
+
+```go
+    type VariableAssignStmt struct {
+        VarToken lexer.Token
+        Names    []Expr
+        Operator string
+        Values   []Expr
+    }
+```
+
+The `VarToken` field is the token that represents the variable assign statement.
+The `Names` field is the names of the variable assign statement.
+The `Operator` field is the operator of the variable assign statement.
+The `Values` field is the values of the variable assign statement.
+
+##### Code Example
+a variable assign statement is a statement that contains an array of names, an operator and an array of values.
+
+for example :
+```ecla   
+    var a = 1;
+    var a += 1;
+    var a, b += 1, 2;
+```
 
 
