@@ -390,21 +390,25 @@ func (f FunctionDecl) EndPos() int {
 
 func (f FunctionDecl) declNode() {}
 
-type AnonymousFunctionDecl struct {
+type AnonymousFunctionExpr struct {
 	FunctionToken lexer.Token
 	Prototype     FunctionPrototype
 	Body          []Node
 }
 
-func (f AnonymousFunctionDecl) StartPos() int {
+func (f AnonymousFunctionExpr) StartPos() int {
 	return f.FunctionToken.Position
 }
 
-func (f AnonymousFunctionDecl) EndPos() int {
+func (f AnonymousFunctionExpr) EndPos() int {
 	return f.Prototype.RightBrace.Position
 }
 
-func (f AnonymousFunctionDecl) exprNode() {}
+func (f AnonymousFunctionExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (f AnonymousFunctionExpr) exprNode() {}
 
 type ReturnStmt struct {
 	ReturnToken  lexer.Token

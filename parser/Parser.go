@@ -736,6 +736,12 @@ func (p *Parser) ParseOperand() Expr {
 	if p.CurrentToken.TokenType == lexer.LPAREN {
 		return p.ParseParenExpr()
 	} else if p.CurrentToken.TokenType == lexer.TEXT {
+		// check if it is an anonymous function or an anonymous struct
+		if p.CurrentToken.Value == Function {
+			return p.ParseAnonymousFunctionExpr()
+		} //else if p.CurrentToken.Value == Struct {
+		//	return p.ParseAnonymousStructExpr()
+		//}
 		lookAhead := p.Peek(1)
 		if lookAhead.TokenType == lexer.PERIOD {
 			return p.ParseMethodCallExpr()
@@ -828,8 +834,8 @@ func (p *Parser) ParseImportStmt() Stmt {
 	return tempImportStmt
 }
 
-func (p *Parser) ParseAnonymousFunctionDecl() Node {
-	tempAnonymousFunctionDecl := AnonymousFunctionDecl{FunctionToken: p.CurrentToken}
+func (p *Parser) ParseAnonymousFunctionExpr() Expr {
+	tempAnonymousFunctionDecl := AnonymousFunctionExpr{FunctionToken: p.CurrentToken}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
 		p.PrintBacktrace()
