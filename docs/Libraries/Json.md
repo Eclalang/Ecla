@@ -1,28 +1,20 @@
-# JSON
+# Json
 
-***
-##  Documentation.
-### Golang package for dealing with JSON. Light on deps and a simple API.
-###
+Golang package for dealing with JSON.
 
-***
-## Index.
+## Index
 
-* [fonction Marshal(content any) string](#fonction-marshal)
-* [fonction Unmarshal(content string) any](#fonction-unmarshal)
-##
+- [Marshal(content any) string](#marshal)
+- [Unmarshal(content string) any](#unmarshal)
 
-***
-## Functions.
-### Fonction Marshal
+## Marshal
 ```
 function marshal(content any) string
 ```
 Converts any type to JSON string
-### Fonction Unmarshal
+
+##  Unmarshal
 ```
 function unmarshal(content string) any
 ```
 Converts JSON string to any type
-
-##
