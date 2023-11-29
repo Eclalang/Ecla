@@ -189,7 +189,9 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 			Value: value.GetString(),
 		}, nil
 	}
-	if Type != value.GetType() && !value.IsNull() {
+	if Type == "" {
+		Type = value.GetType()
+	} else if Type != value.GetType() && !value.IsNull() {
 		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
 	}
 	if value.IsNull() {

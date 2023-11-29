@@ -244,6 +244,9 @@ func (p *Parser) ParseIdent() Node {
 		return p.ParseMethodCallExpr()
 	} else if p.Peek(1).TokenType == lexer.LPAREN {
 		return p.ParseFunctionCallExpr()
+	} else if p.Peek(1).TokenType == lexer.COLON {
+		p.Back()
+		return p.ParseImplicitVariableDecl()
 	} else {
 		return p.ParseVariableAssign()
 	}
@@ -477,6 +480,27 @@ func (p *Parser) ParseVariableDecl() Decl {
 		tempDecl.Value = nil
 		p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
 		return tempDecl
+	}
+	p.Step()
+	tempDecl.Value = p.ParseExpr()
+	p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
+	return tempDecl
+}
+
+func (p *Parser) ParseImplicitVariableDecl() Decl {
+	tempDecl := VariableDecl{VarToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if _, ok := Keywords[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
+		}
+	} else {
+		p.HandleFatal("Expected variable name instead of " + p.CurrentToken.Value)
+	}
+	tempDecl.Name = p.CurrentToken.Value
+	p.MultiStep(2)
+	if p.CurrentToken.TokenType != lexer.ASSIGN {
+		p.HandleFatal("Expected implicit variable assignment instead of " + p.CurrentToken.Value)
 	}
 	p.Step()
 	tempDecl.Value = p.ParseExpr()
