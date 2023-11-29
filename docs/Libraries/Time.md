@@ -1,47 +1,53 @@
-# TIME
+# Time
 
-***
-##  Documentation.
 Time library implements functions to manipulate and display time.
-###
 
-***
-## Index.
+## Index
 
-* [fonction Date() string](#fonction-date)
-* [fonction Now() string](#fonction-now)
-* [fonction Sleep(seconds int)](#fonction-sleep)
-* [fonction Strftime(format string, t time.Time) string](#fonction-strftime)
-* [fonction Timer(seconds int)](#fonction-timer)
+- [ConvertRoman(str string) string](#convertroman)
+- [Date(year, month, day, hour, min, sec int) string](#date)
+- [Now() string](#now)
+- [Sleep(sec int)](#sleep)
+- [Strftime(format, date string) string](#strftime)
+- [Timer(sec int)](#timer)
 
-##
-### Fonction Date
+## ConvertRoman
 ```
-function date() string
+function convertRoman(str string) string
+```
+Converts a number to a roman number
+
+## Date
+```
+function date(year, month, day, hour, min, sec int) string
 ```
 Returns a string representation of a date
-### Fonction Now
+
+## Now
 ```
 function now() string
 ```
 Returns a string representation of the current time
-### Fonction Sleep
+
+## Sleep
 ```
-function sleep(seconds int)
+function sleep(sec int)
 ```
 Pauses the current goroutine for a specified number of seconds
-### Fonction Strftime
+
+## Strftime
 ```
-function strftime(format string, t time.Time) string
+function strftime(format, date string) string
 ```
 Returns a string representation of a date according to a specified format
-### Fonction Timer
+
+## Timer
 ```
-function timer(seconds int)
+function timer(sec int)
 ```
 Waits for a specified number of seconds
-##
-# Supported Conversion Formats :
+
+## Supported Conversion Formats :
 | Pattern |                   Description                    |
 |:-------:|:------------------------------------------------:|
 |   %d    |   Day of the month as a decimal number (01-31)   |
