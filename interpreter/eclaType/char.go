@@ -97,8 +97,14 @@ func (c Char) Div(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
+		if other.(Int) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return Char(Int(c) / other.GetValue().(Int)), nil
 	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return c / other.(Char), nil
 	default:
 		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
@@ -113,8 +119,14 @@ func (c Char) Mod(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
+		if other.(Int) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return Char(Int(c) % other.GetValue().(Int)), nil
 	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return c % other.(Char), nil
 	default:
 		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
