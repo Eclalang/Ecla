@@ -1,86 +1,76 @@
-# CONSOLE
+# Console
 
-***
-##  Documentation.
-### Golang package for dealing with consoles. Light on deps and a simple API.
-###
+Golang package for dealing with consoles.
 
-***
-## Index.
+## Index
 
-* [fonction printf(Format string, ...any)](#fonction-printf)
-* [fonction println(...any)](#fonction-println)
-* [fonction print(...any)](#fonciton-print)
-* [fonction input(...any)](#fonction-input)
-* [fonction printInColor(color string, ...any)](#fonction-printInColor)
-* [fonction inputInt(prompt string)](#fonction-inputint)
-* [fonction inputFloat(prompt string)](#fonction-inputfloat)
-* [fonction confirm(prompt string)](#fonction-confirm)
-* [fonction progressBar(percent int)](#fonction-progressbar)
-* [fonction clear()](#fonction-clear)
-##
+- [Clear()](#clear)
+- [Confirm(prompt string)](#confirm)
+- [Input(args ...interface{})](#input)
+- [InputFloat(prompt string)](#inputfloat)
+- [InputInt(prompt string)](#inputint)
+- [Print(args ...interface{})](#print)
+- [Printf(format string, args ...interface{})](#printf)
+- [PrintInColor(color string, args ...interface{})](#printincolor)
+- [Println(args ...interface{})](#println)
+- [ProgressBar(percent int)](#progressbar)
 
-***
-## Functions.
-### Fonction Printf
-
-```
-function printf(Format string, ...any)
-```
-print args as formated string to console
-### Fonction Println
-
-```
-function println(...any)
-```
-print args to console
-### Fonction Print
-
-```
-function print(...any)
-```
-print args to console withou newline
-### Fonction Input
-
-```
-function input(...any)
-```
-take user input from console
-### Fonction PrintInColor
-
-```
-function printInColor(color string, ...any)
-```
-print args to console with color
-### Fonction InputInt
-
-```
-function inputInt(prompt string)
-```
-read Int input
-### Fonction InputFloat
-
-```
-function inputFloat(prompt string)
-```
-read Float input
-
-### Fonction Confirm
-
-```
-function confirm(prompt string)
-```
-get user confirmation
-### Fonction ProgressBar
-
-```
-function progressBar(percent int)
-```
-display a progress bar
-### Fonction Clear
-
+## Clear
 ```
 function clear()
 ```
-clear console
-##
+Clear the console
+
+## Confirm
+```
+function confirm(prompt string)
+```
+Get user confirmation
+
+## Input
+```
+function input(args ...interface{})
+```
+Takes user input from console
+
+## InputFloat
+```
+function inputFloat(prompt string)
+```
+Read float input
+
+## InputInt
+```
+function inputInt(prompt string)
+```
+Read int input
+
+## Print
+```
+function print(args ...interface{})
+```
+Print args to console without newline
+
+## Printf
+```
+function printf(format string, args ...interface{})
+```
+Print args as formatted string to console
+
+## PrintInColor
+```
+function printInColor(color string, args ...interface{})
+```
+Print args to console with color
+
+## Println
+```
+function println(args ...interface{})
+```
+Print args to console
+
+## ProgressBar
+```
+function progressBar(percent int)
+```
+Display a progress bar
