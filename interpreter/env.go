@@ -92,7 +92,7 @@ func (env *Env) EndScope() {
 func (env *Env) SetFunction(name string, f *eclaType.Function) {
 	v, err := eclaType.NewVar(name, f.GetType(), f)
 	if err != nil {
-		panic(err)
+		env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
 	}
 	env.Vars.Set(name, v)
 }

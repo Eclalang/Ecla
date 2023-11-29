@@ -1,7 +1,6 @@
 package interpreter
 
 import (
-	"errors"
 	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
@@ -24,13 +23,13 @@ func New(t parser.Literal, env *Env) *Bus {
 	case "VAR":
 		v, ok := env.GetVar(t.Value)
 		if !ok {
-			panic(errors.New("variable not found"))
+			env.ErrorHandle.HandleError(0, t.StartPos(), "variable not found", errorHandler.LevelFatal)
 		}
 		return NewMainBus(v)
 	case "NULL":
 		return NewMainBus(eclaType.NewNull())
 	default:
-		panic("Unknown type")
+		env.ErrorHandle.HandleError(0, t.StartPos(), "Unknown type "+t.Type, errorHandler.LevelFatal)
 		return NewNoneBus()
 	}
 }
@@ -42,36 +41,36 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 		case parser.Int:
 			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewInt("0"))
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			env.SetVar(tree.Name, v)
 		case parser.String:
 			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewString(""))
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			env.SetVar(tree.Name, v)
 		case parser.Bool:
 			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewBool("false"))
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			env.SetVar(tree.Name, v)
 		case parser.Float:
 			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewFloat("0.0"))
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			env.SetVar(tree.Name, v)
 		}
 		if eclaType.IsList(tree.Type) {
 			l, err := eclaType.NewList(tree.Type)
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			v, err := eclaType.NewVar(tree.Name, tree.Type, l)
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			env.SetVar(tree.Name, v)
 		} else if eclaType.IsMap(tree.Type) {
@@ -79,7 +78,7 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 			m.SetType(tree.Type)
 			v, err := eclaType.NewVar(tree.Name, tree.Type, m)
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			env.SetVar(tree.Name, v)
 		}
@@ -90,7 +89,7 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 		}
 		v, err := eclaType.NewVar(tree.Name, tree.Type, busCollection[0].GetVal())
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 		env.SetVar(tree.Name, v)
 	}
@@ -115,11 +114,11 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 	}
 	l, err := eclaType.NewList(typ)
 	if err != nil {
-		panic(err)
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
 	err = l.SetValue(values)
 	if err != nil {
-		panic(err)
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
 	return NewMainBus(l)
 }
