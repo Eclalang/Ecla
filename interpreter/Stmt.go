@@ -1,7 +1,6 @@
 package interpreter
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 
@@ -295,7 +294,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 		f := eclaKeyWord.NewForRange([]eclaType.Type{}, For.RangeExpr, For.KeyToken, For.ValueToken, For.Body)
 		k, err := eclaType.NewVar(f.KeyToken.Value, "int", eclaType.NewInt("0"))
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 		BusCollection := RunTree(f.RangeExpr, env)
 		if IsMultipleBus(BusCollection) {
@@ -323,16 +322,16 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				typ = temp.(eclaType.String).GetType()
 				l = temp.(eclaType.String).Len()
 			default:
-				panic(errors.New("for range: type " + list.GetType() + " not supported"))
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "for range: type "+list.GetType()+" not supported", errorHandler.LevelFatal)
 			}
 		default:
-			panic(errors.New("type " + list.GetType() + " not supported"))
+			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "type "+list.GetType()+" not supported", errorHandler.LevelFatal)
 		}
 
 		env.SetVar(f.KeyToken.Value, k)
 		v, err := eclaType.NewVarEmpty(f.ValueToken.Value, typ)
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 		env.SetVar(f.ValueToken.Value, v)
 		for i := 0; i < l; i++ {
@@ -342,11 +341,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			}
 			val, err := list.GetIndex(eclaType.Int(i))
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			err = v.SetVar(*val)
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			for _, stmt := range f.Body {
 				BusCollection2 := RunTree(stmt, env)

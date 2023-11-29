@@ -53,7 +53,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		fn := env.GetFunctionExecuted()
 		ok := fn.CheckReturn(r)
 		if !ok {
-			panic("Return type of function" + fn.Name + "is incorrect")
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "Return type of function "+fn.Name+" is incorrect", errorHandler.LevelFatal)
 		}
 		var temp []*Bus
 		for _, v := range r {
@@ -164,7 +164,7 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 	case lexer.SUB:
 		t, err := eclaType.Int(0).Sub(BusCollection[0].GetVal()) // TODO: Fix this
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, tree.RightExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 		return NewMainBus(t)
 	case lexer.ADD:
@@ -196,11 +196,11 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 	}
 	fn, ok := env.GetFunction(tree.Name)
 	if !ok {
-		panic(fmt.Sprintf("Function %s not found", tree.Name))
+		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Function %s not found", tree.Name), errorHandler.LevelFatal)
 	}
 	r, err := RunFunctionCallExprWithArgs(tree.Name, env, fn, args)
 	if err != nil {
-		panic(err)
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
 	var retValues []*Bus
 	for _, v := range r {
@@ -215,7 +215,7 @@ func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, a
 	defer env.EndScope()
 	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args)
 	if !ok {
-		panic(fmt.Sprintf("Function %s called with incorrect arguments", Name))
+		env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("Function %s called with incorrect arguments", Name), errorHandler.LevelFatal)
 	}
 
 	for i, v := range argsList {
@@ -256,7 +256,7 @@ func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
 func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 	v, ok := env.GetVar(tree.VariableName)
 	if !ok {
-		panic(fmt.Sprintf("Variable %s not found", tree.VariableName))
+		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s not found", tree.VariableName), errorHandler.LevelFatal)
 	}
 	var result eclaType.Type = v
 	for i := range tree.Indexes {
@@ -270,7 +270,7 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 		result = *temp
 
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 	}
 	return NewMainBus(result)
