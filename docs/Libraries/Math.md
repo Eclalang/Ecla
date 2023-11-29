@@ -1,190 +1,223 @@
-# MATH
+# Math
 
-***
-##  Documentation.
-### Golang package for dealing with math. Light on deps and a simple API.
-###
+Golang package for dealing with math.
 
-***
 ## Index.
 
-* [fonction Pi() float](#fonction-pi)
-* [fonction Cos(x float, hyp float) float](#fonction-cos)
-* [fonction Sin(x float, hyp float) float](#fonction-sin)
-* [fonction Tan(opp float, adj float) float](#fonction-tan)
-* [fonction Ln(nb float) float](#fonction-ln)
-* [focntion Exp(nb float) float](#fonction-exp)
-* [fonction Sqrt(nb float) float](#fonction-sqrt)
-* [fonction cbrt(nb int) int](#fonction-cbrt)
-* [fonction Pow(nb int, pow int) int](#fonction-pow)
-* [fonction Fact(nb int) int](#fonction-fact)
-* [fonction Abs(nb int) int](#fonction-abs)
-* [fonction Floor(nb float) int](#fonction-floor)
-* [fonction Ceil(nb float) int](#fonction-ceil)
-* [fonction Trunc(nb float) int](#fonction-trunc)
-* [fonction Max(a float, b float) int](#fonction-max)
-* [fonction Min(a float, b float) int](#fonction-min)
-* [fonction Log10(nb float) float](#fonction-log10)
-* [fonction Round(nb float) float](#fonction-round)
-* [fonction DegreesToRadians(degrees float) float](#fonction-degreestoradians)
-* [fonction RadiansToDegrees(radians float) float](#fonction-radianstodegrees)
-* [fonction Acos(x float) float](#fonction-acos)
-* [fonction Asin(x float) float](#fonction-asin)
-* [fonction Atan(x float) float](#fonction-atan)
-* [fonction Cosh(x float) float](#fonction-cosh)
-* [fonction Sinh(x float) float](#fonction-sinh)
-* [fonction Tanh(x float) float](#fonction-tanh)
-* [fonction Acosh(x float) float](#fonction-acosh)
-* [fonction Asinh(x float) float](#fonction-asinh)
-* [fonction Atanh(x float) float](#fonction-atanh)
-##
+- [Abs(nb int) int](#abs)
+- [Acos(x float) float](#acos)
+- [Acosh(x float) float](#acosh)
+- [Asin(x float) float](#asin)
+- [Asinh(x float) float](#asinh)
+- [Atan(x float) float](#atan)
+- [Atanh(x float) float](#atanh)
+- [Cbrt(nb int) int](#cbrt)
+- [Ceil(nb float) int](#ceil)
+- [Cos(adj float, hyp float) float](#cos)
+- [Cosh(x float) float](#cosh)
+- [DegreesToRadians(deg float) float](#degreestoradians)
+- [Exp(nb float) float](#exp)
+- [Fact(nb int) int](#fact)
+- [Floor(nb float) int](#floor)
+- [Ln(nb float) float](#ln)
+- [Log10(nb float) float](#log10)
+- [Max(a float, b float) int](#max)
+- [Min(a float, b float) int](#min)
+- [Modulo(a float, b float) float](#modulo)
+- [Pi() float](#pi)
+- [Pow(x int, y int) int](#pow)
+- [RadiansToDegrees(rad float) float](#radianstodegrees)
+- [Random(min float, max float) float](#random)
+- [Round(nb float) float](#round)
+- [Sin(opp float, hyp float) float](#sin)
+- [Sinh(x float) float](#sinh)
+- [Sqrt(nb int) int](#sqrt)
+- [Tan(opp float, adj float) float](#tan)
+- [Tanh(x float) float](#tanh)
+- [Trunc(nb float) int](#trunc)
 
-***
-## Functions.
-### Fonction Pi
-```
-function Pi() float
-```
-Returns Pi
-### Fonction Cos
-```
-function Cos(x float, hyp float) float
-```
-Returns Cosine
-### Fonction Sin
-```
-function sin(x float, hyp float) float
-```
-Returns Sine
-### Fonction Tan
-```
-function tan(opp float, adj float) float
-```
-Returns Tangent
-### Fonction Ln
-```
-function ln(nb float) float
-```
-Returns Natural Logarithm
-### Fonction Exp
-```
-focntion exp(nb float) float
-```
-Returns Exponential
-### Fonction Sqrt
-```
-function sqrt(nb float) float
-```
-Returns Square Root
-### Fonction Cbrt
-```
-function cbrt(nb int) int
-```
-Returns Cube Root
-### Fonction Pow
-```
-function pow(nb int, pow int) int
-```
-Returns Power
-### Fonction Fact
-```
-function fact(nb int) int
-```
-Returns Factorial
-### Fonction Abs
+## Abs
 ```
 function abs(nb int) int
 ```
-Returns Absolute Value
-### Fonction Floor
-```
-function floor(nb float) int
-```
-Returns Floor
-### Fonction Ceil
-```
-function ceil(nb float) int
-```
-Returns Ceil
-### Fonction Trunc
-```
-function trunc(nb float) int
-```
-Returns Trunc
-### Fonction Max
-```
-function max(a float, b float) int
-```
-Returns Max
-### Fonction Min
-```
-function min(a float, b float) int
-```
-Returns Min
-### Fonction Log10
-```
-function log10(nb float) float
-```
-Returns Log10
-### Fonction Round
-```
-function round(nb float) float
-```
-Returns Round
-### Fonction DegreesToRadians
-```
-function degreesToRadians(degrees float) float
-```
-Returns Degrees To Radians
-### Fonction RadiansToDegrees
-```
-function radiansToDegrees(radians float) float
-```
-Returns Radians To Degrees
-### Fonction Acos
+Returns the absolute value of nb
+
+## Acos
 ```
 function acos(x float) float
 ```
-Returns Acos
-### Fonction Asin
-```
-function asin(x float) float
-```
-Returns Asin
-### Fonction Atan
-```
-function atan(x float) float
-```
-Returns Atan
-### Fonction Cosh
-```
-function cosh(x float) float
-```
-Returns Cosh
-### Fonction Sinh
-```
-function sinh(x float) float
-```
-Returns Sinh
-### Fonction Tanh
-```
-function tanh(x float) float
-```
-Returns Tanh
-### Fonction Acosh
+Returns arc cosine of x
+
+## Acosh
 ```
 function acosh(x float) float
 ```
-Returns Acosh
-### Fonction Asinh
+Returns arc hyperbolic cosine of x
+
+## Asin
+```
+function asin(x float) float
+```
+Returns arc sine of x
+
+## Asinh
 ```
 function asinh(x float) float
 ```
-Returns Asinh
-### Fonction Atanh
+Returns arc hyperbolic sine of x
+
+## Atan
+```
+function atan(x float) float
+```
+Returns arc tangent of x
+
+## Atanh
 ```
 function atanh(x float) float
 ```
-Returns Atanh
+Returns arc hyperbolic tangent of x
 
-##
+## Cbrt
+```
+function cbrt(nb int) int
+```
+Returns the cubic root of nb
+
+## Ceil
+```
+function ceil(nb float) int
+```
+Returns the least integer that it's bigger or equal to x
+
+## Cos
+```
+function Cos(adj float, hyp float) float
+```
+Returns adjacent / hypotenuse
+
+## Cosh
+```
+function cosh(x float) float
+```
+Returns hyperbolic cosine of x
+
+## DegreesToRadians
+```
+function degreesToRadians(deg float) float
+```
+Returns deg converted to radians
+
+## Exp
+```
+focntion exp(nb float) float
+```
+Returns e^nb (exponential)
+
+## Fact
+```
+function fact(nb int) int
+```
+Returns the factorial number of nb
+
+## Floor
+```
+function floor(nb float) int
+```
+Returns the greatest integer which is smaller or equal to nb
+
+## Ln
+```
+function ln(nb float) float
+```
+Returns the naturel logarithm of nb
+
+## Log10
+```
+function log10(nb float) float
+```
+Returns base-10 logarithm of nb
+
+## Max
+```
+function max(a float, b float) int
+```
+Returns the larger number between a and b
+
+## Min
+```
+function min(a float, b float) int
+```
+Returns the smaller number between a and b
+
+## Modulo
+```
+function modulo(a float, b float) float
+```
+Returns remainder of a / b
+
+## Pi
+```
+function Pi() float
+```
+Returns Pi (3.14...)
+
+## Pow
+```
+function pow(x int, y int) int
+```
+Returns x^y
+
+## RadiansToDegrees
+```
+function radiansToDegrees(rad float) float
+```
+Returns rad converted to degrees
+
+## Random
+```
+function random(min float, max float) float
+```
+Returns random number between min and max
+
+## Round
+```
+function round(nb float) float
+```
+Returns nb rounded to the nearest int
+
+## Sin
+```
+function sin(opp float, hyp float) float
+```
+Returns opposite / hypotenuse
+
+## Sinh
+```
+function sinh(x float) float
+```
+Returns hyperbolic sine of x
+
+## Sqrt
+```
+function sqrt(nb int) int
+```
+Returns the square root of nb
+
+## Tan
+```
+function tan(opp float, adj float) float
+```
+Returns opposite / adjacent
+
+## Tanh
+```
+function tanh(x float) float
+```
+Returns hyperbolic tangent of x
+
+## Trunc
+```
+function trunc(nb float) int
+```
+Returns the integer value of nb
