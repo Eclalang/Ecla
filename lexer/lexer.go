@@ -150,6 +150,7 @@ func Lexer(sentence string) []Token {
 				ret = tokenDiv(ident, ret, &prevIndex, &tempVal, i)
 				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, ADD, INC)
 				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, SUB, DEC)
+				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, XORBIN, XOR)
 				if beforeChangeVal != tempVal {
 					break
 				}
@@ -335,15 +336,13 @@ func addToken(TokenType string, Value string, Position int, Line int) Token {
 //
 // return the changed []Token
 func tokenAddSub(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, toFind string, toReplace string) []Token {
-	if ident.Identifier == ADD || ident.Identifier == SUB {
+	if ident.Identifier == ADD || ident.Identifier == SUB || ident.Identifier == XORBIN {
 		if len(ret) >= 1 {
-			if ret[len(ret)-1].TokenType == toFind {
-
+			if ret[len(ret)-1].TokenType == toFind && ret[len(ret)-1].TokenType == ident.Identifier {
 				ret[len(ret)-1].TokenType = toReplace
 				ret[len(ret)-1].Value += *tempVal
 				*tempVal = ""
 				*prevIndex = index
-
 			}
 		}
 	}

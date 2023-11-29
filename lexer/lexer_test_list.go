@@ -7,7 +7,7 @@ type testList struct {
 
 var (
 	testCalc = testList{
-		input: `+= -= /= *= %= ++ -- a++ b-- //=`,
+		input: `+= -= /= *= %= ++ -- a++ b-- //= ^^ ^`,
 		output: []Token{
 			{
 				TokenType: ADD + ASSIGN,
@@ -82,9 +82,21 @@ var (
 				Line:      1,
 			},
 			{
+				TokenType: XOR,
+				Value:     `^^`,
+				Position:  34,
+				Line:      1,
+			},
+			{
+				TokenType: XORBIN,
+				Value:     `^`,
+				Position:  37,
+				Line:      1,
+			},
+			{
 				TokenType: EOF,
 				Value:     "",
-				Position:  33,
+				Position:  38,
 				Line:      1,
 			},
 		},
@@ -631,7 +643,7 @@ var (
 				Line:      1,
 			},
 			{
-				TokenType: XOR,
+				TokenType: XORBIN,
 				Value:     `^`,
 				Position:  7,
 				Line:      1,
