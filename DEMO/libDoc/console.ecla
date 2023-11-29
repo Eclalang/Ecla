@@ -1,0 +1,80 @@
+# Test the console library
+
+import "console";
+import "time";
+
+# Test function Clear
+function testClear() {
+    console.println("Some text to clear.");
+    console.clear();
+    console.println("All cleared :)");
+}
+##testClear();
+
+# Test function Confirm
+function testConfirm() {
+    var check bool = console.confirm("Do you want to continue :");
+    if (check) {
+        console.println("You have confirmed.");
+    } else {
+        console.println("You have not confirmed.");
+    }
+}
+##testConfirm();
+
+# Test function Input
+function testInput() {
+    var input string = console.input("Enter your name : ");
+    console.println("Hello " + input + "!");
+}
+##testInput();
+
+# Test function InputFloat
+function testInputFloat() {
+    var input float = console.inputFloat("Enter a float : ");
+    console.println("You entered " + input + ".");
+}
+##testInputFloat();
+
+# Test function InputInt
+function testInputInt() {
+    var input int = console.inputInt("Enter an int : ");
+    console.println("You entered " + input + ".");
+}
+##testInputInt();
+
+# Test function Print
+function testPrint() {
+    console.print("Hello ");
+    console.print("World!");
+}
+##testPrint();
+
+# Test function Printf
+function testPrintf() {
+    console.printf("Hel%s %s!", "lo", "World");
+}
+##testPrintf();
+
+# Test function PrintInColor
+function testPrintInColor() {
+    console.printInColor("red", "Hello World!");
+}
+##testPrintInColor();
+
+# Test function Println
+function testPrintln() {
+    console.println("Hello World!");
+    console.println("Hello", "user", "?");
+}
+##testPrintln();
+
+# Test function ProgressBar
+function testProgressBar() {
+    for (var i int = 0, i <= 100, i+= 10) {
+        console.progressBar(i);
+        time.sleep(1);
+        console.clear();
+    }
+}
+testProgressBar();
