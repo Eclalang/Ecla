@@ -18,6 +18,7 @@ func (l Literal) StartPos() int {
 func (l Literal) EndPos() int {
 	return l.Token.Position
 }
+
 func (l Literal) precedence() int {
 	return TokenPrecedence(l.Token)
 }
