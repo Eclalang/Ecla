@@ -996,6 +996,26 @@ func TestDivCharErr(t *testing.T) {
 	}
 }
 
+func TestDivBy0CharErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char(0)
+
+	_, err := t1.Div(t2)
+	if err == nil {
+		t.Error("Expected error when dividing a char by 0")
+	}
+}
+
+func TestDivBy0CharIntErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(0)
+
+	_, err := t1.Div(t2)
+	if err == nil {
+		t.Error("Expected error when dividing a char by 0")
+	}
+}
+
 func TestModCharErr(t *testing.T) {
 	t1 := Char('A')
 	t2 := Bool(true)
@@ -1006,6 +1026,26 @@ func TestModCharErr(t *testing.T) {
 	}
 }
 
+func TestModBy0CharErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char(0)
+
+	_, err := t1.Mod(t2)
+	if err == nil {
+		t.Error("Expected error when modding a char by 0")
+	}
+}
+
+func TestModBy0CharIntErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(0)
+
+	_, err := t1.Mod(t2)
+	if err == nil {
+		t.Error("Expected error when modding a char by 0")
+	}
+}
+
 func TestDivEcCharErr(t *testing.T) {
 	t1 := Char('A')
 	t2 := Bool(true)
@@ -1013,6 +1053,26 @@ func TestDivEcCharErr(t *testing.T) {
 	_, err := t1.DivEc(t2)
 	if err == nil {
 		t.Error("Expected error when dividing a char by a bool")
+	}
+}
+
+func TestDivEcBy0CharErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char(0)
+
+	_, err := t1.DivEc(t2)
+	if err == nil {
+		t.Error("Expected error when dividing a char by 0")
+	}
+}
+
+func TestDivEcBy0CharIntErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(0)
+
+	_, err := t1.DivEc(t2)
+	if err == nil {
+		t.Error("Expected error when dividing a char by 0")
 	}
 }
 
