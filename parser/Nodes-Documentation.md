@@ -17,7 +17,6 @@
     - [FunctionCallExpr node](#functioncallexpr-node)
     - [MethodCallExpr node](#methodcallexpr-node)
   - [Statement nodes](#statement-nodes)
-    - [PrintStmt node](#printstmt-node)
     - [TypeStmt node](#typestmt-node)
     - [VariableAssignStmt node](#variableassignstmt-node)
     - [IfStmt node](#ifstmt-node)
@@ -337,37 +336,6 @@ for example :
 ### Statement nodes
 This part of the documentation will cover all the statement nodes.
 All the statement nodes implement the `Stmt` interface via the `stmtNode` method.
-
-***
-
-#### PrintStmt node
-The `PrintStmt` node represents a print statement in the Ecla language.
-
-##### Fields
-The `PrintStmt` node is defined as follows :
-
-```go
-    type PrintStmt struct {
-        PrintToken lexer.Token
-        Lparen     lexer.Token
-        Rparen     lexer.Token
-        Expression Expr
-    }
-```
-
-The `PrintToken` field is the token that represents the print statement.
-The `Lparen` field is the left parenthesis of the print statement.
-The `Rparen` field is the right parenthesis of the print statement.
-The `Expression` field is the expression of the print statement.
-
-##### Code Example
-a print statement is a statement that contains an expression surrounded by parenthesis.
-
-for example :
-```ecla   
-    print(1);
-    print("hello world");
-```
 
 ***
 

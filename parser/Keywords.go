@@ -15,7 +15,6 @@ var (
 		"var":      nil,
 		"function": nil,
 		"return":   nil,
-		"print":    nil,
 		"range":    nil,
 		"import":   nil,
 		"type":     nil,

@@ -149,23 +149,6 @@ func (a IndexableAccessExpr) precedence() int {
 
 func (a IndexableAccessExpr) exprNode() {}
 
-type PrintStmt struct {
-	PrintToken lexer.Token
-	Lparen     lexer.Token
-	Rparen     lexer.Token
-	Expression Expr
-}
-
-func (p PrintStmt) StartPos() int {
-	return p.PrintToken.Position
-}
-
-func (p PrintStmt) EndPos() int {
-	return p.Rparen.Position
-}
-
-func (p PrintStmt) stmtNode() {}
-
 type TypeStmt struct {
 	TypeToken  lexer.Token
 	Lparen     lexer.Token
