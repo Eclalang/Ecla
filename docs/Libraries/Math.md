@@ -1,6 +1,6 @@
 # Math
 
-Golang package for dealing with math.
+Math library implements mathematical functions.
 
 ## Index.
 

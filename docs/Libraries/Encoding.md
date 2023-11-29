@@ -1,6 +1,6 @@
 # Encoding
 
-Golang package for dealing with encoding.
+Encoding library is used to convert data to and from byte-level and textual representation.
 
 ## Index
 

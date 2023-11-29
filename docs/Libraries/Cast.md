@@ -1,6 +1,6 @@
 # Cast
 
-Golang package for dealing with type casting.
+Cast library is used for dealing with type casting.
 
 ## Index
 

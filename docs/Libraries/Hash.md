@@ -1,6 +1,6 @@
 # Hash
 
-Golang package for dealing with hashing.
+Hash library permits you to hash a text.
 
 ## Index
 

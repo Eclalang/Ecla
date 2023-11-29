@@ -1,6 +1,6 @@
 # Os
 
-OS is a library that allows you to interact with the operating system.
+OS library allows you to interact with the operating system.
 
 ## Index
 

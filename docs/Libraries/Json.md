@@ -1,6 +1,6 @@
 # Json
 
-Golang package for dealing with JSON.
+Json library implements encoding and decoding of JSON.
 
 ## Index
 

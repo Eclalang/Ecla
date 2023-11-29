@@ -2,7 +2,7 @@
 
 ***
 ##  Documentation.
-### Strings is a library that allows you to interact with the operating system.
+Strings library implements function to alter string.
 ###
 
 ***

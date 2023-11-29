@@ -2,7 +2,7 @@
 
 ***
 ##  Documentation.
-### Time is a library that allows you to interact with the operating system.
+Time library implements functions to manipulate and display time.
 ###
 
 ***

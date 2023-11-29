@@ -1,6 +1,6 @@
 # Console
 
-Golang package for dealing with consoles.
+Console library is used for dealing with console.
 
 ## Index
 
