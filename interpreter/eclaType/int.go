@@ -275,17 +275,84 @@ func (i Int) LwEq(other Type) (Type, error) {
 
 // And returns errors
 func (i Int) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and int")
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if i == Int(0) || other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if i == Int(0) || other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if i == Int(0) || other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if i == Int(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
 }
 
-// Or returns errors
+// Or returns an error
 func (i Int) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or int")
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if i == Int(0) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if i == Int(0) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if i == Int(0) && other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if i == Int(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
 }
 
-// Not returns errors
+// Not returns an error
 func (i Int) Not() (Type, error) {
-	return nil, errors.New("cannot opposite int")
+	switch i.GetValue() {
+	case Char(0):
+		return Char(1), nil
+	default:
+		return Char(0), nil
+	}
 }
 
 // Append returns errors
