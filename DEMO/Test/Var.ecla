@@ -1,3 +1,4 @@
+import "console";
 var test bool;
 test= !!(test==false);
-print(test);
+console.print(test);
