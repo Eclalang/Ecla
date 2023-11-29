@@ -1,114 +1,125 @@
-# STRINGS
+# Strings
 
-***
-##  Documentation.
 Strings library implements function to alter string.
-###
 
-***
-## Index.
+## Index
 
-* [fonction Contains(str string, substr string) bool](#fonction-contains)
-* [fonction ContainsAny(str string, chars string) bool](#fonction-containsany)
-* [fonction Count(str string, substr string) int](#fonction-count)
-* [fonction Cutset(str string, cutset string) string](#fonction-cutset)
-* [fonction HasPrefix(str string, prefix string) bool](#fonction-hasprefix)
-* [fonction HasSuffix(str string, suffix string) bool](#fonction-hassuffix)
-* [fonction IndexOf(str string, substr string) int](#fonction-indexof)
-* [fonction Join(strs []string, sep string) string](#fonction-join)
-* [fonction Replace(str string, old string, new string) string](#fonction-replace)
-* [fonction ReplaceAll(str string, old string, new string) string](#fonction-replaceall)
-* [fonction Split(str string, sep string) []string](#fonction-split)
-* [fonction SplitAfter(str string, sep string) []string](#fonction-splitafter)
-* [fonction SplitAfterN(str string, sep string, n int) []string](#fonction-splitaftern)
-* [fonction SplitN(str string, sep string, n int) []string](#fonction-splitn)
-* [fonction ToLower(str string) string](#fonction-tolower)
-* [fonction ToUpper(str string) string](#fonction-toupper)
-* [fonction Trim(str string, cutset string) string](#fonction-trim)
-##
-### Fonction Contains
+- [Contains(str string, substr string) bool](#contains)
+- [ContainsAny(str string, chars string) bool](#containsany)
+- [Count(str string, substr string) int](#count)
+- [Cut(str string, substr string) string](#cut)
+- [HasPrefix(str string, prefix string) bool](#hasprefix)
+- [HasSuffix(str string, suffix string) bool](#hassuffix)
+- [IndexOf(str string, substr string) int](#indexof)
+- [Join(elems []string, sep string) string](#join)
+- [Replace(str string, old string, new string, nb int) string](#replace)
+- [ReplaceAll(str string, old string, new string) string](#replaceall)
+- [Split(str string, sep string) []string](#split)
+- [SplitAfter(str string, sep string) []string](#splitafter)
+- [SplitAfterN(str string, sep string, nb int) []string](#splitaftern)
+- [SplitN(str string, sep string, nb int) []string](#splitn)
+- [ToLower(str string) string](#tolower)
+- [ToUpper(str string) string](#toupper)
+- [Trim(str string, cutset string) string](#trim)
+
+## Contains
 ```
 function contains(str string, substr string) bool
 ```
 Returns true if the string contains the substring
-### Fonction ContainsAny
+
+## ContainsAny
 ```
 function containsAny(str string, chars string) bool
 ```
 Returns true if the string contains any of the characters
-### Fonction Count
+
+## Count
 ```
 function count(str string, substr string) int
 ```
 Returns the number of non-overlapping instances of substr in str
-### Fonction Cutset
+
+## Cut
 ```
-function cutset(str string, cutset string) string
+function cut(str string, substr string) string
 ```
 Returns a string before and after the separator, and a bool if it's found or not
-### Fonction HasPrefix
+
+## HasPrefix
 ```
 function hasPrefix(str string, prefix string) bool
 ```
 Returns true if the string starts by the prefix
-### Fonction HasSuffix
+
+## HasSuffix
 ```
 function hasSuffix(str string, suffix string) bool
 ```
 Returns true if the string ends by the suffix
-### Fonction IndexOf
+
+## IndexOf
 ```
 function indexOf(str string, substr string) int
 ```
 Returns the index of the first instance of substr in str, or -1 if not found
-### Fonction Join
+
+## Join
 ```
-function join(strs []string, sep string) string
+function join(elems []string, sep string) string
 ```
 Returns a concatenated string from an array of string separated by sep
-### Fonction Replace
+
+## Replace
 ```
-function replace(str string, old string, new string) string
+function replace(str string, old string, new string, nb int) string
 ```
 Returns a string with the first instance of old replaced by new
-### Fonction ReplaceAll
+
+## ReplaceAll
 ```
 function replaceAll(str string, old string, new string) string
 ```
 Returns a string with all instances of old replaced by new
-### Fonction Split
+
+## Split
 ```
 function split(str string, sep string) []string
 ```
-Returns an array of the substrings between the separator, or an array only containing str if it doesn't contains sep
-### Fonction SplitAfter
+Returns an array of the substrings between the separator, or an array only containing str if it doesn't contain sep
+
+## SplitAfter
 ```
 function splitAfter(str string, sep string) []string
 ```
-Returns an array of the substrings after the separator, or an array only containing str if it doesn't contains sep
-### Fonction SplitAfterN
+Returns an array of the substrings after the separator, or an array only containing str if it doesn't contain sep
+
+## SplitAfterN
 ```
-function splitAfterN(str string, sep string, n int) []string
+function splitAfterN(str string, sep string, nb int) []string
 ```
-Returns an array of the substrings after the separator, or an array only containing str if it doesn't contains sep. The count determines the number of substrings to return
-### Fonction SplitN
+Returns an array of the substrings after the separator, or an array only containing str if it doesn't contain sep. The count determines the number of substrings to return
+
+## SplitN
 ```
-function splitN(str string, sep string, n int) []string
+function splitN(str string, sep string, nb int) []string
 ```
-Returns an array of the substrings between the separator, or an array only containing str if it doesn't contains sep. The count determines the number of substrings to return
-### Fonction ToLower
+Returns an array of the substrings between the separator, or an array only containing str if it doesn't contain sep. The count determines the number of substrings to return
+
+## ToLower
 ```
 function toLower(str string) string
 ```
 Returns a string with all characters in lowercase
-### Fonction ToUpper
+
+## ToUpper
 ```
 function toUpper(str string) string
 ```
 Returns a string with all characters in uppercase
-### Fonction Trim
+
+## Trim
 ```
 function trim(str string, cutset string) string
 ```
 Returns a string with all cut characters removed
-##
