@@ -293,3 +293,135 @@ func TestAddFloatString(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 }
+
+// Float interacts with Char
+
+/*func TestAddFloatChar(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Char(2)
+
+	result, err := t1.Add(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Float(5.14) {
+		t.Error("Expected 5.14, got ", result)
+	}
+}*/
+
+/* func TestSubFloatChar(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Char(2)
+
+	result, err := t1.Sub(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Float(1.14) {
+		t.Error("Expected 1.14, got ", result)
+	}
+} */
+
+func TestMulFloatChar(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Char(2)
+
+	result, err := t1.Mul(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Float(6.28) {
+		t.Error("Expected 6.28, got ", result)
+	}
+}
+
+func TestDivFloatChar(t *testing.T) {
+	t1 := Float(4.5)
+	t2 := Char(2)
+
+	result, err := t1.Div(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Float(2.25) {
+		t.Error("Expected 2.25, got ", result)
+	}
+}
+
+func TestEqFloatChar(t *testing.T) {
+	t1 := Float(3.000)
+	t2 := Char(3)
+
+	result, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestNotEqFloatChar(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Char(3)
+
+	result, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestGtFloatChar(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Char(3)
+
+	result, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestGtEqFloatChar(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Char(3)
+
+	result, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestLwFloatChar(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Char(3)
+
+	result, err := t1.Lw(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestLwEqFloatChar(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Char(3)
+
+	result, err := t1.LwEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}

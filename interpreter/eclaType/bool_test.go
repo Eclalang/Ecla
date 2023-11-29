@@ -178,6 +178,60 @@ func TestOrBoolInt(t *testing.T) {
 	}
 }
 
+// Bool interacts with Char
+
+func TestEqBoolChar(t *testing.T) {
+	t1 := Bool(true)
+	t2 := Char(1)
+
+	result, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestNotEqBoolChar(t *testing.T) {
+	t1 := Bool(true)
+	t2 := Char(1)
+
+	result, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestAndBoolChar(t *testing.T) {
+	t1 := Bool(true)
+	t2 := Char(1)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrBoolChar(t *testing.T) {
+	t1 := Bool(true)
+	t2 := Char(0)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
 // Bool interacts with String
 
 func TestAddBoolString(t *testing.T) {
