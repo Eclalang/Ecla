@@ -17,16 +17,28 @@ func NewMap() *Map {
 	return &Map{[]Type{}, []Type{}, "", "", ""}
 }
 
-func (m *Map) SetAutoType() {
+func (m *Map) SetAutoType() error {
 	var typ string
 	if len(m.Values) == 0 {
 		typ = "empty"
 	} else {
-		typ = "map[" + m.Keys[0].GetType() + "]" + m.Values[0].GetType()
 		m.TypKey = m.Keys[0].GetType()
 		m.TypVal = m.Values[0].GetType()
+		for _, v := range m.Values {
+			if v.GetType() != m.TypVal {
+				return errors.New("you cannot have a map with different value type")
+			}
+		}
+		for _, v := range m.Keys {
+			if v.GetType() != m.TypKey {
+				return errors.New("you cannot have a map with different key type")
+			}
+		}
+		typ = "map[" + m.TypKey + "]" + m.TypVal
 	}
+
 	m.Typ = typ
+	return nil
 }
 
 func (m *Map) GetValue() any {
