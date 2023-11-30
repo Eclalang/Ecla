@@ -24,18 +24,18 @@ func (l *List) SetValue(v any) error {
 
 	switch v.(type) {
 	case []Type:
-		var typ string
-		typ = "[]" + v.([]Type)[0].GetType()
-		if l.Typ == typ {
-			l.Value = v.([]Type)
-			return nil
+		// Check type of list
+		for _, v := range v.([]Type) {
+			if v.GetType() != l.Typ[2:] {
+				return errors.New(fmt.Sprintf("cannot set value %s to list of type %s", v.GetType(), l.Typ))
+			}
 		}
+		l.Value = v.([]Type)
+		return nil
 	case *List:
 		t := v.(*List)
 		*l = *t
 		return nil
-	default:
-		fmt.Sprintf("cannot set value of list to %T", v)
 	}
 	return errors.New("cannot set value of list")
 }
