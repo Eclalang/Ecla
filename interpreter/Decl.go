@@ -150,6 +150,9 @@ func RunMapLiteral(tree parser.MapLiteral, env *Env) *Bus {
 	m := eclaType.NewMap()
 	m.Keys = keys
 	m.Values = values
-	m.SetAutoType()
+	err := m.SetAutoType()
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+	}
 	return NewMainBus(m)
 }
