@@ -1,0 +1,18 @@
+# Test the json library
+
+import "console";
+import "json";
+
+function testMarshal() {
+    var mapStr map[string]string = {"name": "Ecla", "members": "7", "language": "Golang"};
+    var str string = json.marshal(mapStr);
+    console.println(str);
+}
+testMarshal();
+
+function testUnmarshal() {
+    var str string = "{'name': 'Ecla', 'members': '7', 'language': 'Golang'}";
+    var obj map[string]string = json.unmarshal(str);
+    console.println(obj);
+}
+testUnmarshal();
