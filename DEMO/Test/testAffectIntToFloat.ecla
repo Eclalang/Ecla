@@ -1,0 +1,11 @@
+import "console";
+
+var c float = 2;
+
+var c2 float = 2.0;
+
+type(c);
+type(c2);
+
+console.println(c);
+console.println(c2);
