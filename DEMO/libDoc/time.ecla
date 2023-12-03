@@ -1,0 +1,44 @@
+# Test for Time library
+
+import "console";
+import "time";
+
+# Test function ConvertRoman
+function testConvertRoman() {
+    console.println(time.convertRoman("4"));
+}
+testConvertRoman();
+
+# Test function Date
+function testDate() {
+    console.println(time.date(2020, 12, 31, 23, 59, 59));
+}
+testDate();
+
+# Test function Now
+function testNow() {
+    console.println(time.now());
+}
+testNow();
+
+# Test function Sleep
+function testSleep() {
+    console.println("Sleeping for 2 seconds");
+    time.sleep(2);
+    console.println("Done");
+}
+testSleep();
+
+# Test function Strftime
+function testStrftime() {
+    console.println(time.strftime("%Y-%m-%d %H:%M:%S", "2020-12-31 23:59:59"));
+}
+testStrftime();
+
+# Test function Timer
+function testTimer() {
+    console.println("Waiting for 2 seconds");
+    time.timer(2);
+    console.println("Done");
+}
+testTimer();

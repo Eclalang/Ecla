@@ -1,0 +1,52 @@
+# Test the Regex library
+
+import "console";
+import "regex";
+
+# Test function Find
+function testFind() {
+    var str string = "abc";
+    var match string = regex.find("a", str);
+    console.println(match);
+}
+testFind();
+
+# Test function FindAll
+function testFindAll() {
+    var str string = "abc abc";
+    var matches []string = regex.findAll("a", str);
+    console.println(matches);
+}
+testFindAll();
+
+# Test function FindAllIndex
+function testFindAllIndex() {
+    var str string = "abc abc";
+    var matches [][]int = regex.findAllIndex("a", str);
+    console.println(matches);
+}
+testFindAllIndex();
+
+# Test function FindIndex
+function testFindIndex() {
+    var str string = "abc abc";
+    var matches []int = regex.findIndex("a", str);
+    console.println(matches);
+}
+testFindIndex();
+
+# Test function Match
+function testMatch() {
+    var str string = "abc";
+    var match bool = regex.match("a", str);
+    console.println(match);
+}
+testMatch();
+
+# Test function ReplaceAll
+function testReplaceAll() {
+    var str string = "abc abc";
+    var replaced string = regex.replaceAll("a", str, "d");
+    console.println(replaced);
+}
+testReplaceAll();
