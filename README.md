@@ -5,7 +5,7 @@
 
 ## What is Ecla ?
 
-**Ecla** is a programming language that is designed to be **simple** and **easy** to use.  
+**Ecla** is a programming language that was created to be **simple** and **effortless** to use.  
 It is an interpreted language that is written using the **Go** programming language.
 Having a simple syntax and a numerous standard library, it is a language that is easy to learn and use without losing the leverage of advanced features.
 
