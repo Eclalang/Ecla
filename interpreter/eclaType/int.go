@@ -369,10 +369,10 @@ func (i Int) Or(other Type) (Type, error) {
 // Not returns an error
 func (i Int) Not() (Type, error) {
 	switch i.GetValue() {
-	case Char(0):
-		return Char(1), nil
+	case Int(0):
+		return Int(1), nil
 	default:
-		return Char(0), nil
+		return Int(0), nil
 	}
 }
 
