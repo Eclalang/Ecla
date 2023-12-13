@@ -58,7 +58,10 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 			temp = append(temp, NewReturnBus(v))
 		}
 		return temp
+	case parser.MurlocStmt:
+		RunMurlocStmt(tree.(parser.MurlocStmt), env)
 	}
+
 	return []*Bus{NewNoneBus()}
 }
 
