@@ -148,7 +148,9 @@ func (p *Parser) ParseFile() *File {
 // ParseNode parses a node from the current token deciding checking if the token is text or other
 func (p *Parser) ParseNode() Node {
 	if p.CurrentToken.TokenType == lexer.MURLOC {
-		p.HandleFatal("Mrgle, Mmmm Uuua !")
+		tempStmt := MurlocStmt{MurlocToken: p.CurrentToken}
+		p.Step()
+		return tempStmt
 	}
 	if p.CurrentToken.TokenType != lexer.TEXT {
 		tempExpr := p.ParseExpr()
