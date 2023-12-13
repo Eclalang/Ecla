@@ -219,7 +219,6 @@ func (p *Parser) ParseKeyword() Node {
 		return p.ParseImportStmt()
 	}
 	if p.CurrentToken.Value == "null" {
-		fmt.Println("NULL")
 		tempLiteral := Literal{Token: p.CurrentToken, Type: "NULL", Value: p.CurrentToken.Value}
 		p.Step()
 		return tempLiteral
