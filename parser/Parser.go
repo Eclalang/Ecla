@@ -441,6 +441,9 @@ func (p *Parser) ParseVariableDecl() Decl {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
 		}
+		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
+		}
 	} else {
 		p.HandleFatal("Expected variable name instead of " + p.CurrentToken.Value)
 	}
@@ -470,6 +473,9 @@ func (p *Parser) ParseImplicitVariableDecl() Decl {
 	if p.CurrentToken.TokenType == lexer.TEXT {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
+		}
+		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
 		}
 	} else {
 		p.HandleFatal("Expected variable name instead of " + p.CurrentToken.Value)
@@ -503,6 +509,9 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 	if p.CurrentToken.TokenType == lexer.TEXT {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as function name")
+		}
+		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
 		}
 	} else {
 		p.HandleFatal("Expected function name instead of " + p.CurrentToken.Value)
@@ -862,6 +871,9 @@ func (p *Parser) ParseFunctionDecl() Node {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as function name")
 		}
+		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
+		}
 	} else {
 		p.HandleFatal("Expected function name instead of " + p.CurrentToken.Value)
 	}
@@ -926,6 +938,9 @@ func (p *Parser) ParseVariableAccess() Expr {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
 		}
+		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
+		}
 	}
 	if p.Peek(1).TokenType == lexer.LBRACKET {
 		temp := p.ParseIndexableAccessExpr()
@@ -952,6 +967,9 @@ func (p *Parser) ParseLiteral() Expr {
 				return tempLiteral
 			}
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
+		}
+		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
 		}
 		tempLiteral := p.ParseVariableAccess()
 		p.Step()
