@@ -432,3 +432,8 @@ func RunReturnStmt(tree parser.ReturnStmt, env *Env) []eclaType.Type {
 	}
 	return l
 }
+
+// RunMurlocStmt executes a parser.MurlocStmt.
+func RunMurlocStmt(stmt parser.MurlocStmt, env *Env) {
+	env.ErrorHandle.HandleError(0, stmt.StartPos(), "Mrgle, Mmmm Uuua !", errorHandler.LevelFatal)
+}
