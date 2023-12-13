@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 	"strings"
 
@@ -84,7 +85,7 @@ func GetPackageNameByPath(path string) string {
 	_, fPath := filepath.Split(path)
 	temp := strings.Split(fPath, ".")
 	if len(temp) == 0 {
-		fmt.Println("invalid file path")
+		log.Fatal("Invalid path")
 	}
 	return temp[0]
 }
