@@ -862,7 +862,6 @@ func (p *Parser) ParseAnonymousFunctionExpr() Expr {
 		p.HandleFatal("Expected '}'")
 	}
 	p.Step()
-	p.DisableEOLChecking()
 	return tempAnonymousFunctionDecl
 
 }
