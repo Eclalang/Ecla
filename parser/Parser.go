@@ -229,6 +229,10 @@ func (p *Parser) ParseKeyword() Node {
 		p.Step()
 		return tempStmt
 	}
+	if p.CurrentToken.Value == "any" {
+		p.HandleFatal("any cannot be used as a keyword")
+		return nil
+	}
 	p.HandleFatal("Unknown keyword: " + p.CurrentToken.Value)
 	return nil
 }
