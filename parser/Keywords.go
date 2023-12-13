@@ -11,6 +11,7 @@ const (
 	Map        = "map"
 	Function   = "function"
 	ArrayStart = "["
+	Any        = "any"
 )
 
 var (
@@ -26,6 +27,7 @@ var (
 		"if":         nil,
 		"else":       nil,
 		"null":       nil,
+		"any":        nil,
 		lexer.MURLOC: nil,
 	}
 	VarTypes = map[string]interface{}{
@@ -37,5 +39,6 @@ var (
 		Map:        nil,
 		Function:   nil,
 		ArrayStart: nil,
+		Any:        nil,
 	}
 )

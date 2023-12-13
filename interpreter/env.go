@@ -120,7 +120,6 @@ func (env *Env) Execute() {
 	}
 	// Lexing
 	env.Tokens = lexer.Lexer(env.Code)
-	fmt.Println(env.Tokens)
 
 	// Parsing
 	pars := parser.Parser{Tokens: env.Tokens, ErrorHandler: env.ErrorHandle}
