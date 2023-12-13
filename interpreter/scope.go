@@ -1,6 +1,8 @@
 package interpreter
 
-import "github.com/Eclalang/Ecla/interpreter/eclaType"
+import (
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
+)
 
 // ScopeType is the type of scope.
 type ScopeType int
@@ -50,7 +52,7 @@ func (s *Scope) Get(name string) (*eclaType.Var, bool) {
 	for cursor.next != nil {
 		cursor = cursor.next
 	}
-	var ok bool = false
+	var ok = false
 	var v *eclaType.Var
 	for cursor != nil && !ok {
 		v, ok = cursor.Var[name]

@@ -60,9 +60,17 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		return temp
 	case parser.MurlocStmt:
 		RunMurlocStmt(tree.(parser.MurlocStmt), env)
+	case parser.AnonymousFunctionExpr:
+		return RunAnonymousFunctionExpr(tree.(parser.AnonymousFunctionExpr), env)
 	}
 
 	return []*Bus{NewNoneBus()}
+}
+
+func RunAnonymousFunctionExpr(AnonymousFunc parser.AnonymousFunctionExpr, env *Env) []*Bus {
+	fn := eclaType.NewFunction("", AnonymousFunc.Prototype.Parameters, AnonymousFunc.Body, AnonymousFunc.Prototype.ReturnTypes)
+	returnBus := []*Bus{NewMainBus(fn)}
+	return returnBus
 }
 
 // RunTreeLoad is special version of RunTree that is used to load the environment (function, variable, import)
