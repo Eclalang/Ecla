@@ -1,7 +1,0 @@
-import "console";
-
-var testFunc function(int,int)(int) = function (int a, int b) (int) {
-    return a + b;
-};
-
-console.println(testFunc);

@@ -169,7 +169,7 @@ func (v *Var) IsNull() bool {
 }
 
 func (v *Var) IsFunction() bool {
-	return v.Value.GetType() == "function"
+	return v.Value.GetType()[:8] == "function"
 }
 
 func (v *Var) GetFunction() *Function {
