@@ -387,3 +387,17 @@ func (r ReturnStmt) EndPos() int {
 }
 
 func (r ReturnStmt) stmtNode() {}
+
+type MurlocStmt struct {
+	MurlocToken lexer.Token
+}
+
+func (m MurlocStmt) StartPos() int {
+	return m.MurlocToken.Position
+}
+
+func (m MurlocStmt) EndPos() int {
+	return m.MurlocToken.Position + len(lexer.MURLOC)
+}
+
+func (m MurlocStmt) stmtNode() {}

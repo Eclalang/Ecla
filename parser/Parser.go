@@ -26,9 +26,6 @@ func (p *Parser) Step() {
 	} else {
 		p.CurrentToken = p.Tokens[p.TokenIndex]
 	}
-	if p.CurrentToken.TokenType == lexer.MURLOC {
-		p.HandleFatal("Mrgle, Mmmm Uuua !")
-	}
 }
 
 // Back moves the parser back one token
@@ -38,9 +35,6 @@ func (p *Parser) Back() {
 		p.TokenIndex = 0
 	}
 	p.CurrentToken = p.Tokens[p.TokenIndex]
-	if p.CurrentToken.TokenType == lexer.MURLOC {
-		p.HandleFatal("Mrgle, Mmmm Uuua !")
-	}
 }
 
 // MultiStep moves the parser forward n times givens as parameter
@@ -50,9 +44,6 @@ func (p *Parser) MultiStep(steps int) {
 		p.CurrentToken = lexer.Token{}
 	} else {
 		p.CurrentToken = p.Tokens[p.TokenIndex]
-	}
-	if p.CurrentToken.TokenType == lexer.MURLOC {
-		p.HandleFatal("Mrgle, Mmmm Uuua !")
 	}
 }
 
@@ -230,6 +221,11 @@ func (p *Parser) ParseKeyword() Node {
 		tempLiteral := Literal{Token: p.CurrentToken, Type: "NULL", Value: p.CurrentToken.Value}
 		p.Step()
 		return tempLiteral
+	}
+	if p.CurrentToken.Value == lexer.MURLOC {
+		tempStmt := MurlocStmt{MurlocToken: p.CurrentToken}
+		p.Step()
+		return tempStmt
 	}
 	p.HandleFatal("Unknown keyword: " + p.CurrentToken.Value)
 	return nil

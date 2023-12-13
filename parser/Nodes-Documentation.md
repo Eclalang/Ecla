@@ -25,6 +25,7 @@
     - [ForStmt node](#forstmt-node)
     - [ImportStmt node](#importstmt-node)
     - [ReturnStmt node](#returnstmt-node)
+    - [MurlocStmt node](#murlocstmt-node)
   - [Declaration nodes](#declaration-nodes)
     - [VariableDecl node](#variabledecl-node)
     - [FunctionDecl node](#functiondecl-node)
@@ -624,6 +625,31 @@ for example :
 ```
 
 ***
+
+#### MurlocStmt node
+The `MurlocStmt` node represents a murloc statement in the Ecla language.
+
+##### Fields
+The `MurlocStmt` node is defined as follows :
+
+```go
+    type MurlocStmt struct {
+        MurlocToken lexer.Token
+    }
+```
+
+The `MurlocToken` field is the token that represents the murloc statement.
+
+##### Code Example
+a murloc statement is a statement that contains a murloc token.
+
+for example :
+```ecla   
+    mgrlgrl;
+```
+
+***
+
 
 ### Declaration nodes
 This part of the documentation will cover all the declaration nodes.
