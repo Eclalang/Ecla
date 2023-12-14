@@ -194,41 +194,41 @@ func (p *Parser) ParseText() Node {
 
 // ParseKeyword parses a keyword and calls the appropriate parsing function
 func (p *Parser) ParseKeyword() Node {
-	if p.CurrentToken.Value == "var" {
+	if p.CurrentToken.Value == Var {
 		return p.ParseVariableDecl()
 	}
-	if p.CurrentToken.Value == "function" {
+	if p.CurrentToken.Value == Function {
 		return p.ParseFunctionDecl()
 	}
-	if p.CurrentToken.Value == "return" {
+	if p.CurrentToken.Value == Return {
 		return p.ParseReturnStmt()
 	}
-	if p.CurrentToken.Value == "type" {
+	if p.CurrentToken.Value == Type {
 		return p.ParseTypeStmt()
 	}
-	if p.CurrentToken.Value == "if" {
+	if p.CurrentToken.Value == If {
 		return p.ParseIfStmt()
 	}
-	if p.CurrentToken.Value == "while" {
+	if p.CurrentToken.Value == While {
 		return p.ParseWhileStmt()
 	}
-	if p.CurrentToken.Value == "for" {
+	if p.CurrentToken.Value == For {
 		return p.ParseForStmt()
 	}
-	if p.CurrentToken.Value == "import" {
+	if p.CurrentToken.Value == Import {
 		return p.ParseImportStmt()
 	}
-	if p.CurrentToken.Value == "null" {
+	if p.CurrentToken.Value == Null {
 		tempLiteral := Literal{Token: p.CurrentToken, Type: "NULL", Value: p.CurrentToken.Value}
 		p.Step()
 		return tempLiteral
 	}
-	if p.CurrentToken.Value == lexer.MURLOC {
+	if p.CurrentToken.Value == Murloc {
 		tempStmt := MurlocStmt{MurlocToken: p.CurrentToken}
 		p.Step()
 		return tempStmt
 	}
-	if p.CurrentToken.Value == "any" {
+	if p.CurrentToken.Value == Any {
 		p.HandleFatal("any cannot be used as a keyword")
 		return nil
 	}
@@ -963,7 +963,7 @@ func (p *Parser) ParseLiteral() Expr {
 	}
 	if p.CurrentToken.TokenType == lexer.TEXT {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
-			if p.CurrentToken.Value == "null" {
+			if p.CurrentToken.Value == Null {
 				tempLiteral := Literal{Token: p.CurrentToken, Type: "NULL", Value: p.CurrentToken.Value}
 				p.Step()
 				return tempLiteral
