@@ -1,0 +1,68 @@
+# Test the hash library
+
+import "console";
+import "hash";
+
+# Test function Hashmd5
+function testHashmd5() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashmd5(str);
+    console.println(hashed);
+}
+testHashmd5();
+
+# Test function Hashsha1
+function testHashsha1() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha1(str);
+    console.println(hashed);
+}
+testHashsha1();
+
+# Test function Hashsha224
+function testHashsha224() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha224(str);
+    console.println(hashed);
+}
+testHashsha224();
+
+# Test function Hashsha256
+function testHashsha256() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha256(str);
+    console.println(hashed);
+}
+testHashsha256();
+
+# Test function Hashsha384
+function testHashsha384() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha384(str);
+    console.println(hashed);
+}
+testHashsha384();
+
+# Test function Hashsha512
+function testHashsha512() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha512(str);
+    console.println(hashed);
+}
+testHashsha512();
+
+# Test function Hashsha512_224
+function testHashsha512_224() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha512_224(str);
+    console.println(hashed);
+}
+testHashsha512_224();
+
+# Test function Hashsha512_256
+function testHashsha512_256() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha512_256(str);
+    console.println(hashed);
+}
+testHashsha512_256();

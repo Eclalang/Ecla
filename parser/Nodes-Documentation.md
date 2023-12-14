@@ -17,7 +17,6 @@
     - [FunctionCallExpr node](#functioncallexpr-node)
     - [MethodCallExpr node](#methodcallexpr-node)
   - [Statement nodes](#statement-nodes)
-    - [PrintStmt node](#printstmt-node)
     - [TypeStmt node](#typestmt-node)
     - [VariableAssignStmt node](#variableassignstmt-node)
     - [IfStmt node](#ifstmt-node)
@@ -26,6 +25,7 @@
     - [ForStmt node](#forstmt-node)
     - [ImportStmt node](#importstmt-node)
     - [ReturnStmt node](#returnstmt-node)
+    - [MurlocStmt node](#murlocstmt-node)
   - [Declaration nodes](#declaration-nodes)
     - [VariableDecl node](#variabledecl-node)
     - [FunctionDecl node](#functiondecl-node)
@@ -340,37 +340,6 @@ All the statement nodes implement the `Stmt` interface via the `stmtNode` method
 
 ***
 
-#### PrintStmt node
-The `PrintStmt` node represents a print statement in the Ecla language.
-
-##### Fields
-The `PrintStmt` node is defined as follows :
-
-```go
-    type PrintStmt struct {
-        PrintToken lexer.Token
-        Lparen     lexer.Token
-        Rparen     lexer.Token
-        Expression Expr
-    }
-```
-
-The `PrintToken` field is the token that represents the print statement.
-The `Lparen` field is the left parenthesis of the print statement.
-The `Rparen` field is the right parenthesis of the print statement.
-The `Expression` field is the expression of the print statement.
-
-##### Code Example
-a print statement is a statement that contains an expression surrounded by parenthesis.
-
-for example :
-```ecla   
-    print(1);
-    print("hello world");
-```
-
-***
-
 #### TypeStmt node
 The `TypeStmt` node represents a type statement in the Ecla language.
 
@@ -656,6 +625,31 @@ for example :
 ```
 
 ***
+
+#### MurlocStmt node
+The `MurlocStmt` node represents a murloc statement in the Ecla language.
+
+##### Fields
+The `MurlocStmt` node is defined as follows :
+
+```go
+    type MurlocStmt struct {
+        MurlocToken lexer.Token
+    }
+```
+
+The `MurlocToken` field is the token that represents the murloc statement.
+
+##### Code Example
+a murloc statement is a statement that contains a murloc token.
+
+for example :
+```ecla   
+    mgrlgrl;
+```
+
+***
+
 
 ### Declaration nodes
 This part of the documentation will cover all the declaration nodes.

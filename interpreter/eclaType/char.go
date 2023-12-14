@@ -97,8 +97,14 @@ func (c Char) Div(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
+		if other.(Int) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return Char(Int(c) / other.GetValue().(Int)), nil
 	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return c / other.(Char), nil
 	default:
 		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
@@ -113,8 +119,14 @@ func (c Char) Mod(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
+		if other.(Int) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return Char(Int(c) % other.GetValue().(Int)), nil
 	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return c % other.(Char), nil
 	default:
 		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
@@ -217,18 +229,85 @@ func (c Char) LwEq(other Type) (Type, error) {
 }
 
 // And returns an error
-func (Char) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and char")
+func (c Char) And(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if c == Char(0) || other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if c == Char(0) || other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if c == Char(0) || other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if c == Char(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
 }
 
 // Or returns an error
-func (Char) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or char")
+func (c Char) Or(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if c == Char(0) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if c == Char(0) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if c == Char(0) && other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if c == Char(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
 }
 
 // Not returns an error
-func (Char) Not() (Type, error) {
-	return nil, errors.New("cannot opposite int")
+func (c Char) Not() (Type, error) {
+	switch c.GetValue() {
+	case Char(0):
+		return Bool(true), nil
+	default:
+		return Bool(false), nil
+	}
 }
 
 func (Char) IsNull() bool {

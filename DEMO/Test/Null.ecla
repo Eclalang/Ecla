@@ -14,4 +14,4 @@ t = "hello";
 
 type(t);
 
-print(t);
+console.print(t);

@@ -11,11 +11,6 @@ import (
 	"github.com/Eclalang/Ecla/parser"
 )
 
-// RunPrintStmt executes a parser.PrintStmt.
-func RunPrintStmt(tree parser.PrintStmt, env *Env) {
-	fmt.Print(RunTree(tree.Expression, env)[0].GetVal().GetString())
-}
-
 // RunImportStmt executes a parser.ImportStmt.
 func RunImportStmt(stmt parser.ImportStmt, env *Env) {
 	env.Import(stmt)
@@ -436,4 +431,9 @@ func RunReturnStmt(tree parser.ReturnStmt, env *Env) []eclaType.Type {
 		}
 	}
 	return l
+}
+
+// RunMurlocStmt executes a parser.MurlocStmt.
+func RunMurlocStmt(stmt parser.MurlocStmt, env *Env) {
+	env.ErrorHandle.HandleError(0, stmt.StartPos(), "Mrgle, Mmmm Uuua !", errorHandler.LevelFatal)
 }

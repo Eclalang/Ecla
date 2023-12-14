@@ -1,11 +1,11 @@
 import "console";
 var test []map[string]string = [{"test":"test","test2":"test2",1:"testoui"},{"test":"test","test2":"test2"}];
 
-print(test[0][1]);
+console.print(test[0][1]);
 
 var test2 []map[string]string = [{"test":"test2","test2":"test3"},{"test":"test","test2":"test2"}];
 
-print(test[0]+test2[0]);
+console.print(test[0]+test2[0]);
 
 var lamapdetest map[string]string = {"test":"test2","test2":"test3"};
 lamapdetest["test"] = "c le test";

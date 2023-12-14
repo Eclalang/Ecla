@@ -32,6 +32,8 @@ def parse_directory(dir):
 
 pars = parse_directory(current_dir)
 
+pars.sort(key=lambda x: x["title"])
+
 dump(pars, open('index.json', 'w'))
 
 # check if the directory dist exists

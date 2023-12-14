@@ -169,7 +169,7 @@ func (v *Var) IsNull() bool {
 }
 
 func (v *Var) IsFunction() bool {
-	return v.Value.GetType() == "function"
+	return v.Value.GetType()[:8] == "function"
 }
 
 func (v *Var) GetFunction() *Function {
@@ -188,6 +188,14 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 			Value: value.GetString(),
 		}, nil
 	}
+	if Type == parser.Float && value.GetType() == parser.Int {
+		return &Var{
+			Name:  name,
+			Value: NewFloat(value.String()),
+		}, nil
+
+	}
+
 	if Type == "" {
 		Type = value.GetType()
 	} else if Type != value.GetType() && !value.IsNull() {

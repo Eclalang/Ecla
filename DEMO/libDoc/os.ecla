@@ -1,0 +1,148 @@
+# Test the Os library
+
+import "console";
+import "os";
+
+# Test function Chown
+function testChown() {
+    os.chown("test.txt", 0, 0);
+}
+testChown();
+
+# Test function ClearEnv
+function testClearEnv() {
+    os.clearEnv();
+}
+testClearEnv();
+
+# Test function Create
+function testCreate() {
+    os.create("test.txt");
+}
+testCreate();
+
+# Test function Getegid
+function testGetegid() {
+    var egid int = os.getegid();
+    console.println(egid);
+}
+testGetegid();
+
+# Test function GetEnv
+function testGetEnv() {
+    var env string = os.getEnv("API_KEY");
+    console.println(env);
+}
+testGetEnv();
+
+# Test function Geteuid
+function testGeteuid() {
+    var euid int = os.geteuid();
+    console.println(euid);
+}
+testGeteuid();
+
+# Test function Getgid
+function testGetgid() {
+    var gid int = os.getgid();
+    console.println(gid);
+}
+testGetgid();
+
+# Test function GetHostname
+function testGetHostname() {
+    var hostname string = os.getHostname();
+    console.println(hostname);
+}
+testGetHostname();
+
+# Test function Getpid
+function testGetpid() {
+    var pid int = os.getpid();
+    console.println(pid);
+}
+testGetpid();
+
+# Test function Getppid
+function testGetppid() {
+    var ppid int = os.getppid();
+    console.println(ppid);
+}
+testGetppid();
+
+# Test function Getuid
+function testGetuid() {
+    var uid int = os.getuid();
+    console.println(uid);
+}
+testGetuid();
+
+# Test function GetUserHomeDir
+function testGetUserHomeDir() {
+    var homeDir string = os.getUserHomeDir();
+    console.println(homeDir);
+}
+testGetUserHomeDir();
+
+# Test function Getwd
+function testGetwd() {
+    var wd string = os.getwd();
+    console.println(wd);
+}
+testGetwd();
+
+# Test function Mkdir
+function testMkdir() {
+    os.mkdir("testDir");
+}
+testMkdir();
+
+# Test function ReadDir
+function testReadDir() {
+    var files []string = os.readDir("testDir");
+    console.println(files);
+}
+testReadDir();
+
+# Test function ReadFile
+function testReadFile() {
+    var content string = os.readFile("test.txt");
+    console.println(content);
+}
+testReadFile();
+
+# Test function Remove
+function testRemove() {
+    os.remove("test.txt");
+}
+testRemove();
+
+# Test function RemoveAll
+function testRemoveAll() {
+    os.removeAll("testDir");
+}
+testRemoveAll();
+
+# Test function SetEnv
+function testSetEnv() {
+    os.setEnv("API_KEY", "123456789");
+}
+testSetEnv();
+
+# Test function SetEnvByFile
+function testSetEnvByFile() {
+    os.setEnvByFile(".env");
+}
+testSetEnvByFile();
+
+# Test function UnsetEnv
+function testUnsetEnv() {
+    os.unsetEnv("API_KEY");
+}
+testUnsetEnv();
+
+# Test function WriteFile
+function testWriteFile() {
+    os.writeFile("test.txt", "Hello World!");
+}
+testWriteFile();

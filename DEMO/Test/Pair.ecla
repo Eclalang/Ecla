@@ -1,7 +1,8 @@
+import "console";
 var number int = 10;
 if (number%2 == 0) {
-    print("Number is even");
+    console.print("Number is even");
 };
 if (!(number%2 == 0)) {
-    print("Number is odd");
+    console.print("Number is odd");
 };

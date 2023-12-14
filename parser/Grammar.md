@@ -1,6 +1,6 @@
 # The ECLA parser grammar
 
-# Table of symbols
+## Table of symbols
 
 |    **Usage**     | **Notation** |
 |:----------------:|:------------:|

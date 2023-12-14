@@ -327,6 +327,134 @@ func TestLwEqCharEq(t *testing.T) {
 	}
 }
 
+func TestAndChar(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char('B')
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndCharFalseRight(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char(0)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndCharFalseLeft(t *testing.T) {
+	t1 := Char(0)
+	t2 := Char('B')
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndCharFalseBoth(t *testing.T) {
+	t1 := Char(0)
+	t2 := Char(0)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrChar(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char('B')
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharFalseRight(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char(0)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharFalseLeft(t *testing.T) {
+	t1 := Char(0)
+	t2 := Char('B')
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharFalseBoth(t *testing.T) {
+	t1 := Char(0)
+	t2 := Char(0)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestNotCharFalse(t *testing.T) {
+	t1 := Char('A')
+
+	result, err := t1.Not()
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got", result)
+	}
+}
+
+func TestNotCharTrue(t *testing.T) {
+	t1 := Char(0)
+
+	result, err := t1.Not()
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got", result)
+	}
+}
+
 // Char interacts with Int
 
 func TestAddCharInt(t *testing.T) {
@@ -641,6 +769,110 @@ func TestLwEqCharIntEq(t *testing.T) {
 	}
 }
 
+func TestAndCharInt(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(1)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndCharIntFalseRight(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(0)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndCharIntFalseLeft(t *testing.T) {
+	t1 := Char(0)
+	t2 := Int(1)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndCharIntFalseBoth(t *testing.T) {
+	t1 := Char(0)
+	t2 := Int(0)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharInt(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(1)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharIntFalseRight(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(0)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharIntFalseLeft(t *testing.T) {
+	t1 := Char(0)
+	t2 := Int(1)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharIntFalseBoth(t *testing.T) {
+	t1 := Char(0)
+	t2 := Int(0)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
 // Char interacts with String
 
 func TestAddCharString(t *testing.T) {
@@ -764,6 +996,26 @@ func TestDivCharErr(t *testing.T) {
 	}
 }
 
+func TestDivBy0CharErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char(0)
+
+	_, err := t1.Div(t2)
+	if err == nil {
+		t.Error("Expected error when dividing a char by 0")
+	}
+}
+
+func TestDivBy0CharIntErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(0)
+
+	_, err := t1.Div(t2)
+	if err == nil {
+		t.Error("Expected error when dividing a char by 0")
+	}
+}
+
 func TestModCharErr(t *testing.T) {
 	t1 := Char('A')
 	t2 := Bool(true)
@@ -774,6 +1026,26 @@ func TestModCharErr(t *testing.T) {
 	}
 }
 
+func TestModBy0CharErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char(0)
+
+	_, err := t1.Mod(t2)
+	if err == nil {
+		t.Error("Expected error when modding a char by 0")
+	}
+}
+
+func TestModBy0CharIntErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(0)
+
+	_, err := t1.Mod(t2)
+	if err == nil {
+		t.Error("Expected error when modding a char by 0")
+	}
+}
+
 func TestDivEcCharErr(t *testing.T) {
 	t1 := Char('A')
 	t2 := Bool(true)
@@ -781,6 +1053,26 @@ func TestDivEcCharErr(t *testing.T) {
 	_, err := t1.DivEc(t2)
 	if err == nil {
 		t.Error("Expected error when dividing a char by a bool")
+	}
+}
+
+func TestDivEcBy0CharErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Char(0)
+
+	_, err := t1.DivEc(t2)
+	if err == nil {
+		t.Error("Expected error when dividing a char by 0")
+	}
+}
+
+func TestDivEcBy0CharIntErr(t *testing.T) {
+	t1 := Char('A')
+	t2 := Int(0)
+
+	_, err := t1.DivEc(t2)
+	if err == nil {
+		t.Error("Expected error when dividing a char by 0")
 	}
 }
 
@@ -844,35 +1136,6 @@ func TestLwEqCharErr(t *testing.T) {
 	}
 }
 
-func TestAndCharErr(t *testing.T) {
-	t1 := Char('A')
-	t2 := Char('B')
-
-	_, err := t1.And(t2)
-	if err == nil {
-		t.Error("Expected error when testing logical and between chars")
-	}
-}
-
-func TestOrCharErr(t *testing.T) {
-	t1 := Char('A')
-	t2 := Char('B')
-
-	_, err := t1.Or(t2)
-	if err == nil {
-		t.Error("Expected error when testing logical or between chars")
-	}
-}
-
-func TestNotCharErr(t *testing.T) {
-	t1 := Char('A')
-
-	_, err := t1.Not()
-	if err == nil {
-		t.Error("Expected error when testing logical not of char")
-	}
-}
-
 func TestCharAppendErr(t *testing.T) {
 	t1 := Char('A')
 	t2 := Bool(true)
@@ -880,5 +1143,110 @@ func TestCharAppendErr(t *testing.T) {
 	_, err := t1.Append(t2)
 	if err == nil {
 		t.Error("Expected error when appending a bool to a char")
+	}
+}
+
+// Char interacts with float
+func TestAndCharFloat(t *testing.T) {
+	t1 := Char('A')
+	t2 := Float(1)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndCharFloatFalseRight(t *testing.T) {
+	t1 := Char('A')
+	t2 := Float(0)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndCharFloatFalseLeft(t *testing.T) {
+	t1 := Char(0)
+	t2 := Float(1)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndCharFloatFalseBoth(t *testing.T) {
+	t1 := Char(0)
+	t2 := Float(0)
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharFloat(t *testing.T) {
+	t1 := Char('A')
+	t2 := Float(1)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharFloatFalseRight(t *testing.T) {
+	t1 := Char('A')
+	t2 := Float(0)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharFloatFalseLeft(t *testing.T) {
+	t1 := Char(0)
+	t2 := Float(1)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrCharFloatFalseBoth(t *testing.T) {
+	t1 := Char(0)
+	t2 := Float(0)
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
 	}
 }
