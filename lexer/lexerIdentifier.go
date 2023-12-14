@@ -23,6 +23,7 @@ var (
 	LEQ               = "LEQ"
 	GEQ               = "GEQ"
 	XOR               = "XOR"
+	XORBIN            = "XORBIN"
 	OR                = "OR"
 	AND               = "AND"
 	EQUAL             = "EQUAL"
@@ -122,7 +123,7 @@ var Identifier []identifier = []identifier{
 		},
 	},
 	{
-		Identifier: XOR,
+		Identifier: XORBIN,
 		Syntax: []string{
 			"^",
 		},
