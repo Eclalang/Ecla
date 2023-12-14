@@ -1,8 +1,8 @@
 package parser
 
-import "github.com/Eclalang/Ecla/lexer"
-
 const (
+	// varible type names
+
 	Int        = "int"
 	String     = "string"
 	Char       = "char"
@@ -12,23 +12,36 @@ const (
 	Function   = "function"
 	ArrayStart = "["
 	Any        = "any"
+
+	// keywords
+	Var    = "var"
+	Return = "return"
+	Range  = "range"
+	Import = "import"
+	Type   = "type"
+	For    = "for"
+	While  = "while"
+	If     = "if"
+	Else   = "else"
+	Null   = "null"
+	Murloc = "mgrlmgrl"
 )
 
 var (
 	Keywords = map[string]interface{}{
-		"var":        nil,
-		"function":   nil,
-		"return":     nil,
-		"range":      nil,
-		"import":     nil,
-		"type":       nil,
-		"for":        nil,
-		"while":      nil,
-		"if":         nil,
-		"else":       nil,
-		"null":       nil,
-		"any":        nil,
-		lexer.MURLOC: nil,
+		Var:      nil,
+		Function: nil,
+		Return:   nil,
+		Range:    nil,
+		Import:   nil,
+		Type:     nil,
+		For:      nil,
+		While:    nil,
+		If:       nil,
+		Else:     nil,
+		Null:     nil,
+		Any:      nil,
+		Murloc:   nil,
 	}
 	VarTypes = map[string]interface{}{
 		Int:        nil,
