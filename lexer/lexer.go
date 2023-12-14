@@ -146,11 +146,11 @@ func Lexer(sentence string) []Token {
 				ret = tokenComment(ident, ret, &prevIndex, &tempVal, i, line, sentence)
 				ret = tokenInt(ident, ret, &prevIndex, &tempVal, i, isSpaces)
 				ret = tokenPeriod(ident, ret, &prevIndex, &tempVal, i, isSpaces, inQuote, sentence)
-				ret = tokenAssign(ident, ret, &prevIndex, &tempVal, i)
+				ret = tokenAssign(ident, ret, &prevIndex, &tempVal, i, isSpaces)
 				ret = tokenDiv(ident, ret, &prevIndex, &tempVal, i)
-				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, ADD, INC)
-				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, SUB, DEC)
-				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, XORBIN, XOR)
+				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, isSpaces, ADD, INC)
+				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, isSpaces, SUB, DEC)
+				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, isSpaces, XORBIN, XOR)
 				if beforeChangeVal != tempVal {
 					break
 				}
@@ -335,10 +335,10 @@ func addToken(TokenType string, Value string, Position int, Line int) Token {
 // tokenAddSub replace the previous token.tokenType in ret to toReplace if the current token.tokenType is equal to toFind.
 //
 // return the changed []Token
-func tokenAddSub(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, toFind string, toReplace string) []Token {
+func tokenAddSub(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, isSpaces bool, toFind string, toReplace string) []Token {
 	if ident.Identifier == ADD || ident.Identifier == SUB || ident.Identifier == XORBIN {
 		if len(ret) >= 1 {
-			if ret[len(ret)-1].TokenType == toFind && ret[len(ret)-1].TokenType == ident.Identifier {
+			if ret[len(ret)-1].TokenType == toFind && ret[len(ret)-1].TokenType == ident.Identifier && !isSpaces {
 				ret[len(ret)-1].TokenType = toReplace
 				ret[len(ret)-1].Value += *tempVal
 				*tempVal = ""
@@ -354,8 +354,8 @@ func tokenAddSub(ident identifier, ret []Token, prevIndex *int, tempVal *string,
 // ASSIGN.
 //
 // return the changed []Token
-func tokenAssign(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int) []Token {
-	if ident.Identifier == ASSIGN {
+func tokenAssign(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, isSpaces bool) []Token {
+	if ident.Identifier == ASSIGN && !isSpaces {
 		if len(ret) >= 1 {
 			if concatEqual(ret[len(ret)-1].TokenType) {
 				if ret[len(ret)-1].TokenType == ASSIGN {
