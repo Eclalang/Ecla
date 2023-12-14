@@ -385,7 +385,12 @@ func (p *Parser) ParseForStmt() Stmt {
 	lookAhead := p.Peek(1)
 	if lookAhead.TokenType != lexer.COMMA {
 		tempFor.RangeToken = lexer.Token{}
-		tempFor.InitDecl = p.ParseVariableDecl()
+		if lookAhead.TokenType == lexer.COLON {
+			p.Back()
+			tempFor.InitDecl = p.ParseImplicitVariableDecl()
+		} else {
+			tempFor.InitDecl = p.ParseVariableDecl()
+		}
 		if p.CurrentToken.TokenType != lexer.COMMA {
 			p.HandleFatal("Expected Condition Expression instead of " + p.CurrentToken.Value)
 		}
