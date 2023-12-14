@@ -257,6 +257,11 @@ func (f Float) Not() (Type, error) {
 	return nil, errors.New("cannot opposite float")
 }
 
+// Xor
+func (f Float) Xor(other Type) (Type, error) {
+	return nil, errors.New("cannot xor float")
+}
+
 // Append returns errors
 func (f Float) Append(other Type) (Type, error) {
 	return nil, errors.New("cannot append float")

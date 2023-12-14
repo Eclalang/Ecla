@@ -103,6 +103,10 @@ func (f *Function) Not() (Type, error) {
 	return nil, errors.New("cannot not function")
 }
 
+func (f *Function) Xor(other Type) (Type, error) {
+	return nil, errors.New("cannot xor function")
+}
+
 func (f *Function) Gt(other Type) (Type, error) {
 	return nil, errors.New("cannot gt function")
 }

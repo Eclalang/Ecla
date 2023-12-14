@@ -234,6 +234,11 @@ func (s String) Not() (Type, error) {
 	return nil, errors.New("cannot opposite string")
 }
 
+// Xor returns errors
+func (s String) Xor(other Type) (Type, error) {
+	return nil, errors.New("cannot xor string")
+}
+
 func (s String) Append(other Type) (Type, error) {
 	switch other.(type) {
 	case String:

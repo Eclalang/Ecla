@@ -251,6 +251,11 @@ func (l *List) Not() (Type, error) {
 	return nil, errors.New("cannot opposite list")
 }
 
+// Xor returns errors
+func (l *List) Xor(other Type) (Type, error) {
+	return nil, errors.New("cannot xor list")
+}
+
 // Append to list
 func (l *List) Append(other Type) (Type, error) {
 	if l.Typ == other.GetType() {

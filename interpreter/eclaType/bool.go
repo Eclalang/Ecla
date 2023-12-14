@@ -239,6 +239,50 @@ func (b Bool) Not() (Type, error) {
 	return !b, nil
 }
 
+// Xor returns true if only one of the Types is true
+func (b Bool) Xor(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if b == Bool(true) && other.GetValue() == Int(1) {
+			return Bool(false), nil
+		} else if b == Bool(false) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if b == Bool(true) && other.GetValue() == Char(1) {
+			return Bool(false), nil
+		} else if b == Bool(false) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if b == Bool(true) && other.GetValue() == Float(1) {
+			return Bool(false), nil
+		} else if b == Bool(false) && other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if b == Bool(true) && other.GetValue() == Bool(true) {
+			return Bool(false), nil
+		} else if b == Bool(false) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}
+
 // Append returns errors
 func (b Bool) Append(other Type) (Type, error) {
 	return nil, errors.New("cannot append bool")

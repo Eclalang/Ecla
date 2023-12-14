@@ -91,6 +91,10 @@ func (n Null) Not() (Type, error) {
 	return nil, errors.New("cannot not null")
 }
 
+func (n Null) Xor(other Type) (Type, error) {
+	return nil, errors.New("cannot xor null")
+}
+
 func (n Null) Gt(other Type) (Type, error) {
 	return nil, errors.New("cannot gt null")
 }
