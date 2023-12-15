@@ -232,8 +232,81 @@ func (p *Parser) ParseKeyword() Node {
 		p.HandleFatal("any cannot be used as a keyword")
 		return nil
 	}
+	if p.CurrentToken.Value == Struct {
+		return p.ParseStructDecl()
+	}
+
 	p.HandleFatal("Unknown keyword: " + p.CurrentToken.Value)
 	return nil
+}
+
+// ParseStructDecl parses a struct declaration
+func (p *Parser) ParseStructDecl() Node {
+	tempStructDecl := StructDecl{StructToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if _, ok := Keywords[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as struct name")
+		}
+		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as struct name")
+		}
+	} else {
+		p.HandleFatal("Expected struct name instead of " + p.CurrentToken.Value)
+	}
+	tempStructDecl.Name = p.CurrentToken.Value
+	// add the struct name to the list of types
+	VarTypes[tempStructDecl.Name] = nil
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LBRACE {
+		p.HandleFatal("Expected struct LBRACE")
+	}
+	tempStructDecl.LeftBrace = p.CurrentToken
+	p.Step()
+	for p.CurrentToken.TokenType != lexer.RBRACE {
+		tempStructDecl.Fields = append(tempStructDecl.Fields, p.ParseStructField())
+		p.Back()
+		if p.CurrentToken.TokenType != lexer.EOL && p.CurrentToken.TokenType != lexer.RBRACE {
+			p.HandleFatal("Expected struct EOL")
+		}
+		if p.CurrentToken.TokenType == lexer.EOL {
+			p.Step()
+		}
+	}
+	if p.CurrentToken.TokenType != lexer.RBRACE {
+		p.HandleFatal("Expected struct RBRACE")
+	}
+	p.Step()
+	tempStructDecl.RightBrace = p.CurrentToken
+	p.DisableEOLChecking()
+	return tempStructDecl
+}
+
+// ParseStructField parses a struct field
+func (p *Parser) ParseStructField() StructField {
+	tempStructField := StructField{}
+	if p.CurrentToken.TokenType == lexer.TEXT {
+		if _, ok := Keywords[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as struct field name")
+		}
+		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as struct field name")
+		}
+	} else {
+		p.HandleFatal("Expected struct field name instead of " + p.CurrentToken.Value)
+	}
+	tempStructField.Name = p.CurrentToken.Value
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.COLON {
+		p.HandleFatal("Expected struct COLON")
+	}
+	var succes bool
+	tempStructField.Type, succes = p.ParseType()
+	if !succes {
+		p.HandleFatal("Expected struct field type instead of " + p.CurrentToken.Value)
+	}
+	p.Step()
+	return tempStructField
 }
 
 // ParseIdent parses an identifier and checking if it is function or method call,a variable declaration or an indexable variable access

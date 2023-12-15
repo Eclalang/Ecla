@@ -425,3 +425,26 @@ func (m MurlocStmt) EndPos() int {
 }
 
 func (m MurlocStmt) stmtNode() {}
+
+type StructField struct {
+	Name string
+	Type string
+}
+
+type StructDecl struct {
+	StructToken lexer.Token
+	Name        string
+	LeftBrace   lexer.Token
+	Fields      []StructField
+	RightBrace  lexer.Token
+}
+
+func (s StructDecl) StartPos() int {
+	return s.StructToken.Position
+}
+
+func (s StructDecl) EndPos() int {
+	return s.RightBrace.Position
+}
+
+func (s StructDecl) declNode() {}

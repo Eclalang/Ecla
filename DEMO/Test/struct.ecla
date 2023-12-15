@@ -1,0 +1,36 @@
+import "console";
+
+struct Test {
+    test : string;
+}
+
+# struct creation
+struct Point {
+
+    # simple fields
+    x : int;
+    y : int;
+
+    # function fields
+    # printSelf : function(Point);
+
+    # embedded structs
+    test : Test;
+}
+
+function printSelf (p : Point) {
+    console.println(p.x, p.y);
+}
+
+# instantiate a struct
+var temp Test = Test("test");
+var p Point = Point (1, 2, printSelf, temp);
+
+# access fields
+console.println(p.x, p.y);
+
+# call function fields
+p.printSelf(p);
+
+# access embedded struct fields
+console.println(p.test.test);

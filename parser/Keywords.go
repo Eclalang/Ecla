@@ -24,6 +24,7 @@ const (
 	If     = "if"
 	Else   = "else"
 	Null   = "null"
+	Struct = "struct"
 	Murloc = "mgrlmgrl"
 )
 
@@ -41,6 +42,7 @@ var (
 		Else:     nil,
 		Null:     nil,
 		Any:      nil,
+		Struct:   nil,
 		Murloc:   nil,
 	}
 	VarTypes = map[string]interface{}{
