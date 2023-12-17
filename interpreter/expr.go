@@ -68,7 +68,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 }
 
 func RunAnonymousFunctionExpr(AnonymousFunc parser.AnonymousFunctionExpr, env *Env) []*Bus {
-	fn := eclaType.NewFunction("", AnonymousFunc.Prototype.Parameters, AnonymousFunc.Body, AnonymousFunc.Prototype.ReturnTypes)
+	fn := eclaType.NewAnonymousFunction(AnonymousFunc.Prototype.Parameters, AnonymousFunc.Body, AnonymousFunc.Prototype.ReturnTypes)
 	returnBus := []*Bus{NewMainBus(fn)}
 	return returnBus
 }
