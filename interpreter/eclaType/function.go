@@ -142,6 +142,15 @@ func NewFunction(Name string, args []parser.FunctionParams, body []parser.Node, 
 	}
 }
 
+func NewAnonymousFunction(args []parser.FunctionParams, body []parser.Node, ret []string) *Function {
+	return &Function{
+		Name:   "",
+		Args:   args,
+		Body:   body,
+		Return: ret,
+	}
+}
+
 // Method for function
 
 func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*Var) {
