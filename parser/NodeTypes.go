@@ -346,9 +346,7 @@ type FunctionParams struct {
 	Type string
 }
 
-type FunctionDecl struct {
-	FunctionToken   lexer.Token
-	Name            string
+type FunctionPrototype struct {
 	LeftParamParen  lexer.Token
 	RightParamParen lexer.Token
 	Parameters      []FunctionParams
@@ -357,7 +355,13 @@ type FunctionDecl struct {
 	ReturnTypes     []string
 	LeftBrace       lexer.Token
 	RightBrace      lexer.Token
-	Body            []Node
+}
+
+type FunctionDecl struct {
+	FunctionToken lexer.Token
+	Name          string
+	Prototype     FunctionPrototype
+	Body          []Node
 }
 
 func (f FunctionDecl) StartPos() int {
@@ -365,10 +369,51 @@ func (f FunctionDecl) StartPos() int {
 }
 
 func (f FunctionDecl) EndPos() int {
-	return f.RightBrace.Position
+	return f.Prototype.RightBrace.Position
 }
 
 func (f FunctionDecl) declNode() {}
+
+type AnonymousFunctionExpr struct {
+	FunctionToken lexer.Token
+	Prototype     FunctionPrototype
+	Body          []Node
+}
+
+func (f AnonymousFunctionExpr) StartPos() int {
+	return f.FunctionToken.Position
+}
+
+func (f AnonymousFunctionExpr) EndPos() int {
+	return f.Prototype.RightBrace.Position
+}
+
+func (f AnonymousFunctionExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (f AnonymousFunctionExpr) exprNode() {}
+
+type AnonymousFunctionCallExpr struct {
+	AnonymousFunction AnonymousFunctionExpr
+	LeftParen         lexer.Token
+	RightParen        lexer.Token
+	Args              []Expr
+}
+
+func (f AnonymousFunctionCallExpr) StartPos() int {
+	return f.AnonymousFunction.StartPos()
+}
+
+func (f AnonymousFunctionCallExpr) EndPos() int {
+	return f.RightParen.Position
+}
+
+func (f AnonymousFunctionCallExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (f AnonymousFunctionCallExpr) exprNode() {}
 
 type ReturnStmt struct {
 	ReturnToken  lexer.Token
@@ -387,3 +432,17 @@ func (r ReturnStmt) EndPos() int {
 }
 
 func (r ReturnStmt) stmtNode() {}
+
+type MurlocStmt struct {
+	MurlocToken lexer.Token
+}
+
+func (m MurlocStmt) StartPos() int {
+	return m.MurlocToken.Position
+}
+
+func (m MurlocStmt) EndPos() int {
+	return m.MurlocToken.Position + len(lexer.MURLOC)
+}
+
+func (m MurlocStmt) stmtNode() {}

@@ -143,6 +143,11 @@ func (v *Var) Not() (Type, error) {
 	return v.Value.Not()
 }
 
+// Xor returns true if only one of the Type objects is true
+func (v *Var) Xor(other Type) (Type, error) {
+	return v.Value.Xor(other)
+}
+
 func (v *Var) Decrement() {
 	var err error
 	v.Value, err = v.Value.Sub(NewInt("1"))
@@ -169,7 +174,10 @@ func (v *Var) IsNull() bool {
 }
 
 func (v *Var) IsFunction() bool {
-	return v.Value.GetType() == "function"
+	if len(v.Value.GetType()) >= 9 {
+		return v.Value.GetType()[:8] == "function"
+	}
+	return false
 }
 
 func (v *Var) GetFunction() *Function {

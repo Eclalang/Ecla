@@ -369,10 +369,46 @@ func (i Int) Or(other Type) (Type, error) {
 // Not returns an error
 func (i Int) Not() (Type, error) {
 	switch i.GetValue() {
-	case Char(0):
-		return Char(1), nil
+	case Int(0):
+		return Int(1), nil
 	default:
-		return Char(0), nil
+		return Int(0), nil
+	}
+}
+
+// Xor returns 1 if only one of the Type objects is true
+func (i Int) Xor(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if i == Int(0) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else if i != Int(0) && other.GetValue() != Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if i == Int(0) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else if i != Int(0) && other.GetValue() != Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if i == Int(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else if i != Int(0) && other.GetValue() == Bool(true) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
 }
 

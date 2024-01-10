@@ -233,6 +233,10 @@ func (m *Map) Not() (Type, error) {
 	return nil, errors.New("cannot not null")
 }
 
+func (m *Map) Xor(other Type) (Type, error) {
+	return nil, errors.New("cannot xor null")
+}
+
 func (m *Map) Gt(other Type) (Type, error) {
 	return nil, errors.New("cannot gt null")
 }

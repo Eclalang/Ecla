@@ -58,8 +58,19 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 			temp = append(temp, NewReturnBus(v))
 		}
 		return temp
+	case parser.MurlocStmt:
+		RunMurlocStmt(tree.(parser.MurlocStmt), env)
+	case parser.AnonymousFunctionExpr:
+		return RunAnonymousFunctionExpr(tree.(parser.AnonymousFunctionExpr), env)
 	}
+
 	return []*Bus{NewNoneBus()}
+}
+
+func RunAnonymousFunctionExpr(AnonymousFunc parser.AnonymousFunctionExpr, env *Env) []*Bus {
+	fn := eclaType.NewAnonymousFunction(AnonymousFunc.Prototype.Parameters, AnonymousFunc.Body, AnonymousFunc.Prototype.ReturnTypes)
+	returnBus := []*Bus{NewMainBus(fn)}
+	return returnBus
 }
 
 // RunTreeLoad is special version of RunTree that is used to load the environment (function, variable, import)
@@ -143,6 +154,8 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) *Bus {
 		t, err = left.And(right)
 	case lexer.OR:
 		t, err = left.Or(right)
+	case lexer.XOR:
+		t, err = left.Xor(right)
 	default:
 		return NewNoneBus()
 	}
@@ -227,7 +240,7 @@ func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, a
 
 // RunBodyFunction executes the code associated with the function.
 func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
-	for _, v := range fn.Body {
+	for _, v := range fn.GetBody() {
 		BusCollection := RunTree(v, env)
 		if IsMultipleBus(BusCollection) {
 			ret := true

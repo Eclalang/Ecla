@@ -37,6 +37,8 @@ type Type interface {
 	Or(other Type) (Type, error)
 	//Not : !
 	Not() (Type, error)
+	//Xor : ^
+	Xor(other Type) (Type, error)
 	// IsNull : returns true if the value is null
 	IsNull() bool
 	// append : temporary

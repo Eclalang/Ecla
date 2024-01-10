@@ -196,7 +196,7 @@ func TestTokenAddSub_1(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "+"
 	var ident = identifier{"ADD", []string{}}
-	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, ADD, INC)
+	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, false, ADD, INC)
 
 	var errorString = "\n"
 
@@ -235,7 +235,7 @@ func TestTokenAddSub_2(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "+"
 	var ident = identifier{"ADD", []string{}}
-	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, ADD, INC)
+	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, false, ADD, INC)
 
 	var errorString = "\n"
 
@@ -274,7 +274,7 @@ func TestTokenAddSub_3(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "-"
 	var ident = identifier{"SUB", []string{}}
-	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, SUB, DEC)
+	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, false, SUB, DEC)
 
 	var errorString = "\n"
 
@@ -313,7 +313,7 @@ func TestTokenAssign_EQUAL(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -352,7 +352,7 @@ func TestTokenAssign_LEQ(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -391,7 +391,7 @@ func TestTokenAssign_GEQ(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -431,7 +431,7 @@ func TestTokenAssign_ADDASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -471,7 +471,7 @@ func TestTokenAssign_SUBASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -511,7 +511,7 @@ func TestTokenAssign_MULTASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -551,7 +551,7 @@ func TestTokenAssign_DIVASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -591,7 +591,7 @@ func TestTokenAssign_MODASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -631,7 +631,7 @@ func TestTokenAssign_BAD(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "+"
 
-	var got = tokenAssign(identifier{Identifier: ADD, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ADD, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 

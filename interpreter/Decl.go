@@ -5,6 +5,7 @@ import (
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
+	"slices"
 )
 
 // New returns a new eclaType.Type from a parser.Literal.
@@ -91,7 +92,31 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 		if err != nil {
 			env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
-		env.SetVar(tree.Name, v)
+		if v.IsFunction() {
+			if fn, ok := env.GetVar(tree.Name); ok {
+				if fn.IsFunction() {
+					fn2 := v.GetFunction()
+					if slices.Contains(fn.GetFunction().GetTypes(), fn2.GetType()) {
+						env.ErrorHandle.HandleError(0, 0, "Cannot overwrite this function", errorHandler.LevelFatal)
+					}
+					fn.GetFunction().AddOverload(fn2.Args[0], fn2.GetBody(), fn2.GetReturn())
+				} else {
+					env.ErrorHandle.HandleError(0, 0, "Cannot overload a non-function variable", errorHandler.LevelFatal)
+				}
+			} else {
+				if _, ok := env.GetVar(tree.Name); !ok {
+					env.SetVar(tree.Name, v)
+				} else {
+					env.ErrorHandle.HandleError(0, 0, "Cannot reassign a variable", errorHandler.LevelFatal)
+				}
+			}
+		} else {
+			if _, ok := env.GetVar(tree.Name); !ok {
+				env.SetVar(tree.Name, v)
+			} else {
+				env.ErrorHandle.HandleError(0, 0, "Cannot reassign a variable", errorHandler.LevelFatal)
+			}
+		}
 	}
 }
 
@@ -125,8 +150,20 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 
 // RunFunctionDecl executes a parser.FunctionDecl.
 func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
-	fn := eclaType.NewFunction(tree.Name, tree.Parameters, tree.Body, tree.ReturnTypes)
-	env.SetFunction(tree.Name, fn)
+	declared, ok := env.Vars.Get(tree.Name)
+	if !ok {
+		fn := eclaType.NewFunction(tree.Name, tree.Prototype.Parameters, tree.Body, tree.Prototype.ReturnTypes)
+		env.SetFunction(tree.Name, fn)
+	} else {
+		if !declared.IsFunction() {
+			env.ErrorHandle.HandleError(tree.StartPos(),
+				0,
+				"var "+tree.Name+" already exists.",
+				errorHandler.LevelFatal)
+		} else {
+			declared.GetFunction().AddOverload(tree.Prototype.Parameters, tree.Body, tree.Prototype.ReturnTypes)
+		}
+	}
 }
 
 // RunMapLiteral executes a parser.MapLiteral.

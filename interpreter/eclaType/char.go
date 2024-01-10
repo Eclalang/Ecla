@@ -310,6 +310,41 @@ func (c Char) Not() (Type, error) {
 	}
 }
 
+func (c Char) Xor(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if c == Char(0) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else if c != Char(0) && other.GetValue() != Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if c == Char(0) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else if c != Char(0) && other.GetValue() != Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if c == Char(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else if c != Char(0) && other.GetValue() != Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
+}
+
 func (Char) IsNull() bool {
 	return false
 }

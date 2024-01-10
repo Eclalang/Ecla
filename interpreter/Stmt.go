@@ -92,8 +92,24 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 		switch opp {
 		case parser.ASSIGN:
 			for i := 0; i < NamesLen; i++ {
-				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
-				*vars[i] = exprs[i]
+				switch exprs[i].(type) {
+				case *eclaType.Function:
+					fnTemp := exprs[i].(*eclaType.Function)
+					switch (*vars[i]).(type) {
+					case *eclaType.Function:
+						fn := (*vars[i]).(*eclaType.Function)
+						err := fn.Override(fnTemp.Args[0], fnTemp.GetBody(), fnTemp.GetReturn())
+						if err != nil {
+							env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+						}
+					default:
+						env.ErrorHandle.HandleError(0, 0, "cannot assign function to none function", errorHandler.LevelFatal)
+
+					}
+				default:
+					AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+					*vars[i] = exprs[i]
+				}
 			}
 		case parser.ADDASSIGN:
 			for i := 0; i < NamesLen; i++ {
@@ -431,4 +447,9 @@ func RunReturnStmt(tree parser.ReturnStmt, env *Env) []eclaType.Type {
 		}
 	}
 	return l
+}
+
+// RunMurlocStmt executes a parser.MurlocStmt.
+func RunMurlocStmt(stmt parser.MurlocStmt, env *Env) {
+	env.ErrorHandle.HandleError(0, stmt.StartPos(), "Mrgle, Mmmm Uuua !", errorHandler.LevelFatal)
 }
