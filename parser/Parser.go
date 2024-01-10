@@ -198,6 +198,9 @@ func (p *Parser) ParseKeyword() Node {
 		return p.ParseVariableDecl()
 	}
 	if p.CurrentToken.Value == Function {
+		if p.Peek(1).TokenType == lexer.LPAREN {
+			return p.ParseAnonymousFunctionExpr()
+		}
 		return p.ParseFunctionDecl()
 	}
 	if p.CurrentToken.Value == Return {
