@@ -181,7 +181,7 @@ var (
 		actualIndex: -1,
 
 		line:     1,
-		position: 0,
+		position: 1,
 
 		canBeText: false,
 		isSpaces:  false,

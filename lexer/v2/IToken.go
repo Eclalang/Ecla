@@ -60,6 +60,7 @@ var (
 var (
 	TEXT              = "TEXT"
 	STRING            = "STRING"
+	CHAR              = "CHAR"
 	PRINT             = "PRINT"
 	INT               = "INT"
 	FLOAT             = "FLOAT"
@@ -78,6 +79,7 @@ var (
 	LEQ               = "LEQ"
 	GEQ               = "GEQ"
 	XOR               = "XOR"
+	XORBIN            = "XORBIN"
 	OR                = "OR"
 	AND               = "AND"
 	EQUAL             = "EQUAL"
@@ -85,6 +87,7 @@ var (
 	RPAREN            = "RPAREN"
 	EOL               = "EOL"
 	DQUOTE            = "DQUOTE"
+	SQUOTE            = "SQUOTE"
 	PERIOD            = "PERIOD"
 	COLON             = "COLON"
 	LBRACE            = "LBRACE"

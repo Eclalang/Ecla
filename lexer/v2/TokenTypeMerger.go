@@ -16,18 +16,17 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 		l.TriggerBy = t.Name
 		l.prevIndex = l.index
 	} else {
-		closer := findNameInEveryTokenType(t.CloseBy[0].Get()[len(t.CloseBy[0].Get())-1], Every)
-		if closer == nil {
-			//pas de close, donc doit continuer
-		} else {
+		identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
+		indexOfClose := t.IsClosedBySyntaxe(identified)
+		if indexOfClose != -1 {
 			//close , donc doit mettre RESULT+CLOSE en token
 			l.FindSyntax()
 			temp := l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
 			if findNameInEveryTokenType(temp, Every) != nil {
 				l.tempVal = temp
-				l.AddToken(t.Result[0].Get()[len(t.Result[0].Get())-1])
+				l.ComposeToken(t.Result[0].Get()[len(t.Result[0].Get())-1])
 			} else {
-				l.AddToken(l.TriggerBy)
+				l.ComposeToken(l.TriggerBy)
 				l.tempVal = temp
 				l.TriggerBy = ""
 				l.indent[0].Resolve(l)
@@ -51,11 +50,26 @@ func (t *TokenTypeMergerBehavior) getResult() []TokenTypeCompositeBehavior {
 	return t.Result
 }
 
-func (t *TokenTypeMergerBehavior) IsClosedBy(other *TokenTypeMergerBehavior) int {
+func (t *TokenTypeMergerBehavior) IsClosedByName(other *TokenTypeMergerBehavior) int {
 	for i, tokenType := range t.CloseBy {
 		if tokenType.Get()[len(tokenType.Get())-1] == other.Name {
 			return i
 		}
+	}
+	return -1
+}
+func (t *TokenTypeMergerBehavior) IsClosedBySyntaxe(otherName string) int {
+	for i, tokenType := range t.CloseBy {
+		if tokenType.Get()[0] == SELF.Name {
+			tokenType = t
+		}
+		for y := 0; y < len(tokenType.Get()); y++ {
+			println(tokenType.Get()[y])
+			if tokenType.Get()[y] == otherName {
+				return i
+			}
+		}
+
 	}
 	return -1
 }

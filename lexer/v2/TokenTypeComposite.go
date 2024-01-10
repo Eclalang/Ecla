@@ -65,6 +65,9 @@ var (
 	CSTRING = TokenTypeCompositeBehavior{
 		Name: STRING,
 	}
+	CCHAR = TokenTypeCompositeBehavior{
+		Name: CHAR,
+	}
 	CCOMMENT = TokenTypeCompositeBehavior{
 		Name: COMMENT,
 	}
