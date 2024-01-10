@@ -7,10 +7,11 @@ import (
 )
 
 type Function struct {
-	Name   string
-	Args   [][]parser.FunctionParams
-	Body   map[string][]parser.Node
-	Return map[string][]string
+	Name            string
+	Args            [][]parser.FunctionParams
+	Body            map[string][]parser.Node
+	Return          map[string][]string
+	lastIndexOfArgs int
 }
 
 // Function Method for interface Type
@@ -147,10 +148,11 @@ func NewFunction(Name string, args []parser.FunctionParams, body []parser.Node, 
 	var bodyMap = make(map[string][]parser.Node)
 	bodyMap[argsString] = body
 	return &Function{
-		Name:   Name,
-		Args:   argsList,
-		Body:   bodyMap,
-		Return: returnMap,
+		Name:            Name,
+		Args:            argsList,
+		Body:            bodyMap,
+		Return:          returnMap,
+		lastIndexOfArgs: 0,
 	}
 }
 
@@ -164,17 +166,47 @@ func (f *Function) AddOverload(args []parser.FunctionParams, body []parser.Node,
 }
 
 func (f *Function) GetBody() []parser.Node {
-	key := generateArgsString(f.Args[0])
+	key := generateArgsString(f.Args[f.lastIndexOfArgs])
 	return f.Body[key]
 }
 
+func (f *Function) GetIndexOfArgs(args []Type) int {
+	l := len(args)
+	cursor := -1
+	maxNbAny := -1
+	for i, arg := range f.Args {
+		if l != len(arg) {
+			continue
+		}
+		var nbAny int
+		var isGoodArgs = true
+		for j, typ := range args {
+			if arg[j].Type == "any" {
+				nbAny++
+			} else if typ.GetType() != arg[j].Type {
+				isGoodArgs = false
+				break
+			}
+		}
+		if maxNbAny == -1 || nbAny < maxNbAny {
+			cursor = i
+			maxNbAny = nbAny
+		} else if isGoodArgs {
+			return i
+		}
+	}
+	return cursor
+}
+
 func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*Var) {
-	if len(f.Args[0]) != len(args) {
+	indexOfArgs := f.GetIndexOfArgs(args)
+	f.lastIndexOfArgs = indexOfArgs
+	if indexOfArgs == -1 {
 		return false, nil
 	}
 	var i int = 0
 	var argsType = make(map[string]*Var)
-	for _, arg := range f.Args[0] {
+	for _, arg := range f.Args[indexOfArgs] {
 		paramName := arg.Name
 		paramType := arg.Type
 		elem := args[i]
@@ -197,7 +229,8 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*
 }
 
 func (f *Function) CheckReturn(ret []Type) bool {
-	key := generateArgsString(f.Args[0])
+
+	key := generateArgsString(f.Args[f.lastIndexOfArgs])
 	if len(f.Return[key]) != len(ret) {
 		return false
 	}
