@@ -160,11 +160,18 @@ func NewFunction(Name string, args []parser.FunctionParams, body []parser.Node, 
 }
 
 func NewAnonymousFunction(args []parser.FunctionParams, body []parser.Node, ret []string) *Function {
+	var argsList [][]parser.FunctionParams
+	argsList = append(argsList, args)
+	argsString := generateArgsString(args)
+	var returnMap = make(map[string][]string)
+	returnMap[argsString] = ret
+	var bodyMap = make(map[string][]parser.Node)
+	bodyMap[argsString] = body
 	return &Function{
 		Name:   "",
-		Args:   args,
-		Body:   body,
-		Return: ret,
+		Args:   argsList,
+		Body:   bodyMap,
+		Return: returnMap,
 	}
 }
 

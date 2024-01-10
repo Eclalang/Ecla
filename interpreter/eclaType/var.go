@@ -174,7 +174,10 @@ func (v *Var) IsNull() bool {
 }
 
 func (v *Var) IsFunction() bool {
-	return v.Value.GetType()[:8] == "function"
+	if len(v.Value.GetType()) >= 9 {
+		return v.Value.GetType()[:8] == "function"
+	}
+	return false
 }
 
 func (v *Var) GetFunction() *Function {
