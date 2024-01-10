@@ -664,6 +664,8 @@ func (p *Parser) ParseFunctionType() string {
 			}
 		}
 		tempType += p.CurrentToken.Value
+	} else {
+		p.Back()
 	}
 	return tempType
 }
