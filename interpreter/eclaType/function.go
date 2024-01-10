@@ -2,7 +2,6 @@ package eclaType
 
 import (
 	"errors"
-
 	"github.com/Eclalang/Ecla/parser"
 )
 
@@ -163,6 +162,33 @@ func (f *Function) AddOverload(args []parser.FunctionParams, body []parser.Node,
 	key := generateArgsString(args)
 	f.Body[key] = body
 	f.Return[key] = ret
+}
+
+func (f *Function) Override(args []parser.FunctionParams, body []parser.Node, ret []string) error {
+	index := -1
+	var isSameArgs bool
+	for i, arg := range f.Args {
+		for j, argTyp := range arg {
+			isSameArgs = true
+			if argTyp.Type != args[j].Type {
+				isSameArgs = false
+				break
+			}
+		}
+		if isSameArgs {
+			index = i
+			break
+		}
+	}
+
+	if index == -1 {
+		return errors.New("Cannot override a prototype that was not implemented")
+	}
+	key := generateArgsString(args)
+	f.Args[index] = args
+	f.Body[key] = body
+	f.Return[key] = ret
+	return nil
 }
 
 func (f *Function) GetBody() []parser.Node {
