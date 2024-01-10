@@ -198,6 +198,9 @@ func (p *Parser) ParseKeyword() Node {
 		return p.ParseVariableDecl()
 	}
 	if p.CurrentToken.Value == Function {
+		if p.Peek(1).TokenType == lexer.LPAREN {
+			return p.ParseAnonymousFunctionExpr()
+		}
 		return p.ParseFunctionDecl()
 	}
 	if p.CurrentToken.Value == Return {
@@ -939,8 +942,33 @@ func (p *Parser) ParseAnonymousFunctionExpr() Expr {
 		p.HandleFatal("Expected '}'")
 	}
 	p.Step()
-	return tempAnonymousFunctionDecl
+	//check if it is a call
+	if p.CurrentToken.TokenType == lexer.LPAREN {
+		tempAnonymousFunctionCall := AnonymousFunctionCallExpr{AnonymousFunction: tempAnonymousFunctionDecl, LeftParen: p.CurrentToken}
+		var exprArray []Expr
+		if p.Peek(1).TokenType != lexer.RPAREN {
+			for p.CurrentToken.TokenType != lexer.RPAREN {
+				p.Step()
+				tempExpr := p.ParseExpr()
+				if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+					p.PrintBacktrace()
+					p.HandleFatal("Expected comma between Anonymous function call arguments")
+				}
+				exprArray = append(exprArray, tempExpr)
+			}
+		} else {
+			p.Step()
+		}
 
+		tempAnonymousFunctionCall.Args = exprArray
+		if p.CurrentToken.TokenType != lexer.RPAREN {
+			p.HandleFatal("Expected Anonymous Function call RPAREN")
+		}
+		tempAnonymousFunctionCall.RightParen = p.CurrentToken
+		p.Step()
+		return tempAnonymousFunctionCall
+	}
+	return tempAnonymousFunctionDecl
 }
 
 // ParseFunctionDecl parses a function declaration
