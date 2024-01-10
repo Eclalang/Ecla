@@ -104,10 +104,18 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 					env.ErrorHandle.HandleError(0, 0, "Cannot overload a non-function variable", errorHandler.LevelFatal)
 				}
 			} else {
-				env.SetVar(tree.Name, v)
+				if _, ok := env.GetVar(tree.Name); !ok {
+					env.SetVar(tree.Name, v)
+				} else {
+					env.ErrorHandle.HandleError(0, 0, "Cannot reassign a variable", errorHandler.LevelFatal)
+				}
 			}
 		} else {
-			env.SetVar(tree.Name, v)
+			if _, ok := env.GetVar(tree.Name); !ok {
+				env.SetVar(tree.Name, v)
+			} else {
+				env.ErrorHandle.HandleError(0, 0, "Cannot reassign a variable", errorHandler.LevelFatal)
+			}
 		}
 	}
 }
