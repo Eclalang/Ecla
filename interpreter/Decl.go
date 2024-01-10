@@ -125,8 +125,18 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 
 // RunFunctionDecl executes a parser.FunctionDecl.
 func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
-	fn := eclaType.NewFunction(tree.Name, tree.Prototype.Parameters, tree.Body, tree.Prototype.ReturnTypes)
-	env.SetFunction(tree.Name, fn)
+	declared, ok := env.Vars.Get(tree.Name)
+	if !ok {
+		fn := eclaType.NewFunction(tree.Name, tree.Prototype.Parameters, tree.Body, tree.Prototype.ReturnTypes)
+		env.SetFunction(tree.Name, fn)
+	} else {
+		if !declared.IsFunction() {
+			env.ErrorHandle.HandleError(tree.StartPos(),
+				0,
+				"var "+tree.Name+" already exists.",
+				errorHandler.LevelFatal)
+		}
+	}
 }
 
 // RunMapLiteral executes a parser.MapLiteral.

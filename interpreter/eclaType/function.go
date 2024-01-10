@@ -8,9 +8,9 @@ import (
 
 type Function struct {
 	Name   string
-	Args   []parser.FunctionParams
-	Body   []parser.Node
-	Return []string
+	Args   [][]parser.FunctionParams
+	Body   map[string][]parser.Node
+	Return map[string][]string
 }
 
 // Function Method for interface Type
@@ -35,21 +35,22 @@ func (f *Function) GetType() string {
 	typ := "function("
 	length := len(f.Args)
 	for i := 0; i < length-1; i++ {
-		typ += f.Args[i].Type
+		typ += f.Args[0][i].Type
 		typ += ","
 	}
 	if length > 0 {
-		typ += f.Args[length-1].Type
+		typ += f.Args[0][length-1].Type
 	}
 	typ += ")"
-	length = len(f.Return)
+	key := generateArgsString(f.Args[0])
+	length = len(f.Return[key])
 	if length > 0 {
 		typ += "("
 		for i := 0; i < length-1; i++ {
-			typ += f.Return[i]
+			typ += f.Return[key][i]
 			typ += ", "
 		}
-		typ += f.Return[length-1] + ")"
+		typ += f.Return[key][length-1] + ")"
 	}
 
 	return typ
@@ -129,16 +130,36 @@ func (f *Function) IsNull() bool {
 
 // End of Function Method for interface Type
 
+func generateArgsString(args []parser.FunctionParams) string {
+	result := ""
+	for _, arg := range args {
+		result += arg.Type
+	}
+	return result
+}
+
 func NewFunction(Name string, args []parser.FunctionParams, body []parser.Node, ret []string) *Function {
+	var argsList [][]parser.FunctionParams
+	argsList = append(argsList, args)
+	argsString := generateArgsString(args)
+	var returnMap = make(map[string][]string)
+	returnMap[argsString] = ret
+	var bodyMap = make(map[string][]parser.Node)
+	bodyMap[argsString] = body
 	return &Function{
 		Name:   Name,
-		Args:   args,
-		Body:   body,
-		Return: ret,
+		Args:   argsList,
+		Body:   bodyMap,
+		Return: returnMap,
 	}
 }
 
 // Method for function
+
+func (f *Function) GetBody() []parser.Node {
+	key := generateArgsString(f.Args[0])
+	return f.Body[key]
+}
 
 func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*Var) {
 	if len(f.Args) != len(args) {
@@ -147,8 +168,8 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*
 	var i int = 0
 	var argsType = make(map[string]*Var)
 	for _, arg := range f.Args {
-		paramName := arg.Name
-		paramType := arg.Type
+		paramName := arg[0].Name
+		paramType := arg[0].Type
 		elem := args[i]
 		switch elem.(type) {
 		case *Var:
@@ -173,7 +194,8 @@ func (f *Function) CheckReturn(ret []Type) bool {
 		return false
 	}
 	var i int = 0
-	for _, r := range f.Return {
+	key := generateArgsString(f.Args[0])
+	for _, r := range f.Return[key] {
 		elem := ret[i]
 		switch elem.(type) {
 		case *Var:
