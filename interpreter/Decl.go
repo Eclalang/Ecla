@@ -5,6 +5,7 @@ import (
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
+	"slices"
 )
 
 // New returns a new eclaType.Type from a parser.Literal.
@@ -91,7 +92,23 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 		if err != nil {
 			env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
-		env.SetVar(tree.Name, v)
+		if v.IsFunction() {
+			if fn, ok := env.GetVar(tree.Name); ok {
+				if fn.IsFunction() {
+					fn2 := v.GetFunction()
+					if slices.Contains(fn.GetFunction().GetTypes(), fn2.GetType()) {
+						env.ErrorHandle.HandleError(0, 0, "Cannot overwrite this function", errorHandler.LevelFatal)
+					}
+					fn.GetFunction().AddOverload(fn2.Args[0], fn2.GetBody(), fn2.GetReturn())
+				} else {
+					env.ErrorHandle.HandleError(0, 0, "Cannot overload a non-function variable", errorHandler.LevelFatal)
+				}
+			} else {
+				env.SetVar(tree.Name, v)
+			}
+		} else {
+			env.SetVar(tree.Name, v)
+		}
 	}
 }
 
@@ -137,7 +154,6 @@ func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
 				errorHandler.LevelFatal)
 		} else {
 			declared.GetFunction().AddOverload(tree.Prototype.Parameters, tree.Body, tree.Prototype.ReturnTypes)
-
 		}
 	}
 }

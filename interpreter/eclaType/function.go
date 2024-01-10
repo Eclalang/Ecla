@@ -170,6 +170,11 @@ func (f *Function) GetBody() []parser.Node {
 	return f.Body[key]
 }
 
+func (f *Function) GetReturn() []string {
+	key := generateArgsString(f.Args[f.lastIndexOfArgs])
+	return f.Return[key]
+}
+
 func (f *Function) GetIndexOfArgs(args []Type) int {
 	l := len(args)
 	cursor := -1
@@ -248,4 +253,32 @@ func (f *Function) CheckReturn(ret []Type) bool {
 		i++
 	}
 	return true
+}
+
+func (f *Function) GetTypes() []string {
+	var types []string
+	for i := 0; i < len(f.Args); i++ {
+		typ := "function("
+		length := len(f.Args[i])
+		for j := 0; j < length-1; j++ {
+			typ += f.Args[i][j].Type
+			typ += ","
+		}
+		if length > 0 {
+			typ += f.Args[i][length-1].Type
+		}
+		typ += ")"
+		key := generateArgsString(f.Args[i])
+		length = len(f.Return[key])
+		if length > 0 {
+			typ += "("
+			for j := 0; j < length-1; j++ {
+				typ += f.Return[key][j]
+				typ += ", "
+			}
+			typ += f.Return[key][length-1] + ")"
+		}
+		types = append(types, typ)
+	}
+	return types
 }
