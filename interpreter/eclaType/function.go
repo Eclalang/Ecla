@@ -33,7 +33,7 @@ func (f *Function) GetString() String {
 
 func (f *Function) GetType() string {
 	typ := "function("
-	length := len(f.Args)
+	length := len(f.Args[0])
 	for i := 0; i < length-1; i++ {
 		typ += f.Args[0][i].Type
 		typ += ","
@@ -156,20 +156,27 @@ func NewFunction(Name string, args []parser.FunctionParams, body []parser.Node, 
 
 // Method for function
 
+func (f *Function) AddOverload(args []parser.FunctionParams, body []parser.Node, ret []string) {
+	f.Args = append(f.Args, args)
+	key := generateArgsString(args)
+	f.Body[key] = body
+	f.Return[key] = ret
+}
+
 func (f *Function) GetBody() []parser.Node {
 	key := generateArgsString(f.Args[0])
 	return f.Body[key]
 }
 
 func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*Var) {
-	if len(f.Args) != len(args) {
+	if len(f.Args[0]) != len(args) {
 		return false, nil
 	}
 	var i int = 0
 	var argsType = make(map[string]*Var)
-	for _, arg := range f.Args {
-		paramName := arg[0].Name
-		paramType := arg[0].Type
+	for _, arg := range f.Args[0] {
+		paramName := arg.Name
+		paramType := arg.Type
 		elem := args[i]
 		switch elem.(type) {
 		case *Var:
@@ -190,11 +197,11 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*
 }
 
 func (f *Function) CheckReturn(ret []Type) bool {
-	if len(f.Return) != len(ret) {
+	key := generateArgsString(f.Args[0])
+	if len(f.Return[key]) != len(ret) {
 		return false
 	}
 	var i int = 0
-	key := generateArgsString(f.Args[0])
 	for _, r := range f.Return[key] {
 		elem := ret[i]
 		switch elem.(type) {

@@ -135,6 +135,9 @@ func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
 				0,
 				"var "+tree.Name+" already exists.",
 				errorHandler.LevelFatal)
+		} else {
+			declared.GetFunction().AddOverload(tree.Prototype.Parameters, tree.Body, tree.Prototype.ReturnTypes)
+
 		}
 	}
 }
