@@ -120,6 +120,11 @@ func (a *Any) Or(other Type) (Type, error) {
 	return a.Value.Or(other)
 }
 
+// Xor returns true if either Type objects is true, but not both
+func (a *Any) Xor(other Type) (Type, error) {
+	return a.Value.Xor(other)
+}
+
 // Not returns the opposite of the Type object
 func (a *Any) Not() (Type, error) {
 	return a.Value.Not()
