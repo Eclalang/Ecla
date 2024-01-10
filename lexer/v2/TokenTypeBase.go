@@ -9,21 +9,27 @@ type TokenTypeBaseBehavior struct {
 }
 
 func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
-	println("in Resolve...")
+	l.DEBUGLEXER("in resolve base")
 	index := -1
-	if !(*l).isSpaces {
-		_, index = t.IsInvolvedWith(l)
+
+	if (*l).TriggerBy != "" {
+		l.DEBUGLEXER("in resolve TriggerBy")
+		findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
 	} else {
-		(*l).isSpaces = false
+		if !(*l).isSpaces {
+			_, index = t.IsInvolvedWith(l)
+		} else {
+			(*l).isSpaces = false
+		}
+		if index == -1 {
+			(*l).AddToken(t.Name)
+		} else {
+			(*l).ComposeToken(t.Result[index].Name)
+		}
+
+		l.prevIndex = l.index
 	}
 
-	if index == -1 {
-		(*l).AddToken(t.Name)
-	} else {
-		(*l).ComposeToken(t.Result[index].Name)
-	}
-
-	l.prevIndex = l.index
 }
 
 func (t *TokenTypeBaseBehavior) Get() []string {
@@ -35,14 +41,12 @@ func (t *TokenTypeBaseBehavior) InvolvedWith() []ITokenType {
 }
 
 func (t *TokenTypeBaseBehavior) IsInvolvedWith(lexer *TLexer) (ITokenType, int) {
-	println("in IsInvolvedWith...")
 	for i, token := range t.Involved {
 		if len(lexer.Ret())-1 >= 0 {
 			if token.Get()[len(token.Get())-1] == lexer.Ret()[len(lexer.Ret())-1].TokenType || (token.Get()[len(token.Get())-1] == "SELF" && t.Name == lexer.Ret()[len(lexer.Ret())-1].TokenType) {
 				return token, i
 			}
 		}
-
 	}
 	return nil, -1
 }

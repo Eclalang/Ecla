@@ -9,33 +9,29 @@ type TokenTypeTriggerBehavior struct {
 }
 
 func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
-	println("in Resolve trigger...")
+	l.DEBUGLEXER("in resolve trigger")
 
-	if l.inTriggerof.GetITokenType().Get()[len(l.inTriggerof.GetITokenType().Get())-1] == "" {
-		println("Set up trigger...")
+	if l.TriggerBy == "" {
+		l.TriggerBy = t.Name
 		(*l).AddToken(t.Name)
-		l.inTriggerof = t
 		l.prevIndex = l.index
 	} else {
-		println("in Resolve trigger already triggerd...")
-		closer := l.inTriggerof.IsClosedBy(t)
-		if closer != -1 {
+
+		closer := findNameInEveryTokenType(l.TriggerBy, Every)
+		if closer == nil {
+			print("essaie ????________________________________")
 			//pas de close, donc doit continuer
 		} else {
 			//close , donc doit mettre RESULT | CLOSE en token
 			l.FindSyntax()
 			temp := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
 			l.tempVal = l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
-			l.AddToken(l.inTriggerof.Result[0].Name)
+			l.AddToken(t.Result[0].Name)
+			l.DEBUGLEXER("in resolve trigger AFTER ADD")
 			l.tempVal = temp
-			l.inTriggerof = &TokenTypeTriggerBehavior{
-				Name: "",
-			}
+			l.TriggerBy = ""
 			l.indent[0].Resolve(l)
-
-			l.inTriggerof = &TokenTypeTriggerBehavior{
-				Name: "",
-			}
+			l.TriggerBy = ""
 			l.prevIndex = l.index
 		}
 	}
@@ -48,21 +44,30 @@ func (t *TokenTypeTriggerBehavior) InvolvedWith() []ITokenType {
 	return t.CloseBy
 }
 
-func (t *TokenTypeTriggerBehavior) IsClosedBy(other *IActionToken) int {
+func (t *TokenTypeTriggerBehavior) IsClosedBy(otherName string) int {
 	for i, tokenType := range t.CloseBy {
-		if tokenType.Get()[len(tokenType.Get())-1] == (*other).GetITokenType().Get()[len((*other).GetITokenType().Get())-1] {
+		if tokenType.Get()[len(tokenType.Get())-1] == otherName {
 			return i
 		}
 	}
 	return -1
 }
-func (t *TokenTypeTriggerBehavior) GetITokenType() ITokenType {
-	return t
-}
 
 var (
 	TDQUOTE = TokenTypeTriggerBehavior{
 		Name: DQUOTE,
+		Syntax: []string{
+			"\"",
+		},
+		CloseBy: []ITokenType{
+			&SELF,
+		},
+		Result: []TokenTypeCompositeBehavior{
+			CSTRING,
+		},
+	}
+	TQUOTE = TokenTypeTriggerBehavior{
+		Name: ,
 		Syntax: []string{
 			"\"",
 		},

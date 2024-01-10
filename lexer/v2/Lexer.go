@@ -3,7 +3,7 @@ package v2
 type ReadingType int
 
 const (
-	INLINE ReadingType = iota
+	INLINE = iota
 	REVERSED
 	NOTFOUND
 )
@@ -29,8 +29,7 @@ type TLexer struct {
 	// syntaxe, and true elsewhere
 	canBeText bool
 	isSpaces  bool
-
-	inTriggerof IActionToken
+	TriggerBy string
 
 	allTokenType        []ITokenType
 	maxLen              int
@@ -52,15 +51,13 @@ func (l *TLexer) Step() {
 		l.index++
 		l.tempVal = l.sentence[l.prevIndex:l.index]
 		l.stepFind = l.IsSyntax()
-		println("TempVal---", l.tempVal, "-")
+		l.DEBUGLEXER("each step")
 		switch l.stepFind {
 		case NOTFOUND:
 
 		case INLINE:
 			l.FindSyntax()
-			println(l.index, " l.indent[0].Get()-----", l.indent[0].Get()[0])
 			l.indent[0].Resolve(l)
-			l.prevIndex = l.index
 
 		case REVERSED:
 			if l.Inquote() {
@@ -73,10 +70,10 @@ func (l *TLexer) Step() {
 				l.tempVal = temp
 			}
 			l.indent[0].Resolve(l)
-			l.prevIndex = l.index
 		}
 		l.indent = []ITokenType{}
 		l.sizeOfTokenReversed = -1
+
 		l.Step()
 	}
 
@@ -150,6 +147,7 @@ func (l *TLexer) FindSyntax() {
 }
 
 func (l *TLexer) AddToken(TokenType string) {
+	l.DEBUGLEXER("before add " + TokenType)
 	var tmp = Token{
 		TokenType: TokenType,
 		Value:     l.tempVal,
@@ -161,13 +159,14 @@ func (l *TLexer) AddToken(TokenType string) {
 }
 
 func (l *TLexer) ComposeToken(NewName string) {
+	l.DEBUGLEXER("before compose " + NewName)
 	l.ret[len(l.ret)-1].TokenType = NewName
 	l.ret[len(l.ret)-1].Value += l.tempVal
 
 }
 
 func (l *TLexer) Inquote() bool {
-	return l.inTriggerof.GetITokenType().Get()[len(l.inTriggerof.GetITokenType().Get())-1] != ""
+	return l.TriggerBy != ""
 
 }
 
@@ -187,9 +186,7 @@ var (
 		canBeText: false,
 		isSpaces:  false,
 
-		inTriggerof: &TokenTypeTriggerBehavior{
-			Name: "",
-		},
+		TriggerBy: "",
 
 		allTokenType:        Every,
 		maxLen:              -1,
@@ -201,11 +198,36 @@ func LexerR(sentence string) []Token {
 	println("\n---------------------\n-----PRINT DEBUG-----\n---------------------\n")
 	Lex.SetSentence(sentence)
 	Lex.Step()
-	if Lex.tempVal != "" && Lex.inTriggerof.Name != "" {
-		Lex.AddToken(Lex.inTriggerof.GetITokenType().InvolvedWith().Result[0].Name)
+	Lex.tempVal = Lex.sentence[Lex.prevIndex:Lex.index]
+	if Lex.tempVal != "" {
+		if Lex.TriggerBy != "" {
+			//findNameInEveryTokenType(Lex.TriggerBy, Every).Resolve(Lex)
+			Lex.AddToken(Lex.TriggerBy + "TEST")
+		} else {
+			Lex.AddToken(TEXT)
+		}
+		Lex.tempVal = ""
 	}
-	Lex.tempVal = ""
 	Lex.AddToken(EOF)
 	println("\n---------------------\n---FIN PRINT DEBUG---\n---------------------")
 	return Lex.Ret()
+}
+
+func (l *TLexer) DEBUGLEXER(s string) {
+	println("\n-------------"+s+"-------------\nl.tempVal\t\t:", "\""+l.tempVal+"\"")
+	println("l.TriggerBy\t\t:", l.TriggerBy)
+	if (len(l.indent) - 1) >= 0 {
+		println("l.indent name\t\t:", l.indent[0].Get()[len(l.indent[0].Get())-1])
+	} else {
+		println("l.indent name\t\t: None")
+	}
+	println("l.isSpaces\t\t:", l.isSpaces)
+	println("l.index\t\t\t:", l.index)
+	println("l.prevIndex\t\t:", l.prevIndex)
+	println("l.position\t\t:", l.position)
+	println("l.line\t\t\t:", l.line)
+	println("l.sizeOfTokenReversed\t:", l.sizeOfTokenReversed)
+	println("l.sentence\t\t:", l.sentence)
+	println("l.sentence readed\t:", l.sentence[:l.prevIndex]+"|")
+
 }

@@ -6,11 +6,6 @@ type ITokenType interface {
 	InvolvedWith() []ITokenType
 }
 
-type IActionToken interface {
-	IsClosedBy(other *IActionToken) int
-	GetITokenType() ITokenType
-}
-
 // Token is a struct that contains all the information about a token
 type Token struct {
 	TokenType string

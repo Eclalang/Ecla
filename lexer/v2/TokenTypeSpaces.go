@@ -6,16 +6,23 @@ type TokenTypeSpacesBehavior struct {
 }
 
 func (t *TokenTypeSpacesBehavior) Resolve(l *TLexer) {
-	println("in Resolve Spaces...")
-	if (*l).Inquote() {
-		println("t.name---", t.Name, "-")
+	l.DEBUGLEXER("in resolve spaces")
+	if (*l).TriggerBy != "" {
+		l.DEBUGLEXER("in resolve TriggerBy")
+		findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
 	} else {
-		println("t.name--- BACKSPACES", t.Name)
-		(*l).isSpaces = true
-	}
-	if t.Name == "\n" {
-		(*l).line++
-		(*l).position = 0
+		if (*l).Inquote() {
+			findNameInEveryTokenType((*l).TriggerBy, Every).Resolve(l)
+
+		} else {
+			(*l).isSpaces = true
+		}
+		if t.Name == "\n" {
+			(*l).line++
+			(*l).position = 0
+		}
+
+		l.prevIndex = l.index
 	}
 
 }
@@ -35,7 +42,6 @@ var (
 			" ",
 			"\t",
 			"\r",
-			"_",
 		},
 	}
 	RETURN = TokenTypeSpacesBehavior{
