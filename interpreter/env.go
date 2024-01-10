@@ -8,10 +8,10 @@ import (
 
 	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
-	"github.com/Eclalang/Ecla/interpreter/libs"
 	"github.com/Eclalang/Ecla/lexer"
 	met "github.com/Eclalang/Ecla/metrics"
 	"github.com/Eclalang/Ecla/parser"
+	libs "github.com/Eclalang/LibraryController"
 )
 
 // Env is the environment in which the code is executed.
