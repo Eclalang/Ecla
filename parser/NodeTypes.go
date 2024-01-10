@@ -394,6 +394,27 @@ func (f AnonymousFunctionExpr) precedence() int {
 
 func (f AnonymousFunctionExpr) exprNode() {}
 
+type AnonymousFunctionCallExpr struct {
+	AnonymousFunction AnonymousFunctionExpr
+	LeftParen         lexer.Token
+	RightParen        lexer.Token
+	Args              []Expr
+}
+
+func (f AnonymousFunctionCallExpr) StartPos() int {
+	return f.AnonymousFunction.StartPos()
+}
+
+func (f AnonymousFunctionCallExpr) EndPos() int {
+	return f.RightParen.Position
+}
+
+func (f AnonymousFunctionCallExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (f AnonymousFunctionCallExpr) exprNode() {}
+
 type ReturnStmt struct {
 	ReturnToken  lexer.Token
 	ReturnValues []Expr
