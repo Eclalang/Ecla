@@ -1,0 +1,163 @@
+# Test the Strings library
+
+import "console";
+import "strings";
+
+# Test function Contains
+function testContains() {
+    var str string = "Hello World";
+    var substr string = "World";
+    console.println(strings.contains(str, substr));
+}
+testContains();
+
+# Test function ContainsAny
+function testContainsAny() {
+    var str string = "Hello World";
+    var chars string = "abc";
+    console.println(strings.containsAny(str, chars));
+}
+testContainsAny();
+
+# Test function Count
+function testCount() {
+    var str string = "Hello World";
+    var substr string = "l";
+    console.println(strings.count(str, substr));
+}
+testCount();
+
+# TODO : Fix this it's not working
+# Test function Cut
+function testCut() {
+    var str string = "Hello World";
+    var substr string = "W";
+    var before []string;
+    var after string;
+    var found bool;
+    before = strings.cut(str, substr);
+    console.println(before);
+    console.println(after);
+    console.println(found);
+}
+#testCut();
+
+# Test function HasPrefix
+function testHasPrefix() {
+    var str string = "Hello World";
+    var prefix string = "Hello";
+    console.println(strings.hasPrefix(str, prefix));
+}
+testHasPrefix();
+
+# Test function HasSuffix
+function testHasSuffix() {
+    var str string = "Hello World";
+    var suffix string = "World";
+    console.println(strings.hasSuffix(str, suffix));
+}
+testHasSuffix();
+
+# Test function IndexOf
+function testIndexOf() {
+    var str string = "Hello World";
+    var substr string = "l";
+    console.println(strings.indexOf(str, substr));
+}
+testIndexOf();
+
+# TODO : Fix this it's not working
+# Test function Join
+function testJoin() {
+    var elems []string = ["Hello", "World"];
+    var sep string = " ";
+    console.println(strings.join(elems, sep));
+}
+#testJoin();
+
+# Test function Replace
+function testReplace() {
+    var str string = "Hello World";
+    var old string = "l";
+    var new string = "z";
+    var nb int = 2;
+    console.println(strings.replace(str, old, new, nb));
+}
+testReplace();
+
+# Test function ReplaceAll
+function testReplaceAll() {
+    var str string = "Hello World";
+    var old string = "l";
+    var new string = "z";
+    console.println(strings.replaceAll(str, old, new));
+}
+testReplaceAll();
+
+# Test function Split
+function testSplit() {
+    var str string = "Hello World";
+    var sep string = " ";
+    var array []string;
+    array = strings.split(str, sep);
+    console.println(array[0]);
+    console.println(array[1]);
+}
+testSplit();
+
+# Test function SplitAfter
+function testSplitAfter() {
+    var str string = "Hello World";
+    var sep string = " ";
+    var array []string;
+    array = strings.splitAfter(str, sep);
+    console.println(array[0]);
+    console.println(array[1]);
+}
+testSplitAfter();
+
+# Test function SplitAfterN
+function testSplitAfterN() {
+    var str string = "Hello World";
+    var sep string = " ";
+    var nb int = 2;
+    var array []string;
+    array = strings.splitAfterN(str, sep, nb);
+    console.println(array[0]);
+    console.println(array[1]);
+}
+testSplitAfterN();
+
+# Test function SplitN
+function testSplitN() {
+    var str string = "Hello World";
+    var sep string = " ";
+    var nb int = 2;
+    var array []string;
+    array = strings.splitN(str, sep, nb);
+    console.println(array[0]);
+    console.println(array[1]);
+}
+testSplitN();
+
+# Test function ToLower
+function testToLower() {
+    var str string = "Hello World";
+    console.println(strings.toLower(str));
+}
+testToLower();
+
+# Test function ToUpper
+function testToUpper() {
+    var str string = "Hello World";
+    console.println(strings.toUpper(str));
+}
+testToUpper();
+
+# Test function Trim
+function testTrim() {
+    var str string = "Hello World";
+    var cutset string = "Hd";
+    console.println(strings.trim(str, cutset));
+}
+testTrim();

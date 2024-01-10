@@ -20,7 +20,7 @@ func (i Int) GetValue() any {
 
 // SetValue
 func (i Int) SetValue(value any) error {
-	return errors.New("cannot set value to Int")
+	return errors.New("cannot set value to int")
 }
 
 func (i Int) String() string {
@@ -51,6 +51,8 @@ func (i Int) Add(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return i + other.(Int), nil
+	case Char:
+		return i + Int(other.(Char)), nil
 	case Float:
 		return Float(i) + other.(Float), nil
 	case String:
@@ -69,6 +71,8 @@ func (i Int) Sub(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return i - other.(Int), nil
+	case Char:
+		return i - Int(other.(Char)), nil
 	case Float:
 		return Float(i) - other.(Float), nil
 	default:
@@ -84,7 +88,15 @@ func (i Int) Mod(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
+		if other.(Int) == 0 {
+			return nil, errors.New("cannot mod by zero")
+		}
 		return i % other.(Int), nil
+	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot mod by zero")
+		}
+		return i % Int(other.(Char)), nil
 	default:
 		return nil, errors.New("cannot mod " + string(other.GetString()) + " by int")
 	}
@@ -99,6 +111,8 @@ func (i Int) Mul(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return i * other.(Int), nil
+	case Char:
+		return i * Int(other.(Char)), nil
 	case Float:
 		return Float(i) * other.(Float), nil
 	case String:
@@ -123,8 +137,19 @@ func (i Int) Div(other Type) (Type, error) {
 		if other.(Int) == 0 {
 			return nil, errors.New("cannot divide by zero")
 		}
-		return i / other.(Int), nil
+		return Float(i) / Float(other.(Int)), nil
+	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
+		if Int(other.(Char)) == 0 {
+			return nil, errors.New("Cannot divide by zero")
+		}
+		return Float(i) / Float(other.(Char)), nil
 	case Float:
+		if other.(Float) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		if other.(Float) == 0 {
 			return nil, errors.New("cannot divide by zero")
 		}
@@ -142,8 +167,19 @@ func (i Int) DivEc(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
+		if other.(Int) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return (i - i%other.(Int)) / other.(Int), nil
+	case Char:
+		if other.(Char) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
+		return (i - i%Int(other.(Char))) / Int(other.(Char)), nil
 	case Float:
+		if other.(Float) == 0 {
+			return nil, errors.New("cannot divide by zero")
+		}
 		return nil, errors.New("cannot divide ec by float")
 	default:
 		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")
@@ -159,6 +195,8 @@ func (i Int) Eq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i == other.(Int)), nil
+	case Char:
+		return Bool(i == Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) == other.(Float)), nil
 	default:
@@ -175,6 +213,8 @@ func (i Int) NotEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i != other.(Int)), nil
+	case Char:
+		return Bool(i != Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) != other.(Float)), nil
 	default:
@@ -191,6 +231,8 @@ func (i Int) Gt(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i > other.(Int)), nil
+	case Char:
+		return Bool(i > Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) > other.(Float)), nil
 	default:
@@ -207,6 +249,8 @@ func (i Int) GtEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i >= other.(Int)), nil
+	case Char:
+		return Bool(i >= Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) >= other.(Float)), nil
 	default:
@@ -223,6 +267,8 @@ func (i Int) Lw(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i < other.(Int)), nil
+	case Char:
+		return Bool(i < Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) < other.(Float)), nil
 	default:
@@ -239,6 +285,8 @@ func (i Int) LwEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(i <= other.(Int)), nil
+	case Char:
+		return Bool(i <= Int(other.(Char))), nil
 	case Float:
 		return Bool(Float(i) <= other.(Float)), nil
 	default:
@@ -248,17 +296,120 @@ func (i Int) LwEq(other Type) (Type, error) {
 
 // And returns errors
 func (i Int) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and int")
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if i == Int(0) || other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if i == Int(0) || other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if i == Int(0) || other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if i == Int(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
 }
 
-// Or returns errors
+// Or returns an error
 func (i Int) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or int")
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if i == Int(0) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if i == Int(0) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if i == Int(0) && other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if i == Int(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
 }
 
-// Not returns errors
+// Not returns an error
 func (i Int) Not() (Type, error) {
-	return nil, errors.New("cannot opposite int")
+	switch i.GetValue() {
+	case Int(0):
+		return Int(1), nil
+	default:
+		return Int(0), nil
+	}
+}
+
+// Xor returns 1 if only one of the Type objects is true
+func (i Int) Xor(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if i == Int(0) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else if i != Int(0) && other.GetValue() != Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if i == Int(0) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else if i != Int(0) && other.GetValue() != Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if i == Int(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else if i != Int(0) && other.GetValue() == Bool(true) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
 }
 
 // Append returns errors

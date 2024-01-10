@@ -1,7 +1,8 @@
+import "console";
 if (true==false){
-    print("true");
+    console.print("true");
 }else if (true==false){
-    print("false");
+    console.print("false");
 }else {
-    print("error");
+    console.print("error");
 };

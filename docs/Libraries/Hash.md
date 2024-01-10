@@ -1,65 +1,158 @@
-# HASH
+# Hash
 
-***
-##  Documentation.
-### Golang package for dealing with hashing. Light on deps and a simple API.
-###
+Hash library permits you to hash a text.
 
-***
-## Index.
+## Index
 
-* [fonction Hashmd5(str string) string](#fonction-hashmd5)
-* [fonction Hashsha1(str string) string](#fonction-hashsha1)
-* [fonction Hashsha224(str string) string](#fonction-hashsha224)
-* [fonction Hashsha256(str string) string](#fonction-hashsha256)
-* [fonction Hashsha384(str string) string](#fonction-hashsha384)
-* [fonction Hashsha512(str string) string](#fonction-hashsha512)
-* [fonction Hashsha512_224(str string) string](#fonction-hashsha512_224)
-* [fonction Hashsha512_256(str string) string](#fonction-hashsha512_256)
-##
+- [Hashmd5(str string) string](#hashmd5)
+- [Hashsha1(str string) string](#hashsha1)
+- [Hashsha224(str string) string](#hashsha224)
+- [Hashsha256(str string) string](#hashsha256)
+- [Hashsha384(str string) string](#hashsha384)
+- [Hashsha512(str string) string](#hashsha512)
+- [Hashsha512_224(str string) string](#hashsha512224)
+- [Hashsha512_256(str string) string](#hashsha512256)
 
-***
-## Functions.
-### Fonction Hashmd5
+## Hashmd5
 ```
-fonction Hashmd5(str string) string
+function hashmd5(str string) string
 ```
 Hashes string with md5
-### Fonction Hashsha1
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashmd5() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashmd5(str);
+    console.println(hashed);
+}
 ```
-fonction Hashsha1(str string) string
+
+## Hashsha1
+```
+function hashsha1(str string) string
 ```
 Hashes string with sha1
-### Fonction Hashsha224
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha1() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha1(str);
+    console.println(hashed);
+}
 ```
-fonction Hashsha224(str string) string
+
+## Hashsha224
+```
+function hashsha224(str string) string
 ```
 Hashes string with sha224
-### Fonction Hashsha256
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha224() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha224(str);
+    console.println(hashed);
+}
 ```
-    
-fonction Hashsha256(str string) string
+
+## Hashsha256
+```  
+function hashsha256(str string) string
 ```
 Hashes string with sha256
-### Fonction Hashsha384
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha256() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha256(str);
+    console.println(hashed);
+}
 ```
-fonction Hashsha384(str string) string
+
+## Hashsha384
+```
+function hashsha384(str string) string
 ```
 Hashes string with sha384
-### Fonction Hashsha512
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha384() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha384(str);
+    console.println(hashed);
+}
 ```
-fonction Hashsha512(str string) string
+
+## Hashsha512
 ```
-Hashes string with sha512   
-### Fonction Hashsha512_224
+function hashsha512(str string) string
 ```
-fonction Hashsha512_224(str string) string
+Hashes string with sha512
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha512() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha512(str);
+    console.println(hashed);
+}
+```
+
+## Hashsha512_224
+```
+function hashsha512_224(str string) string
 ```
 Hashes string with sha512_224
-### Fonction Hashsha512_256
+
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha512_224() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha512_224(str);
+    console.println(hashed);
+}
 ```
-fonction Hashsha512_256(str string) string
+
+## Hashsha512_256
+```
+function hashsha512_256(str string) string
 ```
 Hashes string with sha512_256
 
-##
+### Example :
+```ecla
+import "console";
+import "hash";
+
+function testHashsha512_256() {
+    var str string = "Hello World!";
+    var hashed string = hash.hashsha512_256(str);
+    console.println(hashed);
+}
+```

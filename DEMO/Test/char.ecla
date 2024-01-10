@@ -1,0 +1,5 @@
+import "console";
+
+var testChar char = 'a';
+
+console.println(testChar);

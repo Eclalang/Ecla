@@ -16,7 +16,7 @@ type Function struct {
 // Function Method for interface Type
 
 func (f *Function) GetValue() any {
-	return nil
+	return f
 }
 
 func (f *Function) SetValue(value any) error {
@@ -32,7 +32,27 @@ func (f *Function) GetString() String {
 }
 
 func (f *Function) GetType() string {
-	return "function"
+	typ := "function("
+	length := len(f.Args)
+	for i := 0; i < length-1; i++ {
+		typ += f.Args[i].Type
+		typ += ","
+	}
+	if length > 0 {
+		typ += f.Args[length-1].Type
+	}
+	typ += ")"
+	length = len(f.Return)
+	if length > 0 {
+		typ += "("
+		for i := 0; i < length-1; i++ {
+			typ += f.Return[i]
+			typ += ", "
+		}
+		typ += f.Return[length-1] + ")"
+	}
+
+	return typ
 }
 
 func (f *Function) GetIndex(number Type) (*Type, error) {
@@ -83,6 +103,10 @@ func (f *Function) Not() (Type, error) {
 	return nil, errors.New("cannot not function")
 }
 
+func (f *Function) Xor(other Type) (Type, error) {
+	return nil, errors.New("cannot xor function")
+}
+
 func (f *Function) Gt(other Type) (Type, error) {
 	return nil, errors.New("cannot gt function")
 }
@@ -112,6 +136,15 @@ func (f *Function) IsNull() bool {
 func NewFunction(Name string, args []parser.FunctionParams, body []parser.Node, ret []string) *Function {
 	return &Function{
 		Name:   Name,
+		Args:   args,
+		Body:   body,
+		Return: ret,
+	}
+}
+
+func NewAnonymousFunction(args []parser.FunctionParams, body []parser.Node, ret []string) *Function {
+	return &Function{
+		Name:   "",
 		Args:   args,
 		Body:   body,
 		Return: ret,

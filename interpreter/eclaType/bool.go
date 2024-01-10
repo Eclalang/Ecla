@@ -91,6 +91,12 @@ func (b Bool) Eq(other Type) (Type, error) {
 		} else {
 			return Bool(false), nil
 		}
+	case Char:
+		if (b == Bool(true) && other.GetValue() == Char(1)) || (b == Bool(false) && other.GetValue() == Char(0)) {
+			return Bool(true), nil
+		} else {
+			return Bool(false), nil
+		}
 	case Float:
 		if (b == Bool(true) && other.GetValue() == Float(1)) || (b == Bool(false) && other.GetValue() == Float(0)) {
 			return Bool(true), nil
@@ -113,6 +119,12 @@ func (b Bool) NotEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		if (b == Bool(true) && other.GetValue() == Int(1)) || (b == Bool(false) && other.GetValue() == Int(0)) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if (b == Bool(true) && other.GetValue() == Char(1)) || (b == Bool(false) && other.GetValue() == Char(0)) {
 			return Bool(false), nil
 		} else {
 			return Bool(true), nil
@@ -158,16 +170,22 @@ func (b Bool) And(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		if b == Bool(true) && other.GetValue() == Int(1) {
-			return Bool(true), nil
-		} else {
+		if b == Bool(false) || other.GetValue() == Int(0) {
 			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if b == Bool(false) || other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
 		}
 	case Float:
-		if b == Bool(true) && other.GetValue() == Float(1) {
-			return Bool(true), nil
-		} else {
+		if b == Bool(false) || other.GetValue() == Float(0) {
 			return Bool(false), nil
+		} else {
+			return Bool(true), nil
 		}
 	case Bool:
 		if b == Bool(true) && other.GetValue() == Bool(true) {
@@ -188,16 +206,22 @@ func (b Bool) Or(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		if b == Bool(true) || other.GetValue() == Int(1) {
-			return Bool(true), nil
-		} else {
+		if b == Bool(false) && other.GetValue() == Int(0) {
 			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if b == Bool(false) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
 		}
 	case Float:
-		if b == Bool(true) || other.GetValue() == Float(1) {
-			return Bool(true), nil
-		} else {
+		if b == Bool(false) && other.GetValue() == Float(0) {
 			return Bool(false), nil
+		} else {
+			return Bool(true), nil
 		}
 	case Bool:
 		if b == Bool(true) || other.GetValue() == Bool(true) {
@@ -213,6 +237,50 @@ func (b Bool) Or(other Type) (Type, error) {
 // Not returns the opposite of the bool
 func (b Bool) Not() (Type, error) {
 	return !b, nil
+}
+
+// Xor returns true if only one of the Types is true
+func (b Bool) Xor(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if b == Bool(true) && other.GetValue() == Int(1) {
+			return Bool(false), nil
+		} else if b == Bool(false) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if b == Bool(true) && other.GetValue() == Char(1) {
+			return Bool(false), nil
+		} else if b == Bool(false) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if b == Bool(true) && other.GetValue() == Float(1) {
+			return Bool(false), nil
+		} else if b == Bool(false) && other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if b == Bool(true) && other.GetValue() == Bool(true) {
+			return Bool(false), nil
+		} else if b == Bool(false) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	default:
+		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	}
 }
 
 // Append returns errors

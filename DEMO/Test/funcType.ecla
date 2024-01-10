@@ -1,0 +1,5 @@
+import "console";
+
+var testFunc function(function(int,int)(map[string]string),float)(char);
+
+console.println("test");

@@ -3,15 +3,14 @@ package interpreter
 import (
 	"fmt"
 
+	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
-	"github.com/Eclalang/Ecla/errorHandler"
 )
 
-// RunTree executes a parser.Tree.
+// RunTree executes a parser.Node
 func RunTree(tree parser.Node, env *Env) []*Bus {
-	//fmt.Printf("%T\n", tree)
 	switch tree.(type) {
 	case parser.Literal:
 		return []*Bus{New(tree.(parser.Literal), env)}
@@ -21,8 +20,6 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		return []*Bus{RunUnaryExpr(tree.(parser.UnaryExpr), env)}
 	case parser.ParenExpr:
 		return RunTree(tree.(parser.ParenExpr).Expression, env)
-	case parser.PrintStmt:
-		RunPrintStmt(tree.(parser.PrintStmt), env)
 	case parser.TypeStmt:
 		RunTypeStmt(tree.(parser.TypeStmt), env)
 	case parser.VariableDecl:
@@ -54,17 +51,29 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		fn := env.GetFunctionExecuted()
 		ok := fn.CheckReturn(r)
 		if !ok {
-			panic("Return type of function" + fn.Name + "is incorrect")
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "Return type of function "+fn.Name+" is incorrect", errorHandler.LevelFatal)
 		}
 		var temp []*Bus
 		for _, v := range r {
 			temp = append(temp, NewReturnBus(v))
 		}
 		return temp
+	case parser.MurlocStmt:
+		RunMurlocStmt(tree.(parser.MurlocStmt), env)
+	case parser.AnonymousFunctionExpr:
+		return RunAnonymousFunctionExpr(tree.(parser.AnonymousFunctionExpr), env)
 	}
+
 	return []*Bus{NewNoneBus()}
 }
 
+func RunAnonymousFunctionExpr(AnonymousFunc parser.AnonymousFunctionExpr, env *Env) []*Bus {
+	fn := eclaType.NewAnonymousFunction(AnonymousFunc.Prototype.Parameters, AnonymousFunc.Body, AnonymousFunc.Prototype.ReturnTypes)
+	returnBus := []*Bus{NewMainBus(fn)}
+	return returnBus
+}
+
+// RunTreeLoad is special version of RunTree that is used to load the environment (function, variable, import)
 func RunTreeLoad(tree parser.Node, env *Env) []*Bus {
 	switch tree.(type) {
 	case parser.VariableDecl:
@@ -145,6 +154,8 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) *Bus {
 		t, err = left.And(right)
 	case lexer.OR:
 		t, err = left.Or(right)
+	case lexer.XOR:
+		t, err = left.Xor(right)
 	default:
 		return NewNoneBus()
 	}
@@ -164,7 +175,7 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 	case lexer.SUB:
 		t, err := eclaType.Int(0).Sub(BusCollection[0].GetVal()) // TODO: Fix this
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, tree.RightExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 		return NewMainBus(t)
 	case lexer.ADD:
@@ -179,6 +190,7 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 	return NewNoneBus()
 }
 
+// RunFunctionCallExpr executes a parser.FunctionCallExpr.
 func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 	var args []eclaType.Type
 	for _, v := range tree.Args {
@@ -195,11 +207,11 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 	}
 	fn, ok := env.GetFunction(tree.Name)
 	if !ok {
-		panic(fmt.Sprintf("Function %s not found", tree.Name))
+		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Function %s not found", tree.Name), errorHandler.LevelFatal)
 	}
 	r, err := RunFunctionCallExprWithArgs(tree.Name, env, fn, args)
 	if err != nil {
-		panic(err)
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
 	var retValues []*Bus
 	for _, v := range r {
@@ -208,12 +220,13 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 	return retValues
 }
 
+// RunFunctionCallExprWithArgs executes a parser.FunctionCallExpr with the given arguments.
 func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, args []eclaType.Type) ([]eclaType.Type, error) {
 	env.NewScope(SCOPE_FUNCTION)
 	defer env.EndScope()
 	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args)
 	if !ok {
-		panic(fmt.Sprintf("Function %s called with incorrect arguments", Name))
+		env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("Function %s called with incorrect arguments", Name), errorHandler.LevelFatal)
 	}
 
 	for i, v := range argsList {
@@ -225,6 +238,7 @@ func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, a
 	return RunBodyFunction(fn, env)
 }
 
+// RunBodyFunction executes the code associated with the function.
 func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
 	for _, v := range fn.Body {
 		BusCollection := RunTree(v, env)
@@ -249,10 +263,11 @@ func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
 	return []eclaType.Type{eclaType.Null{}}, nil
 }
 
+// RunIndexableAccessExpr executes a parser.IndexableAccessExpr.
 func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 	v, ok := env.GetVar(tree.VariableName)
 	if !ok {
-		panic(fmt.Sprintf("Variable %s not found", tree.VariableName))
+		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Variable %s not found", tree.VariableName), errorHandler.LevelFatal)
 	}
 	var result eclaType.Type = v
 	for i := range tree.Indexes {
@@ -261,14 +276,12 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 			env.ErrorHandle.HandleError(0, tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
 		}
 		elem := BusCollection[0].GetVal()
-		//fmt.Printf("%s\n", elem.GetValue())
-		//fmt.Printf("%T\n", result.GetValue())
 		temp, err := result.GetIndex(elem)
 
 		result = *temp
 
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 	}
 	return NewMainBus(result)

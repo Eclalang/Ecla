@@ -1,1 +1,2 @@
-print(12+2 == 14);
+import "console";
+console.print(12+2 == 14);

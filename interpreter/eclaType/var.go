@@ -2,7 +2,6 @@ package eclaType
 
 import (
 	"errors"
-
 	"github.com/Eclalang/Ecla/parser"
 )
 
@@ -144,6 +143,11 @@ func (v *Var) Not() (Type, error) {
 	return v.Value.Not()
 }
 
+// Xor returns true if only one of the Type objects is true
+func (v *Var) Xor(other Type) (Type, error) {
+	return v.Value.Xor(other)
+}
+
 func (v *Var) Decrement() {
 	var err error
 	v.Value, err = v.Value.Sub(NewInt("1"))
@@ -170,7 +174,7 @@ func (v *Var) IsNull() bool {
 }
 
 func (v *Var) IsFunction() bool {
-	return v.Value.GetType() == "function"
+	return v.Value.GetType()[:8] == "function"
 }
 
 func (v *Var) GetFunction() *Function {
@@ -189,7 +193,17 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 			Value: value.GetString(),
 		}, nil
 	}
-	if Type != value.GetType() && !value.IsNull() {
+	if Type == parser.Float && value.GetType() == parser.Int {
+		return &Var{
+			Name:  name,
+			Value: NewFloat(value.String()),
+		}, nil
+
+	}
+
+	if Type == "" {
+		Type = value.GetType()
+	} else if Type != value.GetType() && !value.IsNull() {
 		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
 	}
 	if value.IsNull() {

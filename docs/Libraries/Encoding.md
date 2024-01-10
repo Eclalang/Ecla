@@ -1,72 +1,158 @@
-# ENCODING
+# Encoding
 
-***
-##  Documentation.
-### Golang package for dealing with encoding. Light on deps and a simple API.
-###
+Encoding library is used to convert data to and from byte-level and textual representation.
 
-***
-## Index.
+## Index
 
-* [fonction AsciiToString(intArr []int) string ](#fonction-ascii)
-* [fonction DecodeBase64(str string) []int ](#fonction-decodebase64)
-* [fonction DecodeGob(intArr []int) string ](#fonciton-decodegob)
-* [fonction DecodeHex(str string) []int](#fonction-decodehex)
-* [fonction EncodeBase64(intArr []int) string](#fonction-encodebase64)
-* [fonction EncodeGob(str string) []int](#fonction-encodegob)
-* [fonction EncodeHex(intArr []int) string](#fonction-encodehex)
-* [fonction StringToAscii(str string) []int](#fonction-stringtoascii)
-##
+- [AsciiToString(intArr []int) string ](#asciitostring)
+- [DecodeBase64(str string) []int ](#decodebase64)
+- [DecodeGob(intArr []int) string ](#decodegob)
+- [DecodeHex(str string) []int](#decodehex)
+- [EncodeBase64(intArr []int) string](#encodebase64)
+- [EncodeGob(str string) []int](#encodegob)
+- [EncodeHex(intArr []int) string](#encodehex)
+- [StringToAscii(str string) []int](#stringtoascii)
 
-***
-## Functions.
-### Fonction Ascii
-
+## AsciiToString
 ```
-fonction AsciiToString(intArr []int) string
+function asciiToString(intArr []int) string
 ```
 Converts ascii to string
-### Fonction DecodeBase64
 
+### Example :
+```ecla
+import "encoding";
+import "console";
+
+function testAsciiToString() {
+    var intArr []int = [65, 66, 67];
+    var str string = encoding.asciiToString(intArr);
+    console.println(str);
+}
 ```
-fonction DecodeBase64(str string) []int
+
+## DecodeBase64
+```
+function decodeBase64(str string) []int
 ```
 Decodes base64 to ascii
-### Fonction DecodeGob
 
+### Example :
+```ecla
+import "encoding";
+import "console";
+
+function testDecodeBase64() {
+    var str string = "QUJD";
+    var intArr []int = encoding.decodeBase64(str);
+    console.println(intArr);
+}
 ```
-fonction DecodeGob(intArr []int) string
+
+## DecodeGob
+```
+function decodeGob(intArr []int) string
 ```
 Decodes gob to string
-### Fonction DecodeHex
 
+### Example :
+```ecla
+import "encoding";
+import "console";
+
+function testDecodeGob() {
+    var intArr []int = [71, 111, 98, 32, 105, 115, 32, 97, 119, 101, 115, 111, 109, 101, 33];
+    var str string = encoding.decodeGob(intArr);
+    console.println(str);
+}
 ```
-fonction DecodeHex(str string) []int
+
+## DecodeHex
+```
+function decodeHex(str string) []int
 ```
 Decodes hex to ascii
-### Fonction EncodeBase64
 
+### Example :
+```ecla
+import "encoding";
+import "console";
+
+function testDecodeHex() {
+    var str string = "414243";
+    var intArr []int = encoding.decodeHex(str);
+    console.println(intArr);
+}
 ```
-fonction EncodeBase64(intArr []int) string
+
+## EncodeBase64
+```
+function encodeBase64(intArr []int) string
 ```
 Encodes ascii to base64
-### Fonction EncodeGob
 
+### Example :
+```ecla
+import "encoding";
+import "console";
+
+function testEncodeBase64() {
+    var intArr []int = [65, 66, 67];
+    var str string = encoding.encodeBase64(intArr);
+    console.println(str);
+}
 ```
-fonction EncodeGob(str string) []int
+
+## EncodeGob
+```
+function encodeGob(str string) []int
 ```
 Encodes string to gob
-### Fonction EncodeHex
 
+### Example :
+```ecla
+import "encoding";
+import "console";
+
+function testEncodeGob() {
+    var str string = "Gob is awesome!";
+    var intArr []int = encoding.encodeGob(str);
+    console.println(intArr);
+}
 ```
-fonction EncodeHex(intArr []int) string
+
+## EncodeHex
+```
+function encodeHex(intArr []int) string
 ```
 Encodes ascii to hex
-### Fonction StringToAscii
 
+### Example :
+```ecla
+import "encoding";
+import "console";
+
+function testEncodeHex() {
+    var intArr []int = [65, 66, 67];
+    var str string = encoding.encodeHex(intArr);
+    console.println(str);
+}
 ```
-fonction StringToAscii(str string) []int
+
+## StringToAscii
+```
+function stringToAscii(str string) []int
 ```
 Converts string to ascii
 
-##
+### Example :
+```ecla
+import "encoding";
+import "console";
+
+function testStringToAscii() {
+    var str string = "ABC";
+    var intArr []int = encoding.stringToAscii(str);
+    console.println(intArr);
+}
+```

@@ -1,0 +1,6 @@
+import "console";
+
+console.println(false^^false);
+console.println(false^^true);
+console.println(true^^false);
+console.println(true^^true);

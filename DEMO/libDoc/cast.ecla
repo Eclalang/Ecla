@@ -1,0 +1,45 @@
+# Test the cast library
+
+import "cast";
+import "console";
+
+# Test function Atoi
+function testAtoi() {
+    var str string = "42";
+    var x int = cast.atoi(str);
+    console.println(x);
+}
+testAtoi();
+
+# Test function FloatToInt
+function testFloatToInt() {
+    var x float = 42.42;
+    var y int = cast.floatToInt(x);
+    console.println(y);
+}
+testFloatToInt();
+
+# Test function IntToFloat
+function testIntToFloat() {
+    var x int = 42;
+    var y float = cast.intToFloat(x);
+    console.println(y);
+}
+testIntToFloat();
+
+# Test function ParseBool
+function testParseBool() {
+    var str string = "true";
+    var check bool = cast.parseBool(str);
+    console.println(check);
+}
+testParseBool();
+
+# Test function ParseFloat
+function testParseFloat() {
+    var str string = "42.42";
+    var x int = 64;
+    var y float = cast.parseFloat(str, x);
+    console.print(y);
+}
+testParseFloat();

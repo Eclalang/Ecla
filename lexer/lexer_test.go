@@ -81,6 +81,18 @@ func TestSpeChar(t *testing.T) {
 	tLexer(t, testSpeChar, " testSpeChar")
 }
 
+func TestChar(t *testing.T) {
+	tLexer(t, testCHAR, "testCHar")
+}
+
+func TestCharString(t *testing.T) {
+	tLexer(t, testCHARSTRING, "testCharString")
+}
+
+func TestCharString2(t *testing.T) {
+	tLexer(t, testCHARSTRING2, "testCharString2")
+}
+
 func TestPositionDetector_1(t *testing.T) {
 	var Expected1 = 1 //position
 	var Expected2 = 1 //line
@@ -183,8 +195,8 @@ func TestTokenAddSub_1(t *testing.T) {
 	}
 	var prevIndex = 1
 	var tempVal = "+"
-
-	var got = tokenAddSub(true, ret, &prevIndex, &tempVal, 2, ADD, INC)
+	var ident = identifier{"ADD", []string{}}
+	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, false, ADD, INC)
 
 	var errorString = "\n"
 
@@ -222,8 +234,8 @@ func TestTokenAddSub_2(t *testing.T) {
 	}
 	var prevIndex = 1
 	var tempVal = "+"
-
-	var got = tokenAddSub(true, ret, &prevIndex, &tempVal, 2, ADD, INC)
+	var ident = identifier{"ADD", []string{}}
+	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, false, ADD, INC)
 
 	var errorString = "\n"
 
@@ -261,8 +273,8 @@ func TestTokenAddSub_3(t *testing.T) {
 	}
 	var prevIndex = 1
 	var tempVal = "-"
-
-	var got = tokenAddSub(true, ret, &prevIndex, &tempVal, 2, SUB, DEC)
+	var ident = identifier{"SUB", []string{}}
+	var got = tokenAddSub(ident, ret, &prevIndex, &tempVal, 2, false, SUB, DEC)
 
 	var errorString = "\n"
 
@@ -301,7 +313,7 @@ func TestTokenAssign_EQUAL(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -340,7 +352,7 @@ func TestTokenAssign_LEQ(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -379,7 +391,7 @@ func TestTokenAssign_GEQ(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -419,7 +431,7 @@ func TestTokenAssign_ADDASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -459,7 +471,7 @@ func TestTokenAssign_SUBASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -499,7 +511,7 @@ func TestTokenAssign_MULTASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -539,7 +551,7 @@ func TestTokenAssign_DIVASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -579,7 +591,7 @@ func TestTokenAssign_MODASSIGN(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "="
 
-	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ASSIGN, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -619,7 +631,7 @@ func TestTokenAssign_BAD(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "+"
 
-	var got = tokenAssign(identifier{Identifier: ADD, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenAssign(identifier{Identifier: ADD, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false)
 
 	var errorString = "\n"
 
@@ -659,7 +671,7 @@ func TestTokenDiv_OK(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "/"
 
-	var got = tokenDiv(identifier{Identifier: DIV, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenDiv(identifier{Identifier: DIV, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
 
 	var errorString = "\n"
 
@@ -699,7 +711,7 @@ func TestTokenDiv_BAD(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "+"
 
-	var got = tokenDiv(identifier{Identifier: ADD, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2)
+	var got = tokenDiv(identifier{Identifier: ADD, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2)
 
 	var errorString = "\n"
 
@@ -739,7 +751,7 @@ func TestPeriod_FLOAT(t *testing.T) {
 	var prevIndex = 1
 	var tempVal = "."
 
-	var got = tokenPeriod(identifier{Identifier: PERIOD, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 2, false, false, "1.")
+	var got = tokenPeriod(identifier{Identifier: PERIOD, Syntax: []string{}}, ret, &prevIndex, &tempVal, 2, false, false, "1.")
 
 	var errorString = "\n"
 
@@ -779,7 +791,7 @@ func TestPeriod_BAD(t *testing.T) {
 	var prevIndex = 2
 	var tempVal = "."
 
-	var got = tokenPeriod(identifier{Identifier: PERIOD, Syntaxe: []string{}}, ret, &prevIndex, &tempVal, 3, true, false, "1 .")
+	var got = tokenPeriod(identifier{Identifier: PERIOD, Syntax: []string{}}, ret, &prevIndex, &tempVal, 3, true, false, "1 .")
 
 	var errorString = "\n"
 

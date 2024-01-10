@@ -74,7 +74,7 @@ func (s String) GetIndex(other Type) (*Type, error) {
 		if ind >= len(s) || ind < 0 {
 			return nil, errors.New("Index out of range")
 		}
-		res := String(string(s)[ind])
+		res := Char(s[ind])
 		temp := Type(res)
 		return &temp, nil
 	}
@@ -111,6 +111,12 @@ func (s String) Mul(other Type) (Type, error) {
 	case Int:
 		result := ""
 		for i := 0; i < int(other.(Int)); i++ {
+			result += string(s)
+		}
+		return String(result), nil
+	case Char:
+		result := ""
+		for i := 0; i < int(other.(Char)); i++ {
 			result += string(s)
 		}
 		return String(result), nil
@@ -226,6 +232,11 @@ func (s String) Or(other Type) (Type, error) {
 // Not returns errors
 func (s String) Not() (Type, error) {
 	return nil, errors.New("cannot opposite string")
+}
+
+// Xor returns errors
+func (s String) Xor(other Type) (Type, error) {
+	return nil, errors.New("cannot xor string")
 }
 
 func (s String) Append(other Type) (Type, error) {

@@ -1,7 +1,6 @@
 package interpreter
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 
@@ -11,11 +10,6 @@ import (
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
 )
-
-// RunPrintStmt executes a parser.PrintStmt.
-func RunPrintStmt(tree parser.PrintStmt, env *Env) {
-	fmt.Print(RunTree(tree.Expression, env)[0].GetVal().GetString())
-}
 
 // RunImportStmt executes a parser.ImportStmt.
 func RunImportStmt(stmt parser.ImportStmt, env *Env) {
@@ -31,12 +25,14 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) {
 	//return eclaType.NewString(RunTree(tree.Expression, env).GetType())
 }
 
+// AssignementTypeChecking checks if the type of the variable is the same as the type of the expression.
 func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) {
 	if type1 != type2 {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Can't assign %s to %s", type2, type1), errorHandler.LevelFatal)
 	}
 }
 
+// TODO : Remove this function @mkarten
 func HandleError(tree parser.VariableAssignStmt, err error, env *Env) {
 	if err != nil {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -293,7 +289,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 		f := eclaKeyWord.NewForRange([]eclaType.Type{}, For.RangeExpr, For.KeyToken, For.ValueToken, For.Body)
 		k, err := eclaType.NewVar(f.KeyToken.Value, "int", eclaType.NewInt("0"))
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 		BusCollection := RunTree(f.RangeExpr, env)
 		if IsMultipleBus(BusCollection) {
@@ -308,7 +304,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			typ = list.(*eclaType.List).GetType()[2:]
 			l = list.(*eclaType.List).Len()
 		case eclaType.String:
-			typ = list.GetType()
+			typ = "char"
 			l = list.(eclaType.String).Len()
 		case *eclaType.Var:
 			temp := list.(*eclaType.Var).GetValue()
@@ -318,19 +314,19 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				typ = temp.(*eclaType.List).GetType()[2:]
 				l = temp.(*eclaType.List).Len()
 			case eclaType.String:
-				typ = temp.(eclaType.String).GetType()
+				typ = "char"
 				l = temp.(eclaType.String).Len()
 			default:
-				panic(errors.New("for range: type " + list.GetType() + " not supported"))
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "for range: type "+list.GetType()+" not supported", errorHandler.LevelFatal)
 			}
 		default:
-			panic(errors.New("type " + list.GetType() + " not supported"))
+			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "type "+list.GetType()+" not supported", errorHandler.LevelFatal)
 		}
 
 		env.SetVar(f.KeyToken.Value, k)
 		v, err := eclaType.NewVarEmpty(f.ValueToken.Value, typ)
 		if err != nil {
-			panic(err)
+			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 		env.SetVar(f.ValueToken.Value, v)
 		for i := 0; i < l; i++ {
@@ -340,11 +336,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			}
 			val, err := list.GetIndex(eclaType.Int(i))
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			err = v.SetVar(*val)
 			if err != nil {
-				panic(err)
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			for _, stmt := range f.Body {
 				BusCollection2 := RunTree(stmt, env)
@@ -435,4 +431,9 @@ func RunReturnStmt(tree parser.ReturnStmt, env *Env) []eclaType.Type {
 		}
 	}
 	return l
+}
+
+// RunMurlocStmt executes a parser.MurlocStmt.
+func RunMurlocStmt(stmt parser.MurlocStmt, env *Env) {
+	env.ErrorHandle.HandleError(0, stmt.StartPos(), "Mrgle, Mmmm Uuua !", errorHandler.LevelFatal)
 }

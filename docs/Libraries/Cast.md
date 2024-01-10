@@ -1,51 +1,102 @@
 # Cast
 
-***
-##  Documentation.
-### Golang package for dealing with type casting. Light on deps and a simple API.
-###
+Cast library is used for dealing with type casting.
 
-***
-## Index.
+## Index
 
-* [fonction Atoi(str string) int ](#fonction-atoi)
-* [fonction FloatToInt(f float) int ](#fonction-floattoint)
-* [fonction IntToFloat(i int) float ](#fonciton-inttofloat)
-* [fonction ParseBool(str string) bool](#fonction-parsebool)
-* [fonction ParseFloat(str string, bitSize int) float](#fonction-parsefloat)
-##
+- [Atoi(str string) int](#atoi)
+- [FloatToInt(f float) int](#floattoint)
+- [IntToFloat(i int) float](#inttofloat)
+- [ParseBool(str string) bool](#parsebool)
+- [ParseFloat(str string, bitSize int) float](#parsefloat)
 
-***
-## Functions.
-### Fonction Atoi
-
+## Atoi
 ```
-fonction Atoi(str string) int
+function atoi(str string) int
 ```
 Converts string to int
-### Fonction FloatToInt
 
+### Example :
+```ecla
+import "cast";
+import "console";
+
+function testAtoi() {
+    var str string = "42";
+    var x int = cast.atoi(str);
+    console.print(x);
+}
 ```
-fonction FloatToInt(f float) int
+
+## FloatToInt
+```
+function floatToInt(x float) int
 ```
 Converts float to int
-### Fonction IntToFloat
 
+### Example :
+```ecla
+import "cast";
+import "console";
+
+function testFloatToInt() {
+    var x float = 42.42;
+    var y int = cast.floatToInt(x);
+    console.print(y);
+}
 ```
-fonction IntToFloat(i int) float
+
+## IntToFloat
+```
+function intToFloat(x int) float
 ```
 Converts int to float
-### Fonction ParseBool
 
+### Example :
+```ecla
+import "cast";
+import "console";
+
+function testIntToFloat() {
+    var x int = 42;
+    var y float = cast.intToFloat(x);
+    console.print(y);
+}
 ```
-fonction ParseBool(str string) bool
+
+## ParseBool
+```
+function parseBool(str string) bool
 ```
 Converts string to bool
-### Fonction ParseFloat
 
+### Example :
+```ecla
+import "cast";
+import "console";
+
+function testParseBool() {
+    var str string = "true";
+    var check bool = cast.parseBool(str);
+    console.print(check);
+}
 ```
-fonction ParseFloat(str string, bitSize int) float
+
+## ParseFloat
+```
+function parseFloat(str string, x int) float
 ```
 Converts string to float
 
-##
+### Example :
+```ecla
+import "cast";
+import "console";
+
+function testParseFloat() {
+    var str string = "42.42";
+    var x int = 64;
+    var y float = cast.parseFloat(str, x);
+    console.print(y);
+}
+```

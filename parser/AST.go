@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 	"strings"
 
@@ -39,10 +40,15 @@ func (f *File) DepChecker() (bool, []string) {
 }
 
 // AddDependency adds a new dependency to the file that is currently being parsed
-func (f *File) AddDependency(dep string) {
+func (f *File) AddDependency(dep string) error {
+	// check if the dependency is satisfied by the imports
+	if !contains(dep, f.Imports) {
+		return fmt.Errorf("dependency %s is not satisfied by previous imports", dep)
+	}
 	if !contains(dep, f.Dependencies) {
 		f.Dependencies = append(f.Dependencies, dep)
 	}
+	return nil
 }
 
 func (f *File) AddImport(imp string) {
@@ -79,7 +85,7 @@ func GetPackageNameByPath(path string) string {
 	_, fPath := filepath.Split(path)
 	temp := strings.Split(fPath, ".")
 	if len(temp) == 0 {
-		fmt.Println("invalid file path")
+		log.Fatal("Invalid path")
 	}
 	return temp[0]
 }

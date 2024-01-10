@@ -30,4 +30,33 @@ def parse_directory(dir):
             resolved_files = resolved_files + parse_directory(f'{dir}/{element}')
     return resolved_files
 
-dump(parse_directory(current_dir), open('index.json', 'w'))
+pars = parse_directory(current_dir)
+
+pars.sort(key=lambda x: x["title"])
+
+dump(pars, open('index.json', 'w'))
+
+# check if the directory dist exists
+if not isdir(f'{current_dir}/dist'):
+    os.mkdir(f'{current_dir}/dist')
+
+# copy the index.json file to the dist folder
+os.system(f'cp {current_dir}/index.json {current_dir}/dist/index.json')
+
+# copy the docs folder to the dist folder
+# os.system(f'cp -r {current_dir}/docs {current_dir}/dist/docs')
+
+# copy all the markdown files to the dist folder
+
+for file in pars:
+
+    # verify if all subdirectories exists
+    all_dirs = file["link"].split("/")
+    all_dirs.pop()
+    p = current_dir + "/dist"
+    for dir in all_dirs:
+        p = p + "/" + dir
+        if not isdir(p):
+            os.mkdir(p)
+
+    os.system(f'cp {current_dir}/{file["link"]} {current_dir}/dist/{file["link"]}')
