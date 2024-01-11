@@ -204,7 +204,7 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 
 	}
 
-	if Type == "" {
+	if Type == "" || Type == parser.Any {
 		Type = value.GetType()
 	} else if Type != value.GetType() && !value.IsNull() {
 		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())

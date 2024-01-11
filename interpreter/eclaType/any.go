@@ -1,12 +1,8 @@
 package eclaType
 
-import (
-	"errors"
-	"github.com/Eclalang/Ecla/parser"
-)
+import "fmt"
 
 type Any struct {
-	Name  string
 	Value Type
 }
 
@@ -167,37 +163,12 @@ func (a *Any) GetFunction() *Function {
 }
 
 // NewAny creates a new variable
-func NewAny(name string, Type string, value Type) (*Any, error) {
-	if Type == parser.String {
-		return &Any{
-			Name:  name,
-			Value: value.GetString(),
-		}, nil
-	}
-	if Type == parser.Float && value.GetType() == parser.Int {
-		return &Any{
-			Name:  name,
-			Value: NewFloat(value.String()),
-		}, nil
-
-	}
-
-	if Type == "" {
-		Type = value.GetType()
-	} else if Type != value.GetType() && !value.IsNull() {
-		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
-	}
-	if value.IsNull() {
-		value = NewNullType(Type)
-	}
-
-	switch value.(type) {
-	case *Var:
-		value = value.(*Var).Value
-	}
-	return &Any{Name: name, Value: value}, nil
+// TODO refactor
+func NewAny(value string) *Any {
+	fmt.Println("I should not be here")
+	return nil
 }
 
 func NewAnyEmpty(name string, Type string) (*Any, error) {
-	return &Any{Name: name, Value: NewNullType(Type)}, nil
+	return &Any{Value: NewNullType(Type)}, nil
 }

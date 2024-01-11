@@ -21,11 +21,6 @@ func New(t parser.Literal, env *Env) *Bus {
 		return NewMainBus(eclaType.NewFloat(t.Value))
 	case lexer.CHAR:
 		return NewMainBus(eclaType.NewChar(t.Value))
-	case lexer.ANY:
-		a, err := eclaType.NewAny(t.Value)
-		if err == nil {
-			return NewMainBus(a)
-		}
 	case "VAR":
 		v, ok := env.GetVar(t.Value)
 		if !ok {
