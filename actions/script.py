@@ -16,14 +16,17 @@ def parse_directory(dir):
     # print('parsing', dir)
     toparse_dir = os.listdir(dir)
     # print('toparse_dir: ',toparse_dir)
+    cursor = 0
     for element in toparse_dir:
         # print('is_markdown_file: ', element, is_markdown_file(f'{dir}/{element}'))
         if is_markdown_file(f'{dir}/{element}'):
             # print(f'{dir}/{element}'.split(f'{current_dir}/')[1])
             resolved_files.append({
+                "id" : cursor,
                 "link": f'{dir}/{element}'.split(f'{current_dir}/')[1],
                 "title": element.split(".md")[0]
             })
+            cursor = cursor + 1
         # print('is_valid_dir: ', element, is_valid_dir(f'{dir}/{element}'))
         if is_valid_dir(f'{dir}/{element}'):
             # print(element)
