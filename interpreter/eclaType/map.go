@@ -291,3 +291,11 @@ func GetTypeOfKeyAndValue(v string) (string, string) {
 	}
 	return v[4 : len(v)-len(val)-1], val
 }
+
+func (m *Map) GetKeyTypes() string {
+	return m.TypKey
+}
+
+func (m *Map) GetValueTypes() string {
+	return m.TypVal
+}
