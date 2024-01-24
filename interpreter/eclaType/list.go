@@ -269,6 +269,19 @@ func (l *List) IsNull() bool {
 	return false
 }
 
+func (l *List) GetValueType() string {
+	var s string
+	pastListKey := false
+	for _, v := range l.Typ {
+		if v == ']' {
+			pastListKey = true
+		} else if pastListKey {
+			s += string(v)
+		}
+	}
+	return s
+}
+
 // utils Functions for lists trainmen
 
 func CheckTypeOfList(l *List, t string) bool {
@@ -290,15 +303,4 @@ func IsList(t string) bool {
 	return false
 }
 
-func GetValueType(t string) string {
-	var s string
-	pastListKey := false
-	for _, v := range t {
-		if v == ']' {
-			pastListKey = true
-		} else if pastListKey {
-			s += string(v)
-		}
-	}
-	return s
-}
+
