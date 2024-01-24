@@ -26,10 +26,15 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) {
 }
 
 // AssignementTypeChecking checks if the type of the variable is the same as the type of the expression.
-func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) {
-	if type1 != type2 && type1[:3] != "any" && type2[:3] != "any" {
+// If the type of the variable is any, it returns true else it returns false.
+func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) bool {
+	if type1[:3] == "any" {
+		return true
+	}
+	if type1 != type2 {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Can't assign %s to %s", type2, type1), errorHandler.LevelFatal)
 	}
+	return false
 }
 
 // TODO : Remove this function @mkarten
@@ -122,8 +127,12 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 						env.ErrorHandle.HandleError(0, 0, "cannot assign function to none function", errorHandler.LevelFatal)
 					}
 				default:
-					AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
-					*vars[i] = exprs[i]
+					isAny := AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+					if isAny {
+						*vars[i] = eclaType.NewAny(exprs[i])
+					} else {
+						*vars[i] = exprs[i]
+					}
 				}
 			}
 		case parser.ADDASSIGN:
