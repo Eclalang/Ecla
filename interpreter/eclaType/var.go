@@ -211,9 +211,10 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 
 	}
 	if Type == parser.Any {
+		val := NewAny(value)
 		return &Var{
 			Name:  name,
-			Value: NewAny(value.String(), Type),
+			Value: val,
 		}, nil
 	}
 

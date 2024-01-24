@@ -1,7 +1,5 @@
 package eclaType
 
-import "github.com/Eclalang/Ecla/parser"
-
 type Any struct {
 	Value Type
 	Type  string
@@ -33,22 +31,14 @@ func (a *Any) GetIndex(i Type) (*Type, error) {
 
 // SetAny sets the value of the variable
 func (a *Any) SetAny(value Type) error {
-	switch value.(type) {
-	case *Var:
-		a.Value = value.(*Any).Value
-		return nil
-	}
-	typ2 := a.Value.GetType()
-	if value.IsNull() {
-		a.Value = NewNullType(typ2)
-		return nil
-	}
 	a.Value = value
+	a.Type = value.GetType()
 	return nil
 }
 
 // Add adds two Type objects
 func (a *Any) Add(other Type) (Type, error) {
+
 	return a.Value.Add(other)
 }
 
@@ -160,30 +150,13 @@ func (a *Any) GetFunction() *Function {
 }
 
 // NewAny creates a new variable
-func NewAny(value string, typ string) *Any {
-	var val Type
-	switch typ {
-	case parser.Bool:
-		val = NewBool(value)
-	case parser.Char:
-		val = NewChar(value)
-	case parser.Float:
-		val = NewFloat(value)
-	case parser.Int:
-		val = NewInt(value)
-	case parser.Null:
-		val = NewNullType(value)
-	case parser.String:
-		val = NewString(value)
-
-	}
+func NewAny(value Type) *Any {
 	return &Any{
-		Value: val,
-		Type:  val.GetType(),
+		Value: value,
+		Type:  value.GetType(),
 	}
 }
 
-//TODO Check if this method is necessary
-/*func NewAnyEmpty(name string, Type string) (*Any, error) {
+/*func NewAnyEmpty(Type string) (*Any, error) {
 	return &Any{Value: NewNullType(Type)}, nil
 }*/
