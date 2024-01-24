@@ -102,6 +102,21 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 						if err != nil {
 							env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
 						}
+					case *eclaType.Any:
+						tmp := (*vars[i]).(*eclaType.Any)
+						switch tmp.Value.(type) {
+						case *eclaType.Function:
+							fn := tmp.Value.(*eclaType.Function)
+							err := fn.Override(fnTemp.Args[0], fnTemp.GetBody(), fnTemp.GetReturn())
+							if err != nil {
+								env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+							}
+						default:
+							err := tmp.SetAny(fnTemp)
+							if err != nil {
+								env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+							}
+						}
 					default:
 						fmt.Printf("%T\n", *vars[i])
 						env.ErrorHandle.HandleError(0, 0, "cannot assign function to none function", errorHandler.LevelFatal)

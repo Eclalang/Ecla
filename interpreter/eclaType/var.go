@@ -175,7 +175,14 @@ func (v *Var) IsNull() bool {
 
 func (v *Var) IsFunction() bool {
 	if len(v.Value.GetType()) >= 9 {
-		return v.Value.GetType()[:8] == "function"
+		if v.Value.GetType()[:8] == "function" {
+			return true
+		}
+	}
+	if len(v.Value.GetType()) >= 13 {
+		if v.Value.GetType()[4:12] == "function" {
+			return true
+		}
 	}
 	return false
 }
@@ -191,6 +198,11 @@ func (v *Var) GetFunction() *Function {
 	switch v.Value.(type) {
 	case *Function:
 		return v.Value.(*Function)
+	case *Any:
+		switch v.Value.(*Any).Value.(type) {
+		case *Function:
+			return v.Value.(*Any).Value.(*Function)
+		}
 	}
 	return nil
 }
