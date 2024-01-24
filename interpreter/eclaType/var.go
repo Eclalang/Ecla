@@ -180,6 +180,13 @@ func (v *Var) IsFunction() bool {
 	return false
 }
 
+func (v *Var) IsAny() bool {
+	if len(v.Value.GetType()) >= 4 {
+		return v.Value.GetType()[:3] == "any"
+	}
+	return false
+}
+
 func (v *Var) GetFunction() *Function {
 	switch v.Value.(type) {
 	case *Function:
@@ -203,8 +210,14 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 		}, nil
 
 	}
+	if Type == parser.Any {
+		return &Var{
+			Name:  name,
+			Value: NewAny(value.String(), Type),
+		}, nil
+	}
 
-	if Type == "" || Type == parser.Any {
+	if Type == "" {
 		Type = value.GetType()
 	} else if Type != value.GetType() && !value.IsNull() {
 		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())

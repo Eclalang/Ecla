@@ -63,6 +63,12 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			env.SetVar(tree.Name, v)
+		case parser.Any:
+			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewAny("", parser.Int))
+			if err != nil {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
+			env.SetVar(tree.Name, v)
 		}
 		if eclaType.IsList(tree.Type) {
 			l, err := eclaType.NewList(tree.Type)
