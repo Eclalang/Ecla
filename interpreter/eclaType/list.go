@@ -270,16 +270,7 @@ func (l *List) IsNull() bool {
 }
 
 func (l *List) GetValueType() string {
-	var s string
-	pastListKey := false
-	for _, v := range l.Typ {
-		if v == ']' {
-			pastListKey = true
-		} else if pastListKey {
-			s += string(v)
-		}
-	}
-	return s
+	return l.Typ[2:]
 }
 
 // utils Functions for lists trainmen
