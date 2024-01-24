@@ -22,7 +22,8 @@ def parse_directory(dir):
             # print(f'{dir}/{element}'.split(f'{current_dir}/')[1])
             resolved_files.append({
                 "link": f'{dir}/{element}'.split(f'{current_dir}/')[1],
-                "title": element.split(".md")[0]
+                "title": element.split(".md")[0],
+                "lang" : "fr" if "FR" in dir.split("/") else "en"
             })
         # print('is_valid_dir: ', element, is_valid_dir(f'{dir}/{element}'))
         if is_valid_dir(f'{dir}/{element}'):
