@@ -511,3 +511,19 @@ func (s SelectorExpr) precedence() int {
 }
 
 func (s SelectorExpr) exprNode() {}
+
+type BlockScopeStmt struct {
+	LeftBrace  lexer.Token
+	RightBrace lexer.Token
+	Body       []Node
+}
+
+func (b BlockScopeStmt) StartPos() int {
+	return b.LeftBrace.Position
+}
+
+func (b BlockScopeStmt) EndPos() int {
+	return b.RightBrace.Position
+}
+
+func (b BlockScopeStmt) stmtNode() {}

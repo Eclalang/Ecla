@@ -289,3 +289,16 @@ func IsList(t string) bool {
 	}
 	return false
 }
+
+func GetValueType(t string) string {
+	var s string
+	pastListKey := false
+	for _, v := range t {
+		if v == ']' {
+			pastListKey = true
+		} else if pastListKey {
+			s += string(v)
+		}
+	}
+	return s
+}

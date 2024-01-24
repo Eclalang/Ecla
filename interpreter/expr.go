@@ -240,7 +240,7 @@ func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, a
 
 // RunBodyFunction executes the code associated with the function.
 func RunBodyFunction(fn *eclaType.Function, env *Env) ([]eclaType.Type, error) {
-	for _, v := range fn.Body {
+	for _, v := range fn.GetBody() {
 		BusCollection := RunTree(v, env)
 		if IsMultipleBus(BusCollection) {
 			ret := true
