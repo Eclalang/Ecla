@@ -56,4 +56,15 @@ var (
 		ArrayStart: nil,
 		Any:        nil,
 	}
+	DefaultVarTypes = map[string]interface{}{
+		Int:        nil,
+		Float:      nil,
+		String:     nil,
+		Char:       nil,
+		Bool:       nil,
+		Map:        nil,
+		Function:   nil,
+		ArrayStart: nil,
+		Any:        nil,
+	}
 )

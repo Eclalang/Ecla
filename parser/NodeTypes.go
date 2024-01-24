@@ -469,3 +469,45 @@ func (s StructDecl) EndPos() int {
 }
 
 func (s StructDecl) declNode() {}
+
+type StructInstantiationExpr struct {
+	StructNameToken lexer.Token
+	Name            string
+	LeftParen       lexer.Token
+	RightParen      lexer.Token
+	Args            []Expr
+}
+
+func (s StructInstantiationExpr) StartPos() int {
+	return s.StructNameToken.Position
+}
+
+func (s StructInstantiationExpr) EndPos() int {
+	return s.RightParen.Position
+}
+
+func (s StructInstantiationExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (s StructInstantiationExpr) exprNode() {}
+
+type SelectorExpr struct {
+	Field lexer.Token
+	Expr  Expr
+	Sel   Expr
+}
+
+func (s SelectorExpr) StartPos() int {
+	return s.Field.Position
+}
+
+func (s SelectorExpr) EndPos() int {
+	return s.Sel.EndPos()
+}
+
+func (s SelectorExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (s SelectorExpr) exprNode() {}

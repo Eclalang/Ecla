@@ -88,7 +88,7 @@ func (p *Parser) HandleError(message string) {
 // HandleFatal handles a fatal level error
 func (p *Parser) HandleFatal(message string) {
 	p.ErrorHandler.HandleError(p.CurrentToken.Line, p.CurrentToken.Position, message, errorHandler.LevelFatal)
-	fmt.Println("If you see this message, that the error handler is not working properly :(, or you disabled the panic on fatal errors")
+	fmt.Println("If you see this message, the error handler is not working properly :(, or you disabled the panic on fatal errors")
 }
 
 // DisableEOLChecking disables the EOL checking for the parser to allow for semicolon-less syntax on conditionals statements and loops
@@ -137,7 +137,6 @@ func (p *Parser) ParseFile() *File {
 		if NewNode != nil {
 			tempFile.ParseTree.Operations = append(tempFile.ParseTree.Operations, NewNode)
 		}
-
 		p.Step()
 	}
 	p.Step()
@@ -188,7 +187,19 @@ func (p *Parser) ParseText() Node {
 	if _, ok := Keywords[p.CurrentToken.Value]; ok {
 		return p.ParseKeyword()
 	} else {
-		return p.ParseIdent()
+		tempNode := p.ParseIdent()
+		// check if there is a period after the identifier to see if it is a selector
+		if p.CurrentToken.TokenType == lexer.PERIOD {
+			// check if the ident is a Expr
+			p.Step()
+			if _, ok := tempNode.(Expr); ok {
+				return p.ParseSelector(tempNode.(Expr))
+			} else {
+				p.HandleFatal("Cannot use selector on a statement")
+				return nil
+			}
+		}
+		return tempNode
 	}
 }
 
@@ -314,10 +325,11 @@ func (p *Parser) ParseStructField() StructField {
 
 // ParseIdent parses an identifier and checking if it is function or method call,a variable declaration or an indexable variable access
 func (p *Parser) ParseIdent() Node {
-	if p.Peek(1).TokenType == lexer.PERIOD {
-		return p.ParseMethodCallExpr()
-	} else if p.Peek(1).TokenType == lexer.LPAREN {
+
+	if p.Peek(1).TokenType == lexer.LPAREN {
 		return p.ParseFunctionCallExpr()
+	} else if p.Peek(1).TokenType == lexer.PERIOD {
+		return p.ParseExpr()
 	} else if p.Peek(1).TokenType == lexer.COLON {
 		p.Back()
 		return p.ParseImplicitVariableDecl()
@@ -595,7 +607,11 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as function name")
 		}
 		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
-			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
+			if _, ok2 := DefaultVarTypes[p.CurrentToken.Value]; ok2 {
+				p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
+			}
+			// if the function name is a type name that is not a default type, it is a struct instantiation
+			return p.ParseStructInstantiation()
 		}
 	} else {
 		p.HandleFatal("Expected function name instead of " + p.CurrentToken.Value)
@@ -628,6 +644,39 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 	tempFunctionCall.RightParen = p.CurrentToken
 	p.Step()
 	return tempFunctionCall
+}
+
+func (p *Parser) ParseStructInstantiation() StructInstantiationExpr {
+	tempStructInstantiation := StructInstantiationExpr{StructNameToken: p.CurrentToken, Name: p.CurrentToken.Value}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		p.HandleFatal("Expected struct instantiation LPAREN")
+	}
+	tempStructInstantiation.LeftParen = p.CurrentToken
+	if p.Peek(1).TokenType != lexer.RPAREN {
+		for p.CurrentToken.TokenType != lexer.RPAREN {
+			p.Step()
+			tempExpr := p.ParseExpr()
+			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+				p.PrintBacktrace()
+				p.HandleFatal("Expected comma between function call arguments")
+			}
+			tempStructInstantiation.Args = append(tempStructInstantiation.Args, tempExpr)
+		}
+	} else {
+		p.Step()
+	}
+	// check if the args list is empty
+	if len(tempStructInstantiation.Args) == 0 {
+		// if it is empty, it means that the struct is instantiated without with the default values
+		tempStructInstantiation.Args = nil
+	}
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		p.HandleFatal("Expected struct instantiation RPAREN")
+	}
+	tempStructInstantiation.RightParen = p.CurrentToken
+	p.Step()
+	return tempStructInstantiation
 }
 
 // ParseType parses a valid type
@@ -824,6 +873,12 @@ func (p *Parser) ParsePrimaryExpr(exp Expr) Expr {
 	if exp == nil {
 		exp = p.ParseOperand()
 	}
+
+	if p.CurrentToken.TokenType == lexer.PERIOD {
+		p.Step()
+		exp = p.ParseSelector(exp)
+	}
+
 	return exp
 }
 
@@ -839,13 +894,19 @@ func (p *Parser) ParseOperand() Expr {
 		//	return p.ParseAnonymousStructExpr()
 		//}
 		lookAhead := p.Peek(1)
-		if lookAhead.TokenType == lexer.PERIOD {
-			return p.ParseMethodCallExpr()
-		} else if lookAhead.TokenType == lexer.LPAREN {
+		if lookAhead.TokenType == lexer.LPAREN {
 			return p.ParseFunctionCallExpr()
 		}
 	}
 	return p.ParseLiteral()
+}
+
+func (p *Parser) ParseSelector(x Expr) Expr {
+	if p.CurrentToken.TokenType != lexer.TEXT {
+		p.HandleFatal("Expected TEXT")
+	}
+	selector := p.ParseExpr()
+	return SelectorExpr{Field: p.CurrentToken, Expr: x, Sel: selector}
 }
 
 // ParseParenExpr parses a parenthesized expression
