@@ -152,6 +152,11 @@ func (p *Parser) ParseNode() Node {
 		p.Step()
 		return tempStmt
 	}
+	if p.CurrentToken.TokenType == lexer.LBRACE {
+		// parse a block
+		p.Step()
+
+	}
 	if p.CurrentToken.TokenType != lexer.TEXT {
 		tempExpr := p.ParseExpr()
 		return tempExpr
@@ -190,6 +195,11 @@ func (p *Parser) ParseText() Node {
 	} else {
 		return p.ParseIdent()
 	}
+}
+
+// ParseBlock parses a block scope
+func (p *Parser) ParseBlock() Node {
+	return nil
 }
 
 // ParseKeyword parses a keyword and calls the appropriate parsing function
