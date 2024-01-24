@@ -603,19 +603,6 @@ func (p *Parser) ParseImplicitVariableDecl() Decl {
 	return tempDecl
 }
 
-// ParseMethodCallExpr parses a method call expression
-func (p *Parser) ParseMethodCallExpr() Expr {
-	tempMethodCall := MethodCallExpr{MethodCallToken: p.CurrentToken, ObjectName: p.CurrentToken.Value}
-	err := p.CurrentFile.AddDependency(p.CurrentToken.Value)
-	if err != nil {
-		p.HandleFatal(err.Error())
-	}
-	p.MultiStep(2)
-	tempFunctionCall := p.ParseFunctionCallExpr()
-	tempMethodCall.FunctionCall = tempFunctionCall.(FunctionCallExpr)
-	return tempMethodCall
-}
-
 // ParseFunctionCallExpr parse a function call expression
 func (p *Parser) ParseFunctionCallExpr() Expr {
 	if p.CurrentToken.TokenType == lexer.TEXT {

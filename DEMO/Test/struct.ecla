@@ -36,8 +36,17 @@ console.println(p.x, p.y);
 # access struct fields from value returned by function
 getPoint(p).printSelf(p);
 
+# access struct fields from value in array
+var arr []Point = [p];
+console.println(arr[0].x, arr[0].y);
+
+# access struct fields from value in map
+var m map[string]Point = {"p": p};
+console.println(m["p"].x, m["p"].y);
+
 # call function fields
 p.printSelf(p);
 
 # access embedded struct fields
 console.println(p.test.test);
+
