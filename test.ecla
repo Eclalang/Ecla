@@ -1,0 +1,5 @@
+import "console";
+
+console.println("Hello World!");
+
+console.println("\033[0;31mHello Color!");
