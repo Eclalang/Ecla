@@ -51,6 +51,8 @@ func (m *Map) SetValue(v any) error {
 		t := v.(*Map)
 		*m = *t
 		return nil
+	case *Any:
+		return m.SetValue(v.(*Any).Value)
 	default:
 		return errors.New("cannot set value of map")
 	}
@@ -146,6 +148,8 @@ func (m *Map) Add(value Type) (Type, error) {
 		}
 
 		return m, nil
+	case *Any:
+		return m.Add(value.(*Any).Value)
 	}
 	return nil, errors.New("cannot add map with " + value.GetType())
 }
@@ -173,6 +177,8 @@ func (m *Map) Sub(value Type) (Type, error) {
 		for _, v := range value.(*Map).Keys {
 			value.(*Map).Delete(v)
 		}
+	case *Any:
+		return m.Sub(value.(*Any).Value)
 	}
 	return m, nil
 }
@@ -208,6 +214,8 @@ func (m *Map) Eq(value Type) (Type, error) {
 			}
 		}
 		return Bool(true), nil
+	case *Any:
+		return m.Eq(value.(*Any).Value)
 	default:
 		return Bool(false), errors.New("cannot compare map with other type")
 	}
