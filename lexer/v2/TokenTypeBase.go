@@ -107,12 +107,7 @@ var (
 			"false",
 		},
 	}
-	BXOR = TokenTypeBaseBehavior{
-		Name: XOR,
-		Syntax: []string{
-			"^",
-		},
-	}
+
 	BOR = TokenTypeBaseBehavior{
 		Name: OR,
 		Syntax: []string{
@@ -222,6 +217,18 @@ var (
 		Involved: []ITokenType{},
 		Result:   []TokenTypeCompositeBehavior{},
 	}
+	BXORBIN = TokenTypeBaseBehavior{
+		Name: XORBIN,
+		Syntax: []string{
+			"^",
+		},
+		Involved: []ITokenType{
+			&SELF,
+		},
+		Result: []TokenTypeCompositeBehavior{
+			CXOR,
+		},
+	}
 	BLSS = TokenTypeBaseBehavior{
 		Name: LSS,
 		Syntax: []string{
@@ -252,10 +259,16 @@ var (
 			"=",
 		},
 		Involved: []ITokenType{
-			&SELF, &BADD, &BSUB, &BMOD, &BDIV, &BMULT, &BNOT, &BGTR, &BLSS,
+			&SELF, &BADD, &BSUB, &BMOD, &BDIV, &BMULT, &BNOT, &BGTR, &BLSS, &CQOT,
 		},
 		Result: []TokenTypeCompositeBehavior{
-			CEQUAL, CADDASSIGN, CSUBASSIGN, CMODASSIGN, CDIVASSIGN, CMULTASSIGN, CNEQ, CGEQ, CLEQ,
+			CEQUAL, CADDASSIGN, CSUBASSIGN, CMODASSIGN, CDIVASSIGN, CMULTASSIGN, CNEQ, CGEQ, CLEQ, CQOTASSIGN,
+		},
+	}
+	BCOMMENTGROUPEND = TokenTypeBaseBehavior{
+		Name: COMMENTGROUP,
+		Syntax: []string{
+			"#/",
 		},
 	}
 )

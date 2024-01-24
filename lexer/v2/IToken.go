@@ -33,7 +33,7 @@ var (
 		&BLBRACKET,
 		&BCOMMA,
 		&BBOOL,
-		&BXOR,
+		&BXORBIN,
 		&BOR,
 		&BAND,
 		&BLPAREN,

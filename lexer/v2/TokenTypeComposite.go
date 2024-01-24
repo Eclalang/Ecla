@@ -71,4 +71,13 @@ var (
 	CCOMMENT = TokenTypeCompositeBehavior{
 		Name: COMMENT,
 	}
+	CXOR = TokenTypeCompositeBehavior{
+		Name: XOR,
+	}
+	CQOTASSIGN = TokenTypeCompositeBehavior{
+		Name: QOT + ASSIGN,
+	}
+	CCOMMENTGROUP = TokenTypeCompositeBehavior{
+		Name: COMMENTGROUP,
+	}
 )

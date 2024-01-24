@@ -1,5 +1,7 @@
 package v2
 
+import "strconv"
+
 type ReadingType int
 
 const (
@@ -51,7 +53,7 @@ func (l *TLexer) Step() {
 		l.index++
 		l.tempVal = l.sentence[l.prevIndex:l.index]
 		l.stepFind = l.IsSyntax()
-		l.DEBUGLEXER("each step")
+		l.DEBUGLEXER("each step " + strconv.Itoa(l.index))
 		switch l.stepFind {
 		case NOTFOUND:
 
@@ -66,7 +68,9 @@ func (l *TLexer) Step() {
 				l.FindSyntax()
 				temp := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
 				l.tempVal = l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
+				l.position -= 1
 				l.AddToken(TEXT)
+				l.position += 1
 				l.tempVal = temp
 			}
 			l.indent[0].Resolve(l)
@@ -151,7 +155,7 @@ func (l *TLexer) AddToken(TokenType string) {
 	var tmp = Token{
 		TokenType: TokenType,
 		Value:     l.tempVal,
-		Position:  l.position,
+		Position:  l.position - len(l.tempVal),
 		Line:      l.line,
 	}
 	l.ret = append(l.ret, tmp)

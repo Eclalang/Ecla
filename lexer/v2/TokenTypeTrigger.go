@@ -4,8 +4,10 @@ type TokenTypeTriggerBehavior struct {
 	Name   string
 	Syntax []string
 
-	CloseBy []ITokenType
-	Result  []TokenTypeCompositeBehavior
+	CloseBy   []ITokenType
+	Result    []TokenTypeCompositeBehavior
+	Involved  []ITokenType
+	Composite []TokenTypeCompositeBehavior
 }
 
 func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
@@ -16,20 +18,24 @@ func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 		(*l).AddToken(t.Name)
 		l.prevIndex = l.index
 	} else {
-		identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
-		indexOfClose := t.IsClosedBySyntaxe(identified)
-		if indexOfClose != -1 {
-			//close , donc doit mettre RESULT | CLOSE en token
-			l.FindSyntax()
-			temp := identified
-			l.tempVal = l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
-			l.AddToken(t.Result[indexOfClose].Name)
-			l.DEBUGLEXER("in resolve trigger AFTER ADD")
-			l.tempVal = temp
-			l.TriggerBy = ""
-			l.indent[0].Resolve(l)
-			l.TriggerBy = ""
-			l.prevIndex = l.index
+		if l.sizeOfTokenReversed != -1 {
+			identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
+			indexOfClose := t.IsClosedBySyntaxe(identified)
+			if indexOfClose != -1 {
+				//close , donc doit mettre RESULT | CLOSE en token
+				l.FindSyntax()
+				temp := identified
+				l.tempVal = l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
+				l.position -= 1
+				l.AddToken(t.Result[indexOfClose].Name)
+				l.position += 1
+				l.DEBUGLEXER("in resolve trigger AFTER ADD")
+				l.tempVal = temp
+				l.TriggerBy = ""
+				l.indent[0].Resolve(l)
+				l.TriggerBy = ""
+				l.prevIndex = l.index
+			}
 		}
 
 	}
@@ -56,7 +62,6 @@ func (t *TokenTypeTriggerBehavior) IsClosedBySyntaxe(otherName string) int {
 			tokenType = t
 		}
 		for y := 0; y < len(tokenType.Get()); y++ {
-			println(tokenType.Get()[y])
 			if tokenType.Get()[y] == otherName {
 				return i
 			}
