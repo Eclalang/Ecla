@@ -62,6 +62,8 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		RunMurlocStmt(tree.(parser.MurlocStmt), env)
 	case parser.AnonymousFunctionExpr:
 		return RunAnonymousFunctionExpr(tree.(parser.AnonymousFunctionExpr), env)
+	case parser.BlockScopeStmt:
+		return RunBlockScopeStmt(tree.(parser.BlockScopeStmt), env)
 	}
 
 	return []*Bus{NewNoneBus()}
@@ -285,4 +287,13 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 		}
 	}
 	return NewMainBus(result)
+}
+
+func RunBlockScopeStmt(tree parser.BlockScopeStmt, env *Env) []*Bus {
+	env.NewScope(SCOPE_MAIN)
+	defer env.EndScope()
+	for _, v := range tree.Body {
+		RunTree(v, env)
+	}
+	return []*Bus{NewNoneBus()}
 }
