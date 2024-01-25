@@ -242,6 +242,8 @@ func (s String) Append(other Type) (Type, error) {
 	switch other.(type) {
 	case String:
 		return s + other.GetString(), nil
+	case Char:
+		return s + other.GetString(), nil
 	case *Any:
 		return s.Append(other.(*Any).Value)
 	}
