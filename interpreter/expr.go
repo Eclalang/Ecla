@@ -64,6 +64,8 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		return RunAnonymousFunctionExpr(tree.(parser.AnonymousFunctionExpr), env)
 	case parser.BlockScopeStmt:
 		return RunBlockScopeStmt(tree.(parser.BlockScopeStmt), env)
+	case parser.AnonymousFunctionCallExpr:
+		return RunAnonymousFunctionCallExpr(tree.(parser.AnonymousFunctionCallExpr), env)
 	}
 
 	return []*Bus{NewNoneBus()}
@@ -287,6 +289,42 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 		}
 	}
 	return NewMainBus(result)
+}
+
+func RunAnonymousFunctionCallExpr(tree parser.AnonymousFunctionCallExpr, env *Env) []*Bus {
+	fn := RunTree(tree.AnonymousFunction, env)
+	if IsMultipleBus(fn) {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN RunAnonymousFunctionCallExpr", errorHandler.LevelFatal)
+	}
+	var f *eclaType.Function
+	switch fn[0].GetVal().(type) {
+	case *eclaType.Function:
+		f = fn[0].GetVal().(*eclaType.Function)
+	default:
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "Cannot call a non-function", errorHandler.LevelFatal)
+	}
+	var args []eclaType.Type
+	for _, v := range tree.Args {
+		BusCollection := RunTree(v, env)
+		for _, bus := range BusCollection {
+			temp := bus.GetVal()
+			switch temp.(type) {
+			case *eclaType.Var:
+				temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+			}
+			args = append(args, temp)
+		}
+	}
+	r, err := RunFunctionCallExprWithArgs("anonymous function", env, f, args)
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+	}
+	var retValues []*Bus
+	for _, v := range r {
+
+		retValues = append(retValues, NewReturnBus(v))
+	}
+	return retValues
 }
 
 func RunBlockScopeStmt(tree parser.BlockScopeStmt, env *Env) []*Bus {
