@@ -232,7 +232,7 @@ func (f *Function) GetIndexOfArgs(args []Type) int {
 		var nbAny int
 		var isGoodArgs = true
 		for j, typ := range args {
-			if arg[j].Type == "any" {
+			if arg[j].Type == parser.Any {
 				nbAny++
 			} else if typ.GetType() != arg[j].Type {
 				isGoodArgs = false
@@ -265,10 +265,10 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*
 		case *Var:
 			elem = elem.(*Var).Value
 		}
-		if paramType == "any" {
-			continue
-		}
 		tp := elem.GetType()
+		if paramType == parser.Any {
+			tp = parser.Any
+		}
 		if tp != paramType {
 			return false, nil
 		}
@@ -295,14 +295,14 @@ func (f *Function) CheckReturn(ret []Type) bool {
 		case *Var:
 			elem = elem.(*Var).Value
 		}
-		if r == "any" {
+		i++
+		if r == parser.Any {
 			continue
 		}
 		tp := elem.GetType()
 		if tp != r {
 			return false
 		}
-		i++
 	}
 	return true
 }

@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+	"github.com/Eclalang/Ecla/parser"
 	"strconv"
 )
 
@@ -49,7 +50,7 @@ func (s String) GetIndex(other Type) (*Type, error) {
 		other = other.(*Var).Value
 	}
 	if len(other.GetType()) >= 4 {
-		if other.GetType()[:3] == "any" {
+		if other.GetType()[:3] == parser.Any {
 			return s.GetIndex(other.(*Any).Value)
 		}
 	}

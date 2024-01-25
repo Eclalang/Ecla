@@ -189,7 +189,7 @@ func (v *Var) IsFunction() bool {
 
 func (v *Var) IsAny() bool {
 	if len(v.Value.GetType()) >= 4 {
-		return v.Value.GetType()[:3] == "any"
+		return v.Value.GetType()[:3] == parser.Any
 	}
 	return false
 }
@@ -223,7 +223,10 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 
 	}
 	if Type == parser.Any {
-		val := NewAny(value)
+		val := value
+		if value.GetType() != parser.Any {
+			val = NewAny(value)
+		}
 		return &Var{
 			Name:  name,
 			Value: val,

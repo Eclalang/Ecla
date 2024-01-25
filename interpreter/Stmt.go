@@ -28,7 +28,7 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) {
 // AssignementTypeChecking checks if the type of the variable is the same as the type of the expression.
 // If the type of the variable is any, it returns true else it returns false.
 func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) bool {
-	if type1[:3] == "any" {
+	if type1[:3] == parser.Any {
 		return true
 	}
 	if type1 != type2 {
