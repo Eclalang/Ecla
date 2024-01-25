@@ -4,6 +4,9 @@ import "errors"
 
 // NewChar creates a new Char
 func NewChar(value string) Char {
+	if len(value) == 0 {
+		return Char(0)
+	}
 	result := []rune(value)
 	return Char(result[0])
 }
