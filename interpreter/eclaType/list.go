@@ -98,6 +98,8 @@ func (l *List) Add(other Type) (Type, error) {
 		return nil, errors.New("cannot add lists of different types")
 	case String:
 		return l.GetString() + other.GetString(), nil
+	case *Any:
+		return l.Add(other.(*Any).Value)
 	}
 	return nil, fmt.Errorf("cannot add %s to list", other.GetString())
 }
@@ -121,6 +123,8 @@ func (l *List) Mul(other Type) (Type, error) {
 			result.Value = append(result.Value, l.Value...)
 		}
 		return &result, nil
+	case *Any:
+		return l.Mul(other.(*Any).Value)
 	}
 	return nil, fmt.Errorf("cannot multiply list by %s", other.GetString())
 }
@@ -151,6 +155,8 @@ func (l *List) Eq(other Type) (Type, error) {
 			}
 		}
 		return Bool(true), nil
+	case *Any:
+		return l.Eq(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -171,6 +177,8 @@ func (l *List) NotEq(other Type) (Type, error) {
 			}
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.NotEq(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -186,6 +194,8 @@ func (l *List) Gt(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.Gt(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -202,6 +212,8 @@ func (l *List) GtEq(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.GtEq(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -217,6 +229,8 @@ func (l *List) Lw(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.Lw(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -232,6 +246,8 @@ func (l *List) LwEq(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.LwEq(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -293,5 +309,3 @@ func IsList(t string) bool {
 	}
 	return false
 }
-
-

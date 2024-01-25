@@ -103,6 +103,8 @@ func (b Bool) Eq(other Type) (Type, error) {
 		} else {
 			return Bool(false), nil
 		}
+	case *Any:
+		return b.Eq(other.(*Any).Value)
 	case Bool:
 		return Bool(b == other.GetValue()), nil
 	default:
@@ -137,6 +139,8 @@ func (b Bool) NotEq(other Type) (Type, error) {
 		}
 	case Bool:
 		return Bool(b != other.GetValue()), nil
+	case *Any:
+		return b.NotEq(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
@@ -193,6 +197,8 @@ func (b Bool) And(other Type) (Type, error) {
 		} else {
 			return Bool(false), nil
 		}
+	case *Any:
+		return b.And(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
@@ -229,6 +235,8 @@ func (b Bool) Or(other Type) (Type, error) {
 		} else {
 			return Bool(false), nil
 		}
+	case *Any:
+		return b.Or(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
@@ -278,6 +286,8 @@ func (b Bool) Xor(other Type) (Type, error) {
 		} else {
 			return Bool(true), nil
 		}
+	case *Any:
+		return b.Xor(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
