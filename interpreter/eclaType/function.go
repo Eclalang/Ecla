@@ -2,7 +2,6 @@ package eclaType
 
 import (
 	"errors"
-	"fmt"
 	"github.com/Eclalang/Ecla/parser"
 )
 
@@ -271,8 +270,6 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*
 			continue
 		}
 		if tp != paramType {
-			fmt.Println("tp: " + tp)
-			fmt.Println("paramType: " + paramType)
 			return false, nil
 		}
 		v, err := NewVar(paramName, tp, elem)
