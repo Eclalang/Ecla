@@ -28,7 +28,7 @@ func (f *Function) String() string {
 }
 
 func (f *Function) GetString() String {
-	return NewString("function")
+	return "function"
 }
 
 func (f *Function) GetType() string {

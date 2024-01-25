@@ -36,7 +36,10 @@ func TestIsNone(t *testing.T) {
 }
 
 func TestGetVal(t *testing.T) {
-	value := eclaType.NewString("hello world")
+	value, err := eclaType.NewString("hello world")
+	if err != nil {
+		t.Errorf("Error creating string: %s", err.Error())
+	}
 	t1 := NewMainBus(value)
 	if t1.GetVal() != value {
 		t.Errorf("Expected %s, got %s", value, t1.GetVal())
@@ -44,7 +47,10 @@ func TestGetVal(t *testing.T) {
 }
 
 func TestNewMainBus(t *testing.T) {
-	value := eclaType.NewString("hello world")
+	value, err := eclaType.NewString("hello world")
+	if err != nil {
+		t.Errorf("Error creating string: %s", err.Error())
+	}
 	t1 := NewMainBus(value)
 	if t1.Val != value {
 		t.Errorf("Expected %s, got %s", value, t1.GetVal())
@@ -55,7 +61,10 @@ func TestNewMainBus(t *testing.T) {
 }
 
 func TestNewReturnBus(t *testing.T) {
-	value := eclaType.NewString("hello world")
+	value, err := eclaType.NewString("hello world")
+	if err != nil {
+		t.Errorf("Error creating string: %s", err.Error())
+	}
 	t1 := NewReturnBus(value)
 	if t1.Val != value {
 		t.Errorf("Expected %s, got %s", value, t1.GetVal())

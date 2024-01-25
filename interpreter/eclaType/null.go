@@ -27,7 +27,7 @@ func (n Null) String() string {
 }
 
 func (n Null) GetString() String {
-	return NewString("null")
+	return "null"
 }
 
 func (n Null) GetType() string {
@@ -40,7 +40,7 @@ func (n Null) GetIndex(number Type) (*Type, error) {
 
 func (n Null) Add(other Type) (Type, error) {
 	if other.GetType() == "string" {
-		return NewString("null" + string(other.GetString())), nil
+		return String("null" + string(other.GetString())), nil
 	}
 	return nil, errors.New("cannot add null to " + other.GetType())
 }
