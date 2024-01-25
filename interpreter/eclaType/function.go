@@ -265,10 +265,10 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*
 		case *Var:
 			elem = elem.(*Var).Value
 		}
-		tp := elem.GetType()
 		if paramType == "any" {
 			continue
 		}
+		tp := elem.GetType()
 		if tp != paramType {
 			return false, nil
 		}
@@ -294,6 +294,9 @@ func (f *Function) CheckReturn(ret []Type) bool {
 		switch elem.(type) {
 		case *Var:
 			elem = elem.(*Var).Value
+		}
+		if r == "any" {
+			continue
 		}
 		tp := elem.GetType()
 		if tp != r {
