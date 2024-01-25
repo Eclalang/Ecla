@@ -7,13 +7,13 @@ import (
 )
 
 // NewString creates a new String
-func NewString(value string) String {
+func NewString(value string) (String, error) {
 	value = `"` + value + `"`
 	value, err := strconv.Unquote(value)
 	if err != nil {
-		panic(err) // TODO remove panic
+		return String(""), err
 	}
-	return String(value)
+	return String(value), nil
 }
 
 type String string
