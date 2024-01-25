@@ -26,10 +26,15 @@ func RunTypeStmt(tree parser.TypeStmt, env *Env) {
 }
 
 // AssignementTypeChecking checks if the type of the variable is the same as the type of the expression.
-func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) {
+// If the type of the variable is any, it returns true else it returns false.
+func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) bool {
+	if type1[:3] == parser.Any {
+		return true
+	}
 	if type1 != type2 {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Can't assign %s to %s", type2, type1), errorHandler.LevelFatal)
 	}
+	return false
 }
 
 // TODO : Remove this function @mkarten
@@ -102,13 +107,32 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 						if err != nil {
 							env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
 						}
+					case *eclaType.Any:
+						tmp := (*vars[i]).(*eclaType.Any)
+						switch tmp.Value.(type) {
+						case *eclaType.Function:
+							fn := tmp.Value.(*eclaType.Function)
+							err := fn.Override(fnTemp.Args[0], fnTemp.GetBody(), fnTemp.GetReturn())
+							if err != nil {
+								env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+							}
+						default:
+							err := tmp.SetAny(fnTemp)
+							if err != nil {
+								env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+							}
+						}
 					default:
+						fmt.Printf("%T\n", *vars[i])
 						env.ErrorHandle.HandleError(0, 0, "cannot assign function to none function", errorHandler.LevelFatal)
-
 					}
 				default:
-					AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
-					*vars[i] = exprs[i]
+					isAny := AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
+					if isAny {
+						*vars[i] = eclaType.NewAny(exprs[i])
+					} else {
+						*vars[i] = exprs[i]
+					}
 				}
 			}
 		case parser.ADDASSIGN:
