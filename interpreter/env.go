@@ -78,6 +78,11 @@ func (env *Env) GetVar(name string) (*eclaType.Var, bool) {
 	return v, ok
 }
 
+// CheckIfVarExistsInCurrentScope returns true if the variable exists in the current scope.
+func (env *Env) CheckIfVarExistsInCurrentScope(name string) bool {
+	return env.Vars.CheckIfVarExistsInCurrentScope(name)
+}
+
 // NewScope creates a new scope.
 func (env *Env) NewScope(Type ScopeType) {
 	env.Vars.GoDeep(Type)

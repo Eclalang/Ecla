@@ -42,6 +42,10 @@ func New(t parser.Literal, env *Env) *Bus {
 // RunVariableDecl executes a parser.VariableDecl.
 func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 	if tree.Value == nil {
+		if env.CheckIfVarExistsInCurrentScope(tree.Name) {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "variable already exists", errorHandler.LevelFatal)
+			return
+		}
 		switch tree.Type {
 		case parser.Int:
 			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewInt("0"))
@@ -119,14 +123,14 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 					env.ErrorHandle.HandleError(0, 0, "Cannot overload a non-function variable", errorHandler.LevelFatal)
 				}
 			} else {
-				if _, ok := env.GetVar(tree.Name); !ok {
+				if !env.CheckIfVarExistsInCurrentScope(tree.Name) {
 					env.SetVar(tree.Name, v)
 				} else {
 					env.ErrorHandle.HandleError(0, 0, "Cannot reassign a variable", errorHandler.LevelFatal)
 				}
 			}
 		} else {
-			if _, ok := env.GetVar(tree.Name); !ok {
+			if !env.CheckIfVarExistsInCurrentScope(tree.Name) {
 				env.SetVar(tree.Name, v)
 			} else {
 				env.ErrorHandle.HandleError(0, 0, "Cannot reassign a variable", errorHandler.LevelFatal)
@@ -165,8 +169,8 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 
 // RunFunctionDecl executes a parser.FunctionDecl.
 func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
-	declared, ok := env.Vars.Get(tree.Name)
-	if !ok {
+	declared, _ := env.Vars.Get(tree.Name)
+	if !env.CheckIfVarExistsInCurrentScope(tree.Name) {
 		fn := eclaType.NewFunction(tree.Name, tree.Prototype.Parameters, tree.Body, tree.Prototype.ReturnTypes)
 		env.SetFunction(tree.Name, fn)
 	} else {
