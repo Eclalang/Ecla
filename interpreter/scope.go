@@ -61,7 +61,17 @@ func (s *Scope) Get(name string) (*eclaType.Var, bool) {
 	return v, ok
 }
 
-// GoDeep creates a new scope was is deeper than the current one.
+// CheckIfVarExistsInCurrentScope returns true if the variable exists in the current scope.
+func (s *Scope) CheckIfVarExistsInCurrentScope(name string) bool {
+	cursor := s
+	for cursor.next != nil {
+		cursor = cursor.next
+	}
+	_, ok := cursor.Var[name]
+	return ok
+}
+
+// GoDeep creates a new scope was deeper than the current one.
 func (s *Scope) GoDeep(Type ScopeType) {
 	cursor := s
 	for cursor.next != nil {
