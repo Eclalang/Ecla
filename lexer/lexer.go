@@ -103,7 +103,7 @@ func Lexer(sentence string) []Token {
 					tempVal = sentence[prevIndex:i]
 					break
 				}
-				if ident.Identifier == DQUOTE {
+				if ident.Identifier == DQUOTE && (QuoteIdentifier != "'" && !inQuoteStep) {
 
 					// if the current lecture head is inside a string, we must be carefull about \", cause
 					// it does not end the current string.
@@ -134,6 +134,8 @@ func Lexer(sentence string) []Token {
 						inQuoteStep = true
 						QuoteIdentifier = "'"
 					}
+				} else {
+
 				}
 				// -----------Quote Token Part END-------------
 
