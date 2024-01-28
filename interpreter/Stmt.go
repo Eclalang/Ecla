@@ -137,46 +137,70 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 			}
 		case parser.ADDASSIGN:
 			for i := 0; i < NamesLen; i++ {
-				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
 				temp, err := (*vars[i]).Add(exprs[i])
 				HandleError(tree, err, env)
-				*vars[i] = temp
+				isAny := AssignementTypeChecking(tree, varsTypes[i], temp.GetType(), env)
+				if isAny {
+					*vars[i] = eclaType.NewAny(temp)
+				} else {
+					*vars[i] = temp
+				}
 			}
 		case parser.SUBASSIGN:
 			for i := 0; i < NamesLen; i++ {
-				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
 				temp, err := (*vars[i]).Sub(exprs[i])
 				HandleError(tree, err, env)
-				*vars[i] = temp
+				isAny := AssignementTypeChecking(tree, varsTypes[i], temp.GetType(), env)
+				if isAny {
+					*vars[i] = eclaType.NewAny(temp)
+				} else {
+					*vars[i] = temp
+				}
 			}
 		case parser.DIVASSIGN:
 			for i := 0; i < NamesLen; i++ {
-				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
 				temp, err := (*vars[i]).Div(exprs[i])
 				HandleError(tree, err, env)
-				*vars[i] = temp
+				isAny := AssignementTypeChecking(tree, varsTypes[i], temp.GetType(), env)
+				if isAny {
+					*vars[i] = eclaType.NewAny(temp)
+				} else {
+					*vars[i] = temp
+				}
 			}
 		case parser.MODASSIGN:
 			for i := 0; i < NamesLen; i++ {
-				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
 				temp, err := (*vars[i]).Mod(exprs[i])
 				HandleError(tree, err, env)
-				*vars[i] = temp
+				isAny := AssignementTypeChecking(tree, varsTypes[i], temp.GetType(), env)
+				if isAny {
+					*vars[i] = eclaType.NewAny(temp)
+				} else {
+					*vars[i] = temp
+				}
 			}
 		case parser.QOTASSIGN:
 			for i := 0; i < NamesLen; i++ {
-				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
 				temp, err := (*vars[i]).DivEc(exprs[i])
 				HandleError(tree, err, env)
-				*vars[i] = temp
+				isAny := AssignementTypeChecking(tree, varsTypes[i], temp.GetType(), env)
+				if isAny {
+					*vars[i] = eclaType.NewAny(temp)
+				} else {
+					*vars[i] = temp
+				}
 			}
 
 		case parser.MULTASSIGN:
 			for i := 0; i < NamesLen; i++ {
-				AssignementTypeChecking(tree, varsTypes[i], exprsTypes[i], env)
 				temp, err := (*vars[i]).Mul(exprs[i])
 				HandleError(tree, err, env)
-				*vars[i] = temp
+				isAny := AssignementTypeChecking(tree, varsTypes[i], temp.GetType(), env)
+				if isAny {
+					*vars[i] = eclaType.NewAny(temp)
+				} else {
+					*vars[i] = temp
+				}
 			}
 
 		default:
