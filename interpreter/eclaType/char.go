@@ -1,14 +1,26 @@
 package eclaType
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"strconv"
+)
 
 // NewChar creates a new Char
-func NewChar(value string) Char {
+func NewChar(value string) (Char, error) {
 	if len(value) == 0 {
-		return Char(0)
+		return Char(0), nil
+	}
+	value = `"` + value + `"`
+	value, err := strconv.Unquote(value)
+	if err != nil {
+		return 0, err
 	}
 	result := []rune(value)
-	return Char(result[0])
+	if len(result) > 1 {
+		return 0, errors.New(fmt.Sprint(value, " is not a char"))
+	}
+	return Char(result[0]), nil
 }
 
 type Char rune
