@@ -203,10 +203,10 @@ var (
 			"/",
 		},
 		Involved: []ITokenType{
-			&SELF,
+			&SELF, &TCOMMENT,
 		},
 		Result: []TokenTypeCompositeBehavior{
-			CQOT,
+			CQOT, CCOMMENTGROUPEND,
 		},
 	}
 	BMULT = TokenTypeBaseBehavior{
@@ -263,12 +263,6 @@ var (
 		},
 		Result: []TokenTypeCompositeBehavior{
 			CEQUAL, CADDASSIGN, CSUBASSIGN, CMODASSIGN, CDIVASSIGN, CMULTASSIGN, CNEQ, CGEQ, CLEQ, CQOTASSIGN,
-		},
-	}
-	BCOMMENTGROUPEND = TokenTypeBaseBehavior{
-		Name: COMMENTGROUP,
-		Syntax: []string{
-			"#/",
 		},
 	}
 )

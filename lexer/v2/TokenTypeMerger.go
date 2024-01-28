@@ -25,7 +25,9 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 			l.prevIndex = l.index
 		} else {
 			l.DEBUGLEXER("COMMENTGROUP TEST")
-			t.Composite[index].Resolve(l)
+			(*l).ComposeToken(t.Composite[index].Name)
+			l.TriggerBy = t.Composite[index].Name
+			l.prevIndex = l.index
 		}
 	} else {
 		if !(*l).isSpaces {
@@ -126,12 +128,12 @@ var (
 		},
 	}
 	TCOMMENTGROUP = TokenTypeMergerBehavior{
-		Name: COMMENT,
+		Name: COMMENTGROUP,
 		Syntax: []string{
 			"/#",
 		},
 		CloseBy: []ITokenType{
-			&BCOMMENTGROUPEND,
+			&CCOMMENTGROUPEND,
 		},
 		Result: []TokenTypeCompositeBehavior{
 			CCOMMENT,

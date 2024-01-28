@@ -80,4 +80,7 @@ var (
 	CCOMMENTGROUP = TokenTypeCompositeBehavior{
 		Name: COMMENTGROUP,
 	}
+	CCOMMENTGROUPEND = TokenTypeCompositeBehavior{
+		Name: COMMENTGROUP,
+	}
 )

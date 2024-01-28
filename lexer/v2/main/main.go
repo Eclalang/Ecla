@@ -3,7 +3,7 @@ package main
 import v2 "github.com/Eclalang/Ecla/lexer/v2"
 
 func main() {
-	tokens := v2.LexerR("/#ok ")
+	tokens := v2.LexerR("/#ok#/ ")
 	for i, token := range tokens {
 		printToken(i, token)
 	}
