@@ -11,7 +11,7 @@ func NewChar(value string) (Char, error) {
 	if len(value) == 0 {
 		return Char(0), nil
 	}
-	value = `"` + value + `"`
+	value = `'` + value + `'`
 	value, err := strconv.Unquote(value)
 	if err != nil {
 		return 0, err
