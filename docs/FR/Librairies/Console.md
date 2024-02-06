@@ -122,7 +122,7 @@ function testPrint() {
 ```
 function printf(format string, args ...interface{})
 ```
-Écrit les args formatté en string dans la console
+Écrit les args formatés en string dans la console
 
 ### Exemple :
 ```ecla
@@ -137,7 +137,7 @@ function testPrintf() {
 ```
 function printInColor(color string, args ...interface{})
 ```
-Écrit les args dans la console avec la couleur 
+Écrit les args dans la console avec la couleur
 
 ### Exemple :
 ```ecla

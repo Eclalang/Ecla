@@ -13,7 +13,7 @@ function marshal(content any) string
 ```
 Convertit n'importe quel type en JSON string
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "json";
@@ -29,10 +29,9 @@ function testMarshal() {
 ```
 function unmarshal(content string) any
 ```
-Converts JSON string to any type
-Convertit un JSON string en n'importe quel type
+Convertit un string JSON en n'importe quel type
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "json";

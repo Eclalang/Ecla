@@ -1,6 +1,6 @@
 # Encoding
 
-La librairie Encoding est utilisé pour convertir de la data a partir du byte-level et en byte-level ou de représentation textuel
+La librairie Encoding est utilisée pour convertir de la data à partir du byte-level et en byte-level ou de représentation textuelle.
 
 ## Index
 
@@ -19,7 +19,7 @@ function asciiToString(intArr []int) string
 ```
 Convertit l'ascii en string
 
-### Example :
+### Exemple :
 ```ecla
 import "encoding";
 import "console";
@@ -35,9 +35,9 @@ function testAsciiToString() {
 ```
 function decodeBase64(str string) []int
 ```
-Décode le base64 en ascii
+Décode la base64 en ascii
 
-### Example :
+### Exemple :
 ```ecla
 import "encoding";
 import "console";
@@ -55,7 +55,7 @@ function decodeGob(intArr []int) string
 ```
 Décode gob en string
 
-### Example :
+### Exemple :
 ```ecla
 import "encoding";
 import "console";
@@ -73,7 +73,7 @@ function decodeHex(str string) []int
 ```
 Décode l'hexadécimal en ascii
 
-### Example :
+### Exemple :
 ```ecla
 import "encoding";
 import "console";
@@ -91,7 +91,7 @@ function encodeBase64(intArr []int) string
 ```
 Encode l'ascii en base64
 
-### Example :
+### Exemple :
 ```ecla
 import "encoding";
 import "console";
@@ -109,7 +109,7 @@ function encodeGob(str string) []int
 ```
 Encode un string en gob
 
-### Example :
+### Exemple :
 ```ecla
 import "encoding";
 import "console";
@@ -127,7 +127,7 @@ function encodeHex(intArr []int) string
 ```
 Encode l'ascii en hexadécimal
 
-### Example :
+### Exemple :
 ```ecla
 import "encoding";
 import "console";
@@ -145,7 +145,7 @@ function stringToAscii(str string) []int
 ```
 Convertit un string en ascii
 
-### Example :
+### Exemple :
 ```ecla
 import "encoding";
 import "console";

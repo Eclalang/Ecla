@@ -17,7 +17,7 @@ function find(regex string, str string) string
 ```
 Retourne la première correspondance de regex dans le string
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "regex";
@@ -35,7 +35,7 @@ function findAll(regex string, str string) []string
 ```
 Retourne toutes les correspondances de regex dans le string
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "regex";
@@ -53,7 +53,7 @@ function findAllIndex(regex string, str string) [][]int
 ```
 Retourne l'index de toutes les correspondances de regex dans le string
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "regex";
@@ -71,7 +71,7 @@ function findIndex(regex string, str string) []int
 ```
 Retourne le premier et dernier index de la première correspondance de regex dans le string
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "regex";
@@ -87,9 +87,9 @@ function testFindIndex() {
 ```
 function match(regex string, str string) bool
 ```
-Retourne true si regex correspond au string
+Retourne true si le regex correspond au string
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "regex";
@@ -105,9 +105,9 @@ function testMatch() {
 ```
 function replaceAll(regex string, str string, new string) string
 ```
-Remplaces toutes les correspondances de regex dans le string avec le nouveau string
+Remplace toutes les correspondances de regex dans le string avec le nouveau string
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "regex";

@@ -1,6 +1,6 @@
 # Hash
 
-La librairie Hash permet d'hacher un texte.
+La librairie Hash permet de hacher un texte.
 
 ## Index
 
@@ -19,7 +19,7 @@ function hashmd5(str string) string
 ```
 Hache un string avec le MD5
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "hash";
@@ -37,7 +37,7 @@ function hashsha1(str string) string
 ```
 Hache un string avec sha1
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "hash";
@@ -55,7 +55,7 @@ function hashsha224(str string) string
 ```
 Hache un string avec sha224
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "hash";
@@ -73,7 +73,7 @@ function hashsha256(str string) string
 ```
 Hache un string avec sha256
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "hash";
@@ -91,7 +91,7 @@ function hashsha384(str string) string
 ```
 Hache un string avec sha384
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "hash";
@@ -109,7 +109,7 @@ function hashsha512(str string) string
 ```
 Hache un string avec sha512
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "hash";
@@ -127,7 +127,7 @@ function hashsha512_224(str string) string
 ```
 Hache un string avec sha512_224
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "hash";
@@ -145,7 +145,7 @@ function hashsha512_256(str string) string
 ```
 Hache un string avec sha512_256
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "hash";

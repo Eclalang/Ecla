@@ -1,6 +1,6 @@
 # Strings
 
-La librairie Strings implémente les functions pour altérer les string.
+La librairie Strings implémente les fonctions pour altérer les strings.
 
 ## Index
 
@@ -28,7 +28,7 @@ function contains(str string, substr string) bool
 ```
 Retourne true si le string contient le substring
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -45,7 +45,7 @@ function testContains() {
 function containsAny(str string, chars string) bool
 ```
 Retourne true si le string contient le caractère chars
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -61,9 +61,9 @@ function testContainsAny() {
 ```
 function count(str string, substr string) int
 ```
-Retourne le nombre d'instance non successif de substr dans str
+Retourne le nombre d'instances non successives de substr dans str
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -81,9 +81,9 @@ function cut(str string, substr string) string, string, bool
 ```
 > Ne fonctionne pas pour le moment
 
-Retourne un string avant et après le séparateur, et un bool si il est trouvé ou non
+Retourne un string avant et après le séparateur, et un bool s'il est trouvé ou non
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -107,7 +107,7 @@ function hasPrefix(str string, prefix string) bool
 ```
 Retourne true si le string commence par le préfixe
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -123,9 +123,9 @@ function testHasPrefix() {
 ```
 function hasSuffix(str string, suffix string) bool
 ```
-Retourne true si le string fini par le suffixe
+Retourne true si le string finit par le suffixe
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -143,7 +143,7 @@ function indexOf(str string, substr string) int
 ```
 Retourne l'index de la première instance du substr dans str, ou -1 s'il n'est pas trouvé
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -161,10 +161,10 @@ function join(elems []string, sep string) string
 ```
 > Ne fonctionne pas pour le moment
 
-Retourne un string concaténé d'un array de string séparé par sep
+Retourne un string concaténé d'un array de strings séparé par sep
 
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -182,9 +182,9 @@ function testJoin() {
 ```
 function replace(str string, old string, new string, nb int) string
 ```
-Retourne un string avec la première instance de old remplacé par new
+Retourne un string avec la première instance de old remplacée par new
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -204,7 +204,7 @@ function replaceAll(str string, old string, new string) string
 ```
 Retourne un string avec toutes les instances de old remplacé par new
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -221,9 +221,9 @@ function testReplaceAll() {
 ```
 function split(str string, sep string) []string
 ```
-Retourne un array d'une sous chaine de caractères entre les séparateurs, ou un array qui contient seulement str si il ne contient pas sep
+Retourne un array d'une sous-chaine de caractères entre les séparateurs, ou un array qui contient seulement str s'il ne contient pas sep
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -242,9 +242,9 @@ function testSplit() {
 ```
 function splitAfter(str string, sep string) []string
 ```
-Retourne un array de sous-chaine de caractères après le séparateur, ou un array qui contient seulement str si il ne contient pas sep
+Retourne un array de sous-chaines de caractères après le séparateur, ou un array qui contient uniquement str s'il ne contient pas sep
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -263,9 +263,9 @@ function testSplitAfter() {
 ```
 function splitAfterN(str string, sep string, nb int) []string
 ```
-Retourne un array de substring après le séparateur, ou un array qui contient uniquement str si il ne contient pas sep. Le compte détermine le nombre de substring à retourner
+Retourne un array de substring après le séparateur, ou un array qui contient uniquement str s'il ne contient pas sep. Le compte détermine le nombre de substring à retourner
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -285,9 +285,9 @@ function testSplitAfterN() {
 ```
 function splitN(str string, sep string, nb int) []string
 ```
-Retourne un array de substring entre le séparateur, ou un array qui contient seulement str si il ne contient pas sep. Le compte détermine le nombre de substring à retourner
+Retourne un array de substring entre le séparateur, ou un array qui contient seulement str s'il ne contient pas sep. Le compte détermine le nombre de substring à retourner
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -309,7 +309,7 @@ function toLower(str string) string
 ```
 Retourne un string avec tous les caractères en minuscule
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -326,7 +326,7 @@ function toUpper(str string) string
 ```
 Retourne un string avec tous les caractères en majuscule
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings";
@@ -341,10 +341,9 @@ function testToUpper() {
 ```
 function trim(str string, cutset string) string
 ```
-Returns a string with all cut characters removed
 Retourne un string avec tous les caractères coupés retirés
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "strings"

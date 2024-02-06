@@ -63,7 +63,7 @@ function testNow() {
 ```
 function sleep(sec int)
 ```
-Met en pause la goroutine actuelle pour une durée spéficié
+Met en pause la goroutine actuelle pour la durée spécifiée
 
 ### Exemple :
 ```ecla
@@ -81,7 +81,7 @@ function testSleep() {
 ```
 function strftime(format, date string) string
 ```
-Retourne une représentation en string de la date sous un format spécifié
+Retourne une représentation en string de la date sous le format spécifiée
 
 ### Exemple :
 ```ecla
@@ -97,7 +97,7 @@ function testStrftime() {
 ```
 function timer(sec int)
 ```
-Attends une durée spécifié en seconde 
+Attends une durée spécifiée en seconde
 
 ### Exemple :
 ```ecla
@@ -118,7 +118,7 @@ function testTimer() {
 |   %H    | Heure (Horaire sur 24h) en nombre décimal (00-23) |
 |   %M    |         Minutes en nombre décimal (00-59)         |
 |   %m    |          Mois en nombre décimal (01-12)           |
-|   %S    |        Secondes en nombres décimal (00-59)        |
+|   %S    |        Secondes en nombre décimal (00-59)        |
 |   %Y    |              Années avec les siècles              |
 |   %y    |          Années sans les siècles (00-99)          |
 |   %%    |                   Un signe '%'                    |

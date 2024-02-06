@@ -16,7 +16,7 @@ function atoi(str string) int
 ```
 Convertit un string en int
 
-### Example :
+### Exemple :
 ```ecla
 import "cast";
 import "console";
@@ -34,7 +34,7 @@ function floatToInt(x float) int
 ```
 Convertit un float en int
 
-### Example :
+### Exemple :
 ```ecla
 import "cast";
 import "console";
@@ -52,7 +52,7 @@ function intToFloat(x int) float
 ```
 Convertit un int en float
 
-### Example :
+### Exemple :
 ```ecla
 import "cast";
 import "console";
@@ -70,7 +70,7 @@ function parseBool(str string) bool
 ```
 Convertit un string en bool
 
-### Example :
+### Exemple :
 ```ecla
 import "cast";
 import "console";
@@ -88,7 +88,7 @@ function parseFloat(str string, x int) float
 ```
 Convertit un string en float
 
-### Example :
+### Exemple :
 ```ecla
 import "cast";
 import "console";
