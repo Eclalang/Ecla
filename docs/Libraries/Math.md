@@ -168,7 +168,7 @@ function testCbrt() {
 ```
 function ceil(nb float) float
 ```
-Returns the least integer that it's bigger or equal to x
+Returns the littlest integer that is greater or equal to x
 
 ### Example :
 ```ecla
@@ -280,7 +280,7 @@ function testFloor() {
 ```
 function ln(nb float) float
 ```
-Returns the naturel logarithm of nb
+Returns the natural logarithm of nb
 
 ### Example :
 ```ecla
