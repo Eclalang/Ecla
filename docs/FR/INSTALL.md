@@ -10,7 +10,7 @@ Installer Go 1.19 ou plus.
 
 - Ouvrez le fichier d'installation et suivez les instructions pour installer Go.
 
-- Après l'installation, ouvrez l'invite de commande de Windows (cmd) et écrivez "go version". Cela devrait afficher la version de Go que vous venez tout juste d'installer
+- Après l'installation, ouvrez l'invite de commande de Windows (cmd) et écrivez "go version". Cela devrait afficher la version de Go que vous venez tout juste d'installer.
 
 ### Linux:
 - Utilisez les commandes suivantes pour installer Go:
@@ -21,7 +21,7 @@ sudo tar -xvf go1.19.linux-amd64.tar.gz
 sudo mv go /usr/local
 ```
 
-- Ajoutez les lignes suivantes à votre fichier ~/.bashrc pour ajouter Go a votre variable d'environnement PATH: 
+- Ajoutez les lignes suivantes à votre fichier ~/.bashrc pour ajouter Go a votre variable d'environnement PATH:
 
 ```bash
 export GOROOT=/usr/local/go
@@ -29,7 +29,7 @@ export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 ```
 
-- Sauvegardez et fermez le fichier. Ensuite, recharger votre terminal et écrivez "go version". Cela devrait afficher la version de Go que vous venez d'installer.
+- Sauvegardez et fermez le fichier. Ensuite, rechargez votre terminal et écrivez "go version". Cela devrait afficher la version de Go que vous venez d'installer.
 
 ## Construire l'interpréteur d'Ecla
 

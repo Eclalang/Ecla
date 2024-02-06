@@ -1,6 +1,6 @@
 # Os
 
-La librairie OS permet d'intéragir avec le système d'exploitation.
+La librairie OS permet d'interagir avec le système d'exploitation.
 
 ## Index
 
@@ -31,9 +31,9 @@ La librairie OS permet d'intéragir avec le système d'exploitation.
 ```
 function chown(path string, uid int, gid int)
 ```
-Chown change le propriétaire et groupe du fichier
+Chown change le propriétaire et le groupe du fichier
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 
@@ -46,9 +46,9 @@ function testChown() {
 ```
 function clearEnv()
 ```
-Efface toutes les variables d'environnements
+Efface toutes les variables d'environnement
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 
@@ -63,7 +63,7 @@ function create(name string)
 ```
 Crée un fichier et retourne l'objet du fichier
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 
@@ -79,7 +79,7 @@ function getegid() int
 Récupère l'ID effectif du groupe du processus appelant
 
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -96,7 +96,7 @@ function getEnv(key string) string
 ```
 Retourne une variable d'environnement
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -113,7 +113,7 @@ function geteuid() int
 ```
 Récupère l'ID effectif de l'utilisateur appelant le processus
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -128,9 +128,9 @@ function testGeteuid() {
 ```
 function getgid() int
 ```
-Recupère l'ID de groupe du processus appelant
+Récupère l'ID de groupe du processus appelant
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -147,7 +147,7 @@ function getHostname() string
 ```
 Récupère le nom d'hôte de la machine
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -162,9 +162,9 @@ function testGetHostname() {
 ```
 function getpid() int
 ```
-Récupère l'ID du processus du processus appelant
+Récupère l'ID du processus appelant
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -181,7 +181,7 @@ function getppid() int
 ```
 Récupère l'ID du processus parent du processus appelant
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -198,7 +198,7 @@ function getuid() int
 ```
 Récupère l'ID utilisateur du processus appelant
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -215,7 +215,7 @@ function getUserHomeDir() string
 ```
 Récupère le répertoire utilisateur de l'utilisateur actuel
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -232,7 +232,7 @@ function getwd() string
 ```
 Récupère le répertoire courant
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -249,7 +249,7 @@ function mkdir(name string)
 ```
 Crée un nouveau répertoire
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 
@@ -264,7 +264,7 @@ function readDir(name string) []string
 ```
 Lit le répertoire et retourne le nom des fichiers et des répertoires
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -281,7 +281,7 @@ function readFile(str string) string
 ```
 Retourne le contenu du fichier
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "os";
@@ -298,7 +298,7 @@ function remove(filename string)
 ```
 Supprime un fichier
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 
@@ -313,7 +313,7 @@ function removeAll(path string)
 ```
 Supprime un répertoire et son contenu
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 
@@ -328,7 +328,7 @@ function setEnv(key string, value string)
 ```
 Définit une variable d'environnement
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 
@@ -343,7 +343,7 @@ function setEnvByFile(filename string)
 ```
 Définit une variable d'environnement en lisant un fichier
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 
@@ -358,7 +358,7 @@ function unsetEnv(key string)
 ```
 Supprime une variable d'environnement
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 
@@ -373,7 +373,7 @@ function writeFile(filename string, content string)
 ```
 Écrit un fichier avec le contenu donné
 
-### Example :
+### Exemple :
 ```ecla
 import "os";
 

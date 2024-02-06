@@ -42,7 +42,7 @@ function abs(nb float) float
 ```
 Retourne la valeur absolue de nb
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -56,9 +56,9 @@ function testAbs() {
 ```
 function acos(x float) float
 ```
-Retourne arc cosinus de x 
+Retourne l'arc cosinus de x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -74,7 +74,7 @@ function acosh(x float) float
 ```
 Retourne l'arc cosinus hyperbolique de x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -90,7 +90,7 @@ function asin(x float) float
 ```
 Retourne l'arc sinus de x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -106,7 +106,7 @@ function asinh(x float) float
 ```
 Retourne l'arc sinus hyperbolique de x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -120,10 +120,9 @@ function testAsinh() {
 ```
 function atan(x float) float
 ```
-Returns arc tangent of x
 Retourne l'arc tangente de x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -139,7 +138,7 @@ function atanh(x float) float
 ```
 Retourne l'arc tangente hyperbolique de x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -155,7 +154,7 @@ function cbrt(nb float) float
 ```
 Retourne la racine cubique de nb
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -169,9 +168,9 @@ function testCbrt() {
 ```
 function ceil(nb float) float
 ```
-Retourne l'entier le plus petit qui est plus grand ou égal à x
+Retourne le plus petit entier qui est supérieur ou égal à x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -187,7 +186,7 @@ function Cos(adj float, hyp float) float
 ```
 Retourne l'adjacente / hypoténuse
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -203,7 +202,7 @@ function cosh(x float) float
 ```
 Retourne le cosinus hyperbolique de x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -217,9 +216,9 @@ function testCosh() {
 ```
 function degreesToRadians(deg float) float
 ```
-Retourne les degrès converti en radians
+Retourne la valeur en degrés convertis en radians
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -235,7 +234,7 @@ function exp(nb float) float
 ```
 Retourne e^nb (exponentielle)
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -251,7 +250,7 @@ function fact(nb int) int
 ```
 Retourne la factorielle de nb
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -267,7 +266,7 @@ function floor(nb float) float
 ```
 Retourne le plus grand nombre entier qui est plus petit ou égal à nb
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -284,7 +283,7 @@ function ln(nb float) float
 Retourne le logarithme naturel de nb
 
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -300,7 +299,7 @@ function log10(nb float) float
 ```
 Retourne le logarithme en base-10 de nb
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -316,7 +315,7 @@ function max(a float, b float) float
 ```
 Retourne le nombre le plus grand entre a et b
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -332,7 +331,7 @@ function min(a float, b float) float
 ```
 Retourne le nombre le plus petit entre a et b
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -348,7 +347,7 @@ function modulo(a float, b float) float
 ```
 Retourne le reste de a / b
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -364,7 +363,7 @@ function Pi() float
 ```
 Retourne Pi (3.14...)
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -380,7 +379,7 @@ function pow(x float, y float) float
 ```
 Retourne x^y
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -394,9 +393,9 @@ function testPow() {
 ```
 function radiansToDegrees(rad float) float
 ```
-Retourne les radians converti en degrés
+Retourne les radians convertis en degrés
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -412,7 +411,7 @@ function random(min float, max float) float
 ```
 Retourne un nombre aléatoire entre min et max
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -428,7 +427,7 @@ function round(nb float) float
 ```
 Retourne nb arrondi à l'entier le plus proche
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -444,7 +443,7 @@ function sin(opp float, hyp float) float
 ```
 Retourne opposé / hypoténuse
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -460,7 +459,7 @@ function sinh(x float) float
 ```
 Retourne le sinus hyperbolique de x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -476,7 +475,7 @@ function sqrt(nb float) float
 ```
 Retourne la racine carré de nb
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -492,7 +491,7 @@ function tan(opp float, adj float) float
 ```
 Retourne opposé / adjacent
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -508,7 +507,7 @@ function tanh(x float) float
 ```
 Retourne la tangente hyperbolique de x
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
@@ -524,7 +523,7 @@ function trunc(nb float) float
 ```
 Retourne la valeur entière de nb
 
-### Example :
+### Exemple :
 ```ecla
 import "console";
 import "math";
