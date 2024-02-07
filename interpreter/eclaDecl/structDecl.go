@@ -32,5 +32,5 @@ func (s *StructDecl) GetFieldsInOrder() []Field {
 }
 
 func (s *StructDecl) GetName() string {
-	return "struct"
+	return s.Name
 }
