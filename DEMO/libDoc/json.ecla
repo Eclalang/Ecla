@@ -2,19 +2,28 @@
 
 import "console";
 import "json";
+import "strings";
 
 # Test function Marshal
 function testMarshal() {
     var mapStr map[string]string = {"name": "Ecla", "members": "7", "language": "Golang"};
     var str string = json.marshal(mapStr);
     console.println(str);
+
+    var arrMap []map[string]string = [{"name": "Ecla", "members": "7", "language": "Golang"}, {"name": "Ecla", "members": "7", "language": "Golang"}];
+    str = json.marshal(arrMap);
+    console.println(str);
 }
 testMarshal();
 
 # Test function Unmarshal
 function testUnmarshal() {
-    var str string = "{'name': 'Ecla', 'members': '7', 'language': 'Golang'}";
+    var str string = "{\"name\": \"Ecla\", \"members\": \"7\", \"language\": \"Golang\"}";
     var obj map[string]string = json.unmarshal(str);
     console.println(obj);
+
+    var strArr string = "[{\"name\": \"Ecla\", \"members\": \"7\", \"language\": \"Golang\"}, {\"name\": \"Test\", \"members\": \"12\", \"language\": \"Python\"}]";
+    var objArr []map[string]string = json.unmarshal(strArr);
+    console.println(objArr);
 }
 testUnmarshal();
