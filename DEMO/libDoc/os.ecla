@@ -129,7 +129,6 @@ function testSetEnv() {
 }
 testSetEnv();
 
-# TODO : Fix if the file is not found or the file is empty
 # Test function SetEnvByFile
 function testSetEnvByFile() {
     os.setEnvByFile(".env");
