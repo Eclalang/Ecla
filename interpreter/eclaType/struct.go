@@ -13,8 +13,12 @@ type Struct struct {
 	definition *eclaDecl.StructDecl
 }
 
-func NewStruct() *Struct {
-	return &Struct{map[string]Type{}, "", nil}
+func NewStruct(def *eclaDecl.StructDecl) *Struct {
+	return &Struct{map[string]Type{}, "", def}
+}
+
+func (s *Struct) SetDefaultValues() {
+
 }
 
 func (s *Struct) GetValue() any {

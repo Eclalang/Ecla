@@ -106,6 +106,21 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			env.SetVar(tree.Name, v)
+		} else {
+			decl, ok := env.GetTypeDecl(tree.Type)
+			if !ok {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), "unknown type: "+tree.Type, errorHandler.LevelFatal)
+			}
+			switch decl.(type) {
+			case *eclaDecl.StructDecl:
+				m := eclaType.NewStruct(decl.(*eclaDecl.StructDecl))
+				m.SetType(tree.Type)
+				v, err := eclaType.NewVar(tree.Name, tree.Type, m)
+				if err != nil {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+				}
+				env.SetVar(tree.Name, v)
+			}
 		}
 	} else {
 		busCollection := RunTree(tree.Value, env)
