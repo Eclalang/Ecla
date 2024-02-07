@@ -473,8 +473,8 @@ func (s StructDecl) declNode() {}
 type StructInstantiationExpr struct {
 	StructNameToken lexer.Token
 	Name            string
-	LeftParen       lexer.Token
-	RightParen      lexer.Token
+	LeftBrace       lexer.Token
+	RightBrace      lexer.Token
 	Args            []Expr
 }
 
@@ -483,7 +483,7 @@ func (s StructInstantiationExpr) StartPos() int {
 }
 
 func (s StructInstantiationExpr) EndPos() int {
-	return s.RightParen.Position
+	return s.RightBrace.Position
 }
 
 func (s StructInstantiationExpr) precedence() int {

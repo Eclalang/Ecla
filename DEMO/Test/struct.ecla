@@ -28,7 +28,7 @@ function getPoint (p : Point)  (Point ){
 }
 
 # instantiate a struct
-var p Point = Point(1, 2, printSelf, Test("test"));
+var p Point = Point{1, 2, printSelf, Test{"test"}};
 
 # access fields
 console.println(p.x, p.y);
