@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -26,6 +27,7 @@ type Env struct {
 	Libs         map[string]libs.Lib
 	ErrorHandle  *errorHandler.ErrorHandler
 	ExecutedFunc []*eclaType.Function
+	TypeDecl     []eclaDecl.TypeDecl
 }
 
 // NewEnv returns a new Env.
@@ -250,6 +252,19 @@ func (env *Env) ConvertToLib(MainEnv *Env) libs.Lib {
 		Libs: env.Libs,
 		env:  MainEnv,
 	}
+}
+
+func (env *Env) AddTypeDecl(t eclaDecl.TypeDecl) {
+	env.TypeDecl = append(env.TypeDecl, t)
+}
+
+func (env *Env) GetTypeDecl(name string) (eclaDecl.TypeDecl, bool) {
+	for _, t := range env.TypeDecl {
+		if t.GetName() == name {
+			return t, true
+		}
+	}
+	return nil, false
 }
 
 // readFile reads the file at the given path and returns its contents as a string.

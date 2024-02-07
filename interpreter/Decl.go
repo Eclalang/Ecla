@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"github.com/Eclalang/Ecla/errorHandler"
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
@@ -215,4 +216,9 @@ func RunMapLiteral(tree parser.MapLiteral, env *Env) *Bus {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
 	return NewMainBus(m)
+}
+
+func RunStructDecl(tree parser.StructDecl, env *Env) {
+	strdecl := eclaDecl.NewStructDecl(tree)
+	env.AddTypeDecl(strdecl)
 }

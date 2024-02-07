@@ -66,6 +66,8 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		return RunBlockScopeStmt(tree.(parser.BlockScopeStmt), env)
 	case parser.AnonymousFunctionCallExpr:
 		return RunAnonymousFunctionCallExpr(tree.(parser.AnonymousFunctionCallExpr), env)
+	case parser.StructDecl:
+		RunStructDecl(tree.(parser.StructDecl), env)
 	}
 
 	return []*Bus{NewNoneBus()}
