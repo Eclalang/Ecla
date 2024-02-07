@@ -27,20 +27,19 @@ function testCount() {
 }
 testCount();
 
-# TODO : Fix this it's not working
 # Test function Cut
 function testCut() {
     var str string = "Hello World";
     var substr string = "W";
-    var before []string;
+    var before string;
     var after string;
     var found bool;
-    before = strings.cut(str, substr);
+    before, after, found = strings.cut(str, substr);
     console.println(before);
     console.println(after);
     console.println(found);
 }
-#testCut();
+testCut();
 
 # Test function HasPrefix
 function testHasPrefix() {
