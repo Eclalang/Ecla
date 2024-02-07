@@ -195,13 +195,10 @@ func (s *Struct) IsNull() bool {
 }
 
 func IsStruct(typ string) bool {
-	// exemple of type good : map[string]int
-	// exemple of good type : map[[]int]int
-	// exemple of bad type : []map[int]int
-	if len(typ) < 4 {
+	if len(typ) < 7 {
 		return false
 	}
-	if typ[:4] != "map[" {
+	if typ[:6] != "struct" {
 		return false
 	}
 	return true
