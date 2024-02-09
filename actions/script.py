@@ -14,11 +14,12 @@ def is_markdown_file(file):
     return isfile(file) and file.split(".")[-1] == "md"
 
 def calculate_id(file):
+    global current_id
     temp = file.split("/")
     if "FR" in temp:
         temp.remove("FR")
-    h = hash("/".join(temp))
-    if h in all_id:
+    h = "/".join(temp)
+    if h in all_id.keys():
         return all_id[h]
     else:
         all_id[h] = current_id
