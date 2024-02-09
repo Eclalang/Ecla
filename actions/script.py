@@ -18,6 +18,9 @@ def calculate_id(file):
     temp = file.split("/")
     if "FR" in temp:
         temp.remove("FR")
+    if "docs" in temp:
+        temp.remove("docs")
+    
     h = "/".join(temp)
     if h in all_id.keys():
         return all_id[h]
