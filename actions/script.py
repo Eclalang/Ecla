@@ -3,6 +3,8 @@ from os.path import isdir, isfile
 from json import dump
 
 current_dir = os.getcwd()
+all_id = {}
+current_id = 0
 
 def is_valid_dir(dir):
     return isdir(dir) and dir.split('/')[-1][0] != "."
@@ -10,6 +12,15 @@ def is_valid_dir(dir):
 def is_markdown_file(file):
     # print('split result: ', file.split(".")[-1] == "md")
     return isfile(file) and file.split(".")[-1] == "md"
+
+def calculate_id(file):
+    h = hash("/".join(file.split("/").remove("FR")))
+    if h in all_id:
+        return all_id[h]
+    else:
+        all_id[h] = current_id
+        current_id += 1
+        return all_id[h]
 
 def parse_directory(dir):
     resolved_files = []
@@ -23,7 +34,8 @@ def parse_directory(dir):
             resolved_files.append({
                 "link": f'{dir}/{element}'.split(f'{current_dir}/')[1],
                 "title": element.split(".md")[0],
-                "lang" : "fr" if "FR" in dir.split("/") else "en"
+                "lang" : "fr" if "FR" in dir.split("/") else "en",
+                "id" : calculate_id(f'{dir}/{element}')
             })
         # print('is_valid_dir: ', element, is_valid_dir(f'{dir}/{element}'))
         if is_valid_dir(f'{dir}/{element}'):
