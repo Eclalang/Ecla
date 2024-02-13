@@ -59,3 +59,23 @@ for (test,test2 range "hello totop you like mundo") {
     console.print("Value : " + test2);
     console.print("\n");
 };
+
+console.print("==================\n");
+
+for (test,test2 range {1: "hello", 2: "totop", 3: "you", 4: "like", 5: "mundo"}) {
+    console.print("Key : " + test);
+    console.print("\n");
+    console.print("Value : " + test2);
+    console.print("\n");
+};
+
+console.print("==================\n");
+
+m := {"hello": "world", "foo": "bar", "baz": "qux"};
+
+for (test,test2 range m) {
+    console.print("Key : " + test);
+    console.print("\n");
+    console.print("Value : " + test2);
+    console.print("\n");
+};
