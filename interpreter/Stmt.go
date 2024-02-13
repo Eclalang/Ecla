@@ -380,15 +380,15 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 		switch list.(type) {
 		case *eclaType.List:
 			typ = list.(*eclaType.List).GetType()[2:]
-			k, err = eclaType.NewVar(f.KeyToken.Value, "int", eclaType.NewInt("0"))
+			k, err = eclaType.NewVar(f.KeyToken.Value, parser.Int, eclaType.NewInt("0"))
 			if err != nil {
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			l = list.(*eclaType.List).Len()
 			keys = generateForRangeKeys(l)
 		case eclaType.String:
-			typ = "char"
-			k, err = eclaType.NewVar(f.KeyToken.Value, "int", eclaType.NewInt("0"))
+			typ = parser.Char
+			k, err = eclaType.NewVar(f.KeyToken.Value, parser.Int, eclaType.NewInt("0"))
 			if err != nil {
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
