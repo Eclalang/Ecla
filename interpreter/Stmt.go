@@ -425,6 +425,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			if err != nil {
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
+			env.NewScope(SCOPE_LOOP)
 			for _, stmt := range f.Body {
 				BusCollection2 := RunTree(stmt, env)
 				if IsMultipleBus(BusCollection2) {
@@ -432,9 +433,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				}
 				temp := BusCollection2[0]
 				if temp.IsReturn() {
+					env.EndScope()
 					return temp
 				}
 			}
+			env.EndScope()
 		}
 	} else {
 		f := eclaKeyWord.NewForI([]eclaType.Type{}, For.Body, For.CondExpr, For.PostAssignStmt)
