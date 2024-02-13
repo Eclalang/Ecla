@@ -307,3 +307,5 @@ func (m *Map) GetKeyTypes() string {
 func (m *Map) GetValueTypes() string {
 	return m.TypVal
 }
+
+func (m *Map) Len() int { return len(m.Keys) }
