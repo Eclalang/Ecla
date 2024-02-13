@@ -323,6 +323,7 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "while: MULTIPLE BUS IN RunWhileStmt", errorHandler.LevelFatal)
 	}
 	for BusCollection[0].GetVal().GetString() == "true" { //TODO add error
+		env.NewScope(SCOPE_LOOP)
 		for _, stmt := range while.Body {
 			BusCollection2 := RunTree(stmt, env)
 			if IsMultipleBus(BusCollection2) {
@@ -333,9 +334,11 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 			// TODO: add break and continue
 			// TODO add multiple bus
 			if temp.IsReturn() {
+				env.EndScope()
 				return temp
 			}
 		}
+		env.EndScope()
 		BusCollection = RunTree(while.Condition, env)
 		if IsMultipleBus(BusCollection) {
 			env.ErrorHandle.HandleError(0, tree.StartPos(), "while: MULTIPLE BUS IN RunWhileStmt", errorHandler.LevelFatal)
