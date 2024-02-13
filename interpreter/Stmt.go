@@ -323,6 +323,7 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "while: MULTIPLE BUS IN RunWhileStmt", errorHandler.LevelFatal)
 	}
 	for BusCollection[0].GetVal().GetString() == "true" { //TODO add error
+		env.NewScope(SCOPE_LOOP)
 		for _, stmt := range while.Body {
 			BusCollection2 := RunTree(stmt, env)
 			if IsMultipleBus(BusCollection2) {
@@ -333,9 +334,11 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 			// TODO: add break and continue
 			// TODO add multiple bus
 			if temp.IsReturn() {
+				env.EndScope()
 				return temp
 			}
 		}
+		env.EndScope()
 		BusCollection = RunTree(while.Condition, env)
 		if IsMultipleBus(BusCollection) {
 			env.ErrorHandle.HandleError(0, tree.StartPos(), "while: MULTIPLE BUS IN RunWhileStmt", errorHandler.LevelFatal)
@@ -425,6 +428,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			if err != nil {
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
+			env.NewScope(SCOPE_LOOP)
 			for _, stmt := range f.Body {
 				BusCollection2 := RunTree(stmt, env)
 				if IsMultipleBus(BusCollection2) {
@@ -432,9 +436,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				}
 				temp := BusCollection2[0]
 				if temp.IsReturn() {
+					env.EndScope()
 					return temp
 				}
 			}
+			env.EndScope()
 		}
 	} else {
 		f := eclaKeyWord.NewForI([]eclaType.Type{}, For.Body, For.CondExpr, For.PostAssignStmt)
@@ -444,6 +450,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			env.ErrorHandle.HandleError(0, f.Condition.StartPos(), "for: MULTIPLE BUS IN RunForStmt", errorHandler.LevelFatal)
 		}
 		for BusCollection[0].GetVal().GetString() == "true" {
+			env.NewScope(SCOPE_LOOP)
 			for _, stmt := range f.Body {
 				BusCollection2 := RunTree(stmt, env)
 				if IsMultipleBus(BusCollection2) {
@@ -451,9 +458,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				}
 				temp := BusCollection2[0]
 				if temp.IsReturn() {
+					env.EndScope()
 					return temp
 				}
 			}
+			env.EndScope()
 			RunTree(f.Post, env)
 			BusCollection = RunTree(f.Condition, env)
 			if IsMultipleBus(BusCollection) {
