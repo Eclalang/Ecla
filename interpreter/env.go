@@ -193,7 +193,13 @@ func (env *Env) Import(stmt parser.ImportStmt) {
 
 		temp = tempsEnv.ConvertToLib(env)
 	}
-	env.Libs[parser.GetPackageNameByPath(file)] = temp
+	name := parser.GetPackageNameByPath(file)
+	env.Libs[name] = temp
+	v, err := eclaType.NewVar(name, "", eclaType.NewLib(name))
+	if err != nil {
+		env.ErrorHandle.HandleError(stmt.ImportToken.Line, 0, err.Error(), errorHandler.LevelFatal)
+	}
+	env.Vars.Set(name, v)
 }
 
 // AddFunctionExecuted adds a function to the pile of executed functions.

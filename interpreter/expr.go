@@ -68,6 +68,8 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		return RunAnonymousFunctionCallExpr(tree.(parser.AnonymousFunctionCallExpr), env)
 	case parser.StructDecl:
 		RunStructDecl(tree.(parser.StructDecl), env)
+	case parser.SelectorExpr:
+		RunSelectorExpr(tree.(parser.SelectorExpr), env)
 	}
 
 	return []*Bus{NewNoneBus()}
@@ -336,4 +338,13 @@ func RunBlockScopeStmt(tree parser.BlockScopeStmt, env *Env) []*Bus {
 		RunTree(v, env)
 	}
 	return []*Bus{NewNoneBus()}
+}
+
+func RunSelectorExpr(expr parser.SelectorExpr, env *Env) {
+	fmt.Printf("SelectorExpr: %v\n", expr)
+	expr1 := RunTree(expr.Expr, env)
+	if IsMultipleBus(expr1) {
+		env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
+	}
+	fmt.Printf("SelectorExpr: %v\n", expr1[0].GetVal())
 }
