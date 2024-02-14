@@ -382,10 +382,12 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env) []*Bus {
 		}
 	}
 
-	expr2 := RunTree(expr.Sel, env)
-	if IsMultipleBus(expr2) {
-		env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
-	}
+	// TODO : implements for struct
+
+	//expr2 := RunTree(expr.Sel, env)
+	//if IsMultipleBus(expr2) {
+	//	env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
+	//}
 
 	return nil
 }
