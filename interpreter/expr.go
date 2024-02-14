@@ -69,7 +69,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 	case parser.StructDecl:
 		RunStructDecl(tree.(parser.StructDecl), env)
 	case parser.SelectorExpr:
-		RunSelectorExpr(tree.(parser.SelectorExpr), env)
+		return RunSelectorExpr(tree.(parser.SelectorExpr), env)
 	}
 
 	return []*Bus{NewNoneBus()}
@@ -340,11 +340,52 @@ func RunBlockScopeStmt(tree parser.BlockScopeStmt, env *Env) []*Bus {
 	return []*Bus{NewNoneBus()}
 }
 
-func RunSelectorExpr(expr parser.SelectorExpr, env *Env) {
-	fmt.Printf("SelectorExpr: %v\n", expr)
+func RunSelectorExpr(expr parser.SelectorExpr, env *Env) []*Bus {
 	expr1 := RunTree(expr.Expr, env)
 	if IsMultipleBus(expr1) {
 		env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
 	}
-	fmt.Printf("SelectorExpr: %v\n", expr1[0].GetVal())
+	var prev eclaType.Type
+	switch expr1[0].GetVal().(type) {
+	case *eclaType.Var:
+		prev = expr1[0].GetVal().(*eclaType.Var).Value
+	}
+
+	switch prev.(type) {
+	case *eclaType.Lib:
+		lib := env.Libs[prev.(*eclaType.Lib).Name]
+		switch expr.Sel.(type) {
+		case parser.FunctionCallExpr:
+			var args []eclaType.Type
+			for _, v := range expr.Sel.(parser.FunctionCallExpr).Args {
+				BusCollection := RunTree(v, env)
+				for _, bus := range BusCollection {
+					temp := bus.GetVal()
+					switch temp.(type) {
+					case *eclaType.Var:
+						temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+					}
+					args = append(args, temp)
+				}
+			}
+			var returnBuses []*Bus
+			result, err := lib.Call(expr.Sel.(parser.FunctionCallExpr).Name, args)
+			if err != nil {
+				env.ErrorHandle.HandleError(0, expr.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
+			for _, elem := range result {
+				returnBuses = append(returnBuses, NewMainBus(elem))
+			}
+			return returnBuses
+		default:
+			env.ErrorHandle.HandleError(0, expr.StartPos(), "SelectorExpr not implemented", errorHandler.LevelFatal)
+		}
+	}
+
+	expr2 := RunTree(expr.Sel, env)
+	if IsMultipleBus(expr2) {
+		env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
+	}
+
+	return nil
 }
