@@ -323,6 +323,7 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), "while: MULTIPLE BUS IN RunWhileStmt", errorHandler.LevelFatal)
 	}
 	for BusCollection[0].GetVal().GetString() == "true" { //TODO add error
+		env.NewScope(SCOPE_LOOP)
 		for _, stmt := range while.Body {
 			BusCollection2 := RunTree(stmt, env)
 			if IsMultipleBus(BusCollection2) {
@@ -333,15 +334,25 @@ func RunWhileStmt(tree parser.WhileStmt, env *Env) *Bus {
 			// TODO: add break and continue
 			// TODO add multiple bus
 			if temp.IsReturn() {
+				env.EndScope()
 				return temp
 			}
 		}
+		env.EndScope()
 		BusCollection = RunTree(while.Condition, env)
 		if IsMultipleBus(BusCollection) {
 			env.ErrorHandle.HandleError(0, tree.StartPos(), "while: MULTIPLE BUS IN RunWhileStmt", errorHandler.LevelFatal)
 		}
 	}
 	return NewNoneBus()
+}
+
+func generateForRangeKeys(max int) []eclaType.Type {
+	var keys []eclaType.Type
+	for i := 0; i < max; i++ {
+		keys = append(keys, eclaType.NewInt(strconv.Itoa(i)))
+	}
+	return keys
 }
 
 // RunForStmt runs the for statement
@@ -351,10 +362,6 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 	tokenEmpty := lexer.Token{}
 	if For.RangeToken != tokenEmpty {
 		f := eclaKeyWord.NewForRange([]eclaType.Type{}, For.RangeExpr, For.KeyToken, For.ValueToken, For.Body)
-		k, err := eclaType.NewVar(f.KeyToken.Value, "int", eclaType.NewInt("0"))
-		if err != nil {
-			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
-		}
 		BusCollection := RunTree(f.RangeExpr, env)
 		if IsMultipleBus(BusCollection) {
 			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "MULTIPLE BUS IN RunForStmt", errorHandler.LevelFatal)
@@ -364,25 +371,40 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 		var l int //...
 		//fmt.Printf("%T", list)
 		switch list.(type) {
+		case *eclaType.Var:
+			list = list.(*eclaType.Var).Value
+		}
+
+		var k *eclaType.Var
+		var err error
+
+		var keys []eclaType.Type
+
+		switch list.(type) {
 		case *eclaType.List:
 			typ = list.(*eclaType.List).GetType()[2:]
-			l = list.(*eclaType.List).Len()
-		case eclaType.String:
-			typ = "char"
-			l = list.(eclaType.String).Len()
-		case *eclaType.Var:
-			temp := list.(*eclaType.Var).GetValue()
-			//fmt.Printf("%T", temp)
-			switch temp.(type) {
-			case *eclaType.List:
-				typ = temp.(*eclaType.List).GetType()[2:]
-				l = temp.(*eclaType.List).Len()
-			case eclaType.String:
-				typ = "char"
-				l = temp.(eclaType.String).Len()
-			default:
-				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "for range: type "+list.GetType()+" not supported", errorHandler.LevelFatal)
+			k, err = eclaType.NewVar(f.KeyToken.Value, parser.Int, eclaType.NewInt("0"))
+			if err != nil {
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
+			l = list.(*eclaType.List).Len()
+			keys = generateForRangeKeys(l)
+		case eclaType.String:
+			typ = parser.Char
+			k, err = eclaType.NewVar(f.KeyToken.Value, parser.Int, eclaType.NewInt("0"))
+			if err != nil {
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
+			l = list.(eclaType.String).Len()
+			keys = generateForRangeKeys(l)
+		case *eclaType.Map:
+			k, err = eclaType.NewVar(f.KeyToken.Value, list.(*eclaType.Map).TypKey, list.(*eclaType.Map).Keys[0])
+			if err != nil {
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
+			typ = list.(*eclaType.Map).TypVal
+			l = list.(*eclaType.Map).Len()
+			keys = list.(*eclaType.Map).Keys
 		default:
 			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "type "+list.GetType()+" not supported", errorHandler.LevelFatal)
 		}
@@ -394,11 +416,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 		}
 		env.SetVar(f.ValueToken.Value, v)
 		for i := 0; i < l; i++ {
-			err := k.SetVar(eclaType.NewInt(strconv.Itoa(i)))
+			err := k.SetVar(keys[i])
 			if err != nil {
 				return nil
 			}
-			val, err := list.GetIndex(eclaType.Int(i))
+			val, err := list.GetIndex(keys[i])
 			if err != nil {
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
@@ -406,6 +428,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			if err != nil {
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
+			env.NewScope(SCOPE_LOOP)
 			for _, stmt := range f.Body {
 				BusCollection2 := RunTree(stmt, env)
 				if IsMultipleBus(BusCollection2) {
@@ -413,9 +436,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				}
 				temp := BusCollection2[0]
 				if temp.IsReturn() {
+					env.EndScope()
 					return temp
 				}
 			}
+			env.EndScope()
 		}
 	} else {
 		f := eclaKeyWord.NewForI([]eclaType.Type{}, For.Body, For.CondExpr, For.PostAssignStmt)
@@ -425,6 +450,7 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			env.ErrorHandle.HandleError(0, f.Condition.StartPos(), "for: MULTIPLE BUS IN RunForStmt", errorHandler.LevelFatal)
 		}
 		for BusCollection[0].GetVal().GetString() == "true" {
+			env.NewScope(SCOPE_LOOP)
 			for _, stmt := range f.Body {
 				BusCollection2 := RunTree(stmt, env)
 				if IsMultipleBus(BusCollection2) {
@@ -432,9 +458,11 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				}
 				temp := BusCollection2[0]
 				if temp.IsReturn() {
+					env.EndScope()
 					return temp
 				}
 			}
+			env.EndScope()
 			RunTree(f.Post, env)
 			BusCollection = RunTree(f.Condition, env)
 			if IsMultipleBus(BusCollection) {
