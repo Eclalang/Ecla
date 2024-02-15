@@ -341,9 +341,14 @@ func (p *Parser) ParseStructField() StructField {
 
 // ParseIdent parses an identifier and checking if it is function or method call,a variable declaration or an indexable variable access
 func (p *Parser) ParseIdent() Node {
-
 	if p.Peek(1).TokenType == lexer.LPAREN {
 		return p.ParseFunctionCallExpr()
+	} else if p.Peek(1).TokenType == lexer.LBRACE {
+		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			if _, ok2 := DefaultVarTypes[p.CurrentToken.Value]; !ok2 {
+				return p.ParseStructInstantiation()
+			}
+		}
 	} else if p.Peek(1).TokenType == lexer.PERIOD {
 		return p.ParseExpr()
 	} else if p.Peek(1).TokenType == lexer.COLON {
@@ -352,6 +357,8 @@ func (p *Parser) ParseIdent() Node {
 	} else {
 		return p.ParseVariableAssign()
 	}
+	p.HandleFatal("Unknown identifier: " + p.CurrentToken.Value)
+	return nil
 }
 
 // ParseTypeStmt parses a type statement
@@ -613,8 +620,6 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 			if _, ok2 := DefaultVarTypes[p.CurrentToken.Value]; ok2 {
 				p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
 			}
-			// if the function name is a type name that is not a default type, it is a struct instantiation
-			return p.ParseStructInstantiation()
 		}
 	} else {
 		p.HandleFatal("Expected function name instead of " + p.CurrentToken.Value)
@@ -652,15 +657,15 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 func (p *Parser) ParseStructInstantiation() StructInstantiationExpr {
 	tempStructInstantiation := StructInstantiationExpr{StructNameToken: p.CurrentToken, Name: p.CurrentToken.Value}
 	p.Step()
-	if p.CurrentToken.TokenType != lexer.LPAREN {
-		p.HandleFatal("Expected struct instantiation LPAREN")
+	if p.CurrentToken.TokenType != lexer.LBRACE {
+		p.HandleFatal("Expected struct instantiation LBRACE")
 	}
-	tempStructInstantiation.LeftParen = p.CurrentToken
-	if p.Peek(1).TokenType != lexer.RPAREN {
-		for p.CurrentToken.TokenType != lexer.RPAREN {
+	tempStructInstantiation.LeftBrace = p.CurrentToken
+	if p.Peek(1).TokenType != lexer.RBRACE {
+		for p.CurrentToken.TokenType != lexer.RBRACE {
 			p.Step()
 			tempExpr := p.ParseExpr()
-			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RBRACE {
 				p.PrintBacktrace()
 				p.HandleFatal("Expected comma between function call arguments")
 			}
@@ -674,10 +679,10 @@ func (p *Parser) ParseStructInstantiation() StructInstantiationExpr {
 		// if it is empty, it means that the struct is instantiated without with the default values
 		tempStructInstantiation.Args = nil
 	}
-	if p.CurrentToken.TokenType != lexer.RPAREN {
+	if p.CurrentToken.TokenType != lexer.RBRACE {
 		p.HandleFatal("Expected struct instantiation RPAREN")
 	}
-	tempStructInstantiation.RightParen = p.CurrentToken
+	tempStructInstantiation.RightBrace = p.CurrentToken
 	p.Step()
 	return tempStructInstantiation
 }
@@ -899,6 +904,13 @@ func (p *Parser) ParseOperand() Expr {
 		lookAhead := p.Peek(1)
 		if lookAhead.TokenType == lexer.LPAREN {
 			return p.ParseFunctionCallExpr()
+		}
+		if lookAhead.TokenType == lexer.LBRACE {
+			if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+				if _, ok2 := DefaultVarTypes[p.CurrentToken.Value]; !ok2 {
+					return p.ParseStructInstantiation()
+				}
+			}
 		}
 	}
 	return p.ParseLiteral()
