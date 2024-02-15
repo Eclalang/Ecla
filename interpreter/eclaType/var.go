@@ -232,6 +232,14 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 			Value: val,
 		}, nil
 	}
+	if len(value.GetType()) > 7 {
+		if value.GetType()[:6] == parser.Struct && value.GetType()[7:] == Type {
+			return &Var{
+				Name:  name,
+				Value: NewStruct(value.(*Struct).Definition),
+			}, nil
+		}
+	}
 
 	if Type == "" {
 		Type = value.GetType()

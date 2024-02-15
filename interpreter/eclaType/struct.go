@@ -10,7 +10,7 @@ import (
 type Struct struct {
 	Fields     map[string]Type
 	Typ        string
-	definition *eclaDecl.StructDecl
+	Definition *eclaDecl.StructDecl
 }
 
 func NewStruct(def *eclaDecl.StructDecl) *Struct {
@@ -40,7 +40,7 @@ func (s *Struct) SetValue(v any) error {
 
 func (s *Struct) String() string {
 	var str string
-	for _, fieldName := range s.definition.Order {
+	for _, fieldName := range s.Definition.Order {
 		str += s.Fields[fieldName].String() + ", "
 	}
 	return s.Typ + "{" + str[:len(str)-2] + "}"
