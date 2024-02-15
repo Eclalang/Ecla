@@ -14,7 +14,7 @@ type Struct struct {
 }
 
 func NewStruct(def *eclaDecl.StructDecl) *Struct {
-	return &Struct{map[string]Type{}, "", def}
+	return &Struct{map[string]Type{}, def.Name, def}
 }
 
 func (s *Struct) SetDefaultValues() {
