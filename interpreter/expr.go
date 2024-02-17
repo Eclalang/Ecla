@@ -384,14 +384,18 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env) []*Bus {
 		default:
 			env.ErrorHandle.HandleError(0, expr.StartPos(), "SelectorExpr not implemented", errorHandler.LevelFatal)
 		}
+	case *eclaType.Struct:
+
 	}
 
-	// TODO : implements for struct
+	switch expr.Sel.(type) {
+	case parser.Literal:
+		sel := expr.Sel.(parser.Literal)
+		if sel.Type == "VAR" { //TODO don't hard code "VAR"
 
-	//expr2 := RunTree(expr.Sel, env)
-	//if IsMultipleBus(expr2) {
-	//	env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
-	//}
+		}
+		fmt.Println("type: " + sel.Type + "\nvalue: " + sel.Value)
+	}
 
 	return nil
 }
