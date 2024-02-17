@@ -21,6 +21,13 @@ func (s *Struct) AddField(index int, val Type) {
 	s.Fields[s.Definition.Order[index]] = val
 }
 
+func (s *Struct) Verify() error {
+	if len(s.Fields) != len(s.Definition.Order) {
+		return errors.New("struct does not have the right number of fields")
+	}
+	return nil
+}
+
 func (s *Struct) GetValue() any {
 	return s
 }

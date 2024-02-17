@@ -514,5 +514,9 @@ func RunStructInstantiationExpr(tree parser.StructInstantiationExpr, env *Env) [
 		}
 		s.AddField(i, temp)
 	}
+	err := s.Verify()
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+	}
 	return []*Bus{NewMainBus(s)}
 }
