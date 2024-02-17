@@ -483,10 +483,54 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 				} else {
 					env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
 				}
+			case parser.IndexableAccessExpr:
+				tree := expr.Expr.(parser.IndexableAccessExpr)
+				s := prev.(*eclaType.Struct)
+				result, ok := s.Fields[tree.VariableName]
+				if !ok {
+					env.ErrorHandle.HandleError(0, expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+				}
+				for i := range tree.Indexes {
+					BusCollection := RunTree(tree.Indexes[i], env)
+					if IsMultipleBus(BusCollection) {
+						env.ErrorHandle.HandleError(0, tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
+					}
+					elem := BusCollection[0].GetVal()
+					temp, err := result.GetIndex(elem)
+
+					result = *temp
+
+					if err != nil {
+						env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+					}
+				}
+				prev = result
 			default:
 				fmt.Printf("%T\n", expr.Sel)
 			}
 			return RunSelectorExpr(sel, env, prev)
+		case parser.IndexableAccessExpr:
+			tree := expr.Sel.(parser.IndexableAccessExpr)
+			s := prev.(*eclaType.Struct)
+			result, ok := s.Fields[tree.VariableName]
+			if !ok {
+				env.ErrorHandle.HandleError(0, expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+			}
+			for i := range tree.Indexes {
+				BusCollection := RunTree(tree.Indexes[i], env)
+				if IsMultipleBus(BusCollection) {
+					env.ErrorHandle.HandleError(0, tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
+				}
+				elem := BusCollection[0].GetVal()
+				temp, err := result.GetIndex(elem)
+
+				result = *temp
+
+				if err != nil {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+				}
+			}
+			return []*Bus{NewMainBus(result)}
 		default:
 			fmt.Printf("%T\n", expr.Sel)
 		}
