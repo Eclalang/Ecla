@@ -290,11 +290,11 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 		elem := BusCollection[0].GetVal()
 		temp, err := result.GetIndex(elem)
 
-		result = *temp
-
 		if err != nil {
 			env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
+		result = *temp
+
 	}
 	return NewMainBus(result)
 }
