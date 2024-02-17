@@ -60,7 +60,7 @@ func (s *Struct) GetString() String {
 
 // GetType returns the type Struct
 func (s *Struct) GetType() string {
-	return "struct " + s.Typ
+	return s.Typ
 }
 
 func (s *Struct) SetType(t string) {

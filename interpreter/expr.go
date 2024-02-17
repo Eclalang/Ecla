@@ -355,6 +355,8 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 		switch expr1[0].GetVal().(type) {
 		case *eclaType.Var:
 			prev = expr1[0].GetVal().(*eclaType.Var).Value
+		default:
+			prev = expr1[0].GetVal()
 		}
 	}
 
@@ -484,7 +486,7 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 					env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
 				}
 			case parser.IndexableAccessExpr:
-				tree := expr.Expr.(parser.IndexableAccessExpr)
+				tree := sel.Expr.(parser.IndexableAccessExpr)
 				s := prev.(*eclaType.Struct)
 				result, ok := s.Fields[tree.VariableName]
 				if !ok {
@@ -534,9 +536,11 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 		default:
 			fmt.Printf("%T\n", expr.Sel)
 		}
+	default:
+		fmt.Printf("%T\n", prev)
 	}
 
-	return nil
+	return []*Bus{NewNoneBus()}
 }
 
 func RunStructInstantiationExpr(tree parser.StructInstantiationExpr, env *Env) []*Bus {
