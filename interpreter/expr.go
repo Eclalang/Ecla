@@ -69,7 +69,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 	case parser.StructDecl:
 		RunStructDecl(tree.(parser.StructDecl), env)
 	case parser.SelectorExpr:
-		return RunSelectorExpr(tree.(parser.SelectorExpr), env)
+		return RunSelectorExpr(tree.(parser.SelectorExpr), env, nil)
 	case parser.StructInstantiationExpr:
 		return RunStructInstantiationExpr(tree.(parser.StructInstantiationExpr), env)
 	default:
@@ -344,15 +344,19 @@ func RunBlockScopeStmt(tree parser.BlockScopeStmt, env *Env) []*Bus {
 	return []*Bus{NewNoneBus()}
 }
 
-func RunSelectorExpr(expr parser.SelectorExpr, env *Env) []*Bus {
-	expr1 := RunTree(expr.Expr, env)
-	if IsMultipleBus(expr1) {
-		env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
-	}
-	var prev eclaType.Type
-	switch expr1[0].GetVal().(type) {
-	case *eclaType.Var:
-		prev = expr1[0].GetVal().(*eclaType.Var).Value
+func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) []*Bus {
+	prev := Struct
+	fmt.Println("ici")
+	if Struct == nil {
+		expr1 := RunTree(expr.Expr, env)
+		if IsMultipleBus(expr1) {
+			env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
+		}
+
+		switch expr1[0].GetVal().(type) {
+		case *eclaType.Var:
+			prev = expr1[0].GetVal().(*eclaType.Var).Value
+		}
 	}
 
 	switch prev.(type) {
@@ -429,6 +433,8 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env) []*Bus {
 				retValues = append(retValues, NewMainBus(v))
 			}
 			return retValues
+		case parser.SelectorExpr:
+			return RunSelectorExpr(expr.Sel.(parser.SelectorExpr), env, prev.(*eclaType.Struct))
 		default:
 			fmt.Printf("%T\n", expr.Sel)
 		}
