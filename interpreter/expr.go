@@ -49,7 +49,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 	case parser.ReturnStmt:
 		r := RunReturnStmt(tree.(parser.ReturnStmt), env)
 		fn := env.GetFunctionExecuted()
-		ok := fn.CheckReturn(r)
+		ok := fn.CheckReturn(r, env.TypeDecl)
 		if !ok {
 			env.ErrorHandle.HandleError(0, tree.StartPos(), "Return type of function "+fn.Name+" is incorrect", errorHandler.LevelFatal)
 		}
@@ -236,7 +236,7 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, args []eclaType.Type) ([]eclaType.Type, error) {
 	env.NewScope(SCOPE_FUNCTION)
 	defer env.EndScope()
-	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args)
+	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args, env.TypeDecl)
 	if !ok {
 		env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("Function %s called with incorrect arguments", Name), errorHandler.LevelFatal)
 	}

@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/parser"
 )
 
@@ -249,7 +250,7 @@ func (f *Function) GetIndexOfArgs(args []Type) int {
 	return cursor
 }
 
-func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*Var) {
+func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type, StructDecl []eclaDecl.TypeDecl) (bool, map[string]*Var) {
 	indexOfArgs := f.GetIndexOfArgs(args)
 	f.lastIndexOfArgs = indexOfArgs
 	if indexOfArgs == -1 {
@@ -270,7 +271,16 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*
 			tp = parser.Any
 		}
 		if tp != paramType {
-			return false, nil
+			isImplemented := false
+			for _, decl := range StructDecl {
+				if decl.GetName() == paramType {
+					isImplemented = true
+					break
+				}
+			}
+			if !isImplemented {
+				return false, nil
+			}
 		}
 		v, err := NewVar(paramName, tp, elem)
 		if err != nil {
@@ -282,7 +292,7 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type) (bool, map[string]*
 	return true, argsType
 }
 
-func (f *Function) CheckReturn(ret []Type) bool {
+func (f *Function) CheckReturn(ret []Type, StructDecl []eclaDecl.TypeDecl) bool {
 
 	key := generateArgsString(f.Args[f.lastIndexOfArgs])
 	if len(f.Return[key]) != len(ret) {
@@ -301,7 +311,16 @@ func (f *Function) CheckReturn(ret []Type) bool {
 		}
 		tp := elem.GetType()
 		if tp != r {
-			return false
+			isImplemented := false
+			for _, decl := range StructDecl {
+				if decl.GetName() == r {
+					isImplemented = true
+					break
+				}
+			}
+			if !isImplemented {
+				return false
+			}
 		}
 	}
 	return true

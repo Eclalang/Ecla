@@ -1,6 +1,7 @@
 package eclaType
 
 import (
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"testing"
 )
 
@@ -63,9 +64,10 @@ func TestNewFunction(t *testing.T) {
 }
 
 func TestTypeAndNumberOfArgsIsCorrect(t *testing.T) {
+	var structDecl []eclaDecl.TypeDecl
 	f := NewFunction("test", nil, nil, nil)
 	var args []Type
-	test, expect := f.TypeAndNumberOfArgsIsCorrect(args)
+	test, expect := f.TypeAndNumberOfArgsIsCorrect(args, structDecl)
 	if !test || expect == nil {
 		t.Errorf("Expected true, got %v", test)
 	}
@@ -73,8 +75,9 @@ func TestTypeAndNumberOfArgsIsCorrect(t *testing.T) {
 
 func TestCheckReturn(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
+	var structDecl []eclaDecl.TypeDecl
 	var args []Type
-	expect := f.CheckReturn(args)
+	expect := f.CheckReturn(args, structDecl)
 	if !expect {
 		t.Errorf("Expected true, got %v", expect)
 	}
