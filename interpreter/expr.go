@@ -70,6 +70,8 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		RunStructDecl(tree.(parser.StructDecl), env)
 	case parser.SelectorExpr:
 		return RunSelectorExpr(tree.(parser.SelectorExpr), env)
+	default:
+		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Not implemented : %T\n", tree), errorHandler.LevelFatal)
 	}
 
 	return []*Bus{NewNoneBus()}
