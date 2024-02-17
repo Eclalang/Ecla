@@ -385,16 +385,53 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env) []*Bus {
 			env.ErrorHandle.HandleError(0, expr.StartPos(), "SelectorExpr not implemented", errorHandler.LevelFatal)
 		}
 	case *eclaType.Struct:
+		switch expr.Sel.(type) {
+		case parser.Literal:
+			sel := expr.Sel.(parser.Literal)
+			if sel.Type == "VAR" { //TODO don't hard code "VAR"
+				s := prev.(*eclaType.Struct)
+				result, ok := s.Fields[sel.Value]
+				if !ok {
+					env.ErrorHandle.HandleError(0, expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+				}
+				return []*Bus{NewMainBus(result)}
+			}
+		case parser.FunctionCallExpr:
+			tree := expr.Sel.(parser.FunctionCallExpr)
+			var args []eclaType.Type
+			for _, v := range tree.Args {
+				BusCollection := RunTree(v, env)
+				for _, bus := range BusCollection {
+					temp := bus.GetVal()
+					switch temp.(type) {
+					case *eclaType.Var:
+						temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+					}
+					args = append(args, temp)
+				}
+			}
 
-	}
-
-	switch expr.Sel.(type) {
-	case parser.Literal:
-		sel := expr.Sel.(parser.Literal)
-		if sel.Type == "VAR" { //TODO don't hard code "VAR"
-
+			fn, ok := prev.(*eclaType.Struct).Fields[tree.Name]
+			if !ok {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), "field does not exist", errorHandler.LevelFatal)
+			}
+			var foo *eclaType.Function
+			switch fn.(type) {
+			case *eclaType.Function:
+				foo = fn.(*eclaType.Function)
+			}
+			r, err := RunFunctionCallExprWithArgs(tree.Name, env, foo, args)
+			if err != nil {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
+			var retValues []*Bus
+			for _, v := range r {
+				retValues = append(retValues, NewMainBus(v))
+			}
+			return retValues
+		default:
+			fmt.Printf("%T\n", expr.Sel)
 		}
-		fmt.Println("type: " + sel.Type + "\nvalue: " + sel.Value)
 	}
 
 	return nil
@@ -412,7 +449,12 @@ func RunStructInstantiationExpr(tree parser.StructInstantiationExpr, env *Env) [
 		if IsMultipleBus(val) {
 			env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN StructInstantiationExpr", errorHandler.LevelFatal)
 		}
-		s.AddField(i, val[0].GetVal())
+		temp := val[0].GetVal()
+		switch temp.(type) {
+		case *eclaType.Var:
+			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+		}
+		s.AddField(i, temp)
 	}
 	return []*Bus{NewMainBus(s)}
 }
