@@ -346,7 +346,6 @@ func RunBlockScopeStmt(tree parser.BlockScopeStmt, env *Env) []*Bus {
 
 func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) []*Bus {
 	prev := Struct
-	fmt.Println("ici")
 	if Struct == nil {
 		expr1 := RunTree(expr.Expr, env)
 		if IsMultipleBus(expr1) {
@@ -434,7 +433,60 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			}
 			return retValues
 		case parser.SelectorExpr:
-			return RunSelectorExpr(expr.Sel.(parser.SelectorExpr), env, prev.(*eclaType.Struct))
+			sel := expr.Sel.(parser.SelectorExpr)
+			switch sel.Expr.(type) {
+
+			case parser.Literal:
+				sel := sel.Expr.(parser.Literal)
+				if sel.Type == "VAR" { //TODO don't hard code "VAR"
+					s := prev.(*eclaType.Struct)
+					result, ok := s.Fields[sel.Value]
+					if !ok {
+						env.ErrorHandle.HandleError(0, expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+					}
+					prev = result
+				}
+			case parser.FunctionCallExpr:
+				tree := sel.Expr.(parser.FunctionCallExpr)
+				var args []eclaType.Type
+				for _, v := range tree.Args {
+					BusCollection := RunTree(v, env)
+					for _, bus := range BusCollection {
+						temp := bus.GetVal()
+						switch temp.(type) {
+						case *eclaType.Var:
+							temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+						}
+						args = append(args, temp)
+					}
+				}
+
+				fn, ok := prev.(*eclaType.Struct).Fields[tree.Name]
+				if !ok {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "field does not exist", errorHandler.LevelFatal)
+				}
+				var foo *eclaType.Function
+				switch fn.(type) {
+				case *eclaType.Function:
+					foo = fn.(*eclaType.Function)
+				}
+				r, err := RunFunctionCallExprWithArgs(tree.Name, env, foo, args)
+				if err != nil {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+				}
+				var retValues []*Bus
+				for _, v := range r {
+					retValues = append(retValues, NewMainBus(v))
+				}
+				if len(retValues) == 1 {
+					prev = retValues[0].GetVal()
+				} else {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
+				}
+			default:
+				fmt.Printf("%T\n", expr.Sel)
+			}
+			return RunSelectorExpr(sel, env, prev)
 		default:
 			fmt.Printf("%T\n", expr.Sel)
 		}
