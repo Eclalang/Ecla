@@ -2,8 +2,8 @@ package interpreter
 
 import (
 	"fmt"
-
 	"github.com/Eclalang/Ecla/errorHandler"
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
@@ -70,6 +70,8 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		RunStructDecl(tree.(parser.StructDecl), env)
 	case parser.SelectorExpr:
 		return RunSelectorExpr(tree.(parser.SelectorExpr), env)
+	case parser.StructInstantiationExpr:
+		return RunStructInstantiationExpr(tree.(parser.StructInstantiationExpr), env)
 	default:
 		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Not implemented : %T\n", tree), errorHandler.LevelFatal)
 	}
@@ -392,4 +394,21 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env) []*Bus {
 	//}
 
 	return nil
+}
+
+func RunStructInstantiationExpr(tree parser.StructInstantiationExpr, env *Env) []*Bus {
+	decl, ok := env.GetTypeDecl(tree.Name)
+	if !ok {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "unknown type: "+tree.Name, errorHandler.LevelFatal)
+	}
+	s := eclaType.NewStruct(decl.(*eclaDecl.StructDecl))
+	s.SetType(tree.Name)
+	for i, arg := range tree.Args {
+		val := RunTree(arg, env)
+		if IsMultipleBus(val) {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN StructInstantiationExpr", errorHandler.LevelFatal)
+		}
+		s.AddField(i, val[0].GetVal())
+	}
+	return []*Bus{NewMainBus(s)}
 }

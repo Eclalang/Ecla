@@ -234,17 +234,20 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 	}
 	if len(value.GetType()) > 7 {
 		if value.GetType()[:6] == parser.Struct && value.GetType()[7:] == Type {
-			return &Var{
-				Name:  name,
-				Value: NewStruct(value.(*Struct).Definition),
-			}, nil
+
 		}
 	}
 
 	if Type == "" {
 		Type = value.GetType()
 	} else if Type != value.GetType() && !value.IsNull() {
-		return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
+		if len(value.GetType()) > 7 {
+			if !(value.GetType()[:6] == parser.Struct && value.GetType()[7:] == Type) {
+				return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
+			}
+		} else {
+			return nil, errors.New("cannot create variable of type " + Type + " with value of type " + value.GetType())
+		}
 	}
 	if value.IsNull() {
 		value = NewNullType(Type)

@@ -17,8 +17,8 @@ func NewStruct(def *eclaDecl.StructDecl) *Struct {
 	return &Struct{map[string]Type{}, def.Name, def}
 }
 
-func (s *Struct) SetDefaultValues() {
-
+func (s *Struct) AddField(index int, val Type) {
+	s.Fields[s.Definition.Order[index]] = val
 }
 
 func (s *Struct) GetValue() any {
@@ -99,8 +99,18 @@ func (s *Struct) GetIndex(index Type) (*Type, error) {
 	return &val, err
 }
 
-func (s *Struct) Add(value Type) (Type, error) {
-	return nil, errors.New("Cannot add struct")
+func (s *Struct) Add(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case String:
+		return s.GetString() + other.GetString(), nil
+	case *Any:
+		return s.Add(other.(*Any).Value)
+	}
+	return nil, fmt.Errorf("cannot add %s to list", other.GetString())
 }
 
 func (s *Struct) Sub(value Type) (Type, error) {
