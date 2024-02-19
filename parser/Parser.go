@@ -222,9 +222,6 @@ func (p *Parser) ParseKeyword() Node {
 	if p.CurrentToken.Value == Return {
 		return p.ParseReturnStmt()
 	}
-	if p.CurrentToken.Value == Type {
-		return p.ParseTypeStmt()
-	}
 	if p.CurrentToken.Value == If {
 		return p.ParseIfStmt()
 	}
@@ -251,6 +248,21 @@ func (p *Parser) ParseKeyword() Node {
 		p.HandleFatal("any cannot be used as a keyword")
 		return nil
 	}
+	if p.CurrentToken.Value == TypeOf {
+		return p.ParseTypeOfStmt()
+	}
+	if p.CurrentToken.Value == Eval {
+		return p.ParseEvalStmt()
+	}
+	if p.CurrentToken.Value == Len {
+		return p.ParseLenStmt()
+	}
+	if p.CurrentToken.Value == SizeOf {
+		return p.ParseSizeofStmt()
+	}
+	if p.CurrentToken.Value == Append {
+		return p.ParseAppendStmt()
+	}
 	p.HandleFatal("Unknown keyword: " + p.CurrentToken.Value)
 	return nil
 }
@@ -269,22 +281,107 @@ func (p *Parser) ParseIdent() Node {
 	}
 }
 
-// ParseTypeStmt parses a type statement
-func (p *Parser) ParseTypeStmt() Stmt {
-	tempType := TypeStmt{TypeToken: p.CurrentToken}
+// ParseTypeOfStmt parses a typeOf statement built-in function
+func (p *Parser) ParseTypeOfStmt() Stmt {
+	tempTypeOf := TypeOfStmt{TypeOfToken: p.CurrentToken}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		p.HandleFatal("Expected Type LPAREN")
+		p.HandleFatal("Expected TypeOf LPAREN")
 	}
-	tempType.Lparen = p.CurrentToken
+	tempTypeOf.LeftParen = p.CurrentToken
 	p.Step()
-	tempType.Expression = p.ParseExpr()
+	tempTypeOf.Expression = p.ParseExpr()
 	if p.CurrentToken.TokenType != lexer.RPAREN {
-		p.HandleFatal("Expected Type RPAREN")
+		p.HandleFatal("Expected TypeOf RPAREN")
 	}
-	tempType.Rparen = p.CurrentToken
+	tempTypeOf.RightParen = p.CurrentToken
 	p.Step()
-	return tempType
+	return tempTypeOf
+}
+
+// ParseEvalStmt parses an eval statement built-in function
+func (p *Parser) ParseEvalStmt() Stmt {
+	tempEval := EvalStmt{EvalToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		p.HandleFatal("Expected Eval LPAREN")
+	}
+	tempEval.LeftParen = p.CurrentToken
+	p.Step()
+	tempEval.Expression = p.ParseExpr()
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		p.HandleFatal("Expected Eval RPAREN")
+	}
+	tempEval.RightParen = p.CurrentToken
+	p.Step()
+	return tempEval
+}
+
+// ParseLenStmt parses a len statement built-in function
+func (p *Parser) ParseLenStmt() Stmt {
+	tempLen := LenStmt{LenToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		p.HandleFatal("Expected Len LPAREN")
+	}
+	tempLen.LeftParen = p.CurrentToken
+	p.Step()
+	tempLen.Expression = p.ParseExpr()
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		p.HandleFatal("Expected Len RPAREN")
+	}
+	tempLen.RightParen = p.CurrentToken
+	p.Step()
+	return tempLen
+}
+
+// ParseSizeofStmt parses a sizeof statement built-in function
+func (p *Parser) ParseSizeofStmt() Stmt {
+	tempSizeof := SizeofStmt{SizeofToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		p.HandleFatal("Expected Sizeof LPAREN")
+	}
+	tempSizeof.LeftParen = p.CurrentToken
+	p.Step()
+	tempSizeof.Expression = p.ParseExpr()
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		p.HandleFatal("Expected Sizeof RPAREN")
+	}
+	tempSizeof.RightParen = p.CurrentToken
+	p.Step()
+	return tempSizeof
+}
+
+// ParseAppendStmt parses an append statement built-in function
+func (p *Parser) ParseAppendStmt() Stmt {
+	tempAppend := AppendStmt{AppendToken: p.CurrentToken}
+	p.Step()
+	if p.CurrentToken.TokenType != lexer.LPAREN {
+		p.HandleFatal("Expected Append LPAREN")
+	}
+	tempAppend.LeftParen = p.CurrentToken
+	p.Step()
+	tempAppend.Array = p.ParseExpr()
+	if p.CurrentToken.TokenType != lexer.COMMA {
+		p.HandleFatal("Expected Append COMMA")
+	}
+	p.Step()
+	var exprArray []Expr
+	for p.CurrentToken.TokenType != lexer.RPAREN {
+		tempExpr := p.ParseExpr()
+		if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
+			p.HandleFatal("Expected comma between append arguments")
+		}
+		exprArray = append(exprArray, tempExpr)
+	}
+	tempAppend.Values = exprArray
+	if p.CurrentToken.TokenType != lexer.RPAREN {
+		p.HandleFatal("Expected Append RPAREN")
+	}
+	tempAppend.RightParen = p.CurrentToken
+	p.Step()
+	return tempAppend
 }
 
 // ParseIfStmt parses an if statement

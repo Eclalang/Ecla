@@ -18,13 +18,19 @@ const (
 	Return = "return"
 	Range  = "range"
 	Import = "import"
-	Type   = "type"
 	For    = "for"
 	While  = "while"
 	If     = "if"
 	Else   = "else"
 	Null   = "null"
 	Murloc = "mgrlmgrl"
+
+	// built-in functions
+	TypeOf = "typeOf"
+	Eval   = "eval"
+	Len    = "len"
+	SizeOf = "sizeOf"
+	Append = "append"
 )
 
 var (
@@ -34,7 +40,6 @@ var (
 		Return:   nil,
 		Range:    nil,
 		Import:   nil,
-		Type:     nil,
 		For:      nil,
 		While:    nil,
 		If:       nil,
@@ -42,6 +47,11 @@ var (
 		Null:     nil,
 		Any:      nil,
 		Murloc:   nil,
+		TypeOf:   nil,
+		Eval:     nil,
+		Len:      nil,
+		SizeOf:   nil,
+		Append:   nil,
 	}
 	VarTypes = map[string]interface{}{
 		Int:        nil,

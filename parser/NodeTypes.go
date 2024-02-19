@@ -462,3 +462,89 @@ func (b BlockScopeStmt) EndPos() int {
 }
 
 func (b BlockScopeStmt) stmtNode() {}
+
+type TypeOfStmt struct {
+	TypeOfToken lexer.Token
+	LeftParen   lexer.Token
+	RightParen  lexer.Token
+	Expression  Expr
+}
+
+func (t TypeOfStmt) StartPos() int {
+	return t.TypeOfToken.Position
+}
+
+func (t TypeOfStmt) EndPos() int {
+	return t.RightParen.Position
+}
+
+func (t TypeOfStmt) stmtNode() {}
+
+type EvalStmt struct {
+	EvalToken  lexer.Token
+	LeftParen  lexer.Token
+	RightParen lexer.Token
+	Expression Expr
+}
+
+func (e EvalStmt) StartPos() int {
+	return e.EvalToken.Position
+}
+
+func (e EvalStmt) EndPos() int {
+	return e.RightParen.Position
+}
+
+func (e EvalStmt) stmtNode() {}
+
+type LenStmt struct {
+	LenToken   lexer.Token
+	LeftParen  lexer.Token
+	RightParen lexer.Token
+	Expression Expr
+}
+
+func (l LenStmt) StartPos() int {
+	return l.LenToken.Position
+}
+
+func (l LenStmt) EndPos() int {
+	return l.RightParen.Position
+}
+
+func (l LenStmt) stmtNode() {}
+
+type SizeofStmt struct {
+	SizeofToken lexer.Token
+	LeftParen   lexer.Token
+	RightParen  lexer.Token
+	Expression  Expr
+}
+
+func (s SizeofStmt) StartPos() int {
+	return s.SizeofToken.Position
+}
+
+func (s SizeofStmt) EndPos() int {
+	return s.RightParen.Position
+}
+
+func (s SizeofStmt) stmtNode() {}
+
+type AppendStmt struct {
+	AppendToken lexer.Token
+	LeftParen   lexer.Token
+	RightParen  lexer.Token
+	Array       Expr
+	Values      []Expr
+}
+
+func (a AppendStmt) StartPos() int {
+	return a.AppendToken.Position
+}
+
+func (a AppendStmt) EndPos() int {
+	return a.RightParen.Position
+}
+
+func (a AppendStmt) stmtNode() {}
