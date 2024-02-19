@@ -125,7 +125,7 @@ func getPointerToSelectorExpr(tree parser.SelectorExpr, env *Env, parent *eclaTy
 				env.ErrorHandle.HandleError(0, tree.StartPos(), "field not found", errorHandler.LevelFatal)
 			}
 			for i := range tree.Sel.(parser.IndexableAccessExpr).Indexes {
-				busCollection := RunTree(tree.Expr.(parser.IndexableAccessExpr).Indexes[i], env)
+				busCollection := RunTree(tree.Sel.(parser.IndexableAccessExpr).Indexes[i], env)
 				if IsMultipleBus(busCollection) {
 					env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN getPointerToSelectorExpr", errorHandler.LevelFatal)
 				}

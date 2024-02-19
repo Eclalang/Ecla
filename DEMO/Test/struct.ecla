@@ -16,11 +16,14 @@ struct Point {
 
     # embedded structs
     test : Test;
+
+    intArray : [][]int;
+
+    stringMap : map[string]int
 }
 
 function printSelf (p : Point) {
-    console.println(p.test.test, p.y);
-    console.println(p.test.test, p.y);
+    console.println(p.test.test, p.y,p.x);
 }
 
 function getPoint (p : Point)  (Point ){
@@ -28,7 +31,7 @@ function getPoint (p : Point)  (Point ){
 }
 
 # instantiate a struct
-var p Point = Point{1, 2, printSelf, Test{"test"}};
+var p Point = Point{1, 2, printSelf, Test{"test"},[[1,2],[3,4]],{"douze" : 12, "onze" : 11}};
 
 # access fields
 console.println(p.x, p.y);
@@ -37,6 +40,15 @@ console.println(p.x, p.y);
 p.x = 3;
 p.y = 4;
 console.println(p.x, p.y);
+
+p.intArray[0][0] = 12;
+
+console.println(p.intArray[0][0]);
+
+p.stringMap["onze"] = 78;
+
+console.println(p.stringMap["onze"]);
+
 
 # access struct fields from value returned by function
 getPoint(p).printSelf(p);
