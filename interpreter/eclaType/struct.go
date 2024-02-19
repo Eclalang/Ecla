@@ -8,17 +8,17 @@ import (
 )
 
 type Struct struct {
-	Fields     map[string]Type
+	Fields     map[string]*Type
 	Typ        string
 	Definition *eclaDecl.StructDecl
 }
 
 func NewStruct(def *eclaDecl.StructDecl) *Struct {
-	return &Struct{map[string]Type{}, def.Name, def}
+	return &Struct{map[string]*Type{}, def.Name, def}
 }
 
 func (s *Struct) AddField(index int, val Type) {
-	s.Fields[s.Definition.Order[index]] = val
+	s.Fields[s.Definition.Order[index]] = &val
 }
 
 func (s *Struct) Verify() error {
@@ -48,7 +48,7 @@ func (s *Struct) SetValue(v any) error {
 func (s *Struct) String() string {
 	var str string
 	for _, fieldName := range s.Definition.Order {
-		str += s.Fields[fieldName].String() + ", "
+		str += (*s.Fields[fieldName]).String() + ", "
 	}
 	return s.Typ + "{" + str[:len(str)-2] + "}"
 }
@@ -80,14 +80,14 @@ func (s *Struct) Set(fieldName string, FieldValue Type) error {
 	if _, ok := s.Fields[fieldName]; !ok {
 		return errors.New("fieldName does not exist")
 	}
-	if s.Fields[fieldName].GetType() == parser.Any {
-		return s.Fields[fieldName].(*Any).SetAny(FieldValue)
+	if (*s.Fields[fieldName]).GetType() == parser.Any {
+		return (*s.Fields[fieldName]).(*Any).SetAny(FieldValue)
 	}
-	if s.Fields[fieldName].GetType() != FieldValue.GetType() {
-		return errors.New("fieldValue is of type " + FieldValue.GetType() + ", expected " + s.Fields[fieldName].GetType())
+	if (*s.Fields[fieldName]).GetType() != FieldValue.GetType() {
+		return errors.New("fieldValue is of type " + FieldValue.GetType() + ", expected " + (*s.Fields[fieldName]).GetType())
 	}
 
-	s.Fields[fieldName] = FieldValue
+	s.Fields[fieldName] = &FieldValue
 	return nil
 }
 
@@ -95,7 +95,7 @@ func (s *Struct) Get(fieldName string) (Type, error) {
 	if _, ok := s.Fields[fieldName]; !ok {
 		return nil, errors.New("fieldName does not exist")
 	}
-	return s.Fields[fieldName], nil
+	return *s.Fields[fieldName], nil
 }
 
 func (s *Struct) GetIndex(index Type) (*Type, error) {
@@ -154,7 +154,7 @@ func (s *Struct) Eq(value Type) (Type, error) {
 			return Bool(false), nil
 		}
 		for name, value := range s.Fields {
-			vVal, ok := value.(*Struct).Fields[name]
+			vVal, ok := (*value).(*Struct).Fields[name]
 			if !ok || (vVal != value) {
 				return Bool(false), nil
 			}
@@ -217,7 +217,7 @@ func (s *Struct) IsNull() bool {
 
 func (s *Struct) GetField(value string) *Type {
 	if _, ok := s.Fields[value]; ok {
-		return &s.Fields[value]
+		return s.Fields[value]
 	}
 	return nil
 }
