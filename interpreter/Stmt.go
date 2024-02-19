@@ -44,12 +44,115 @@ func HandleError(tree parser.VariableAssignStmt, err error, env *Env) {
 	}
 }
 
+func getPointerToSelectorExpr(tree parser.SelectorExpr, env *Env, parent *eclaType.Type) *eclaType.Type {
+	var temp *eclaType.Type
+	if parent != nil {
+		temp = parent
+	} else {
+		switch tree.Expr.(type) {
+		case parser.Literal:
+			if tree.Expr.(parser.Literal).Type == "VAR" {
+				variable, ok := env.GetVar(tree.Expr.(parser.Literal).Value)
+				if !ok {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
+				}
+				temp = &variable.Value
+			} else {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Cant run assignement on type %s", tree.Expr.(parser.Literal).Type), errorHandler.LevelFatal)
+			}
+		case parser.IndexableAccessExpr:
+			temp = IndexableAssignmentChecks(tree.Expr.(parser.IndexableAccessExpr), env)
+		default:
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "Cant run assignement on type", errorHandler.LevelFatal)
+		}
+	}
+
+	if parent != nil {
+		switch tree.Expr.(type) {
+		case parser.Literal:
+			if tree.Expr.(parser.Literal).Type == "VAR" {
+				switch (*temp).(type) {
+				case *eclaType.Struct:
+					temp = (*temp).(*eclaType.Struct).GetField(tree.Expr.(parser.Literal).Value)
+					if temp == nil {
+						env.ErrorHandle.HandleError(0, tree.StartPos(), "field not found", errorHandler.LevelFatal)
+					}
+				}
+			} else {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Cant run assignement on type %s", tree.Expr.(parser.Literal).Type), errorHandler.LevelFatal)
+			}
+		case parser.IndexableAccessExpr:
+			switch (*temp).(type) {
+			case *eclaType.Struct:
+				temp = (*temp).(*eclaType.Struct).GetField(tree.Expr.(parser.IndexableAccessExpr).VariableName)
+				if temp == nil {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "field not found", errorHandler.LevelFatal)
+				}
+				for i := range tree.Expr.(parser.IndexableAccessExpr).Indexes {
+					busCollection := RunTree(tree.Expr.(parser.IndexableAccessExpr).Indexes[i], env)
+					if IsMultipleBus(busCollection) {
+						env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN getPointerToSelectorExpr", errorHandler.LevelFatal)
+					}
+					elem := busCollection[0].GetVal()
+					var err error
+					temp, err = (*temp).GetIndex(elem)
+					if err != nil {
+						env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+					}
+				}
+			}
+		}
+	}
+
+	switch tree.Sel.(type) {
+	case parser.Literal:
+		if tree.Sel.(parser.Literal).Type == "VAR" {
+			switch (*temp).(type) {
+			case *eclaType.Struct:
+				temp = (*temp).(*eclaType.Struct).GetField(tree.Sel.(parser.Literal).Value)
+				if temp == nil {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "field not found", errorHandler.LevelFatal)
+				}
+			}
+		} else {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Cant run assignement on type %s", tree.Sel.(parser.Literal).Type), errorHandler.LevelFatal)
+		}
+	case parser.IndexableAccessExpr:
+		switch (*temp).(type) {
+		case *eclaType.Struct:
+			temp = (*temp).(*eclaType.Struct).GetField(tree.Sel.(parser.IndexableAccessExpr).VariableName)
+			if temp == nil {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), "field not found", errorHandler.LevelFatal)
+			}
+			for i := range tree.Sel.(parser.IndexableAccessExpr).Indexes {
+				busCollection := RunTree(tree.Expr.(parser.IndexableAccessExpr).Indexes[i], env)
+				if IsMultipleBus(busCollection) {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN getPointerToSelectorExpr", errorHandler.LevelFatal)
+				}
+				elem := busCollection[0].GetVal()
+				var err error
+				temp, err = (*temp).GetIndex(elem)
+				if err != nil {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+				}
+			}
+		}
+	case parser.SelectorExpr:
+		temp = getPointerToSelectorExpr(tree.Sel.(parser.SelectorExpr), env, temp)
+	default:
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "Cant run assignement on type", errorHandler.LevelFatal)
+	}
+
+	return temp
+}
+
 // RunVariableAssignStmt Run assigns a variable.
 func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 	var exprs []eclaType.Type
 	var exprsTypes []string
 	var vars []*eclaType.Type
 	var varsTypes []string
+	// Calculate values of expressions behind the variable
 	if tree.Values[0] != nil {
 		for _, v := range tree.Values {
 			busses := RunTree(v, env)
@@ -71,7 +174,7 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 	for _, v := range tree.Names {
 		switch v.(type) {
 		case parser.IndexableAccessExpr:
-			temp := IndexableAssignmentChecks(tree, v.(parser.IndexableAccessExpr), env)
+			temp := IndexableAssignmentChecks(v.(parser.IndexableAccessExpr), env)
 			vars = append(vars, temp)
 			varsTypes = append(varsTypes, (*temp).GetType())
 		case parser.Literal:
@@ -85,7 +188,10 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 			} else {
 				env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Cant run assignement on type %s", tree.Names[0].(parser.Literal).Type), errorHandler.LevelFatal)
 			}
-
+		case parser.SelectorExpr:
+			variable := getPointerToSelectorExpr(v.(parser.SelectorExpr), env, nil)
+			vars = append(vars, variable)
+			varsTypes = append(varsTypes, (*variable).GetType())
 		}
 	}
 
@@ -289,17 +395,17 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 }
 
 // IndexableAssignmentChecks checks if the indexable variable is valid
-func IndexableAssignmentChecks(tree parser.VariableAssignStmt, index parser.IndexableAccessExpr, env *Env) *eclaType.Type {
+func IndexableAssignmentChecks(index parser.IndexableAccessExpr, env *Env) *eclaType.Type {
 	v, ok := env.GetVar(index.VariableName)
 	if !ok {
-		env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: variable not found", errorHandler.LevelFatal)
+		env.ErrorHandle.HandleError(0, index.StartPos(), "indexable variable assign: variable not found", errorHandler.LevelFatal)
 	}
 	t := eclaType.Type(v)
 	var temp = &t
 	for i := range index.Indexes {
 		busCollection := RunTree(index.Indexes[i], env)
 		if IsMultipleBus(busCollection) {
-			env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: MULTIPLE BUS IN INDEXABLEASSIGMENTCHECK", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(0, index.StartPos(), "indexable variable assign: MULTIPLE BUS IN INDEXABLEASSIGMENTCHECK", errorHandler.LevelFatal)
 			return nil
 		}
 		elem := busCollection[0].GetVal()
@@ -307,7 +413,7 @@ func IndexableAssignmentChecks(tree parser.VariableAssignStmt, index parser.Inde
 		//fmt.Printf("%T\n", result.GetValue())
 		temp, err = (*temp).GetIndex(elem)
 		if err != nil {
-			env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(0, index.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
 		}
 	}
 	return temp

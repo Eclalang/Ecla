@@ -539,7 +539,6 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 	default:
 		fmt.Printf("%T\n", prev)
 	}
-
 	return []*Bus{NewNoneBus()}
 }
 

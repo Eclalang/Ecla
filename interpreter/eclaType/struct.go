@@ -215,6 +215,13 @@ func (s *Struct) IsNull() bool {
 	return false
 }
 
+func (s *Struct) GetField(value string) *Type {
+	if _, ok := s.Fields[value]; ok {
+		return &s.Fields[value]
+	}
+	return nil
+}
+
 func IsStruct(typ string) bool {
 	if len(typ) < 7 {
 		return false
