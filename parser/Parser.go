@@ -350,12 +350,18 @@ func (p *Parser) ParseIdent() Node {
 			}
 		}
 	} else if p.Peek(1).TokenType == lexer.PERIOD {
-		return p.ParseExpr()
+		tempExpr := p.ParseExpr()
+		// check if the selector is before a variable assignement
+		if _, ok := AssignOperators[p.CurrentToken.Value]; ok {
+			return p.ParseVariableAssign(tempExpr)
+		} else {
+			return tempExpr
+		}
 	} else if p.Peek(1).TokenType == lexer.COLON {
 		p.Back()
 		return p.ParseImplicitVariableDecl()
 	} else {
-		return p.ParseVariableAssign()
+		return p.ParseVariableAssign(nil)
 	}
 	p.HandleFatal("Unknown identifier: " + p.CurrentToken.Value)
 	return nil
@@ -512,7 +518,7 @@ func (p *Parser) ParseForStmt() Stmt {
 			p.HandleFatal("Expected Post Expression")
 		}
 		p.Step()
-		tempFor.PostAssignStmt = p.ParseVariableAssign()
+		tempFor.PostAssignStmt = p.ParseVariableAssign(nil)
 	} else {
 		tempFor.KeyToken = p.CurrentToken
 		p.Step()
@@ -801,11 +807,15 @@ func (p *Parser) ParseFunctionType() string {
 }
 
 // ParseVariableAssign parses a variable assignment
-func (p *Parser) ParseVariableAssign() Stmt {
-
+func (p *Parser) ParseVariableAssign(lhs Expr) Stmt {
 	Var := p.CurrentToken
 	Opp := ""
-	toAssign := p.ParseVariableAssignSide()
+	var toAssign []Expr
+	if lhs == nil {
+		toAssign = p.ParseVariableAssignSide()
+	} else {
+		toAssign = append(toAssign, lhs)
+	}
 	if _, ok := AssignOperators[p.CurrentToken.Value]; ok {
 		Opp = p.CurrentToken.Value
 	} else {
@@ -1133,7 +1143,6 @@ func (p *Parser) ParseVariableAccess() Expr {
 		p.Back()
 		return temp
 	} else {
-
 		return Literal{Token: p.CurrentToken, Type: "VAR", Value: p.CurrentToken.Value}
 	}
 }
