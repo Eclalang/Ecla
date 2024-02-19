@@ -33,6 +33,11 @@ var p Point = Point{1, 2, printSelf, Test{"test"}};
 # access fields
 console.println(p.x, p.y);
 
+# modify fields
+p.x = 3;
+p.y = 4;
+console.println(p.x, p.y);
+
 # access struct fields from value returned by function
 getPoint(p).printSelf(p);
 
