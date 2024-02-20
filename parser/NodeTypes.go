@@ -447,6 +447,71 @@ func (m MurlocStmt) EndPos() int {
 
 func (m MurlocStmt) stmtNode() {}
 
+type StructField struct {
+	Name string
+	Type string
+}
+
+type StructDecl struct {
+	StructToken lexer.Token
+	Name        string
+	LeftBrace   lexer.Token
+	Fields      []StructField
+	RightBrace  lexer.Token
+}
+
+func (s StructDecl) StartPos() int {
+	return s.StructToken.Position
+}
+
+func (s StructDecl) EndPos() int {
+	return s.RightBrace.Position
+}
+
+func (s StructDecl) declNode() {}
+
+type StructInstantiationExpr struct {
+	StructNameToken lexer.Token
+	Name            string
+	LeftBrace       lexer.Token
+	RightBrace      lexer.Token
+	Args            []Expr
+}
+
+func (s StructInstantiationExpr) StartPos() int {
+	return s.StructNameToken.Position
+}
+
+func (s StructInstantiationExpr) EndPos() int {
+	return s.RightBrace.Position
+}
+
+func (s StructInstantiationExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (s StructInstantiationExpr) exprNode() {}
+
+type SelectorExpr struct {
+	Field lexer.Token
+	Expr  Expr
+	Sel   Expr
+}
+
+func (s SelectorExpr) StartPos() int {
+	return s.Field.Position
+}
+
+func (s SelectorExpr) EndPos() int {
+	return s.Sel.EndPos()
+}
+
+func (s SelectorExpr) precedence() int {
+	return HighestPrecedence
+}
+
+func (s SelectorExpr) exprNode() {}
+
 type BlockScopeStmt struct {
 	LeftBrace  lexer.Token
 	RightBrace lexer.Token

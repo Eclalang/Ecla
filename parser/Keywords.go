@@ -23,6 +23,7 @@ const (
 	If     = "if"
 	Else   = "else"
 	Null   = "null"
+	Struct = "struct"
 	Murloc = "mgrlmgrl"
 
 	// built-in functions
@@ -46,6 +47,7 @@ var (
 		Else:     nil,
 		Null:     nil,
 		Any:      nil,
+		Struct:   nil,
 		Murloc:   nil,
 		TypeOf:   nil,
 		Eval:     nil,
@@ -54,6 +56,17 @@ var (
 		Append:   nil,
 	}
 	VarTypes = map[string]interface{}{
+		Int:        nil,
+		Float:      nil,
+		String:     nil,
+		Char:       nil,
+		Bool:       nil,
+		Map:        nil,
+		Function:   nil,
+		ArrayStart: nil,
+		Any:        nil,
+	}
+	DefaultVarTypes = map[string]interface{}{
 		Int:        nil,
 		Float:      nil,
 		String:     nil,
