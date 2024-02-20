@@ -2,8 +2,8 @@ package interpreter
 
 import (
 	"fmt"
-
 	"github.com/Eclalang/Ecla/errorHandler"
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
@@ -49,7 +49,7 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 	case parser.ReturnStmt:
 		r := RunReturnStmt(tree.(parser.ReturnStmt), env)
 		fn := env.GetFunctionExecuted()
-		ok := fn.CheckReturn(r)
+		ok := fn.CheckReturn(r, env.TypeDecl)
 		if !ok {
 			env.ErrorHandle.HandleError(0, tree.StartPos(), "Return type of function "+fn.Name+" is incorrect", errorHandler.LevelFatal)
 		}
@@ -66,6 +66,14 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		return RunBlockScopeStmt(tree.(parser.BlockScopeStmt), env)
 	case parser.AnonymousFunctionCallExpr:
 		return RunAnonymousFunctionCallExpr(tree.(parser.AnonymousFunctionCallExpr), env)
+	case parser.StructDecl:
+		RunStructDecl(tree.(parser.StructDecl), env)
+	case parser.SelectorExpr:
+		return RunSelectorExpr(tree.(parser.SelectorExpr), env, nil)
+	case parser.StructInstantiationExpr:
+		return RunStructInstantiationExpr(tree.(parser.StructInstantiationExpr), env)
+	default:
+		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Not implemented : %T\n", tree), errorHandler.LevelFatal)
 	}
 
 	return []*Bus{NewNoneBus()}
@@ -228,7 +236,7 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, args []eclaType.Type) ([]eclaType.Type, error) {
 	env.NewScope(SCOPE_FUNCTION)
 	defer env.EndScope()
-	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args)
+	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args, env.TypeDecl)
 	if !ok {
 		env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("Function %s called with incorrect arguments", Name), errorHandler.LevelFatal)
 	}
@@ -334,4 +342,236 @@ func RunBlockScopeStmt(tree parser.BlockScopeStmt, env *Env) []*Bus {
 		RunTree(v, env)
 	}
 	return []*Bus{NewNoneBus()}
+}
+
+func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) []*Bus {
+	prev := Struct
+	if Struct == nil {
+		expr1 := RunTree(expr.Expr, env)
+		if IsMultipleBus(expr1) {
+			env.ErrorHandle.HandleError(0, expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
+		}
+
+		switch expr1[0].GetVal().(type) {
+		case *eclaType.Var:
+			prev = expr1[0].GetVal().(*eclaType.Var).Value
+		default:
+			prev = expr1[0].GetVal()
+		}
+	}
+
+	switch prev.(type) {
+	case *eclaType.Lib:
+		lib := env.Libs[prev.(*eclaType.Lib).Name]
+		lastLib := env.Libs
+		defer func() { env.Libs = lastLib }()
+		switch expr.Sel.(type) {
+		case parser.FunctionCallExpr:
+			var args []eclaType.Type
+			for _, v := range expr.Sel.(parser.FunctionCallExpr).Args {
+				BusCollection := RunTree(v, env)
+				for _, bus := range BusCollection {
+					temp := bus.GetVal()
+					switch temp.(type) {
+					case *eclaType.Var:
+						temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+					}
+					args = append(args, temp)
+				}
+			}
+			var returnBuses []*Bus
+			switch lib.(type) {
+			case *envLib:
+				env.SetScope(lib.(*envLib).Var)
+				env.Libs = lib.(*envLib).Libs
+			}
+			result, err := lib.Call(expr.Sel.(parser.FunctionCallExpr).Name, args)
+			if err != nil {
+				env.ErrorHandle.HandleError(0, expr.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
+			for _, elem := range result {
+				returnBuses = append(returnBuses, NewMainBus(elem))
+			}
+			env.EndScope()
+			return returnBuses
+		default:
+			env.ErrorHandle.HandleError(0, expr.StartPos(), "SelectorExpr not implemented", errorHandler.LevelFatal)
+		}
+	case *eclaType.Struct:
+		switch expr.Sel.(type) {
+		case parser.Literal:
+			sel := expr.Sel.(parser.Literal)
+			if sel.Type == "VAR" { //TODO don't hard code "VAR"
+				s := prev.(*eclaType.Struct)
+				result, ok := s.Fields[sel.Value]
+				if !ok {
+					env.ErrorHandle.HandleError(0, expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+				}
+				return []*Bus{NewMainBus(*result)}
+			}
+		case parser.FunctionCallExpr:
+			tree := expr.Sel.(parser.FunctionCallExpr)
+			var args []eclaType.Type
+			for _, v := range tree.Args {
+				BusCollection := RunTree(v, env)
+				for _, bus := range BusCollection {
+					temp := bus.GetVal()
+					switch temp.(type) {
+					case *eclaType.Var:
+						temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+					}
+					args = append(args, temp)
+				}
+			}
+
+			fn, ok := prev.(*eclaType.Struct).Fields[tree.Name]
+			if !ok {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), "field does not exist", errorHandler.LevelFatal)
+			}
+			var foo *eclaType.Function
+			switch (*fn).(type) {
+			case *eclaType.Function:
+				foo = (*fn).(*eclaType.Function)
+			}
+			r, err := RunFunctionCallExprWithArgs(tree.Name, env, foo, args)
+			if err != nil {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
+			var retValues []*Bus
+			for _, v := range r {
+				retValues = append(retValues, NewMainBus(v))
+			}
+			return retValues
+		case parser.SelectorExpr:
+			sel := expr.Sel.(parser.SelectorExpr)
+			switch sel.Expr.(type) {
+
+			case parser.Literal:
+				sel := sel.Expr.(parser.Literal)
+				if sel.Type == "VAR" { //TODO don't hard code "VAR"
+					s := prev.(*eclaType.Struct)
+					result, ok := s.Fields[sel.Value]
+					if !ok {
+						env.ErrorHandle.HandleError(0, expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+					}
+					prev = *result
+				}
+			case parser.FunctionCallExpr:
+				tree := sel.Expr.(parser.FunctionCallExpr)
+				var args []eclaType.Type
+				for _, v := range tree.Args {
+					BusCollection := RunTree(v, env)
+					for _, bus := range BusCollection {
+						temp := bus.GetVal()
+						switch temp.(type) {
+						case *eclaType.Var:
+							temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+						}
+						args = append(args, temp)
+					}
+				}
+
+				fn, ok := prev.(*eclaType.Struct).Fields[tree.Name]
+				if !ok {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "field does not exist", errorHandler.LevelFatal)
+				}
+				var foo *eclaType.Function
+				switch (*fn).(type) {
+				case *eclaType.Function:
+					foo = (*fn).(*eclaType.Function)
+				}
+				r, err := RunFunctionCallExprWithArgs(tree.Name, env, foo, args)
+				if err != nil {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+				}
+				var retValues []*Bus
+				for _, v := range r {
+					retValues = append(retValues, NewMainBus(v))
+				}
+				if len(retValues) == 1 {
+					prev = retValues[0].GetVal()
+				} else {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
+				}
+			case parser.IndexableAccessExpr:
+				tree := sel.Expr.(parser.IndexableAccessExpr)
+				s := prev.(*eclaType.Struct)
+				result, ok := s.Fields[tree.VariableName]
+				if !ok {
+					env.ErrorHandle.HandleError(0, expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+				}
+				for i := range tree.Indexes {
+					BusCollection := RunTree(tree.Indexes[i], env)
+					if IsMultipleBus(BusCollection) {
+						env.ErrorHandle.HandleError(0, tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
+					}
+					elem := BusCollection[0].GetVal()
+					temp, err := (*result).GetIndex(elem)
+
+					result = temp
+
+					if err != nil {
+						env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+					}
+				}
+				prev = *result
+			default:
+				fmt.Printf("%T\n", expr.Sel)
+			}
+			return RunSelectorExpr(sel, env, prev)
+		case parser.IndexableAccessExpr:
+			tree := expr.Sel.(parser.IndexableAccessExpr)
+			s := prev.(*eclaType.Struct)
+			result, ok := s.Fields[tree.VariableName]
+			if !ok {
+				env.ErrorHandle.HandleError(0, expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+			}
+			for i := range tree.Indexes {
+				BusCollection := RunTree(tree.Indexes[i], env)
+				if IsMultipleBus(BusCollection) {
+					env.ErrorHandle.HandleError(0, tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
+				}
+				elem := BusCollection[0].GetVal()
+				temp, err := (*result).GetIndex(elem)
+
+				result = temp
+
+				if err != nil {
+					env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+				}
+			}
+			return []*Bus{NewMainBus(*result)}
+		default:
+			fmt.Printf("%T\n", expr.Sel)
+		}
+	default:
+		fmt.Printf("%T\n", prev)
+	}
+	return []*Bus{NewNoneBus()}
+}
+
+func RunStructInstantiationExpr(tree parser.StructInstantiationExpr, env *Env) []*Bus {
+	decl, ok := env.GetTypeDecl(tree.Name)
+	if !ok {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), "unknown type: "+tree.Name, errorHandler.LevelFatal)
+	}
+	s := eclaType.NewStruct(decl.(*eclaDecl.StructDecl))
+	s.SetType(tree.Name)
+	for i, arg := range tree.Args {
+		val := RunTree(arg, env)
+		if IsMultipleBus(val) {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), "MULTIPLE BUS IN StructInstantiationExpr", errorHandler.LevelFatal)
+		}
+		temp := val[0].GetVal()
+		switch temp.(type) {
+		case *eclaType.Var:
+			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
+		}
+		s.AddField(i, temp)
+	}
+	err := s.Verify()
+	if err != nil {
+		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+	}
+	return []*Bus{NewMainBus(s)}
 }

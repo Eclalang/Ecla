@@ -75,7 +75,7 @@ func (m *Map) GetString() String {
 	return String(fmt.Sprint(m))
 }
 
-// GetType returns the type Map
+// GetType returns the type Struct
 func (m *Map) GetType() string {
 	return m.Typ
 }
@@ -202,6 +202,7 @@ func (m *Map) DivMod(value Type) (Type, error) {
 	return nil, errors.New("cannot divmod map")
 }
 
+// TODO add case var ?
 func (m *Map) Eq(value Type) (Type, error) {
 	switch value.(type) {
 	case *Map:

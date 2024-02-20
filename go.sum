@@ -1,13 +1,7 @@
-github.com/Eclalang/LibraryController v0.0.0-20240124155327-7709af1fd1bf h1:qNtqZBnoysnoqdWXFp+0u3rVSfjRL9sXFH/SCgaHs9U=
-github.com/Eclalang/LibraryController v0.0.0-20240124155327-7709af1fd1bf/go.mod h1:IjjRku6ZJ0e9/JleqPZd24BaK6EhQyif5DfrIotmKWs=
-github.com/Eclalang/LibraryController v0.0.0-20240207101427-314a20beadbe h1:0Hwk68fsStwVPVYqRklxeO78NPTUZoczB5tfv7RaZaE=
-github.com/Eclalang/LibraryController v0.0.0-20240207101427-314a20beadbe/go.mod h1:/wurCkCnkFvOyjoDr6RHn5MLCg9TBDXfeAAoKgbXaM8=
-github.com/Eclalang/LibraryController v0.0.0-20240207150136-5017e2cefc7f h1:FyuZ/QpVW3/m3fYDe9l/f5d6wC7l6vz5aEcdgsTNu5s=
-github.com/Eclalang/LibraryController v0.0.0-20240207150136-5017e2cefc7f/go.mod h1:/wurCkCnkFvOyjoDr6RHn5MLCg9TBDXfeAAoKgbXaM8=
-github.com/Eclalang/LibraryController v0.0.0-20240207154344-9b96e9da3ceb h1:reYLod2BU0RVs6ClWixssLXGASts6d9jwNOH9xanJ2o=
-github.com/Eclalang/LibraryController v0.0.0-20240207154344-9b96e9da3ceb/go.mod h1:/wurCkCnkFvOyjoDr6RHn5MLCg9TBDXfeAAoKgbXaM8=
 github.com/Eclalang/LibraryController v0.0.0-20240207163638-1857ea2c8744 h1:DkaODHuKQLWK50fFx9QvSwiKYvfl+ymFWF1aJye+4Sk=
 github.com/Eclalang/LibraryController v0.0.0-20240207163638-1857ea2c8744/go.mod h1:nc8mdoUKsBOon3oN58qQZQaZaRAUJHuxVE79+3kd/PA=
+github.com/Eclalang/LibraryController v0.0.0-20240220200012-5f405b0f3889 h1:iuo1KGp4gHkC0X351DFlF0IvxckrLgI9A11TUjEBpHY=
+github.com/Eclalang/LibraryController v0.0.0-20240220200012-5f405b0f3889/go.mod h1:nc8mdoUKsBOon3oN58qQZQaZaRAUJHuxVE79+3kd/PA=
 github.com/Eclalang/cast v0.0.0-20230412075237-1628861597c7 h1:pKeX3GmAplWLKg6uKvkBY//kZFzKASk2YjLeiCoMeV4=
 github.com/Eclalang/cast v0.0.0-20230412075237-1628861597c7/go.mod h1:RJAiwgqiEPT3kmoSYTBK+JhpGOI8YXRdxrQ99zJyA00=
 github.com/Eclalang/console v0.0.0-20240207094633-ad734f120a0a h1:IBaYgeCVG28vqB9hC3Hf4bOTIJ0cak+HnmtqGqITjmE=
@@ -20,8 +14,6 @@ github.com/Eclalang/json v0.0.0-20240207094829-384a74bcf3ef h1:nLRLTTGMK1qmBIylt
 github.com/Eclalang/json v0.0.0-20240207094829-384a74bcf3ef/go.mod h1:yr0YD25iKfdqzbchd0LY04/IswgBow51BPomNXIK+2k=
 github.com/Eclalang/math v0.0.0-20240207094845-3339ca7db7ff h1:iWve/tVWztLItNshB1nUepm/MmUyE8BpuL1u2p8gmcM=
 github.com/Eclalang/math v0.0.0-20240207094845-3339ca7db7ff/go.mod h1:fsm8hu/CrnnYL1HNvftRyQp47ENW4QRs5AC+f2V+hOc=
-github.com/Eclalang/os v0.0.0-20230412080141-90c64a283c44 h1:qB0RWqDOMWzyFcTsGZny8tmdMzhr6VJTJQCem7MrvSM=
-github.com/Eclalang/os v0.0.0-20230412080141-90c64a283c44/go.mod h1:aOlOP4WanamjHncVvr4hRCUkF0FRh6Yud1Suu9EviRo=
 github.com/Eclalang/os v0.0.0-20240207163028-e6e2204c0b60 h1:vEQbT4mJQeB3pI1xO47DJ5v0syV+w/LgMgJ3xZW3tR4=
 github.com/Eclalang/os v0.0.0-20240207163028-e6e2204c0b60/go.mod h1:aOlOP4WanamjHncVvr4hRCUkF0FRh6Yud1Suu9EviRo=
 github.com/Eclalang/regex v0.0.0-20230412080238-d04497c06e2a h1:pcfPdmyk16qjlJfdTuQvL0xK+KYfsStevoAgtvS6w+U=

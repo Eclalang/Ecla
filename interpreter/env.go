@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -26,6 +27,7 @@ type Env struct {
 	Libs         map[string]libs.Lib
 	ErrorHandle  *errorHandler.ErrorHandler
 	ExecutedFunc []*eclaType.Function
+	TypeDecl     []eclaDecl.TypeDecl
 }
 
 // NewEnv returns a new Env.
@@ -86,6 +88,11 @@ func (env *Env) CheckIfVarExistsInCurrentScope(name string) bool {
 // NewScope creates a new scope.
 func (env *Env) NewScope(Type ScopeType) {
 	env.Vars.GoDeep(Type)
+}
+
+// SetScope sets the most deep scope.
+func (env *Env) SetScope(s *Scope) {
+	env.Vars.GoDeepWithSpecificScope(s)
 }
 
 // EndScope ends the current scope.
@@ -191,7 +198,13 @@ func (env *Env) Import(stmt parser.ImportStmt) {
 
 		temp = tempsEnv.ConvertToLib(env)
 	}
-	env.Libs[parser.GetPackageNameByPath(file)] = temp
+	name := parser.GetPackageNameByPath(file)
+	env.Libs[name] = temp
+	v, err := eclaType.NewVar(name, "", eclaType.NewLib(name))
+	if err != nil {
+		env.ErrorHandle.HandleError(stmt.ImportToken.Line, 0, err.Error(), errorHandler.LevelFatal)
+	}
+	env.Vars.Set(name, v)
 }
 
 // AddFunctionExecuted adds a function to the pile of executed functions.
@@ -250,6 +263,19 @@ func (env *Env) ConvertToLib(MainEnv *Env) libs.Lib {
 		Libs: env.Libs,
 		env:  MainEnv,
 	}
+}
+
+func (env *Env) AddTypeDecl(t eclaDecl.TypeDecl) {
+	env.TypeDecl = append(env.TypeDecl, t)
+}
+
+func (env *Env) GetTypeDecl(name string) (eclaDecl.TypeDecl, bool) {
+	for _, t := range env.TypeDecl {
+		if t.GetName() == name {
+			return t, true
+		}
+	}
+	return nil, false
 }
 
 // readFile reads the file at the given path and returns its contents as a string.

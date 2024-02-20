@@ -127,3 +127,12 @@ func (s *Scope) GetFunctionScope() *Scope {
 func (s *Scope) InFunction() bool {
 	return s.InFunc
 }
+
+// GoDeepWithSpecificScope goes deep with a specific scope.
+func (s *Scope) GoDeepWithSpecificScope(Scope *Scope) {
+	cursor := s
+	for cursor.next != nil {
+		cursor = cursor.next
+	}
+	cursor.next = Scope
+}
