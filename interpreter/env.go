@@ -90,6 +90,11 @@ func (env *Env) NewScope(Type ScopeType) {
 	env.Vars.GoDeep(Type)
 }
 
+// SetScope sets the most deep scope.
+func (env *Env) SetScope(s *Scope) {
+	env.Vars.GoDeepWithSpecificScope(s)
+}
+
 // EndScope ends the current scope.
 func (env *Env) EndScope() {
 	env.Vars.GoUp()

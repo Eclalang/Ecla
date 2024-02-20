@@ -363,6 +363,8 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 	switch prev.(type) {
 	case *eclaType.Lib:
 		lib := env.Libs[prev.(*eclaType.Lib).Name]
+		lastLib := env.Libs
+		defer func() { env.Libs = lastLib }()
 		switch expr.Sel.(type) {
 		case parser.FunctionCallExpr:
 			var args []eclaType.Type
@@ -378,6 +380,11 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 				}
 			}
 			var returnBuses []*Bus
+			switch lib.(type) {
+			case *envLib:
+				env.SetScope(lib.(*envLib).Var)
+				env.Libs = lib.(*envLib).Libs
+			}
 			result, err := lib.Call(expr.Sel.(parser.FunctionCallExpr).Name, args)
 			if err != nil {
 				env.ErrorHandle.HandleError(0, expr.StartPos(), err.Error(), errorHandler.LevelFatal)
@@ -385,6 +392,7 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			for _, elem := range result {
 				returnBuses = append(returnBuses, NewMainBus(elem))
 			}
+			env.EndScope()
 			return returnBuses
 		default:
 			env.ErrorHandle.HandleError(0, expr.StartPos(), "SelectorExpr not implemented", errorHandler.LevelFatal)
