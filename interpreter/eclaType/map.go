@@ -146,8 +146,9 @@ func (m *Map) Add(value Type) (Type, error) {
 		for index, v := range value.(*Map).Keys {
 			m.Set(v, value.(*Map).Values[index])
 		}
-
 		return m, nil
+	case String:
+		return m.GetString().Add(value)
 	case *Any:
 		return m.Add(value.(*Any).Value)
 	}
