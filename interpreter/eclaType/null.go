@@ -1,6 +1,9 @@
 package eclaType
 
-import "errors"
+import (
+	"errors"
+	"github.com/Eclalang/Ecla/interpreter/utils"
+)
 
 type Null struct {
 	typ string
@@ -117,4 +120,8 @@ func (n Null) Append(other Type) (Type, error) {
 
 func (n Null) IsNull() bool {
 	return true
+}
+
+func (n Null) GetSize() int {
+	return utils.Sizeof(n)
 }

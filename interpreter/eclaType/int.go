@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"strconv"
 )
 
@@ -449,4 +450,8 @@ func (i Int) Append(other Type) (Type, error) {
 
 func (i Int) IsNull() bool {
 	return false
+}
+
+func (i Int) GetSize() int {
+	return utils.Sizeof(i)
 }

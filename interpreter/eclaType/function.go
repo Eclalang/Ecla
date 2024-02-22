@@ -3,6 +3,7 @@ package eclaType
 import (
 	"errors"
 	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"github.com/Eclalang/Ecla/parser"
 )
 
@@ -352,4 +353,8 @@ func (f *Function) GetTypes() []string {
 		types = append(types, typ)
 	}
 	return types
+}
+
+func (f *Function) GetSize() int {
+	return utils.Sizeof(f)
 }

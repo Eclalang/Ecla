@@ -3,6 +3,7 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"strconv"
 )
 
@@ -405,4 +406,8 @@ func (c Char) Append(other Type) (Type, error) {
 	default:
 		return nil, errors.New("cannot add " + string(other.GetString()) + " to char")
 	}
+}
+
+func (c Char) GetSize() int {
+	return utils.Sizeof(c)
 }

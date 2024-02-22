@@ -207,6 +207,10 @@ func (v *Var) GetFunction() *Function {
 	return nil
 }
 
+func (v *Var) GetSize() int {
+	return v.Value.GetSize()
+}
+
 // NewVar creates a new variable
 func NewVar(name string, Type string, value Type) (*Var, error) {
 	if Type == parser.String {

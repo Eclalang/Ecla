@@ -15,6 +15,21 @@ import (
 	libs "github.com/Eclalang/LibraryController"
 )
 
+func InitBuildIn() *Scope {
+	vars := NewScopeMain()
+	v, err := eclaType.NewVar("typeof", "", eclaType.NewTypeOf())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("typeof", v)
+	v, err = eclaType.NewVar("sizeof", "", eclaType.NewSizeOf())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("sizeof", v)
+	return vars
+}
+
 // Env is the environment in which the code is executed.
 type Env struct {
 	Vars         *Scope
@@ -35,7 +50,7 @@ func NewEnv() *Env {
 	return &Env{
 		OS:           runtime.GOOS,
 		ARCH:         runtime.GOARCH,
-		Vars:         NewScopeMain(),
+		Vars:         InitBuildIn(),
 		Libs:         make(map[string]libs.Lib),
 		ErrorHandle:  errorHandler.NewHandler(),
 		ExecutedFunc: []*eclaType.Function{},
@@ -48,7 +63,7 @@ func NewTemporaryEnv(ErrorHandler *errorHandler.ErrorHandler) *Env {
 	return &Env{
 		OS:           runtime.GOOS,
 		ARCH:         runtime.GOARCH,
-		Vars:         NewScopeMain(),
+		Vars:         InitBuildIn(),
 		Libs:         make(map[string]libs.Lib),
 		ErrorHandle:  ErrorHandler,
 		ExecutedFunc: []*eclaType.Function{},

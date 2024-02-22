@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"github.com/Eclalang/Ecla/parser"
 )
 
@@ -220,6 +221,10 @@ func (s *Struct) GetField(value string) *Type {
 		return s.Fields[value]
 	}
 	return nil
+}
+
+func (s *Struct) GetSize() int {
+	return utils.Sizeof(s)
 }
 
 func IsStruct(typ string) bool {

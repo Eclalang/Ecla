@@ -3,6 +3,7 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 )
 
 func NewList(t string) (Type, error) {
@@ -308,4 +309,8 @@ func IsList(t string) bool {
 		}
 	}
 	return false
+}
+
+func (l *List) GetSize() int {
+	return utils.Sizeof(l)
 }
