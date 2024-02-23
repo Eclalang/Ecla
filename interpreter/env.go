@@ -21,12 +21,12 @@ func InitBuildIn() *Scope {
 	if err != nil {
 		panic(err)
 	}
-	vars.Set("typeof", v)
+	vars.Set("typeOf", v)
 	v, err = eclaType.NewVar("sizeof", "", eclaType.NewSizeOf())
 	if err != nil {
 		panic(err)
 	}
-	vars.Set("sizeof", v)
+	vars.Set("sizeOf", v)
 	return vars
 }
 
@@ -122,22 +122,6 @@ func (env *Env) SetFunction(name string, f *eclaType.Function) {
 		env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
 	}
 	env.Vars.Set(name, v)
-}
-
-// GetFunction returns the function with the given name.
-func (env *Env) GetFunction(name string) (*eclaType.Function, bool) {
-	f, ok := env.Vars.Get(name)
-	if !ok {
-		return nil, false
-	}
-	if f.IsFunction() {
-		fn := f.GetFunction()
-		if fn == nil {
-			panic("function is nil")
-		}
-		return fn, true
-	}
-	return nil, false
 }
 
 // Execute executes Env.Code or Env.File.

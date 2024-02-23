@@ -8,7 +8,11 @@ import (
 
 type FunctionBuildIn struct {
 	Name string
-	f    func([]Type) (Type, error)
+	f    func([]Type) ([]Type, error)
+}
+
+func (f *FunctionBuildIn) Call(args []Type) ([]Type, error) {
+	return f.f(args)
 }
 
 // implement Type interface
@@ -31,7 +35,7 @@ func (f *FunctionBuildIn) GetString() String {
 
 func (f *FunctionBuildIn) GetType() string {
 	//TODO Change this
-	return "function"
+	return "function()"
 }
 
 func (f *FunctionBuildIn) GetIndex(number Type) (*Type, error) {
@@ -117,11 +121,11 @@ func (f *FunctionBuildIn) GetSize() int {
 func NewTypeOf() *FunctionBuildIn {
 	return &FunctionBuildIn{
 		Name: "typeOf",
-		f: func(args []Type) (Type, error) {
+		f: func(args []Type) ([]Type, error) {
 			if len(args) != 1 {
 				return nil, errors.New("typeOf function takes exactly one argument")
 			}
-			return String(args[0].GetType()), nil
+			return []Type{String(args[0].GetType())}, nil
 		},
 	}
 }
@@ -129,11 +133,11 @@ func NewTypeOf() *FunctionBuildIn {
 func NewSizeOf() *FunctionBuildIn {
 	return &FunctionBuildIn{
 		Name: "sizeOf",
-		f: func(args []Type) (Type, error) {
+		f: func(args []Type) ([]Type, error) {
 			if len(args) != 1 {
 				return nil, errors.New("sizeOf function takes exactly one argument")
 			}
-			return NewInt(strconv.Itoa(args[0].GetSize())), nil
+			return []Type{NewInt(strconv.Itoa(args[0].GetSize()))}, nil
 		},
 	}
 }
