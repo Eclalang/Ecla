@@ -259,24 +259,6 @@ func (p *Parser) ParseKeyword() Node {
 		p.HandleFatal("any cannot be used as a keyword")
 		return nil
 	}
-	if p.CurrentToken.Value == TypeOf {
-		return p.ParseTypeOfStmt()
-	}
-	if p.CurrentToken.Value == Eval {
-		return p.ParseEvalStmt()
-	}
-	if p.CurrentToken.Value == Len {
-		return p.ParseLenStmt()
-	}
-	if p.CurrentToken.Value == SizeOf {
-		return p.ParseSizeofStmt()
-	}
-	if p.CurrentToken.Value == Append {
-		return p.ParseAppendStmt()
-	}
-	if p.CurrentToken.Value == Struct {
-		return p.ParseStructDecl()
-	}
 
 	p.HandleFatal("Unknown keyword: " + p.CurrentToken.Value)
 	return nil
@@ -292,6 +274,9 @@ func (p *Parser) ParseStructDecl() Node {
 		}
 		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as struct name")
+		}
+		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use built-in function name " + p.CurrentToken.Value + " as struct name")
 		}
 	} else {
 		p.HandleFatal("Expected struct name instead of " + p.CurrentToken.Value)
@@ -333,6 +318,9 @@ func (p *Parser) ParseStructField() StructField {
 		}
 		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as struct field name")
+		}
+		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use built-in function name " + p.CurrentToken.Value + " as struct field name")
 		}
 	} else {
 		p.HandleFatal("Expected struct field name instead of " + p.CurrentToken.Value)
@@ -666,6 +654,10 @@ func (p *Parser) ParseVariableDecl() Decl {
 		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
 		}
+		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use built-in function name " + p.CurrentToken.Value + " as variable name")
+
+		}
 	} else {
 		p.HandleFatal("Expected variable name instead of " + p.CurrentToken.Value)
 	}
@@ -698,6 +690,10 @@ func (p *Parser) ParseImplicitVariableDecl() Decl {
 		}
 		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
+		}
+		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use built-in function name " + p.CurrentToken.Value + " as variable name")
+
 		}
 	} else {
 		p.HandleFatal("Expected variable name instead of " + p.CurrentToken.Value)
@@ -1167,6 +1163,9 @@ func (p *Parser) ParseFunctionDecl() Node {
 		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
 		}
+		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use built-in function name " + p.CurrentToken.Value + " as function name")
+		}
 	} else {
 		p.HandleFatal("Expected function name instead of " + p.CurrentToken.Value)
 	}
@@ -1232,7 +1231,10 @@ func (p *Parser) ParseVariableAccess() Expr {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
 		}
 		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
-			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
+		}
+		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use built-in function name " + p.CurrentToken.Value + " as variable name")
 		}
 	}
 	if p.Peek(1).TokenType == lexer.LBRACKET {
@@ -1261,7 +1263,10 @@ func (p *Parser) ParseLiteral() Expr {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
 		}
 		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
-			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
+			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
+		}
+		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
+			p.HandleFatal("Cannot use built-in function name " + p.CurrentToken.Value + " as variable name")
 		}
 		tempLiteral := p.ParseVariableAccess()
 		p.Step()

@@ -49,11 +49,13 @@ var (
 		Any:      nil,
 		Struct:   nil,
 		Murloc:   nil,
-		TypeOf:   nil,
-		Eval:     nil,
-		Len:      nil,
-		SizeOf:   nil,
-		Append:   nil,
+	}
+	BuiltInFunctions = map[string]interface{}{
+		TypeOf: nil,
+		Eval:   nil,
+		Len:    nil,
+		SizeOf: nil,
+		Append: nil,
 	}
 	VarTypes = map[string]interface{}{
 		Int:        nil,
