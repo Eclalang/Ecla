@@ -32,6 +32,11 @@ func InitBuildIn() *Scope {
 		panic(err)
 	}
 	vars.Set("len", v)
+	v, err = eclaType.NewVar("append", "", eclaType.NewAppend())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("append", v)
 	return vars
 }
 

@@ -270,11 +270,21 @@ func (l *List) Xor(other Type) (Type, error) {
 
 // Append to list
 func (l *List) Append(other Type) (Type, error) {
-	if l.Typ == other.GetType() {
-		l.Value = append(l.Value, other)
-		return l, nil
+	switch other.(type) {
+	case *List:
+		if l.Typ == other.(*List).Typ {
+			l.Value = append(l.Value, other.(*List).Value...)
+			return l, nil
+		}
+	case *Any:
+		return l.Append(other.(*Any).Value)
+	default:
+		if other.GetType() == l.Typ[2:] {
+			l.Value = append(l.Value, other)
+			return l, nil
+		}
 	}
-	return nil, errors.New("cannot append to list")
+	return nil, errors.New("cannot append to list with " + other.GetType())
 }
 
 func (l *List) IsNull() bool {

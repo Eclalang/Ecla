@@ -243,7 +243,7 @@ func (s String) Append(other Type) (Type, error) {
 	case *Any:
 		return s.Append(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot append string")
+	return nil, errors.New("cannot append string with " + other.GetType())
 }
 
 func (s String) IsNull() bool {

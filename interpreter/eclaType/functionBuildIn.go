@@ -158,3 +158,23 @@ func NewLen() *FunctionBuildIn {
 		},
 	}
 }
+
+func NewAppend() *FunctionBuildIn {
+	return &FunctionBuildIn{
+		Name: "append",
+		f: func(args []Type) ([]Type, error) {
+			if len(args) < 2 {
+				return nil, errors.New("append function takes exactly two arguments")
+			}
+			var r Type = args[0]
+			var err error
+			for i := 1; i < len(args); i++ {
+				r, err = r.Append(args[i])
+				if err != nil {
+					return nil, err
+				}
+			}
+			return []Type{r}, err
+		},
+	}
+}
