@@ -54,7 +54,7 @@ func getPointerToSelectorExpr(tree parser.SelectorExpr, env *Env, parent *eclaTy
 			if tree.Expr.(parser.Literal).Type == "VAR" {
 				variable, ok := env.GetVar(tree.Expr.(parser.Literal).Value)
 				if !ok {
-					env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "fvariable not found", errorHandler.LevelFatal)
 				}
 				temp = &variable.Value
 			} else {
