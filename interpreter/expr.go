@@ -234,8 +234,8 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 		}
 	} else {
 		switch v.Value.(type) {
-		case *eclaType.FunctionBuildIn:
-			r, err = v.Value.(*eclaType.FunctionBuildIn).Call(args)
+		case *eclaType.FunctionBuiltIn:
+			r, err = v.Value.(*eclaType.FunctionBuiltIn).Call(args)
 			if err != nil {
 				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
