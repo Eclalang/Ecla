@@ -54,7 +54,7 @@ func getPointerToSelectorExpr(tree parser.SelectorExpr, env *Env, parent *eclaTy
 			if tree.Expr.(parser.Literal).Type == "VAR" {
 				variable, ok := env.GetVar(tree.Expr.(parser.Literal).Value)
 				if !ok {
-					env.ErrorHandle.HandleError(0, tree.StartPos(), "variable not found", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(0, tree.StartPos(), "fvariable not found", errorHandler.LevelFatal)
 				}
 				temp = &variable.Value
 			} else {
@@ -493,7 +493,10 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			if err != nil {
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
-			l = list.(*eclaType.List).Len()
+			l, err = list.(*eclaType.List).Len()
+			if err != nil {
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
 			keys = generateForRangeKeys(l)
 		case eclaType.String:
 			typ = parser.Char
@@ -501,7 +504,10 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 			if err != nil {
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
-			l = list.(eclaType.String).Len()
+			l, err = list.(eclaType.String).Len()
+			if err != nil {
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
 			keys = generateForRangeKeys(l)
 		case *eclaType.Map:
 			k, err = eclaType.NewVar(f.KeyToken.Value, list.(*eclaType.Map).TypKey, list.(*eclaType.Map).Keys[0])
@@ -509,7 +515,10 @@ func RunForStmt(For parser.ForStmt, env *Env) *Bus {
 				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
 			typ = list.(*eclaType.Map).TypVal
-			l = list.(*eclaType.Map).Len()
+			l, err = list.(*eclaType.Map).Len()
+			if err != nil {
+				env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
 			keys = list.(*eclaType.Map).Keys
 		default:
 			env.ErrorHandle.HandleError(0, f.RangeExpr.StartPos(), "type "+list.GetType()+" not supported", errorHandler.LevelFatal)

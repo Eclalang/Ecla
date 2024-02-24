@@ -3,6 +3,7 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"strconv"
 )
 
@@ -391,20 +392,15 @@ func (Char) IsNull() bool {
 }
 
 func (c Char) Append(other Type) (Type, error) {
-	switch other.(type) {
-	case *Var:
-		other = other.(*Var).Value
-	}
-	switch other.(type) {
-	case Char:
-		return c.GetString() + other.GetString(), nil
-	case String:
-		return c.GetString() + other.GetString(), nil
-	case *Any:
-		return c.Append(other.(*Any).Value)
-	default:
-		return nil, errors.New("cannot add " + string(other.GetString()) + " to char")
-	}
+	return nil, errors.New("cannot append to char")
+}
+
+func (c Char) GetSize() int {
+	return utils.Sizeof(c)
+}
+
+func (c Char) Len() (int, error) {
+	return -1, errors.New("cannot get length of char")
 }
 
 func (c Char) GetValueAsInt() int {

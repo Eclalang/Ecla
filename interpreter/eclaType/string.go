@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"github.com/Eclalang/Ecla/parser"
 	"strconv"
 )
@@ -64,11 +65,6 @@ func (s String) GetIndex(other Type) (*Type, error) {
 		return &temp, nil
 	}
 	return nil, errors.New("index must be an integer")
-}
-
-// Len returns the length of a string
-func (s String) Len() int {
-	return len(s)
 }
 
 // Add adds two Type objects
@@ -247,9 +243,17 @@ func (s String) Append(other Type) (Type, error) {
 	case *Any:
 		return s.Append(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot append string")
+	return nil, errors.New("cannot append string with " + other.GetType())
 }
 
 func (s String) IsNull() bool {
 	return false
+}
+
+func (s String) GetSize() int {
+	return utils.Sizeof(s)
+}
+
+func (s String) Len() (int, error) {
+	return len(s), nil
 }

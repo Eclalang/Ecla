@@ -204,6 +204,8 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 
 // RunFunctionCallExpr executes a parser.FunctionCallExpr.
 func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
+	env.NewScope(SCOPE_FUNCTION)
+	defer env.EndScope()
 	var args []eclaType.Type
 	for _, v := range tree.Args {
 		BusCollection := RunTree(v, env)
@@ -217,14 +219,33 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 		}
 
 	}
-	fn, ok := env.GetFunction(tree.Name)
+	v, ok := env.GetVar(tree.Name)
 	if !ok {
 		env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Function %s not found", tree.Name), errorHandler.LevelFatal)
 	}
-	r, err := RunFunctionCallExprWithArgs(tree.Name, env, fn, args)
-	if err != nil {
-		env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+	var fn *eclaType.Function
+	if v.IsFunction() {
+		fn = v.GetFunction()
 	}
+	var r []eclaType.Type
+	var err error
+	if fn != nil {
+		r, err = RunFunctionCallExprWithArgs(tree.Name, env, fn, args)
+		if err != nil {
+			env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+		}
+	} else {
+		switch v.Value.(type) {
+		case *eclaType.FunctionBuiltIn:
+			r, err = v.Value.(*eclaType.FunctionBuiltIn).Call(args)
+			if err != nil {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
+		default:
+			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Function %s not found", tree.Name), errorHandler.LevelFatal)
+		}
+	}
+
 	var retValues []*Bus
 	for _, v := range r {
 		retValues = append(retValues, NewMainBus(v))
@@ -542,10 +563,10 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			}
 			return []*Bus{NewMainBus(*result)}
 		default:
-			fmt.Printf("%T\n", expr.Sel)
+			env.ErrorHandle.HandleError(0, expr.StartPos(), "struct cannot have filed of type "+prev.GetType(), errorHandler.LevelFatal)
 		}
 	default:
-		fmt.Printf("%T\n", prev)
+		env.ErrorHandle.HandleError(0, expr.StartPos(), "type "+prev.GetType()+" has no fields", errorHandler.LevelFatal)
 	}
 	return []*Bus{NewNoneBus()}
 }
