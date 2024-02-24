@@ -204,6 +204,8 @@ func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 
 // RunFunctionCallExpr executes a parser.FunctionCallExpr.
 func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
+	env.NewScope(SCOPE_FUNCTION)
+	defer env.EndScope()
 	var args []eclaType.Type
 	for _, v := range tree.Args {
 		BusCollection := RunTree(v, env)
