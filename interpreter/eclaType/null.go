@@ -125,3 +125,7 @@ func (n Null) IsNull() bool {
 func (n Null) GetSize() int {
 	return utils.Sizeof(n)
 }
+
+func (n Null) Len() (int, error) {
+	return -1, errors.New("cannot get length of null")
+}

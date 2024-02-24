@@ -153,6 +153,10 @@ func (a *Any) GetSize() int {
 	return a.Value.GetSize()
 }
 
+func (a *Any) Len() (int, error) {
+	return a.Value.Len()
+}
+
 // NewAny creates a new variable
 func NewAny(value Type) *Any {
 	return &Any{

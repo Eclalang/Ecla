@@ -27,6 +27,11 @@ func InitBuildIn() *Scope {
 		panic(err)
 	}
 	vars.Set("sizeOf", v)
+	v, err = eclaType.NewVar("len", "", eclaType.NewLen())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("len", v)
 	return vars
 }
 

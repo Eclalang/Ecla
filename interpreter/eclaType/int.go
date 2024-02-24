@@ -455,3 +455,7 @@ func (i Int) IsNull() bool {
 func (i Int) GetSize() int {
 	return utils.Sizeof(i)
 }
+
+func (i Int) Len() (int, error) {
+	return -1, errors.New("cannot get length of int")
+}

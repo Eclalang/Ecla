@@ -358,3 +358,7 @@ func (f *Function) GetTypes() []string {
 func (f *Function) GetSize() int {
 	return utils.Sizeof(f)
 }
+
+func (f *Function) Len() (int, error) {
+	return -1, errors.New("cannot get len of function")
+}

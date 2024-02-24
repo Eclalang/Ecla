@@ -227,6 +227,10 @@ func (s *Struct) GetSize() int {
 	return utils.Sizeof(s)
 }
 
+func (s *Struct) Len() (int, error) {
+	return len(s.Fields), nil
+}
+
 func IsStruct(typ string) bool {
 	if len(typ) < 7 {
 		return false

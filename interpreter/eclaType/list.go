@@ -80,11 +80,6 @@ func (l *List) GetIndex(index Type) (*Type, error) {
 
 }
 
-// Len returns the length of a list
-func (l *List) Len() int {
-	return len(l.Value)
-}
-
 // Add adds two Type objects  compatible with List
 func (l *List) Add(other Type) (Type, error) {
 	switch other.(type) {
@@ -313,4 +308,8 @@ func IsList(t string) bool {
 
 func (l *List) GetSize() int {
 	return utils.Sizeof(l)
+}
+
+func (l *List) Len() (int, error) {
+	return len(l.Value), nil
 }

@@ -114,3 +114,7 @@ func (l *Lib) Append(other Type) (Type, error) {
 func (l *Lib) GetSize() int {
 	return utils.Sizeof(l)
 }
+
+func (l *Lib) Len() (int, error) {
+	return -1, errors.New("lib does not support len")
+}

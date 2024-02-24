@@ -297,3 +297,7 @@ func (f Float) IsNull() bool {
 func (f Float) GetSize() int {
 	return utils.Sizeof(f)
 }
+
+func (f Float) Len() (int, error) {
+	return 0, errors.New("cannot get len of float")
+}

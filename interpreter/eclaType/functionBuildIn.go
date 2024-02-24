@@ -118,6 +118,10 @@ func (f *FunctionBuildIn) GetSize() int {
 	return utils.Sizeof(f)
 }
 
+func (f *FunctionBuildIn) Len() (int, error) {
+	return 0, errors.New("cannot get len of function")
+}
+
 func NewTypeOf() *FunctionBuildIn {
 	return &FunctionBuildIn{
 		Name: "typeOf",
@@ -138,6 +142,19 @@ func NewSizeOf() *FunctionBuildIn {
 				return nil, errors.New("sizeOf function takes exactly one argument")
 			}
 			return []Type{NewInt(strconv.Itoa(args[0].GetSize()))}, nil
+		},
+	}
+}
+
+func NewLen() *FunctionBuildIn {
+	return &FunctionBuildIn{
+		Name: "len",
+		f: func(args []Type) ([]Type, error) {
+			if len(args) != 1 {
+				return nil, errors.New("len function takes exactly one argument")
+			}
+			l, err := args[0].Len()
+			return []Type{NewInt(strconv.Itoa(l))}, err
 		},
 	}
 }

@@ -44,4 +44,5 @@ type Type interface {
 	// append : temporary
 	Append(other Type) (Type, error)
 	GetSize() int
+	Len() (int, error)
 }

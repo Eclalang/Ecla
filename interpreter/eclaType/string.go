@@ -67,11 +67,6 @@ func (s String) GetIndex(other Type) (*Type, error) {
 	return nil, errors.New("index must be an integer")
 }
 
-// Len returns the length of a string
-func (s String) Len() int {
-	return len(s)
-}
-
 // Add adds two Type objects
 func (s String) Add(other Type) (Type, error) {
 	return s + other.GetString(), nil
@@ -257,4 +252,8 @@ func (s String) IsNull() bool {
 
 func (s String) GetSize() int {
 	return utils.Sizeof(s)
+}
+
+func (s String) Len() (int, error) {
+	return len(s), nil
 }

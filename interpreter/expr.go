@@ -236,6 +236,9 @@ func RunFunctionCallExpr(tree parser.FunctionCallExpr, env *Env) []*Bus {
 		switch v.Value.(type) {
 		case *eclaType.FunctionBuildIn:
 			r, err = v.Value.(*eclaType.FunctionBuildIn).Call(args)
+			if err != nil {
+				env.ErrorHandle.HandleError(0, tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
 		default:
 			env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("Function %s not found", tree.Name), errorHandler.LevelFatal)
 		}

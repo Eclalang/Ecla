@@ -411,3 +411,7 @@ func (c Char) Append(other Type) (Type, error) {
 func (c Char) GetSize() int {
 	return utils.Sizeof(c)
 }
+
+func (c Char) Len() (int, error) {
+	return -1, errors.New("cannot get length of char")
+}
