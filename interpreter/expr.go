@@ -542,10 +542,10 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			}
 			return []*Bus{NewMainBus(*result)}
 		default:
-			fmt.Printf("%T\n", expr.Sel)
+			env.ErrorHandle.HandleError(0, expr.StartPos(), "struct cannot have filed of type "+prev.GetType(), errorHandler.LevelFatal)
 		}
 	default:
-		fmt.Printf("%T\n", prev)
+		env.ErrorHandle.HandleError(0, expr.StartPos(), "type "+prev.GetType()+" has no fields", errorHandler.LevelFatal)
 	}
 	return []*Bus{NewNoneBus()}
 }
