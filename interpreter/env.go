@@ -15,6 +15,31 @@ import (
 	libs "github.com/Eclalang/LibraryController"
 )
 
+func InitBuildIn() *Scope {
+	vars := NewScopeMain()
+	v, err := eclaType.NewVar("typeof", "", eclaType.NewTypeOf())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("typeOf", v)
+	v, err = eclaType.NewVar("sizeof", "", eclaType.NewSizeOf())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("sizeOf", v)
+	v, err = eclaType.NewVar("len", "", eclaType.NewLen())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("len", v)
+	v, err = eclaType.NewVar("append", "", eclaType.NewAppend())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("append", v)
+	return vars
+}
+
 // Env is the environment in which the code is executed.
 type Env struct {
 	Vars         *Scope
@@ -35,7 +60,7 @@ func NewEnv() *Env {
 	return &Env{
 		OS:           runtime.GOOS,
 		ARCH:         runtime.GOARCH,
-		Vars:         NewScopeMain(),
+		Vars:         InitBuildIn(),
 		Libs:         make(map[string]libs.Lib),
 		ErrorHandle:  errorHandler.NewHandler(),
 		ExecutedFunc: []*eclaType.Function{},
@@ -48,7 +73,7 @@ func NewTemporaryEnv(ErrorHandler *errorHandler.ErrorHandler) *Env {
 	return &Env{
 		OS:           runtime.GOOS,
 		ARCH:         runtime.GOARCH,
-		Vars:         NewScopeMain(),
+		Vars:         InitBuildIn(),
 		Libs:         make(map[string]libs.Lib),
 		ErrorHandle:  ErrorHandler,
 		ExecutedFunc: []*eclaType.Function{},
@@ -107,22 +132,6 @@ func (env *Env) SetFunction(name string, f *eclaType.Function) {
 		env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
 	}
 	env.Vars.Set(name, v)
-}
-
-// GetFunction returns the function with the given name.
-func (env *Env) GetFunction(name string) (*eclaType.Function, bool) {
-	f, ok := env.Vars.Get(name)
-	if !ok {
-		return nil, false
-	}
-	if f.IsFunction() {
-		fn := f.GetFunction()
-		if fn == nil {
-			panic("function is nil")
-		}
-		return fn, true
-	}
-	return nil, false
 }
 
 // Execute executes Env.Code or Env.File.

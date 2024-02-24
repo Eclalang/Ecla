@@ -18,7 +18,6 @@ const (
 	Return = "return"
 	Range  = "range"
 	Import = "import"
-	Type   = "type"
 	For    = "for"
 	While  = "while"
 	If     = "if"
@@ -26,6 +25,13 @@ const (
 	Null   = "null"
 	Struct = "struct"
 	Murloc = "mgrlmgrl"
+
+	// built-in functions
+	TypeOf = "typeOf"
+	Eval   = "eval"
+	Len    = "len"
+	SizeOf = "sizeOf"
+	Append = "append"
 )
 
 var (
@@ -35,7 +41,6 @@ var (
 		Return:   nil,
 		Range:    nil,
 		Import:   nil,
-		Type:     nil,
 		For:      nil,
 		While:    nil,
 		If:       nil,
@@ -44,6 +49,13 @@ var (
 		Any:      nil,
 		Struct:   nil,
 		Murloc:   nil,
+	}
+	BuiltInFunctions = map[string]interface{}{
+		TypeOf: nil,
+		Eval:   nil,
+		Len:    nil,
+		SizeOf: nil,
+		Append: nil,
 	}
 	VarTypes = map[string]interface{}{
 		Int:        nil,

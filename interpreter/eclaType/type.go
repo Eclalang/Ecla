@@ -43,4 +43,6 @@ type Type interface {
 	IsNull() bool
 	// append : temporary
 	Append(other Type) (Type, error)
+	GetSize() int
+	Len() (int, error)
 }

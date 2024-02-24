@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"strconv"
 )
 
@@ -300,4 +301,12 @@ func (b Bool) Append(other Type) (Type, error) {
 
 func (b Bool) IsNull() bool {
 	return false
+}
+
+func (b Bool) GetSize() int {
+	return utils.Sizeof(b)
+}
+
+func (b Bool) Len() (int, error) {
+	return -1, errors.New("cannot get length of bool")
 }

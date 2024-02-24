@@ -1,6 +1,9 @@
 package eclaType
 
-import "errors"
+import (
+	"errors"
+	"github.com/Eclalang/Ecla/interpreter/utils"
+)
 
 func NewLib(name string) *Lib {
 	return &Lib{Name: name}
@@ -106,4 +109,12 @@ func (l *Lib) IsNull() bool {
 
 func (l *Lib) Append(other Type) (Type, error) {
 	return nil, errors.New("cannot append lib")
+}
+
+func (l *Lib) GetSize() int {
+	return utils.Sizeof(l)
+}
+
+func (l *Lib) Len() (int, error) {
+	return -1, errors.New("lib does not support len")
 }
