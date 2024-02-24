@@ -406,3 +406,7 @@ func (c Char) Append(other Type) (Type, error) {
 		return nil, errors.New("cannot add " + string(other.GetString()) + " to char")
 	}
 }
+
+func (c Char) GetValueAsInt() int {
+	return int(c)
+}

@@ -3,6 +3,7 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"github.com/Eclalang/Ecla/parser"
 )
 
 func NewList(t string) (Type, error) {
@@ -94,6 +95,9 @@ func (l *List) Add(other Type) (Type, error) {
 	case *List:
 		if l.Typ == other.(*List).Typ {
 			return &List{append(l.Value, other.(*List).Value...), l.Typ}, nil
+		}
+		if l.Typ[2:] == parser.Int && other.(*List).Typ[2:] == parser.Char || l.Typ[2:] == parser.Char && other.(*List).Typ[2:] == parser.Int {
+			fmt.Println("TODO: add exception for char and int") //TODO
 		}
 		return nil, errors.New("cannot add lists of different types")
 	case String:
