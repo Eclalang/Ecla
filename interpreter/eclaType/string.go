@@ -7,8 +7,23 @@ import (
 	"strconv"
 )
 
+func StringAreEscapedChar(value string) bool {
+	for i := 0; i < len(value); i++ {
+		switch value[i] {
+		case '\\', '\n', '\t', '\r', '\f', '\b', '\a':
+			return true
+		}
+	}
+	return false
+
+}
+
 // NewString creates a new String
 func NewString(value string) (String, error) {
+	// check if there are any escape characters
+	if StringAreEscapedChar(value) {
+		return String(""), errors.New("cannot create string with escape characters")
+	}
 	value = `"` + value + `"`
 	value, err := strconv.Unquote(value)
 	if err != nil {
