@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Eclalang/Ecla/interpreter/utils"
+	"github.com/Eclalang/Ecla/parser"
 )
 
 func NewList(t string) (Type, error) {
@@ -90,6 +91,26 @@ func (l *List) Add(other Type) (Type, error) {
 	case *List:
 		if l.Typ == other.(*List).Typ {
 			return &List{append(l.Value, other.(*List).Value...), l.Typ}, nil
+		}
+		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char {
+			tmpList := l
+			for _, elem := range other.(*List).Value {
+				tmpList.Value = append(tmpList.Value, elem.(Char).GetValueAsInt())
+			}
+			return tmpList, nil
+		}
+		if l.GetValueType() == parser.Char && other.(*List).GetValueType() == parser.Int {
+			tmpList := l
+			for _, elem := range other.(*List).Value {
+				i := int(elem.(Int))
+				var err error = nil
+				c, err := NewChar(string(i))
+				if err != nil {
+					return nil, err
+				}
+				tmpList.Value = append(tmpList.Value, c)
+			}
+			return tmpList, nil
 		}
 		return nil, errors.New("cannot add lists of different types")
 	case String:
@@ -275,6 +296,10 @@ func (l *List) Append(other Type) (Type, error) {
 		if l.Typ == other.(*List).Typ {
 			l.Value = append(l.Value, other.(*List).Value...)
 			return l, nil
+		}
+		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char ||
+			l.GetValueType() == parser.Char && other.(*List).GetType() == parser.Int {
+			return l.Add(other)
 		}
 	case *Any:
 		return l.Append(other.(*Any).Value)

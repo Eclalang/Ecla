@@ -402,3 +402,7 @@ func (c Char) GetSize() int {
 func (c Char) Len() (int, error) {
 	return -1, errors.New("cannot get length of char")
 }
+
+func (c Char) GetValueAsInt() Int {
+	return NewInt(strconv.Itoa(int(c)))
+}
