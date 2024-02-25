@@ -99,6 +99,19 @@ func (l *List) Add(other Type) (Type, error) {
 			}
 			return tmpList, nil
 		}
+		if l.Typ[2:] == parser.Char && other.(*List).Typ[2:] == parser.Int {
+			tmpList := l
+			for _, elem := range other.(*List).Value {
+				i := int(elem.(Int))
+				var err error = nil
+				c, err := NewChar(string(i))
+				if err != nil {
+					return nil, err
+				}
+				tmpList.Value = append(tmpList.Value, c)
+			}
+			return tmpList, nil
+		}
 		return nil, errors.New("cannot add lists of different types")
 	case String:
 		return l.GetString() + other.GetString(), nil
