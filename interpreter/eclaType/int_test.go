@@ -414,7 +414,7 @@ func TestAndIntFalseRight(t *testing.T) {
 		t.Error(err)
 	}
 	if result != Bool(false) {
-		t.Error("Expected true, got ", result)
+		t.Error("Expected false, got ", result)
 	}
 }
 
@@ -427,7 +427,7 @@ func TestAndIntFalseLeft(t *testing.T) {
 		t.Error(err)
 	}
 	if result != Bool(false) {
-		t.Error("Expected true, got ", result)
+		t.Error("Expected false, got ", result)
 	}
 }
 
@@ -440,7 +440,7 @@ func TestAndIntFalseBoth(t *testing.T) {
 		t.Error(err)
 	}
 	if result != Bool(false) {
-		t.Error("Expected true, got ", result)
+		t.Error("Expected false, got ", result)
 	}
 }
 
