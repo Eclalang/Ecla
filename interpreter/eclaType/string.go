@@ -10,7 +10,7 @@ import (
 func StringAreEscapedChar(value string) bool {
 	for i := 0; i < len(value); i++ {
 		switch value[i] {
-		case '\\', '\n', '\t', '\r', '\f', '\b', '\a':
+		case '\n', '\t', '\r', '\f', '\b', '\a':
 			return true
 		}
 	}
