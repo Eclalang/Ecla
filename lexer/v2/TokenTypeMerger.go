@@ -7,7 +7,7 @@ type TokenTypeMergerBehavior struct {
 	CloseBy   []ITokenType
 	Result    []TokenTypeCompositeBehavior
 	Involved  []ITokenType
-	Composite []TokenTypeMergerBehavior
+	Composite []TokenTypeCompositeBehavior
 }
 
 func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
@@ -51,7 +51,6 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 						l.tempVal = temp
 						l.TriggerBy = ""
 						l.indent[0].Resolve(l)
-
 					}
 					l.tempVal = ""
 					l.TriggerBy = ""
@@ -61,7 +60,6 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 		} else {
 			t.Resolve(l)
 		}
-
 	}
 }
 func (t *TokenTypeMergerBehavior) Get() []string {
@@ -107,6 +105,15 @@ func (t *TokenTypeMergerBehavior) IsClosedBySyntaxe(otherName string) int {
 	}
 	return -1
 }
+func (t *TokenTypeMergerBehavior) IsInvolvedWithLastStep(lexer *TLexer) (ITokenType, int) {
+	for i, token := range lexer.indent[0].InvolvedWith() {
+		if token.Get()[len(token.Get())-1] == lexer.lastStepToken.Get()[len(lexer.lastStepToken.Get())-1] {
+			return token, i
+		}
+
+	}
+	return nil, -1
+}
 
 var (
 	TCOMMENT = TokenTypeMergerBehavior{
@@ -121,10 +128,15 @@ var (
 			CCOMMENT,
 		},
 		Involved: []ITokenType{
-			&BDIV,
+			&TokenTypeBaseBehavior{
+				Name: DIV,
+				Syntax: []string{
+					"/",
+				},
+			},
 		},
-		Composite: []TokenTypeMergerBehavior{
-			TCOMMENTGROUP,
+		Composite: []TokenTypeCompositeBehavior{
+			CCOMMENTGROUP,
 		},
 	}
 	TCOMMENTGROUP = TokenTypeMergerBehavior{

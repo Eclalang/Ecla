@@ -81,6 +81,6 @@ var (
 		Name: COMMENTGROUP,
 	}
 	CCOMMENTGROUPEND = TokenTypeCompositeBehavior{
-		Name: COMMENTGROUP,
+		Name: COMMENTGROUP + "END",
 	}
 )

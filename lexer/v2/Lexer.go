@@ -12,7 +12,8 @@ const (
 
 type TLexer struct {
 	// ret is the []Token that the lexer will return
-	ret []Token
+	ret           []Token
+	lastStepToken ITokenType
 
 	index  int
 	indent []ITokenType
@@ -60,6 +61,7 @@ func (l *TLexer) Step() {
 		case INLINE:
 			l.FindSyntax()
 			l.indent[0].Resolve(l)
+			l.lastStepToken = l.indent[0]
 
 		case REVERSED:
 			if l.Inquote() {
@@ -74,6 +76,7 @@ func (l *TLexer) Step() {
 				l.tempVal = temp
 			}
 			l.indent[0].Resolve(l)
+			l.lastStepToken = l.indent[0]
 		}
 		l.indent = []ITokenType{}
 		l.sizeOfTokenReversed = -1
@@ -171,15 +174,15 @@ func (l *TLexer) ComposeToken(NewName string) {
 
 func (l *TLexer) Inquote() bool {
 	return l.TriggerBy != ""
-
 }
 
 var (
 	Lex = &TLexer{
-		ret:      []Token{},
-		index:    0,
-		sentence: "",
-		tempVal:  "",
+		ret:           []Token{},
+		lastStepToken: &TokenTypeBaseBehavior{Name: ""},
+		index:         0,
+		sentence:      "",
+		tempVal:       "",
 
 		prevIndex:   0,
 		actualIndex: -1,
@@ -225,6 +228,8 @@ func (l *TLexer) DEBUGLEXER(s string) {
 	} else {
 		println("l.indent name\t\t: None")
 	}
+
+	println("l.lastSTepToken\t\t:", l.lastStepToken.Get()[len(l.lastStepToken.Get())-1])
 	println("l.isSpaces\t\t:", l.isSpaces)
 	println("l.index\t\t\t:", l.index)
 	println("l.prevIndex\t\t:", l.prevIndex)

@@ -14,7 +14,22 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 
 	if (*l).TriggerBy != "" {
 		l.DEBUGLEXER("in resolve TriggerBy")
-		findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
+		_, index = t.IsInvolvedWithLastStep(l)
+
+		println(t.Involved[index].Get()[len(t.Involved[index].Get())-1])
+		if index == -1 {
+			findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
+		} else {
+			related := t.Result[index]
+			l.DEBUGLEXER(t.Name)
+			triggerByToken := findNameInEveryTokenType((*l).TriggerBy, Every)
+			for _, v := range triggerByToken.InvolvedWith() {
+				if v.Get()[len(v.Get())-1] == related.Name {
+					l.indent[0] = &related
+				}
+			}
+			findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
+		}
 	} else {
 		if !(*l).isSpaces {
 			_, index = t.IsInvolvedWith(l)
@@ -46,6 +61,15 @@ func (t *TokenTypeBaseBehavior) IsInvolvedWith(lexer *TLexer) (ITokenType, int) 
 			if token.Get()[len(token.Get())-1] == lexer.Ret()[len(lexer.Ret())-1].TokenType || (token.Get()[len(token.Get())-1] == "SELF" && t.Name == lexer.Ret()[len(lexer.Ret())-1].TokenType) {
 				return token, i
 			}
+		}
+	}
+	return nil, -1
+}
+
+func (t *TokenTypeBaseBehavior) IsInvolvedWithLastStep(lexer *TLexer) (ITokenType, int) {
+	for i, token := range t.Involved {
+		if token.Get()[len(token.Get())-1] == lexer.lastStepToken.Get()[len(lexer.lastStepToken.Get())-1] {
+			return token, i
 		}
 	}
 	return nil, -1
@@ -203,7 +227,10 @@ var (
 			"/",
 		},
 		Involved: []ITokenType{
-			&SELF, &TCOMMENT,
+			&SELF, &TokenTypeMergerBehavior{
+				Name: COMMENT, Syntax: []string{"#"},
+				CloseBy: []ITokenType{&RETURN},
+				Result:  []TokenTypeCompositeBehavior{CCOMMENT}},
 		},
 		Result: []TokenTypeCompositeBehavior{
 			CQOT, CCOMMENTGROUPEND,
