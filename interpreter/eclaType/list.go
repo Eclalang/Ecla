@@ -92,8 +92,12 @@ func (l *List) Add(other Type) (Type, error) {
 		if l.Typ == other.(*List).Typ {
 			return &List{append(l.Value, other.(*List).Value...), l.Typ}, nil
 		}
-		if l.Typ[2:] == parser.Int && other.(*List).Typ[2:] == parser.Char || l.Typ[2:] == parser.Char && other.(*List).Typ[2:] == parser.Int {
-			fmt.Println("TODO: add exception for char and int") //TODO
+		if l.Typ[2:] == parser.Int && other.(*List).Typ[2:] == parser.Char {
+			tmpList := l
+			for _, elem := range other.(*List).Value {
+				tmpList.Value = append(tmpList.Value, elem.(Char).GetValueAsInt())
+			}
+			return tmpList, nil
 		}
 		return nil, errors.New("cannot add lists of different types")
 	case String:

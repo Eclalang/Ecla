@@ -403,6 +403,6 @@ func (c Char) Len() (int, error) {
 	return -1, errors.New("cannot get length of char")
 }
 
-func (c Char) GetValueAsInt() int {
-	return int(c)
+func (c Char) GetValueAsInt() Int {
+	return NewInt(strconv.Itoa(int(c)))
 }
