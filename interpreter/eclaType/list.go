@@ -92,14 +92,14 @@ func (l *List) Add(other Type) (Type, error) {
 		if l.Typ == other.(*List).Typ {
 			return &List{append(l.Value, other.(*List).Value...), l.Typ}, nil
 		}
-		if l.Typ[2:] == parser.Int && other.(*List).Typ[2:] == parser.Char {
+		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char {
 			tmpList := l
 			for _, elem := range other.(*List).Value {
 				tmpList.Value = append(tmpList.Value, elem.(Char).GetValueAsInt())
 			}
 			return tmpList, nil
 		}
-		if l.Typ[2:] == parser.Char && other.(*List).Typ[2:] == parser.Int {
+		if l.GetValueType() == parser.Char && other.(*List).GetValueType() == parser.Int {
 			tmpList := l
 			for _, elem := range other.(*List).Value {
 				i := int(elem.(Int))
@@ -296,6 +296,10 @@ func (l *List) Append(other Type) (Type, error) {
 		if l.Typ == other.(*List).Typ {
 			l.Value = append(l.Value, other.(*List).Value...)
 			return l, nil
+		}
+		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char ||
+			l.GetValueType() == parser.Char && other.(*List).GetType() == parser.Int {
+			return l.Add(other)
 		}
 	case *Any:
 		return l.Append(other.(*Any).Value)
