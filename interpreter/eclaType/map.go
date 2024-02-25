@@ -103,6 +103,15 @@ func (m *Map) Set(key Type, value Type) {
 	m.Values = append(m.Values, value)
 }
 
+func (m *Map) AddKey(key Type) error {
+	if key.GetType() != m.TypKey && m.TypKey != "string" {
+		return errors.New("key type not match")
+	}
+	m.Keys = append(m.Keys, key)
+	m.Values = append(m.Values, NewNullType(m.TypVal))
+	return nil
+}
+
 func (m *Map) Get(key Type) (Type, bool) {
 	for index, k := range m.Keys {
 		if k.GetString().String() == key.GetString().String() {

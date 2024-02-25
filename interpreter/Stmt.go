@@ -97,7 +97,7 @@ func getPointerToSelectorExpr(tree parser.SelectorExpr, env *Env, parent *eclaTy
 					var err error
 					temp, err = (*temp).GetIndex(elem)
 					if err != nil {
-						env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+						env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign : "+err.Error(), errorHandler.LevelFatal)
 					}
 				}
 			}
@@ -131,10 +131,27 @@ func getPointerToSelectorExpr(tree parser.SelectorExpr, env *Env, parent *eclaTy
 				}
 				elem := busCollection[0].GetVal()
 				var err error
+				parent := temp
 				temp, err = (*temp).GetIndex(elem)
-				if err != nil {
-					env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+				switch (*parent).(type) {
+				case *eclaType.Map:
+					if err != nil {
+						t := (*parent).(*eclaType.Map)
+						err = t.AddKey(elem)
+						if err != nil {
+							env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+						}
+						temp, err = t.GetIndex(elem)
+						if err != nil {
+							env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+						}
+					}
+				default:
+					if err != nil {
+						env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+					}
 				}
+
 			}
 		}
 	case parser.SelectorExpr:
@@ -400,8 +417,7 @@ func IndexableAssignmentChecks(index parser.IndexableAccessExpr, env *Env) *ecla
 	if !ok {
 		env.ErrorHandle.HandleError(0, index.StartPos(), "indexable variable assign: variable not found", errorHandler.LevelFatal)
 	}
-	t := eclaType.Type(v)
-	var temp = &t
+	var temp = &v.Value
 	for i := range index.Indexes {
 		busCollection := RunTree(index.Indexes[i], env)
 		if IsMultipleBus(busCollection) {
@@ -410,11 +426,26 @@ func IndexableAssignmentChecks(index parser.IndexableAccessExpr, env *Env) *ecla
 		}
 		elem := busCollection[0].GetVal()
 		var err error
-		//fmt.Printf("%T\n", result.GetValue())
 		temp, err = (*temp).GetIndex(elem)
-		if err != nil {
-			env.ErrorHandle.HandleError(0, index.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+		switch (v.Value).(type) {
+		case *eclaType.Map:
+			if err != nil {
+				t := v.Value.(*eclaType.Map)
+				err = t.AddKey(elem)
+				if err != nil {
+					env.ErrorHandle.HandleError(0, index.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+				}
+				temp, err = t.GetIndex(elem)
+				if err != nil {
+					env.ErrorHandle.HandleError(0, index.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+				}
+			}
+		default:
+			if err != nil {
+				env.ErrorHandle.HandleError(0, index.StartPos(), "indexable variable assign: "+err.Error(), errorHandler.LevelFatal)
+			}
 		}
+
 	}
 	return temp
 }
