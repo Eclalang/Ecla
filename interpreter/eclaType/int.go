@@ -345,7 +345,7 @@ func (i Int) And(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 	case Bool:
-		if i == Int(0) && other.GetValue() == Bool(false) {
+		if i == Int(0) || other.GetValue() == Bool(false) {
 			return Bool(false), nil
 		} else {
 			return Bool(true), nil
