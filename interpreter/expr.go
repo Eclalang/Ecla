@@ -36,8 +36,6 @@ func RunTree(tree parser.Node, env *Env) []*Bus {
 		return []*Bus{RunArrayLiteral(tree.(parser.ArrayLiteral), env)}
 	case parser.ImportStmt:
 		RunImportStmt(tree.(parser.ImportStmt), env)
-	case parser.MethodCallExpr:
-		return RunMethodCallExpr(tree.(parser.MethodCallExpr), env)
 	case parser.FunctionDecl:
 		RunFunctionDecl(tree.(parser.FunctionDecl), env)
 	case parser.FunctionCallExpr:
@@ -96,31 +94,6 @@ func RunTreeLoad(tree parser.Node, env *Env) []*Bus {
 		RunImportStmt(tree.(parser.ImportStmt), env)
 	}
 	return []*Bus{NewNoneBus()}
-}
-
-// RunMethodCallExpr executes a parser.MethodCallExpr.
-func RunMethodCallExpr(expr parser.MethodCallExpr, env *Env) []*Bus {
-	var args []eclaType.Type
-	for _, v := range expr.FunctionCall.Args {
-		BusCollection := RunTree(v, env)
-		for _, bus := range BusCollection {
-			temp := bus.GetVal()
-			switch temp.(type) {
-			case *eclaType.Var:
-				temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
-			}
-			args = append(args, temp)
-		}
-	}
-	var returnBuses []*Bus
-	call, callErr := env.Libs[expr.ObjectName].Call(expr.FunctionCall.Name, args)
-	if callErr != nil {
-		env.ErrorHandle.HandleError(0, expr.StartPos(), callErr.Error(), errorHandler.LevelFatal)
-	}
-	for _, elem := range call {
-		returnBuses = append(returnBuses, NewMainBus(elem))
-	}
-	return returnBuses
 }
 
 // RunBinaryExpr executes a parser.BinaryExpr.
