@@ -80,7 +80,6 @@ function testCount() {
 ```
 function cut(str string, substr string) string, string, bool
 ```
-> Not working for the moment
 
 Returns a string before and after the separator, and a bool if it's found or not
 
@@ -160,7 +159,6 @@ function testIndexOf() {
 ```
 function join(elems []string, sep string) string
 ```
-> Not working for the moment
 
 Returns a concatenated string from an array of string separated by sep
 
