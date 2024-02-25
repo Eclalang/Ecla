@@ -190,7 +190,7 @@ func (i Int) DivEc(other Type) (Type, error) {
 	case *Any:
 		return i.DivEc(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot divide int by " + string(other.GetString()))
+		return nil, errors.New("cannot divide ec int by " + string(other.GetString()))
 	}
 }
 
