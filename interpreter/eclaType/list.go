@@ -104,7 +104,7 @@ func (l *List) Add(other Type) (Type, error) {
 			for _, elem := range other.(*List).Value {
 				i := int(elem.(Int))
 				var err error = nil
-				c, err := NewChar(string(i))
+				c, err := NewChar(string(rune(i)))
 				if err != nil {
 					return nil, err
 				}
