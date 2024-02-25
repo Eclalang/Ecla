@@ -259,6 +259,9 @@ func (p *Parser) ParseKeyword() Node {
 		p.HandleFatal("any cannot be used as a keyword")
 		return nil
 	}
+	if p.CurrentToken.Value == Struct {
+		return p.ParseStructDecl()
+	}
 
 	p.HandleFatal("Unknown keyword: " + p.CurrentToken.Value)
 	return nil
