@@ -411,7 +411,10 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			for _, elem := range result {
 				returnBuses = append(returnBuses, NewMainBus(elem))
 			}
-			env.EndScope()
+			switch lib.(type) {
+			case *envLib:
+				env.EndScope()
+			}
 			return returnBuses
 		default:
 			env.ErrorHandle.HandleError(0, expr.StartPos(), "SelectorExpr not implemented", errorHandler.LevelFatal)
