@@ -8,40 +8,68 @@ type TokenTypeBaseBehavior struct {
 	Result   []TokenTypeCompositeBehavior
 }
 
+// Resolve Base Behavior Token
+//
+// imply no special behavior
 func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 	l.DEBUGLEXER("in resolve base")
 	index := -1
 
 	if (*l).TriggerBy != "" {
+		// in Trigger By Behavior
 		l.DEBUGLEXER("in resolve TriggerBy")
+
+		// verify the previous token created (even in a merging situation) to detect for exemple the end of a
+		// COMMENTGROUP "trigger by" behavior.
 		_, index = t.IsInvolvedWithLastStep(l)
 
-		println(t.Involved[index].Get()[len(t.Involved[index].Get())-1])
+		// if no matching, classic behavior, otherwise, COMMENTGROUPEND style behavior.
 		if index == -1 {
+			// Classic TriggerBy Behavior
 			findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
 		} else {
+			// Special TriggerBy Behavior
+
+			// related = what is the possible merged or composed result token if the actual token and the previous
+			// one merge or compose together.
 			related := t.Result[index]
 			l.DEBUGLEXER(t.Name)
 			triggerByToken := findNameInEveryTokenType((*l).TriggerBy, Every)
+
+			// update the lexer to acknoledge the new token to work with.
 			for _, v := range triggerByToken.InvolvedWith() {
 				if v.Get()[len(v.Get())-1] == related.Name {
 					l.indent[0] = &related
 				}
 			}
-			findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
+			// compose the token BUT end the triggerBy
+			(*l).ComposeToken(t.Result[index].Name)
+			l.TriggerBy = ""
+
+			// reset the reading head of our lexer.
+			l.prevIndex = l.index
 		}
 	} else {
+		// classic Behavior
+
+		// spaces must be ignored for all merge or compose behavior.
 		if !(*l).isSpaces {
+			// try to find some Involved token if possible.
+			// if none find, classic behavior, otherwise compose behavior.
 			_, index = t.IsInvolvedWith(l)
 		} else {
+			// this tokentype is not a spaces.
 			(*l).isSpaces = false
 		}
 		if index == -1 {
+			// classic behavior
 			(*l).AddToken(t.Name)
 		} else {
+			// compose behavior
 			(*l).ComposeToken(t.Result[index].Name)
 		}
 
+		// reset the reading head of our lexer.
 		l.prevIndex = l.index
 	}
 
@@ -233,7 +261,7 @@ var (
 				Result:  []TokenTypeCompositeBehavior{CCOMMENT}},
 		},
 		Result: []TokenTypeCompositeBehavior{
-			CQOT, CCOMMENTGROUPEND,
+			CQOT, CCOMMENTGROUP,
 		},
 	}
 	BMULT = TokenTypeBaseBehavior{

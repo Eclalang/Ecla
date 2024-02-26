@@ -1,8 +1,11 @@
 package v2
 
 type ITokenType interface {
+	// Resolve use the actual l *TLexer to create a new Token. the lexer is ready for the next step when the resolve end
 	Resolve(l *TLexer)
+	// Get return all the know syntax of an ITokenType, with his name as the last element of the array.
 	Get() []string
+	// InvolvedWith return all the ITokenType involved with this ITokenType.
 	InvolvedWith() []ITokenType
 }
 

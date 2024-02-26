@@ -209,7 +209,7 @@ func LexerR(sentence string) []Token {
 	if Lex.tempVal != "" {
 		if Lex.TriggerBy != "" {
 			//findNameInEveryTokenType(Lex.TriggerBy, Every).Resolve(Lex)
-			Lex.AddToken(Lex.TriggerBy + "TEST")
+			Lex.AddToken(Lex.TriggerBy + " FIN")
 		} else {
 			Lex.AddToken(TEXT)
 		}
