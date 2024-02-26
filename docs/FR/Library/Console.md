@@ -6,8 +6,8 @@ La librairie console est utilisée pour gérer ce qui est lié à la console.
 
 - [Clear()](#clear)
 - [Input() string](#input)
-- [InputFloat() (float, error)](#inputfloat)
-- [InputInt() (int, error)](#inputint)
+- [InputFloat() float](#inputfloat)
+- [InputInt() int](#inputint)
 - [Print(args ...interface{})](#print)
 - [Printf(format string, args ...interface{})](#printf)
 - [PrintInColor(color string, args ...interface{})](#printincolor)
@@ -49,7 +49,7 @@ function testInput() {
 
 ## InputFloat
 ```
-function inputFloat(prompt string)
+function inputFloat() float
 ```
 Lit les floats en entrée
 
@@ -66,7 +66,7 @@ function testInputFloat() {
 
 ## InputInt
 ```
-function inputInt(prompt string)
+function inputInt() int
 ```
 Lit les int en entrée
 

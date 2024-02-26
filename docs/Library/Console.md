@@ -6,8 +6,8 @@ Console library is used for dealing with console.
 
 - [Clear()](#clear)
 - [Input() string](#input)
-- [InputFloat() (float, error)](#inputfloat)
-- [InputInt() (int, error)](#inputint)
+- [InputFloat() float](#inputfloat)
+- [InputInt() int](#inputint)
 - [Print(args ...interface{})](#print)
 - [Printf(format string, args ...interface{})](#printf)
 - [PrintInColor(color string, args ...interface{})](#printincolor)
@@ -49,7 +49,7 @@ function testInput() {
 
 ## InputFloat
 ```
-function inputFloat() (float, error)
+function inputFloat() float
 ```
 Read float input
 
@@ -66,7 +66,7 @@ function testInputFloat() {
 
 ## InputInt
 ```
-function inputInt() (int, error)
+function inputInt() int
 ```
 Read int input
 

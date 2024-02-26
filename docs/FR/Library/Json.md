@@ -4,12 +4,12 @@ La librairie Json implémente l'encodage et le décodage en JSON.
 
 ## Index
 
-- [Marshal(content map[string]string | []map[string]string) (string, error)](#marshal)
-- [Unmarshal(content string) (map[string]string | []map[string]string, error)](#unmarshal)
+- [Marshal(content map[string]string | []map[string]string) string](#marshal)
+- [Unmarshal(content string) map[string]string | []map[string]string](#unmarshal)
 
 ## Marshal
 ```
-function marshal(content map[string]string | []map[string]string) (string, error)
+function marshal(content map[string]string | []map[string]string) string
 ```
 Convertit une map en JSON string
 
@@ -31,7 +31,7 @@ function testMarshal() {
 
 ##  Unmarshal
 ```
-function unmarshal(content string) (map[string]string | []map[string]string, error)
+function unmarshal(content string) map[string]string | []map[string]string
 ```
 Convertit un string JSON en n'importe quel type
 
