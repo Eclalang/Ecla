@@ -33,9 +33,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
-  codecov:
-    name: Upload coverage reports to Codecov
-    uses: codecov/codecov-action@v4.0.1
-    with:
-      token: ${{ secrets.CODECOV_TOKEN }}
-      slug: Eclalang/Ecla
