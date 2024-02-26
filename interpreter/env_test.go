@@ -191,3 +191,55 @@ func TestEnv_AddTypeDecl(t *testing.T) {
 	}
 
 }
+
+func TestEnv_ConvertToLib(t *testing.T) {
+	env := NewEnv()
+	l := env.ConvertToLib(env)
+	if l == nil {
+		t.Error("Expected a new lib, got nil")
+	}
+}
+
+func TestEnv_AddFunctionExecuted(t *testing.T) {
+	env := NewEnv()
+	f := eclaType.NewFunction("test", nil, nil, nil)
+	env.AddFunctionExecuted(f)
+	if len(env.ExecutedFunc) != 1 {
+		t.Error("Expected 1, got ", len(env.ExecutedFunc))
+	}
+}
+
+func TestEnv_Load(t *testing.T) {
+	env := NewEnv()
+	env.SetFile("../DEMO/AllTests.ecla")
+	env.Load()
+}
+
+func TestEnv_Import(t *testing.T) {
+	env := NewEnv()
+	env.Import(parser.ImportStmt{
+		ModulePath: "../DEMO/AllTests.ecla",
+	})
+
+}
+
+func TestEnvLib_Call(t *testing.T) {
+	env := NewEnv()
+	env.Import(parser.ImportStmt{
+		ModulePath: "console",
+	})
+
+	if env.Libs["console"] == nil {
+		t.Error("Expected a new lib, got nil")
+	}
+
+	_, err := env.Libs["console"].Call("println", []eclaType.Type{eclaType.String("Hello, World!")})
+	if err != nil {
+		t.Error("Expected nil, got ", err)
+	}
+
+	_, err = env.Libs["console"].Call("noexistfunction", []eclaType.Type{eclaType.String("Hello, World!")})
+	if err == nil {
+		t.Error("Expected an error, got nil")
+	}
+}
