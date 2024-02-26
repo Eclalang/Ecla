@@ -126,12 +126,13 @@ func (env *Env) EndScope() {
 }
 
 // SetFunction sets the function with the given name.
-func (env *Env) SetFunction(name string, f *eclaType.Function) {
+func (env *Env) SetFunction(name string, f *eclaType.Function) error {
 	v, err := eclaType.NewVar(name, f.GetType(), f)
 	if err != nil {
-		env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+		return err
 	}
 	env.Vars.Set(name, v)
+	return nil
 }
 
 // Execute executes Env.Code or Env.File.
@@ -251,14 +252,14 @@ type envLib struct {
 func (lib *envLib) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	function, ok := lib.Var.Get(name)
 	if !ok {
-		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("function '%s' not found", name), errorHandler.LevelFatal)
+		return nil, fmt.Errorf("function '%s' not found", name)
 	}
 	if !function.IsFunction() {
-		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("'%s' is not a function", name), errorHandler.LevelFatal)
+		return nil, fmt.Errorf("'%s' is not a function", name)
 	}
 	f := function.GetFunction()
 	if f == nil {
-		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("function '%s' is nil", name), errorHandler.LevelFatal)
+		return nil, fmt.Errorf("function '%s' is nil", name)
 	}
 
 	// TODO : Change this to more clean code
