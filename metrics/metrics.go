@@ -6,16 +6,33 @@ import (
 	"time"
 )
 
+type MetricsReader interface {
+	Read([]metrics.Sample)
+}
+
+type MockMetricsReader struct {
+	SamplesToReturn []metrics.Sample
+}
+
+func (mmr *MockMetricsReader) Read(samples []metrics.Sample) {
+	if len(mmr.SamplesToReturn) == 0 {
+		metrics.Read(samples)
+	}
+	copy(samples, mmr.SamplesToReturn)
+}
+
 type Metrics struct {
 	// metrics variables
 	StartExecTime, StartLexerTime, StartParserTime, StartInterpreterTime time.Time
 	TotalExecTime, LexerExecTime, ParserExecTime, InterpreterExecTime    time.Duration
 	FCalls, StackSize, HeapSize, MinMem, MaxMem, MinCpu, MaxCpu          int
+	reader                                                               MetricsReader
 }
 
 // NewMetrics returns a new Metrics.
 func NewMetrics() *Metrics {
-	return &Metrics{}
+	reader := MockMetricsReader{}
+	return &Metrics{reader: &reader}
 }
 
 // StartTimers starts the timers.
@@ -71,7 +88,7 @@ func (m *Metrics) Measure() {
 	}
 
 	// Sample the metrics. Re-use the samples slice if you can!
-	metrics.Read(samples)
+	m.reader.Read(samples)
 
 	// Iterate over all results.
 	for _, sample := range samples {
@@ -98,7 +115,7 @@ func (m *Metrics) Measure() {
 			// The safest thing to do here is to simply log it somewhere
 			// as something to look into, but ignore it for now.
 			// In the worst case, you might temporarily miss out on a new metric.
-			fmt.Printf("%s: unexpected metric Kind: %v\n", name, value.Kind())
+			panic(fmt.Sprintf("%s: unexpected metric Kind: %v\n", name, value.Kind()))
 		}
 	}
 }
