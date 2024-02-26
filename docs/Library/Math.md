@@ -4,43 +4,43 @@ Math library implements mathematical functions.
 
 ## Index.
 
-- [Abs(nb float) float](#abs)
+- [Abs(x float) float](#abs)
 - [Acos(x float) float](#acos)
 - [Acosh(x float) float](#acosh)
 - [Asin(x float) float](#asin)
 - [Asinh(x float) float](#asinh)
 - [Atan(x float) float](#atan)
 - [Atanh(x float) float](#atanh)
-- [Cbrt(nb float) float](#cbrt)
-- [Ceil(nb float) float](#ceil)
-- [Cos(adj float, hyp float) float](#cos)
+- [Cbrt(x float) float](#cbrt)
+- [Ceil(x float) float](#ceil)
+- [Cos(x float) float](#cos)
 - [Cosh(x float) float](#cosh)
-- [DegreesToRadians(deg float) float](#degreestoradians)
-- [Exp(nb float) float](#exp)
-- [Fact(nb int) int](#fact)
-- [Floor(nb float) float](#floor)
-- [Ln(nb float) float](#ln)
-- [Log10(nb float) float](#log10)
-- [Max(a float, b float) float](#max)
-- [Min(a float, b float) float](#min)
-- [Modulo(a float, b float) float](#modulo)
+- [DegreesToRadians(x float) float](#degreestoradians)
+- [Exp(x float) float](#exp)
+- [Fact(x float) float](#fact)
+- [Floor(x float) float](#floor)
+- [Ln(x float) float](#ln)
+- [Log10(x float) float](#log10)
+- [Max(x float, y float) float](#max)
+- [Min(x float, y float) float](#min)
+- [Modulo(x float, y float) float](#modulo)
 - [Pi() float](#pi)
-- [Pow(x float, y float) float](#pow)
-- [RadiansToDegrees(rad float) float](#radianstodegrees)
-- [Random(min float, max float) float](#random)
-- [Round(nb float) float](#round)
-- [Sin(opp float, hyp float) float](#sin)
+- [Pow(x int | float, y int | float) float](#pow)
+- [RadiansToDegrees(x float) float](#radianstodegrees)
+- [Random(x float, y float) float](#random)
+- [Round(x float) float](#round)
+- [Sin(x float) float](#sin)
 - [Sinh(x float) float](#sinh)
-- [Sqrt(nb float) float](#sqrt)
-- [Tan(opp float, adj float) float](#tan)
+- [Sqrt(x float) float](#sqrt)
+- [Tan(x float) float](#tan)
 - [Tanh(x float) float](#tanh)
-- [Trunc(nb float) float](#trunc)
+- [Trunc(x float) float](#trunc)
 
 ## Abs
 ```
-function abs(nb float) float
+function abs(x float) float
 ```
-Returns the absolute value of nb
+Returns the absolute value of x
 
 ### Example :
 ```ecla
@@ -150,9 +150,9 @@ function testAtanh() {
 
 ## Cbrt
 ```
-function cbrt(nb float) float
+function cbrt(x float) float
 ```
-Returns the cubic root of nb
+Returns the cubic root of x
 
 ### Example :
 ```ecla
@@ -166,7 +166,7 @@ function testCbrt() {
 
 ## Ceil
 ```
-function ceil(nb float) float
+function ceil(x float) float
 ```
 Returns the littlest integer that is greater or equal to x
 
@@ -182,7 +182,7 @@ function testCeil() {
 
 ## Cos
 ```
-function Cos(adj float, hyp float) float
+function Cos(x float) float
 ```
 Returns adjacent / hypotenuse
 
@@ -192,7 +192,7 @@ import "console";
 import "math";
 
 function testCos() {
-    console.println(math.cos(3.0, 5.0));
+    console.println(math.cos(3.0));
 }
 ```
 
@@ -214,9 +214,9 @@ function testCosh() {
 
 ## DegreesToRadians
 ```
-function degreesToRadians(deg float) float
+function degreesToRadians(x float) float
 ```
-Returns deg converted to radians
+Returns x converted to radians
 
 ### Example :
 ```ecla
@@ -230,9 +230,9 @@ function testDegreesToRadians() {
 
 ## Exp
 ```
-function exp(nb float) float
+function exp(x float) float
 ```
-Returns e^nb (exponential)
+Returns e^x (exponential)
 
 ### Example :
 ```ecla
@@ -246,9 +246,9 @@ function testExp() {
 
 ## Fact
 ```
-function fact(nb int) int
+function fact(x float) float
 ```
-Returns the factorial number of nb
+Returns the factorial number of x
 
 ### Example :
 ```ecla
@@ -256,15 +256,15 @@ import "console";
 import "math";
 
 function testFact() {
-    console.println(math.fact(5));
+    console.println(math.fact(5.0));
 }
 ```
 
 ## Floor
 ```
-function floor(nb float) float
+function floor(x float) float
 ```
-Returns the greatest integer which is smaller or equal to nb
+Returns the greatest integer which is smaller or equal to x
 
 ### Example :
 ```ecla
@@ -278,9 +278,9 @@ function testFloor() {
 
 ## Ln
 ```
-function ln(nb float) float
+function ln(x float) float
 ```
-Returns the natural logarithm of nb
+Returns the natural logarithm of x
 
 ### Example :
 ```ecla
@@ -294,9 +294,9 @@ function testLn() {
 
 ## Log10
 ```
-function log10(nb float) float
+function log10(x float) float
 ```
-Returns base-10 logarithm of nb
+Returns base-10 logarithm of x
 
 ### Example :
 ```ecla
@@ -310,9 +310,9 @@ function testLog10() {
 
 ## Max
 ```
-function max(a float, b float) float
+function max(x float, y float) float
 ```
-Returns the larger number between a and b
+Returns the larger number between x and y
 
 ### Example :
 ```ecla
@@ -326,9 +326,9 @@ function testMax() {
 
 ## Min
 ```
-function min(a float, b float) float
+function min(x float, y float) float
 ```
-Returns the smaller number between a and b
+Returns the smaller number between x and y
 
 ### Example :
 ```ecla
@@ -342,9 +342,9 @@ function testMin() {
 
 ## Modulo
 ```
-function modulo(a float, b float) float
+function modulo(x float, y float) float
 ```
-Returns remainder of a / b
+Returns remainder of x / y
 
 ### Example :
 ```ecla
@@ -374,7 +374,7 @@ function testPi() {
 
 ## Pow
 ```
-function pow(x float, y float) float
+function pow(x int | float, y int | float) float
 ```
 Returns x^y
 
@@ -384,15 +384,15 @@ import "console";
 import "math";
 
 function testPow() {
-    console.println(math.pow(2.0, 3.0));
+    console.println(math.pow(2.0, 3));
 }
 ```
 
 ## RadiansToDegrees
 ```
-function radiansToDegrees(rad float) float
+function radiansToDegrees(x float) float
 ```
-Returns rad converted to degrees
+Returns x converted to degrees
 
 ### Example :
 ```ecla
@@ -406,9 +406,9 @@ function testRadiansToDegrees() {
 
 ## Random
 ```
-function random(min float, max float) float
+function random(x float, y float) float
 ```
-Returns random number between min and max
+Returns random number between x and y
 
 ### Example :
 ```ecla
@@ -422,9 +422,9 @@ function testRandom() {
 
 ## Round
 ```
-function round(nb float) float
+function round(x float) float
 ```
-Returns nb rounded to the nearest int
+Returns x rounded to the nearest int
 
 ### Example :
 ```ecla
@@ -438,7 +438,7 @@ function testRound() {
 
 ## Sin
 ```
-function sin(opp float, hyp float) float
+function sin(x float) float
 ```
 Returns opposite / hypotenuse
 
@@ -448,7 +448,7 @@ import "console";
 import "math";
 
 function testSin() {
-    console.println(math.sin(3.0, 5.0));
+    console.println(math.sin(3.0));
 }
 ```
 
@@ -470,9 +470,9 @@ function testSinh() {
 
 ## Sqrt
 ```
-function sqrt(nb float) float
+function sqrt(x float) float
 ```
-Returns the square root of nb
+Returns the square root of x
 
 ### Example :
 ```ecla
@@ -486,7 +486,7 @@ function testSqrt() {
 
 ## Tan
 ```
-function tan(opp float, adj float) float
+function tan(x float) float
 ```
 Returns opposite / adjacent
 
@@ -496,7 +496,7 @@ import "console";
 import "math";
 
 function testTan() {
-    console.println(math.tan(3.0, 5.0));
+    console.println(math.tan(3.0));
 }
 ```
 
@@ -518,9 +518,9 @@ function testTanh() {
 
 ## Trunc
 ```
-function trunc(nb float) float
+function trunc(x float) float
 ```
-Returns the integer value of nb
+Returns the integer value of x
 
 ### Example :
 ```ecla
