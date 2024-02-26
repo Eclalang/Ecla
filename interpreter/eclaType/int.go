@@ -151,14 +151,8 @@ func (i Int) Div(other Type) (Type, error) {
 		if other.(Char) == 0 {
 			return nil, errors.New("cannot divide by zero")
 		}
-		if Int(other.(Char)) == 0 {
-			return nil, errors.New("Cannot divide by zero")
-		}
 		return Float(i) / Float(other.(Char)), nil
 	case Float:
-		if other.(Float) == 0 {
-			return nil, errors.New("cannot divide by zero")
-		}
 		if other.(Float) == 0 {
 			return nil, errors.New("cannot divide by zero")
 		}
