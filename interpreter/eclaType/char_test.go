@@ -917,8 +917,7 @@ func TestCharAppendChar(t *testing.T) {
 	result, err := t1.Append(t2)
 	if err != nil {
 		t.Error(err)
-	}
-	if result.GetValue() != String("AB") {
+	} else if result.GetValue() != String("AB") {
 		t.Error("Expected AB, got ", result)
 	}
 }
@@ -930,8 +929,7 @@ func TestCharAppendString(t *testing.T) {
 	result, err := t1.Append(t2)
 	if err != nil {
 		t.Error(err)
-	}
-	if result.GetValue() != String("ABC") {
+	} else if result.GetValue() != String("ABC") {
 		t.Error("Expected ABC, got ", result)
 	}
 }
