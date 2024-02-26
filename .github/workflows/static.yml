@@ -6,7 +6,16 @@ on:
       - 'main'
 
 jobs:
-  pre-build:
+  codecov:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: Eclalang/Ecla
+
+  api:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
