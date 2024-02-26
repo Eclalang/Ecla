@@ -16,15 +16,6 @@ func RunImportStmt(stmt parser.ImportStmt, env *Env) {
 	env.Import(stmt)
 }
 
-// RunTypeStmt executes a parser.TypeStmt.
-func RunTypeStmt(tree parser.TypeStmt, env *Env) {
-	t := RunTree(tree.Expression, env)[0].GetVal()
-	var typ string
-	typ = t.GetType()
-	fmt.Println(typ)
-	//return eclaType.NewString(RunTree(tree.Expression, env).GetType())
-}
-
 // AssignementTypeChecking checks if the type of the variable is the same as the type of the expression.
 // If the type of the variable is any, it returns true else it returns false.
 func AssignementTypeChecking(tree parser.VariableAssignStmt, type1 string, type2 string, env *Env) bool {

@@ -205,31 +205,6 @@ func (a IndexableAccessExpr) precedence() int {
 
 func (a IndexableAccessExpr) exprNode() {}
 
-type TypeStmt struct {
-	TypeToken  lexer.Token
-	Lparen     lexer.Token
-	Rparen     lexer.Token
-	Expression Expr
-}
-
-func (p TypeStmt) StartPos() int {
-	return p.TypeToken.Position
-}
-
-func (p TypeStmt) EndPos() int {
-	return p.Rparen.Position
-}
-
-func (p TypeStmt) StartLine() int {
-	return p.TypeToken.Line
-}
-
-func (p TypeStmt) EndLine() int {
-	return p.Rparen.Line
-}
-
-func (p TypeStmt) stmtNode() {}
-
 type VariableDecl struct {
 	VarToken lexer.Token
 	Name     string
