@@ -83,3 +83,20 @@ func TestNewNoneBus(t *testing.T) {
 		t.Errorf("Expected %s, got %d", "BUS_NONE", t1.Type)
 	}
 }
+
+func TestIsMultipleBus(t *testing.T) {
+	var allBus []*Bus
+	t1 := NewNoneBus()
+	allBus = append(allBus, t1)
+
+	if IsMultipleBus(allBus) {
+		t.Errorf("Expected %s, got %s", "false", "true")
+	}
+
+	t2 := NewMainBus(nil)
+	allBus = append(allBus, t2)
+
+	if !IsMultipleBus(allBus) {
+		t.Errorf("Expected %s, got %s", "true", "false")
+	}
+}
