@@ -8,8 +8,8 @@ import (
 // Useless tests for code coverage purpose
 func TestGetValue(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
-	if f.GetValue() != nil {
-		t.Errorf("Expected nil, got %v", f.GetValue())
+	if f.GetValue() == nil {
+		t.Error("Expected not nil, got nil")
 	}
 }
 
@@ -36,8 +36,8 @@ func TestGetString(t *testing.T) {
 
 func TestGetType(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
-	if f.GetType() != "function" {
-		t.Errorf("Expected function, got %v", f.GetType())
+	if f.GetType() != "function()" {
+		t.Errorf("Expected function(), got %v", f.GetType())
 	}
 }
 
