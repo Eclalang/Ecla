@@ -187,15 +187,10 @@ func (i Int) DivEc(other Type) (Type, error) {
 			return nil, errors.New("cannot divide by zero")
 		}
 		return (i - i%Int(other.(Char))) / Int(other.(Char)), nil
-	case Float:
-		if other.(Float) == 0 {
-			return nil, errors.New("cannot divide by zero")
-		}
-		return nil, errors.New("cannot divide ec by float")
 	case *Any:
 		return i.DivEc(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")
+		return nil, errors.New("cannot divide ec int by " + string(other.GetString()))
 	}
 }
 
@@ -345,7 +340,7 @@ func (i Int) And(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 	case Bool:
-		if i == Int(0) && other.GetValue() == Bool(false) {
+		if i == Int(0) || other.GetValue() == Bool(false) {
 			return Bool(false), nil
 		} else {
 			return Bool(true), nil

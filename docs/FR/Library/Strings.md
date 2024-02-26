@@ -79,7 +79,6 @@ function testCount() {
 ```
 function cut(str string, substr string) string, string, bool
 ```
-> Ne fonctionne pas pour le moment
 
 Retourne un string avant et après le séparateur, et un bool s'il est trouvé ou non
 
@@ -159,7 +158,6 @@ function testIndexOf() {
 ```
 function join(elems []string, sep string) string
 ```
-> Ne fonctionne pas pour le moment
 
 Retourne un string concaténé d'un array de strings séparé par sep
 

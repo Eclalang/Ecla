@@ -19,6 +19,14 @@ func (l Literal) EndPos() int {
 	return l.Token.Position
 }
 
+func (l Literal) StartLine() int {
+	return l.Token.Line
+}
+
+func (l Literal) EndLine() int {
+	return l.Token.Line
+}
+
 func (l Literal) precedence() int {
 	return TokenPrecedence(l.Token)
 }
@@ -40,6 +48,14 @@ func (b BinaryExpr) EndPos() int {
 	return b.RightExpr.EndPos()
 }
 
+func (b BinaryExpr) StartLine() int {
+	return b.LeftExpr.StartLine()
+}
+
+func (b BinaryExpr) EndLine() int {
+	return b.RightExpr.EndLine()
+}
+
 func (b BinaryExpr) precedence() int {
 	return TokenPrecedence(b.Operator)
 }
@@ -58,6 +74,14 @@ func (u UnaryExpr) StartPos() int {
 
 func (u UnaryExpr) EndPos() int {
 	return u.RightExpr.EndPos()
+}
+
+func (u UnaryExpr) StartLine() int {
+	return u.Operator.Line
+}
+
+func (u UnaryExpr) EndLine() int {
+	return u.RightExpr.EndLine()
 }
 
 func (u UnaryExpr) precedence() int {
@@ -81,6 +105,14 @@ func (p ParenExpr) EndPos() int {
 	return p.Rparen.Position
 }
 
+func (p ParenExpr) StartLine() int {
+	return p.Lparen.Line
+}
+
+func (p ParenExpr) EndLine() int {
+	return p.Rparen.Line
+}
+
 func (p ParenExpr) precedence() int {
 	return HighestPrecedence
 }
@@ -99,6 +131,14 @@ func (p ArrayLiteral) StartPos() int {
 
 func (p ArrayLiteral) EndPos() int {
 	return p.RBRACKET.Position
+}
+
+func (p ArrayLiteral) StartLine() int {
+	return p.LBRACKET.Line
+}
+
+func (p ArrayLiteral) EndLine() int {
+	return p.RBRACKET.Line
 }
 
 func (p ArrayLiteral) precedence() int {
@@ -122,6 +162,14 @@ func (m MapLiteral) EndPos() int {
 	return m.RBRACE.Position
 }
 
+func (m MapLiteral) StartLine() int {
+	return m.LBRACE.Line
+}
+
+func (m MapLiteral) EndLine() int {
+	return m.RBRACE.Line
+}
+
 func (m MapLiteral) precedence() int {
 	return HighestPrecedence
 }
@@ -141,6 +189,14 @@ func (a IndexableAccessExpr) StartPos() int {
 
 func (a IndexableAccessExpr) EndPos() int {
 	return a.LastBracket.Position
+}
+
+func (a IndexableAccessExpr) StartLine() int {
+	return a.VariableToken.Line
+}
+
+func (a IndexableAccessExpr) EndLine() int {
+	return a.LastBracket.Line
 }
 
 func (a IndexableAccessExpr) precedence() int {
@@ -164,6 +220,14 @@ func (p TypeStmt) EndPos() int {
 	return p.Rparen.Position
 }
 
+func (p TypeStmt) StartLine() int {
+	return p.TypeToken.Line
+}
+
+func (p TypeStmt) EndLine() int {
+	return p.Rparen.Line
+}
+
 func (p TypeStmt) stmtNode() {}
 
 type VariableDecl struct {
@@ -181,6 +245,14 @@ func (v VariableDecl) EndPos() int {
 	return v.Value.EndPos()
 }
 
+func (v VariableDecl) StartLine() int {
+	return v.VarToken.Line
+}
+
+func (v VariableDecl) EndLine() int {
+	return v.Value.EndLine()
+}
+
 func (v VariableDecl) declNode() {}
 
 type VariableAssignStmt struct {
@@ -196,6 +268,14 @@ func (v VariableAssignStmt) StartPos() int {
 
 func (v VariableAssignStmt) EndPos() int {
 	return v.Values[len(v.Values)-1].EndPos()
+}
+
+func (v VariableAssignStmt) StartLine() int {
+	return v.VarToken.Line
+}
+
+func (v VariableAssignStmt) EndLine() int {
+	return v.Values[len(v.Values)-1].EndLine()
 }
 
 func (v VariableAssignStmt) stmtNode() {}
@@ -219,6 +299,14 @@ func (i IfStmt) EndPos() int {
 	return i.RightBrace.Position
 }
 
+func (i IfStmt) StartLine() int {
+	return i.IfToken.Line
+}
+
+func (i IfStmt) EndLine() int {
+	return i.RightBrace.Line
+}
+
 func (i IfStmt) stmtNode() {}
 
 type ElseStmt struct {
@@ -235,6 +323,14 @@ func (e ElseStmt) StartPos() int {
 
 func (e ElseStmt) EndPos() int {
 	return e.RightBrace.Position
+}
+
+func (e ElseStmt) StartLine() int {
+	return e.ElseToken.Line
+}
+
+func (e ElseStmt) EndLine() int {
+	return e.RightBrace.Line
 }
 
 func (e ElseStmt) stmtNode() {}
@@ -255,6 +351,14 @@ func (w WhileStmt) StartPos() int {
 
 func (w WhileStmt) EndPos() int {
 	return w.RightBrace.Position
+}
+
+func (w WhileStmt) StartLine() int {
+	return w.WhileToken.Line
+}
+
+func (w WhileStmt) EndLine() int {
+	return w.RightBrace.Line
 }
 
 func (w WhileStmt) stmtNode() {}
@@ -282,6 +386,14 @@ func (f ForStmt) EndPos() int {
 	return f.RightBrace.Position
 }
 
+func (f ForStmt) StartLine() int {
+	return f.ForToken.Line
+}
+
+func (f ForStmt) EndLine() int {
+	return f.RightBrace.Line
+}
+
 func (f ForStmt) stmtNode() {}
 
 type FunctionCallExpr struct {
@@ -300,31 +412,19 @@ func (f FunctionCallExpr) EndPos() int {
 	return f.RightParen.Position
 }
 
+func (f FunctionCallExpr) StartLine() int {
+	return f.FunctionCallToken.Line
+}
+
+func (f FunctionCallExpr) EndLine() int {
+	return f.RightParen.Line
+}
+
 func (f FunctionCallExpr) precedence() int {
 	return HighestPrecedence
 }
 
 func (f FunctionCallExpr) exprNode() {}
-
-type MethodCallExpr struct {
-	MethodCallToken lexer.Token
-	ObjectName      string
-	FunctionCall    FunctionCallExpr
-}
-
-func (m MethodCallExpr) StartPos() int {
-	return m.MethodCallToken.Position
-}
-
-func (m MethodCallExpr) EndPos() int {
-	return m.FunctionCall.RightParen.Position
-}
-
-func (m MethodCallExpr) precedence() int {
-	return HighestPrecedence
-}
-
-func (m MethodCallExpr) exprNode() {}
 
 type ImportStmt struct {
 	ImportToken lexer.Token
@@ -337,6 +437,14 @@ func (i ImportStmt) StartPos() int {
 
 func (i ImportStmt) EndPos() int {
 	return i.ImportToken.Position + len(i.ModulePath)
+}
+
+func (i ImportStmt) StartLine() int {
+	return i.ImportToken.Line
+}
+
+func (i ImportStmt) EndLine() int {
+	return i.ImportToken.Line
 }
 
 func (i ImportStmt) stmtNode() {}
@@ -372,6 +480,14 @@ func (f FunctionDecl) EndPos() int {
 	return f.Prototype.RightBrace.Position
 }
 
+func (f FunctionDecl) StartLine() int {
+	return f.FunctionToken.Line
+}
+
+func (f FunctionDecl) EndLine() int {
+	return f.Prototype.RightBrace.Line
+}
+
 func (f FunctionDecl) declNode() {}
 
 type AnonymousFunctionExpr struct {
@@ -386,6 +502,14 @@ func (f AnonymousFunctionExpr) StartPos() int {
 
 func (f AnonymousFunctionExpr) EndPos() int {
 	return f.Prototype.RightBrace.Position
+}
+
+func (f AnonymousFunctionExpr) StartLine() int {
+	return f.FunctionToken.Line
+}
+
+func (f AnonymousFunctionExpr) EndLine() int {
+	return f.Prototype.RightBrace.Line
 }
 
 func (f AnonymousFunctionExpr) precedence() int {
@@ -407,6 +531,14 @@ func (f AnonymousFunctionCallExpr) StartPos() int {
 
 func (f AnonymousFunctionCallExpr) EndPos() int {
 	return f.RightParen.Position
+}
+
+func (f AnonymousFunctionCallExpr) StartLine() int {
+	return f.AnonymousFunction.StartLine()
+}
+
+func (f AnonymousFunctionCallExpr) EndLine() int {
+	return f.RightParen.Line
 }
 
 func (f AnonymousFunctionCallExpr) precedence() int {
@@ -431,6 +563,17 @@ func (r ReturnStmt) EndPos() int {
 	return r.ReturnToken.Position
 }
 
+func (r ReturnStmt) StartLine() int {
+	return r.ReturnToken.Line
+}
+
+func (r ReturnStmt) EndLine() int {
+	if len(r.ReturnValues) > 0 {
+		return r.ReturnValues[len(r.ReturnValues)-1].EndLine()
+	}
+	return r.ReturnToken.Line
+}
+
 func (r ReturnStmt) stmtNode() {}
 
 type MurlocStmt struct {
@@ -443,6 +586,14 @@ func (m MurlocStmt) StartPos() int {
 
 func (m MurlocStmt) EndPos() int {
 	return m.MurlocToken.Position + len(lexer.MURLOC)
+}
+
+func (m MurlocStmt) StartLine() int {
+	return m.MurlocToken.Line
+}
+
+func (m MurlocStmt) EndLine() int {
+	return m.MurlocToken.Line
 }
 
 func (m MurlocStmt) stmtNode() {}
@@ -468,6 +619,14 @@ func (s StructDecl) EndPos() int {
 	return s.RightBrace.Position
 }
 
+func (s StructDecl) StartLine() int {
+	return s.StructToken.Line
+}
+
+func (s StructDecl) EndLine() int {
+	return s.RightBrace.Line
+}
+
 func (s StructDecl) declNode() {}
 
 type StructInstantiationExpr struct {
@@ -484,6 +643,14 @@ func (s StructInstantiationExpr) StartPos() int {
 
 func (s StructInstantiationExpr) EndPos() int {
 	return s.RightBrace.Position
+}
+
+func (s StructInstantiationExpr) StartLine() int {
+	return s.StructNameToken.Line
+}
+
+func (s StructInstantiationExpr) EndLine() int {
+	return s.RightBrace.Line
 }
 
 func (s StructInstantiationExpr) precedence() int {
@@ -506,6 +673,14 @@ func (s SelectorExpr) EndPos() int {
 	return s.Sel.EndPos()
 }
 
+func (s SelectorExpr) StartLine() int {
+	return s.Field.Line
+}
+
+func (s SelectorExpr) EndLine() int {
+	return s.Sel.EndLine()
+}
+
 func (s SelectorExpr) precedence() int {
 	return HighestPrecedence
 }
@@ -526,90 +701,12 @@ func (b BlockScopeStmt) EndPos() int {
 	return b.RightBrace.Position
 }
 
+func (b BlockScopeStmt) StartLine() int {
+	return b.LeftBrace.Line
+}
+
+func (b BlockScopeStmt) EndLine() int {
+	return b.RightBrace.Line
+}
+
 func (b BlockScopeStmt) stmtNode() {}
-
-type TypeOfStmt struct {
-	TypeOfToken lexer.Token
-	LeftParen   lexer.Token
-	RightParen  lexer.Token
-	Expression  Expr
-}
-
-func (t TypeOfStmt) StartPos() int {
-	return t.TypeOfToken.Position
-}
-
-func (t TypeOfStmt) EndPos() int {
-	return t.RightParen.Position
-}
-
-func (t TypeOfStmt) stmtNode() {}
-
-type EvalStmt struct {
-	EvalToken  lexer.Token
-	LeftParen  lexer.Token
-	RightParen lexer.Token
-	Expression Expr
-}
-
-func (e EvalStmt) StartPos() int {
-	return e.EvalToken.Position
-}
-
-func (e EvalStmt) EndPos() int {
-	return e.RightParen.Position
-}
-
-func (e EvalStmt) stmtNode() {}
-
-type LenStmt struct {
-	LenToken   lexer.Token
-	LeftParen  lexer.Token
-	RightParen lexer.Token
-	Expression Expr
-}
-
-func (l LenStmt) StartPos() int {
-	return l.LenToken.Position
-}
-
-func (l LenStmt) EndPos() int {
-	return l.RightParen.Position
-}
-
-func (l LenStmt) stmtNode() {}
-
-type SizeofStmt struct {
-	SizeofToken lexer.Token
-	LeftParen   lexer.Token
-	RightParen  lexer.Token
-	Expression  Expr
-}
-
-func (s SizeofStmt) StartPos() int {
-	return s.SizeofToken.Position
-}
-
-func (s SizeofStmt) EndPos() int {
-	return s.RightParen.Position
-}
-
-func (s SizeofStmt) stmtNode() {}
-
-type AppendStmt struct {
-	AppendToken lexer.Token
-	LeftParen   lexer.Token
-	RightParen  lexer.Token
-	Array       Expr
-	Values      []Expr
-}
-
-func (a AppendStmt) StartPos() int {
-	return a.AppendToken.Position
-}
-
-func (a AppendStmt) EndPos() int {
-	return a.RightParen.Position
-}
-
-func (a AppendStmt) stmtNode() {}
