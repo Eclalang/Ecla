@@ -2,7 +2,6 @@
 
 import "console";
 import "json";
-import "strings";
 
 # Test function Marshal
 function testMarshal() {

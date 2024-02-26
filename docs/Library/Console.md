@@ -5,15 +5,13 @@ Console library is used for dealing with console.
 ## Index
 
 - [Clear()](#clear)
-- [Confirm(prompt string) bool](#confirm)
-- [Input(args ...interface{})](#input)
-- [InputFloat(prompt string)](#inputfloat)
-- [InputInt(prompt string)](#inputint)
+- [Input() string](#input)
+- [InputFloat() float](#inputfloat)
+- [InputInt() int](#inputint)
 - [Print(args ...interface{})](#print)
 - [Printf(format string, args ...interface{})](#printf)
 - [PrintInColor(color string, args ...interface{})](#printincolor)
 - [Println(args ...interface{})](#println)
-- [ProgressBar(percent int)](#progressbar)
 
 ## Clear
 ```
@@ -32,31 +30,9 @@ function testClear() {
 }
 ```
 
-## Confirm
-```
-function confirm(prompt string) bool
-```
-> deprecated
-
-Get user confirmation
-
-### Example :
-```ecla
-import "console";
-
-function testConfirm() {
-    var check bool = console.confirm("Do you want to continue :");
-    if (check) {
-        console.println("You have confirmed.");
-    } else {
-        console.println("You have not confirmed.");
-    }
-}
-```
-
 ## Input
 ```
-function input(args ...interface{})
+function input() string
 ```
 Takes user input from console
 
@@ -65,14 +41,15 @@ Takes user input from console
 import "console";
 
 function testInput() {
-    var input string = console.input("Enter your name : ");
+    console.print("Enter your name : ");
+    var input string = console.input();
     console.println("Hello " + input + "!");
 }
 ```
 
 ## InputFloat
 ```
-function inputFloat(prompt string)
+function inputFloat() float
 ```
 Read float input
 
@@ -81,14 +58,15 @@ Read float input
 import "console";
 
 function testInputFloat() {
-    var input float = console.inputFloat("Enter a float : ");
+    console.print("Enter a float : ");
+    var input float = console.inputFloat();
     console.println("You entered " + input + ".");
 }
 ```
 
 ## InputInt
 ```
-function inputInt(prompt string)
+function inputInt() int
 ```
 Read int input
 
@@ -97,7 +75,8 @@ Read int input
 import "console";
 
 function testInputInt() {
-    var input int = console.inputInt("Enter an int : ");
+    console.print("Enter an int : ");
+    var input int = console.inputInt();
     console.println("You entered " + input + ".");
 }
 ```
@@ -144,7 +123,7 @@ Print args to console with color
 import "console";
 
 function testPrintInColor() {
-    console.printInColor("red", "Hello World!");
+    console.printInColor("\033[0;31m", "Hello World!");
 }
 ```
 
@@ -161,27 +140,5 @@ import "console";
 function testPrintln() {
     console.println("Hello World!");
     console.println("Hello", "user", "?");
-}
-```
-
-## ProgressBar
-```
-function progressBar(percent int)
-```
-> deprecated
-  
-Display a progress bar
-
-### Example :
-```ecla
-import "console";
-import "time";
-
-function testProgressBar() {
-    for (var i int = 0, i <= 100, i+= 10) {
-        console.progressBar(i);
-        time.sleep(1);
-        console.clear();
-    }
 }
 ```
