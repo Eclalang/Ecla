@@ -27,7 +27,6 @@
     - [ImportStmt node](#importstmt-node)
     - [MurlocStmt node](#murlocstmt-node)
     - [ReturnStmt node](#returnstmt-node)
-    - [TypeStmt node](#typestmt-node)
     - [VariableAssignStmt node](#variableassignstmt-node)
     - [WhileStmt node](#whilestmt-node)
   - [Declaration nodes](#declaration-nodes)
@@ -782,41 +781,6 @@ for example :
 ```ecla
     return 1;
     return 1, 2;
-```
-
----
-
-#### TypeStmt node
-
-The `TypeStmt` node represents a type statement in the Ecla language.
-
-##### Fields
-
-The `TypeStmt` node is defined as follows :
-
-```go
-    type TypeStmt struct {
-        TypeToken  lexer.Token
-        Lparen     lexer.Token
-        Rparen     lexer.Token
-        Expression Expr
-    }
-```
-
-The `TypeToken` field is the token that represents the type statement.
-The `Lparen` field is the left parenthesis of the type statement.
-The `Rparen` field is the right parenthesis of the type statement.
-The `Expression` field is the expression of the type statement.
-
-##### Code Example
-
-a type statement is a statement that contains an expression surrounded by parenthesis.
-
-for example :
-
-```ecla
-    type(1);
-    type("hello world");
 ```
 
 ---
