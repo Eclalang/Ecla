@@ -198,7 +198,7 @@ func RunVariableAssignStmt(tree parser.VariableAssignStmt, env *Env) {
 			if v.(parser.Literal).Type == "VAR" {
 				variable, ok := env.GetVar(v.(parser.Literal).Value)
 				if !ok {
-					env.ErrorHandle.HandleError(0, tree.StartPos(), "indexable variable assign: variable not found", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(0, tree.StartPos(), fmt.Sprintf("variable %s not found", v.(parser.Literal).Value), errorHandler.LevelFatal)
 				}
 				vars = append(vars, &(variable.Value))
 				varsTypes = append(varsTypes, variable.Value.GetType())

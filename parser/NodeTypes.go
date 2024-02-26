@@ -306,26 +306,6 @@ func (f FunctionCallExpr) precedence() int {
 
 func (f FunctionCallExpr) exprNode() {}
 
-type MethodCallExpr struct {
-	MethodCallToken lexer.Token
-	ObjectName      string
-	FunctionCall    FunctionCallExpr
-}
-
-func (m MethodCallExpr) StartPos() int {
-	return m.MethodCallToken.Position
-}
-
-func (m MethodCallExpr) EndPos() int {
-	return m.FunctionCall.RightParen.Position
-}
-
-func (m MethodCallExpr) precedence() int {
-	return HighestPrecedence
-}
-
-func (m MethodCallExpr) exprNode() {}
-
 type ImportStmt struct {
 	ImportToken lexer.Token
 	ModulePath  string
