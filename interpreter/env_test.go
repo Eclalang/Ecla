@@ -1,7 +1,9 @@
 package interpreter
 
 import (
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/parser"
 	"testing"
 )
 
@@ -149,4 +151,43 @@ func TestEnv_SetFunction(t *testing.T) {
 	if v, ok := env.Vars.Get("test"); v == nil || !ok {
 		t.Error("Expected a new function, got nil")
 	}
+}
+
+func TestEnv_Execute(t *testing.T) {
+	env := NewEnv()
+	env.SetCode("import \"console\";\nconsole.println(\"Hello, World!\");\n")
+	env.Execute()
+}
+
+func TestEnv_ExecuteFile(t *testing.T) {
+	env := NewEnv()
+	env.SetFile("../DEMO/AllTests.ecla")
+	env.Execute()
+}
+
+func TestEnv_ExecuteMetrics(t *testing.T) {
+	env := NewEnv()
+	env.SetCode("import \"console\";\nconsole.println(\"Hello, World!\");\n")
+	env.ExecuteMetrics()
+}
+
+func TestEnv_ExecuteMetricsFile(t *testing.T) {
+	env := NewEnv()
+	env.SetFile("../DEMO/AllTests.ecla")
+	env.ExecuteMetrics()
+}
+
+func TestEnv_AddTypeDecl(t *testing.T) {
+	typ := eclaDecl.NewStructDecl(parser.StructDecl{
+		Name:   "test",
+		Fields: make([]parser.StructField, 0),
+	})
+
+	env := NewEnv()
+
+	env.AddTypeDecl(typ)
+	if v, ok := env.GetTypeDecl("test"); v == nil || !ok {
+		t.Error("Expected a new type, got nil")
+	}
+
 }
