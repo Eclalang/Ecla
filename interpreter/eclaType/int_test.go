@@ -1566,6 +1566,58 @@ func TestOrIntFloatFalseBoth(t *testing.T) {
 	}
 }
 
+func TestXorIntFloat(t *testing.T) {
+	t1 := Int(1)
+	t2 := Float(1)
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestXorIntFloatFalseRight(t *testing.T) {
+	t1 := Int(1)
+	t2 := Float(0)
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestXorIntFloatFalseLeft(t *testing.T) {
+	t1 := Int(0)
+	t2 := Float(1)
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestXorIntFloatFalseBoth(t *testing.T) {
+	t1 := Int(0)
+	t2 := Float(0)
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
 func TestEqIntFloat(t *testing.T) {
 	t1 := Int(0)
 	t2 := Float(0)
