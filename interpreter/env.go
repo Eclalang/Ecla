@@ -136,6 +136,15 @@ func (env *Env) SetFunction(name string, f *eclaType.Function) {
 
 // Execute executes Env.Code or Env.File.
 func (env *Env) Execute() {
+	// catch all panics
+	defer func() {
+		if r := recover(); r != nil {
+			env.ErrorHandle.HandleError(0, 0,
+				fmt.Sprintf("an internal error occured please report it to the developers on https://github.com/Eclalang/Ecla/issues : %v", r),
+				errorHandler.LevelFatal)
+		}
+	}()
+
 	if env.File != "" {
 		env.Code = readFile(env.File)
 	}
