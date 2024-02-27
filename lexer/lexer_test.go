@@ -93,9 +93,9 @@ func TestCharString2(t *testing.T) {
 	tLexer(t, testCHARSTRING2, "testCharString2")
 }
 
-/*func TestCharString3(t *testing.T) {
-	tLexer(t, testCHARSTRING3, "testCharString3")
-}*/
+func TestMultiLigneString(t *testing.T) {
+	tLexer(t, testMultiLigneString, "testMultiLigneString")
+}
 
 func TestPositionDetector_1(t *testing.T) {
 	var Expected1 = 1 //position
