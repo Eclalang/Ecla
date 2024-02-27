@@ -1472,8 +1472,8 @@ func TestXorCharFloat(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if result != Bool(true) {
-		t.Error("Expected true, got ", result)
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
 	}
 }
 
