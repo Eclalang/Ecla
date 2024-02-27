@@ -1070,10 +1070,11 @@ func TestIntGetString(t *testing.T) {
 
 func TestIntGetSize(t *testing.T) {
 	t1 := Int(0)
+	expected := utils.Sizeof(t1)
 
 	result := t1.GetSize()
-	if result != utils.Sizeof(t1) {
-		t.Error("Expected true, got ", result)
+	if result != expected {
+		t.Errorf("expected %d, got %d", expected, result)
 	}
 }
 

@@ -557,10 +557,11 @@ func TestNotCharTrue(t *testing.T) {
 
 func TestCharGetSize(t *testing.T) {
 	t1 := Char(0)
+	expected := utils.Sizeof(t1)
 
 	result := t1.GetSize()
-	if result != utils.Sizeof(t1) {
-		t.Error("Expected true, got ", result)
+	if result != expected {
+		t.Errorf("expected %d, got %d", expected, result)
 	}
 }
 
