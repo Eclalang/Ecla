@@ -417,6 +417,14 @@ func (i Int) Xor(other Type) (Type, error) {
 		} else {
 			return Bool(true), nil
 		}
+	case Float:
+		if i == Int(0) && other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else if i != Int(0) && other.GetValue() != Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
 	case Bool:
 		if i == Int(0) && other.GetValue() == Bool(false) {
 			return Bool(false), nil
