@@ -364,6 +364,14 @@ func (c Char) Xor(other Type) (Type, error) {
 		} else {
 			return Bool(true), nil
 		}
+	case Float:
+		if c == Char(0) && other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else if c != Char(0) && other.GetValue() != Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
 	case Char:
 		if c == Char(0) && other.GetValue() == Char(0) {
 			return Bool(false), nil
