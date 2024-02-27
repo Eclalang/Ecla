@@ -50,6 +50,7 @@ func Lexer(sentence string) []Token {
 			// syntaxes with our tempVal, If the comparison is true,
 			// tempVal is a known syntaxes, and then a token
 			if ident.IsSyntaxe(tempVal) {
+
 				// canot be a text now
 				canBeText = false
 				if (ident.Identifier == COMMENT || ident.Identifier == COMMENTGROUP) && inQuote && len(ret) != 0 {
@@ -134,8 +135,6 @@ func Lexer(sentence string) []Token {
 						inQuoteStep = true
 						QuoteIdentifier = "'"
 					}
-				} else {
-
 				}
 				// -----------Quote Token Part END-------------
 
@@ -164,14 +163,26 @@ func Lexer(sentence string) []Token {
 
 				if QuoteIdentifier == "\"" {
 					if inQuote {
-						ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						if inQuote && tempVal == "\n" {
+							ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+							QuoteIdentifier = ""
+							inQuote = false
+						} else {
+							ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						}
 					} else {
 						ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
 						QuoteIdentifier = ""
 					}
 				} else if QuoteIdentifier == "'" {
 					if inQuote {
-						ret = inQuoteChange(CHAR, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						if inQuote && tempVal == "\n" {
+							ret = inQuoteChange(CHAR, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+							QuoteIdentifier = ""
+							inQuote = false
+						} else {
+							ret = inQuoteChange(CHAR, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						}
 					} else {
 						ret = inQuoteChange(CHAR, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
 						QuoteIdentifier = ""
