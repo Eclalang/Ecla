@@ -678,4 +678,15 @@ var (
 			},
 		},
 	}
+	testMultiLigneString = testList{
+		input: "b := \"hello\nworld\";",
+		output: []Token{
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  18,
+				Line:      1,
+			},
+		},
+	}
 )
