@@ -207,9 +207,9 @@ func (env *Env) Import(stmt parser.ImportStmt) {
 			file = filepath.Join(filepath.Dir(env.File), stmt.ModulePath)
 		}
 		if _, err := os.Stat(file); os.IsNotExist(err) {
-			env.ErrorHandle.HandleError(stmt.ImportToken.Line, 0, fmt.Sprintf("module '%s' not found", file), errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(stmt.StartLine(), stmt.StartPos(), fmt.Sprintf("module '%s' not found", file), errorHandler.LevelFatal)
 		} else if err != nil {
-			env.ErrorHandle.HandleError(stmt.ImportToken.Line, 0, err.Error(), errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(stmt.StartLine(), stmt.StartPos(), err.Error(), errorHandler.LevelFatal)
 		}
 		tempsEnv := NewTemporaryEnv(env.ErrorHandle)
 		tempsEnv.SetFile(file)
@@ -217,11 +217,14 @@ func (env *Env) Import(stmt parser.ImportStmt) {
 
 		temp = tempsEnv.ConvertToLib(env)
 	}
-	name := parser.GetPackageNameByPath(file)
+	name, err := parser.GetPackageNameByPath(file)
+	if err != nil {
+		env.ErrorHandle.HandleError(stmt.StartLine(), stmt.StartPos(), err.Error(), errorHandler.LevelFatal)
+	}
 	env.Libs[name] = temp
 	v, err := eclaType.NewVar(name, "", eclaType.NewLib(name))
 	if err != nil {
-		env.ErrorHandle.HandleError(stmt.ImportToken.Line, 0, err.Error(), errorHandler.LevelFatal)
+		env.ErrorHandle.HandleError(stmt.StartLine(), stmt.StartPos(), err.Error(), errorHandler.LevelFatal)
 	}
 	env.Vars.Set(name, v)
 }

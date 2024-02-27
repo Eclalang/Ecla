@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"log"
 	"path/filepath"
 	"strings"
 
@@ -51,11 +50,15 @@ func (f *File) AddDependency(dep string) error {
 	return nil
 }
 
-func (f *File) AddImport(imp string) {
-	imp = GetPackageNameByPath(imp)
+func (f *File) AddImport(imp string) error {
+	imp, err := GetPackageNameByPath(imp)
+	if err != nil {
+		return err
+	}
 	if !contains(imp, f.Imports) {
 		f.Imports = append(f.Imports, imp)
 	}
+	return nil
 }
 
 func (f *File) IsImported(imp string) bool {
@@ -85,11 +88,11 @@ func contains(needle string, haystack []string) bool {
 	return false
 }
 
-func GetPackageNameByPath(path string) string {
+func GetPackageNameByPath(path string) (string, error) {
 	_, fPath := filepath.Split(path)
 	temp := strings.Split(fPath, ".")
-	if len(temp) == 0 {
-		log.Fatal("Invalid path")
+	if temp[0] == "" {
+		return "", fmt.Errorf("path cannot be empty")
 	}
-	return temp[0]
+	return temp[0], nil
 }
