@@ -1495,9 +1495,9 @@ func TestBoolOrErr(t *testing.T) {
 
 func TestBoolXorErr(t *testing.T) {
 	t1 := Bool(false)
-	t2 := String("false")
+	t2 := String("test")
 
-	_, err := t1.Eq(t2)
+	_, err := t1.Xor(t2)
 	if err == nil {
 		t.Error("Expected error when comparing a string to a bool")
 	}
