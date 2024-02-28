@@ -22,7 +22,7 @@ func (f *Function) GetValue() any {
 }
 
 func (f *Function) SetValue(value any) error {
-	return nil
+	return errors.New("cannot set value of function")
 }
 
 func (f *Function) String() string {
@@ -59,75 +59,75 @@ func (f *Function) GetType() string {
 }
 
 func (f *Function) GetIndex(number Type) (*Type, error) {
-	return nil, nil
+	return nil, errors.New("cannot get index of function")
 }
 
 func (f *Function) Add(other Type) (Type, error) {
-	return nil, errors.New("cannot add function")
+	return nil, errors.New("cannot add " + f.String() + " and " + other.String())
 }
 
 func (f *Function) Sub(other Type) (Type, error) {
-	return nil, errors.New("cannot subtract function")
+	return nil, errors.New("cannot subtract " + other.String() + " from " + f.String())
 }
 
 func (f *Function) Mul(other Type) (Type, error) {
-	return nil, errors.New("cannot multiply function")
+	return nil, errors.New("cannot multiply " + f.String() + " by " + other.String())
 }
 
 func (f *Function) Div(other Type) (Type, error) {
-	return nil, errors.New("cannot divide function")
+	return nil, errors.New("cannot divide " + f.String() + " by " + other.String())
 }
 
 func (f *Function) Mod(other Type) (Type, error) {
-	return nil, errors.New("cannot mod function")
+	return nil, errors.New("cannot get remainder of " + f.String() + " by " + other.String())
 }
 
 func (f *Function) DivEc(other Type) (Type, error) {
-	return nil, errors.New("cannot divide ec by function")
+	return nil, errors.New("cannot get quotient of " + f.String() + " by " + other.String())
 }
 
 func (f *Function) Eq(other Type) (Type, error) {
-	return nil, errors.New("cannot eq function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *Function) NotEq(other Type) (Type, error) {
-	return nil, errors.New("cannot notEq function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *Function) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *Function) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *Function) Not() (Type, error) {
-	return nil, errors.New("cannot not function")
+	return nil, errors.New("cannot \"not\" a function")
 }
 
 func (f *Function) Xor(other Type) (Type, error) {
-	return nil, errors.New("cannot xor function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *Function) Gt(other Type) (Type, error) {
-	return nil, errors.New("cannot gt function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *Function) GtEq(other Type) (Type, error) {
-	return nil, errors.New("cannot gtEq function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *Function) Lw(other Type) (Type, error) {
-	return nil, errors.New("cannot lw function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *Function) LwEq(other Type) (Type, error) {
-	return nil, errors.New("cannot lwEq function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *Function) Append(other Type) (Type, error) {
-	return nil, errors.New("cannot append function")
+	return nil, errors.New("cannot add " + other.String() + " to " + f.String())
 }
 
 func (f *Function) IsNull() bool {
@@ -204,7 +204,7 @@ func (f *Function) Override(args []parser.FunctionParams, body []parser.Node, re
 	}
 
 	if index == -1 {
-		return errors.New("Cannot override a prototype that was not implemented")
+		return errors.New("cannot override a prototype that was not implemented")
 	}
 	key := generateArgsString(args)
 	f.Args[index] = args
@@ -360,5 +360,5 @@ func (f *Function) GetSize() int {
 }
 
 func (f *Function) Len() (int, error) {
-	return -1, errors.New("cannot get len of function")
+	return -1, errors.New("cannot get length of function")
 }
