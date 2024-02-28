@@ -91,12 +91,6 @@ func (f Float) Sub(other Type) (Type, error) {
 
 // Mod returns error
 func (f Float) Mod(other Type) (Type, error) {
-	switch other.(type) {
-	case *Var:
-		other = other.(*Var).Value
-	case *Any:
-		return f.Mod(other.(*Any).Value)
-	}
 	return nil, errors.New("cannot get remainder of float")
 }
 
