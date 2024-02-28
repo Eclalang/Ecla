@@ -18,7 +18,7 @@ func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 		(*l).AddToken(t.Name)
 		l.prevIndex = l.index
 	} else {
-		if l.index >= len(l.sentence) {
+		if l.index > len(l.sentence) {
 			l.AddToken(t.Result[0].Name)
 			l.prevIndex = l.index
 		} else if l.sizeOfTokenReversed != -1 {

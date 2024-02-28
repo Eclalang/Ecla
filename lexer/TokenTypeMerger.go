@@ -36,7 +36,7 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 			(*l).isSpaces = false
 		}
 		if index == -1 {
-			if l.index >= len(l.sentence) {
+			if l.index > len(l.sentence) {
 				l.AddToken(t.Result[0].Name)
 				l.prevIndex = l.index
 			} else if l.sizeOfTokenReversed != -1 {
