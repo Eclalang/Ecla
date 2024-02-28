@@ -548,7 +548,6 @@ func TestAddFloatChar(t *testing.T) {
 	}
 }
 
-/*
 func TestSubFloatChar(t *testing.T) {
 	t1 := Float(90)
 	t2 := Char('A')
@@ -559,19 +558,6 @@ func TestSubFloatChar(t *testing.T) {
 	}
 	if result.GetValue() != Float(25) {
 		t.Error("Expected 25, got ", result)
-	}
-}
-
-func TestModFloatChar(t *testing.T) {
-	t1 := Float(60)
-	t2 := Char('!')
-
-	result, err := t1.Mod(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != Float(27) {
-		t.Error("Expected 27, got ", result)
 	}
 }
 
@@ -598,19 +584,6 @@ func TestDivFloatChar(t *testing.T) {
 	}
 	if result.GetValue() != Float(2.0) {
 		t.Error("Expected 2.0, got ", result)
-	}
-}
-
-func TestDivEcFloatChar(t *testing.T) {
-	t1 := Float(67)
-	t2 := Char('!')
-
-	result, err := t1.DivEc(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != Float(2) {
-		t.Error("Expected 2, got ", result)
 	}
 }
 
@@ -796,7 +769,7 @@ func TestLwEqFloatChar(t *testing.T) {
 	}
 }
 
-func TestLwEqFloatFloatFalse(t *testing.T) {
+func TestLwEqFloatCharFalse(t *testing.T) {
 	t1 := Float(66)
 	t2 := Char('A')
 
@@ -809,7 +782,7 @@ func TestLwEqFloatFloatFalse(t *testing.T) {
 	}
 }
 
-func TestLwEqFloatFloatEq(t *testing.T) {
+func TestLwEqFloatCharEq(t *testing.T) {
 	t1 := Float(65)
 	t2 := Char('A')
 
@@ -823,7 +796,7 @@ func TestLwEqFloatFloatEq(t *testing.T) {
 }
 
 func TestAndFloatChar(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(2.0)
 	t2 := Char('A')
 
 	result, err := t1.And(t2)
@@ -836,7 +809,7 @@ func TestAndFloatChar(t *testing.T) {
 }
 
 func TestAndFloatCharFalseRight(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(3.1)
 	t2 := Char(0)
 
 	result, err := t1.And(t2)
@@ -875,7 +848,7 @@ func TestAndFloatCharFalseBoth(t *testing.T) {
 }
 
 func TestOrFloatChar(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(-0.4)
 	t2 := Char('A')
 
 	result, err := t1.Or(t2)
@@ -888,7 +861,7 @@ func TestOrFloatChar(t *testing.T) {
 }
 
 func TestOrFloatCharFalseRight(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(8.6)
 	t2 := Char(0)
 
 	result, err := t1.Or(t2)
@@ -927,7 +900,7 @@ func TestOrFloatCharFalseBoth(t *testing.T) {
 }
 
 func TestXorFloatChar(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(2.4)
 	t2 := Char(1)
 
 	result, err := t1.Xor(t2)
@@ -941,7 +914,7 @@ func TestXorFloatChar(t *testing.T) {
 
 func TestXorFloatCharFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2 := Char(1)
+	t2 := Char('A')
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -978,6 +951,7 @@ func TestXorFloatCharFalseBoth(t *testing.T) {
 	}
 }
 
+/*
 // Int interacts with String
 
 func TestAddFloatString(t *testing.T) {
