@@ -7,9 +7,12 @@ import (
 )
 
 // NewBool creates a new Bool
-func NewBool(value string) Bool {
-	result, _ := strconv.ParseBool(value)
-	return Bool(result)
+func NewBool(value string) (Bool, error) {
+	result, err := strconv.ParseBool(value)
+	if err != nil {
+		return false, errors.New("cannot convert " + value + " to bool")
+	}
+	return Bool(result), nil
 }
 
 type Bool bool
