@@ -218,22 +218,22 @@ func LexerR(sentence string) []Token {
 }
 
 func (l *TLexer) DEBUGLEXER(s string) {
-	println("\n-------------"+s+"-------------\nl.tempVal\t\t:", "\""+l.tempVal+"\"")
-	println("l.TriggerBy\t\t:", l.TriggerBy)
-	if (len(l.indent) - 1) >= 0 {
-		println("l.indent name\t\t:", l.indent[0].Get()[len(l.indent[0].Get())-1])
-	} else {
-		println("l.indent name\t\t: None")
-	}
-
-	println("l.lastSTepToken\t\t:", l.lastStepToken.Get()[len(l.lastStepToken.Get())-1])
-	println("l.isSpaces\t\t:", l.isSpaces)
-	println("l.index\t\t\t:", l.index)
-	println("l.prevIndex\t\t:", l.prevIndex)
-	println("l.position\t\t:", l.position)
-	println("l.line\t\t\t:", l.line)
-	println("l.sizeOfTokenReversed\t:", l.sizeOfTokenReversed)
-	println("l.sentence\t\t:", l.sentence)
-	println("l.sentence readed\t:", l.sentence[:l.prevIndex]+"|")
+	//println("\n-------------"+s+"-------------\nl.tempVal\t\t:", "\""+l.tempVal+"\"")
+	//println("l.TriggerBy\t\t:", l.TriggerBy)
+	//if (len(l.indent) - 1) >= 0 {
+	//	println("l.indent name\t\t:", l.indent[0].Get()[len(l.indent[0].Get())-1])
+	//} else {
+	//	println("l.indent name\t\t: None")
+	//}
+	//
+	//println("l.lastSTepToken\t\t:", l.lastStepToken.Get()[len(l.lastStepToken.Get())-1])
+	//println("l.isSpaces\t\t:", l.isSpaces)
+	//println("l.index\t\t\t:", l.index)
+	//println("l.prevIndex\t\t:", l.prevIndex)
+	//println("l.position\t\t:", l.position)
+	//println("l.line\t\t\t:", l.line)
+	//println("l.sizeOfTokenReversed\t:", l.sizeOfTokenReversed)
+	//println("l.sentence\t\t:", l.sentence)
+	//println("l.sentence readed\t:", l.sentence[:l.prevIndex]+"|")
 
 }
