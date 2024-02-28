@@ -13,4 +13,4 @@ function Fibonacci(n : int) (int) {
 console.print("Here is the 10th number in the Fibonacci sequence : ");
 console.println(Fibonacci(10));
 console.print("Here is the 20th number in the Fibonacci sequence : ");
-console.println(Fibonacci(40));
+console.println(Fibonacci(20));

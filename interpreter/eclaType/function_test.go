@@ -1,14 +1,15 @@
 package eclaType
 
 import (
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"testing"
 )
 
 // Useless tests for code coverage purpose
 func TestGetValue(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
-	if f.GetValue() != nil {
-		t.Errorf("Expected nil, got %v", f.GetValue())
+	if f.GetValue() == nil {
+		t.Error("Expected not nil, got nil")
 	}
 }
 
@@ -35,8 +36,8 @@ func TestGetString(t *testing.T) {
 
 func TestGetType(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
-	if f.GetType() != "function" {
-		t.Errorf("Expected function, got %v", f.GetType())
+	if f.GetType() != "function()" {
+		t.Errorf("Expected function(), got %v", f.GetType())
 	}
 }
 
@@ -63,9 +64,10 @@ func TestNewFunction(t *testing.T) {
 }
 
 func TestTypeAndNumberOfArgsIsCorrect(t *testing.T) {
+	var structDecl []eclaDecl.TypeDecl
 	f := NewFunction("test", nil, nil, nil)
 	var args []Type
-	test, expect := f.TypeAndNumberOfArgsIsCorrect(args)
+	test, expect := f.TypeAndNumberOfArgsIsCorrect(args, structDecl)
 	if !test || expect == nil {
 		t.Errorf("Expected true, got %v", test)
 	}
@@ -73,8 +75,9 @@ func TestTypeAndNumberOfArgsIsCorrect(t *testing.T) {
 
 func TestCheckReturn(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
+	var structDecl []eclaDecl.TypeDecl
 	var args []Type
-	expect := f.CheckReturn(args)
+	expect := f.CheckReturn(args, structDecl)
 	if !expect {
 		t.Errorf("Expected true, got %v", expect)
 	}

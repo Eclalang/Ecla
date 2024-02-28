@@ -2,17 +2,43 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"os"
 	"path/filepath"
 	"runtime"
 
 	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
-	"github.com/Eclalang/Ecla/interpreter/libs"
 	"github.com/Eclalang/Ecla/lexer"
 	met "github.com/Eclalang/Ecla/metrics"
 	"github.com/Eclalang/Ecla/parser"
+	libs "github.com/Eclalang/LibraryController"
 )
+
+func InitBuildIn() *Scope {
+	vars := NewScopeMain()
+	v, err := eclaType.NewVar("typeof", "", eclaType.NewTypeOf())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("typeOf", v)
+	v, err = eclaType.NewVar("sizeof", "", eclaType.NewSizeOf())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("sizeOf", v)
+	v, err = eclaType.NewVar("len", "", eclaType.NewLen())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("len", v)
+	v, err = eclaType.NewVar("append", "", eclaType.NewAppend())
+	if err != nil {
+		panic(err)
+	}
+	vars.Set("append", v)
+	return vars
+}
 
 // Env is the environment in which the code is executed.
 type Env struct {
@@ -26,6 +52,7 @@ type Env struct {
 	Libs         map[string]libs.Lib
 	ErrorHandle  *errorHandler.ErrorHandler
 	ExecutedFunc []*eclaType.Function
+	TypeDecl     []eclaDecl.TypeDecl
 }
 
 // NewEnv returns a new Env.
@@ -33,7 +60,7 @@ func NewEnv() *Env {
 	return &Env{
 		OS:           runtime.GOOS,
 		ARCH:         runtime.GOARCH,
-		Vars:         NewScopeMain(),
+		Vars:         InitBuildIn(),
 		Libs:         make(map[string]libs.Lib),
 		ErrorHandle:  errorHandler.NewHandler(),
 		ExecutedFunc: []*eclaType.Function{},
@@ -46,7 +73,7 @@ func NewTemporaryEnv(ErrorHandler *errorHandler.ErrorHandler) *Env {
 	return &Env{
 		OS:           runtime.GOOS,
 		ARCH:         runtime.GOARCH,
-		Vars:         NewScopeMain(),
+		Vars:         InitBuildIn(),
 		Libs:         make(map[string]libs.Lib),
 		ErrorHandle:  ErrorHandler,
 		ExecutedFunc: []*eclaType.Function{},
@@ -78,9 +105,19 @@ func (env *Env) GetVar(name string) (*eclaType.Var, bool) {
 	return v, ok
 }
 
+// CheckIfVarExistsInCurrentScope returns true if the variable exists in the current scope.
+func (env *Env) CheckIfVarExistsInCurrentScope(name string) bool {
+	return env.Vars.CheckIfVarExistsInCurrentScope(name)
+}
+
 // NewScope creates a new scope.
 func (env *Env) NewScope(Type ScopeType) {
 	env.Vars.GoDeep(Type)
+}
+
+// SetScope sets the most deep scope.
+func (env *Env) SetScope(s *Scope) {
+	env.Vars.GoDeepWithSpecificScope(s)
 }
 
 // EndScope ends the current scope.
@@ -89,32 +126,26 @@ func (env *Env) EndScope() {
 }
 
 // SetFunction sets the function with the given name.
-func (env *Env) SetFunction(name string, f *eclaType.Function) {
+func (env *Env) SetFunction(name string, f *eclaType.Function) error {
 	v, err := eclaType.NewVar(name, f.GetType(), f)
 	if err != nil {
-		env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+		return err
 	}
 	env.Vars.Set(name, v)
-}
-
-// GetFunction returns the function with the given name.
-func (env *Env) GetFunction(name string) (*eclaType.Function, bool) {
-	f, ok := env.Vars.Get(name)
-	if !ok {
-		return nil, false
-	}
-	if f.IsFunction() {
-		fn := f.GetFunction()
-		if fn == nil {
-			panic("function is nil")
-		}
-		return fn, true
-	}
-	return nil, false
+	return nil
 }
 
 // Execute executes Env.Code or Env.File.
 func (env *Env) Execute() {
+	// catch all panics
+	defer func() {
+		if r := recover(); r != nil {
+			env.ErrorHandle.HandleError(0, 0,
+				fmt.Sprintf("an internal error occured please report it to the developers on https://github.com/Eclalang/Ecla/issues : %v", r),
+				errorHandler.LevelFatal)
+		}
+	}()
+
 	if env.File != "" {
 		env.Code = readFile(env.File)
 	}
@@ -186,7 +217,13 @@ func (env *Env) Import(stmt parser.ImportStmt) {
 
 		temp = tempsEnv.ConvertToLib(env)
 	}
-	env.Libs[parser.GetPackageNameByPath(file)] = temp
+	name := parser.GetPackageNameByPath(file)
+	env.Libs[name] = temp
+	v, err := eclaType.NewVar(name, "", eclaType.NewLib(name))
+	if err != nil {
+		env.ErrorHandle.HandleError(stmt.ImportToken.Line, 0, err.Error(), errorHandler.LevelFatal)
+	}
+	env.Vars.Set(name, v)
 }
 
 // AddFunctionExecuted adds a function to the pile of executed functions.
@@ -215,14 +252,14 @@ type envLib struct {
 func (lib *envLib) Call(name string, args []eclaType.Type) ([]eclaType.Type, error) {
 	function, ok := lib.Var.Get(name)
 	if !ok {
-		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("function '%s' not found", name), errorHandler.LevelFatal)
+		return nil, fmt.Errorf("function '%s' not found", name)
 	}
 	if !function.IsFunction() {
-		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("'%s' is not a function", name), errorHandler.LevelFatal)
+		return nil, fmt.Errorf("'%s' is not a function", name)
 	}
 	f := function.GetFunction()
 	if f == nil {
-		lib.env.ErrorHandle.HandleError(0, 0, fmt.Sprintf("function '%s' is nil", name), errorHandler.LevelFatal)
+		return nil, fmt.Errorf("function '%s' is nil", name)
 	}
 
 	// TODO : Change this to more clean code
@@ -245,6 +282,19 @@ func (env *Env) ConvertToLib(MainEnv *Env) libs.Lib {
 		Libs: env.Libs,
 		env:  MainEnv,
 	}
+}
+
+func (env *Env) AddTypeDecl(t eclaDecl.TypeDecl) {
+	env.TypeDecl = append(env.TypeDecl, t)
+}
+
+func (env *Env) GetTypeDecl(name string) (eclaDecl.TypeDecl, bool) {
+	for _, t := range env.TypeDecl {
+		if t.GetName() == name {
+			return t, true
+		}
+	}
+	return nil, false
 }
 
 // readFile reads the file at the given path and returns its contents as a string.

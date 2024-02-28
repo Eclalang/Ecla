@@ -236,12 +236,12 @@ func TestOrBoolChar(t *testing.T) {
 
 func TestAddBoolString(t *testing.T) {
 	t1 := NewBool("true")
-	t2 := NewString("Hello")
+	t2, _ := NewString("Hello")
 	actual, err := t1.Add(t2)
 	if err != nil {
 		t.Errorf("Error: %s", err)
 	}
-	expected := NewString("trueHello")
+	expected, _ := NewString("trueHello")
 	if actual != expected {
 		t.Errorf("Expected %s, got %s", expected, actual)
 	}

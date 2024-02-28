@@ -18,3 +18,5 @@
 # vendor/
 
 .vs
+
+test.ecla

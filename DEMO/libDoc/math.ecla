@@ -83,7 +83,7 @@ testExp();
 
 # Test function Fact
 function testFact() {
-    console.println(math.fact(5));
+    console.println(math.fact(5.0));
 }
 testFact();
 

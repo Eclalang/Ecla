@@ -3,6 +3,7 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 )
 
 type Map struct {
@@ -51,6 +52,8 @@ func (m *Map) SetValue(v any) error {
 		t := v.(*Map)
 		*m = *t
 		return nil
+	case *Any:
+		return m.SetValue(v.(*Any).Value)
 	default:
 		return errors.New("cannot set value of map")
 	}
@@ -73,7 +76,7 @@ func (m *Map) GetString() String {
 	return String(fmt.Sprint(m))
 }
 
-// GetType returns the type Map
+// GetType returns the type Struct
 func (m *Map) GetType() string {
 	return m.Typ
 }
@@ -98,6 +101,15 @@ func (m *Map) Set(key Type, value Type) {
 	}
 	m.Keys = append(m.Keys, key)
 	m.Values = append(m.Values, value)
+}
+
+func (m *Map) AddKey(key Type) error {
+	if key.GetType() != m.TypKey && m.TypKey != "string" {
+		return errors.New("key type not match")
+	}
+	m.Keys = append(m.Keys, key)
+	m.Values = append(m.Values, NewNullType(m.TypVal))
+	return nil
 }
 
 func (m *Map) Get(key Type) (Type, bool) {
@@ -144,8 +156,11 @@ func (m *Map) Add(value Type) (Type, error) {
 		for index, v := range value.(*Map).Keys {
 			m.Set(v, value.(*Map).Values[index])
 		}
-
 		return m, nil
+	case String:
+		return m.GetString().Add(value)
+	case *Any:
+		return m.Add(value.(*Any).Value)
 	}
 	return nil, errors.New("cannot add map with " + value.GetType())
 }
@@ -173,6 +188,8 @@ func (m *Map) Sub(value Type) (Type, error) {
 		for _, v := range value.(*Map).Keys {
 			value.(*Map).Delete(v)
 		}
+	case *Any:
+		return m.Sub(value.(*Any).Value)
 	}
 	return m, nil
 }
@@ -196,6 +213,7 @@ func (m *Map) DivMod(value Type) (Type, error) {
 	return nil, errors.New("cannot divmod map")
 }
 
+// TODO add case var ?
 func (m *Map) Eq(value Type) (Type, error) {
 	switch value.(type) {
 	case *Map:
@@ -208,6 +226,8 @@ func (m *Map) Eq(value Type) (Type, error) {
 			}
 		}
 		return Bool(true), nil
+	case *Any:
+		return m.Eq(value.(*Any).Value)
 	default:
 		return Bool(false), errors.New("cannot compare map with other type")
 	}
@@ -290,4 +310,20 @@ func GetTypeOfKeyAndValue(v string) (string, string) {
 		}
 	}
 	return v[4 : len(v)-len(val)-1], val
+}
+
+func (m *Map) GetKeyTypes() string {
+	return m.TypKey
+}
+
+func (m *Map) GetValueTypes() string {
+	return m.TypVal
+}
+
+func (m *Map) GetSize() int {
+	return utils.Sizeof(m)
+}
+
+func (m *Map) Len() (int, error) {
+	return len(m.Keys), nil
 }

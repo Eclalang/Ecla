@@ -174,15 +174,45 @@ func (v *Var) IsNull() bool {
 }
 
 func (v *Var) IsFunction() bool {
-	return v.Value.GetType()[:8] == "function"
+	if len(v.Value.GetType()) >= 9 {
+		if v.Value.GetType()[:8] == "function" {
+			return true
+		}
+	}
+	if len(v.Value.GetType()) >= 13 {
+		if v.Value.GetType()[4:12] == "function" {
+			return true
+		}
+	}
+	return false
+}
+
+func (v *Var) IsAny() bool {
+	if len(v.Value.GetType()) >= 4 {
+		return v.Value.GetType()[:3] == parser.Any
+	}
+	return false
 }
 
 func (v *Var) GetFunction() *Function {
 	switch v.Value.(type) {
 	case *Function:
 		return v.Value.(*Function)
+	case *Any:
+		switch v.Value.(*Any).Value.(type) {
+		case *Function:
+			return v.Value.(*Any).Value.(*Function)
+		}
 	}
 	return nil
+}
+
+func (v *Var) GetSize() int {
+	return v.Value.GetSize()
+}
+
+func (v *Var) Len() (int, error) {
+	return v.Value.Len()
 }
 
 // NewVar creates a new variable
@@ -199,6 +229,16 @@ func NewVar(name string, Type string, value Type) (*Var, error) {
 			Value: NewFloat(value.String()),
 		}, nil
 
+	}
+	if Type == parser.Any {
+		val := value
+		if value.GetType() != parser.Any {
+			val = NewAny(value)
+		}
+		return &Var{
+			Name:  name,
+			Value: val,
+		}, nil
 	}
 
 	if Type == "" {

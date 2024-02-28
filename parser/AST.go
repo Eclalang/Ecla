@@ -58,6 +58,10 @@ func (f *File) AddImport(imp string) {
 	}
 }
 
+func (f *File) IsImported(imp string) bool {
+	return contains(imp, f.Imports)
+}
+
 // ConsumeComments examines all the tokens, consumes them and deletes them from the token slice
 func (f *File) ConsumeComments(tokens []lexer.Token) []lexer.Token {
 	var tempTokens []lexer.Token

@@ -6,6 +6,9 @@ import (
 	"os"
 )
 
+// eclaExit is a variable to store the os.Exit function only modified for testing purposes.
+var eclaExit = os.Exit
+
 // ErrorHandler is the error handler of ecla.
 type ErrorHandler struct {
 	Errors []Error
@@ -19,7 +22,7 @@ func NewHandler() *ErrorHandler {
 }
 
 // HandleError handles an error.
-func (e ErrorHandler) HandleError(Line, Col int, Message string, LogLevel Level) {
+func (e *ErrorHandler) HandleError(Line, Col int, Message string, LogLevel Level) {
 	err := Error{
 		Line:  Line,
 		Col:   Col,
@@ -39,5 +42,5 @@ func (e ErrorHandler) HandleError(Line, Col int, Message string, LogLevel Level)
 
 func panicEcla(err Error) {
 	fmt.Println(err)
-	os.Exit(1)
+	eclaExit(1)
 }

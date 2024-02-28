@@ -3,6 +3,8 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/utils"
+	"github.com/Eclalang/Ecla/parser"
 )
 
 func NewList(t string) (Type, error) {
@@ -79,11 +81,6 @@ func (l *List) GetIndex(index Type) (*Type, error) {
 
 }
 
-// Len returns the length of a list
-func (l *List) Len() int {
-	return len(l.Value)
-}
-
 // Add adds two Type objects  compatible with List
 func (l *List) Add(other Type) (Type, error) {
 	switch other.(type) {
@@ -95,9 +92,31 @@ func (l *List) Add(other Type) (Type, error) {
 		if l.Typ == other.(*List).Typ {
 			return &List{append(l.Value, other.(*List).Value...), l.Typ}, nil
 		}
+		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char {
+			tmpList := l
+			for _, elem := range other.(*List).Value {
+				tmpList.Value = append(tmpList.Value, elem.(Char).GetValueAsInt())
+			}
+			return tmpList, nil
+		}
+		if l.GetValueType() == parser.Char && other.(*List).GetValueType() == parser.Int {
+			tmpList := l
+			for _, elem := range other.(*List).Value {
+				i := int(elem.(Int))
+				var err error = nil
+				c, err := NewChar(string(rune(i)))
+				if err != nil {
+					return nil, err
+				}
+				tmpList.Value = append(tmpList.Value, c)
+			}
+			return tmpList, nil
+		}
 		return nil, errors.New("cannot add lists of different types")
 	case String:
 		return l.GetString() + other.GetString(), nil
+	case *Any:
+		return l.Add(other.(*Any).Value)
 	}
 	return nil, fmt.Errorf("cannot add %s to list", other.GetString())
 }
@@ -121,6 +140,8 @@ func (l *List) Mul(other Type) (Type, error) {
 			result.Value = append(result.Value, l.Value...)
 		}
 		return &result, nil
+	case *Any:
+		return l.Mul(other.(*Any).Value)
 	}
 	return nil, fmt.Errorf("cannot multiply list by %s", other.GetString())
 }
@@ -151,6 +172,8 @@ func (l *List) Eq(other Type) (Type, error) {
 			}
 		}
 		return Bool(true), nil
+	case *Any:
+		return l.Eq(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -171,6 +194,8 @@ func (l *List) NotEq(other Type) (Type, error) {
 			}
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.NotEq(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -186,6 +211,8 @@ func (l *List) Gt(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.Gt(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -202,6 +229,8 @@ func (l *List) GtEq(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.GtEq(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -217,6 +246,8 @@ func (l *List) Lw(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.Lw(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -232,6 +263,8 @@ func (l *List) LwEq(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 		return Bool(false), nil
+	case *Any:
+		return l.LwEq(other.(*Any).Value)
 	}
 	return nil, errors.New(string("cannot compare list to " + other.GetString()))
 }
@@ -258,15 +291,33 @@ func (l *List) Xor(other Type) (Type, error) {
 
 // Append to list
 func (l *List) Append(other Type) (Type, error) {
-	if l.Typ == other.GetType() {
-		l.Value = append(l.Value, other)
-		return l, nil
+	switch other.(type) {
+	case *List:
+		if l.Typ == other.(*List).Typ {
+			l.Value = append(l.Value, other.(*List).Value...)
+			return l, nil
+		}
+		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char ||
+			l.GetValueType() == parser.Char && other.(*List).GetType() == parser.Int {
+			return l.Add(other)
+		}
+	case *Any:
+		return l.Append(other.(*Any).Value)
+	default:
+		if other.GetType() == l.Typ[2:] {
+			l.Value = append(l.Value, other)
+			return l, nil
+		}
 	}
-	return nil, errors.New("cannot append to list")
+	return nil, errors.New("cannot append to list with " + other.GetType())
 }
 
 func (l *List) IsNull() bool {
 	return false
+}
+
+func (l *List) GetValueType() string {
+	return l.Typ[2:]
 }
 
 // utils Functions for lists trainmen
@@ -288,4 +339,12 @@ func IsList(t string) bool {
 		}
 	}
 	return false
+}
+
+func (l *List) GetSize() int {
+	return utils.Sizeof(l)
+}
+
+func (l *List) Len() (int, error) {
+	return len(l.Value), nil
 }

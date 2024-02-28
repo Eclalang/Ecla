@@ -2,42 +2,34 @@ package eclaType
 
 import (
 	"errors"
-	"strings"
+	"github.com/Eclalang/Ecla/interpreter/utils"
+	"github.com/Eclalang/Ecla/parser"
+	"strconv"
 )
 
+func StringAreEscapedChar(value string) bool {
+	for i := 0; i < len(value); i++ {
+		switch value[i] {
+		case '\n', '\t', '\r', '\f', '\b', '\a':
+			return true
+		}
+	}
+	return false
+
+}
+
 // NewString creates a new String
-func NewString(value string) String {
-	if strings.Contains(value, "\\n") {
-		value = strings.ReplaceAll(value, "\\n", "\n")
+func NewString(value string) (String, error) {
+	// check if there are any escape characters
+	if StringAreEscapedChar(value) {
+		return String(""), errors.New("cannot create string with escape characters")
 	}
-	if strings.Contains(value, "\\\\") {
-		value = strings.ReplaceAll(value, "\\\\", "\\")
+	value = `"` + value + `"`
+	value, err := strconv.Unquote(value)
+	if err != nil {
+		return String(""), err
 	}
-	if strings.Contains(value, "\\a") {
-		value = strings.ReplaceAll(value, "\\a", "\a")
-	}
-	if strings.Contains(value, "\\b") {
-		value = strings.ReplaceAll(value, "\\b", "\b")
-	}
-	if strings.Contains(value, "\\f") {
-		value = strings.ReplaceAll(value, "\\f", "\f")
-	}
-	if strings.Contains(value, "\\r") {
-		value = strings.ReplaceAll(value, "\\r", "\r")
-	}
-	if strings.Contains(value, "\\t") {
-		value = strings.ReplaceAll(value, "\\t", "\t")
-	}
-	if strings.Contains(value, "\\v") {
-		value = strings.ReplaceAll(value, "\\v", "\v")
-	}
-	if strings.Contains(value, "\\\\'") {
-		value = strings.ReplaceAll(value, "\\\\'", "\\'")
-	}
-	if strings.Contains(value, "\\\"") {
-		value = strings.ReplaceAll(value, "\\\"", "\"")
-	}
-	return String(value)
+	return String(value), nil
 }
 
 type String string
@@ -66,9 +58,18 @@ func (s String) GetType() string {
 	return "string"
 }
 
+// TODO refactor with switch ?
 // GetIndex returns a single character
 func (s String) GetIndex(other Type) (*Type, error) {
-
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	if len(other.GetType()) >= 4 {
+		if other.GetType()[:3] == parser.Any {
+			return s.GetIndex(other.(*Any).Value)
+		}
+	}
 	if other.GetType() == "int" {
 		ind := int(other.GetValue().(Int))
 		if ind >= len(s) || ind < 0 {
@@ -79,11 +80,6 @@ func (s String) GetIndex(other Type) (*Type, error) {
 		return &temp, nil
 	}
 	return nil, errors.New("index must be an integer")
-}
-
-// Len returns the length of a string
-func (s String) Len() int {
-	return len(s)
 }
 
 // Add adds two Type objects
@@ -120,6 +116,8 @@ func (s String) Mul(other Type) (Type, error) {
 			result += string(s)
 		}
 		return String(result), nil
+	case *Any:
+		return s.Mul(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot multiply string by " + other.GetString()))
 	}
@@ -144,6 +142,8 @@ func (s String) Eq(other Type) (Type, error) {
 	switch other.(type) {
 	case String:
 		return Bool(s == other.GetString()), nil
+	case *Any:
+		return s.Eq(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare string by " + other.GetString()))
 	}
@@ -158,6 +158,8 @@ func (s String) NotEq(other Type) (Type, error) {
 	switch other.(type) {
 	case String:
 		return Bool(s != other.GetString()), nil
+	case *Any:
+		return s.NotEq(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare string to " + other.GetString()))
 	}
@@ -172,6 +174,8 @@ func (s String) Gt(other Type) (Type, error) {
 	switch other.(type) {
 	case String:
 		return Bool(s > other.GetString()), nil
+	case *Any:
+		return s.Gt(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare string to " + other.GetString()))
 	}
@@ -186,6 +190,8 @@ func (s String) GtEq(other Type) (Type, error) {
 	switch other.(type) {
 	case String:
 		return Bool(s >= other.GetString()), nil
+	case *Any:
+		return s.GtEq(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare string to " + other.GetString()))
 	}
@@ -200,6 +206,8 @@ func (s String) Lw(other Type) (Type, error) {
 	switch other.(type) {
 	case String:
 		return Bool(s < other.GetString()), nil
+	case *Any:
+		return s.Lw(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare string to " + other.GetString()))
 	}
@@ -214,6 +222,8 @@ func (s String) LwEq(other Type) (Type, error) {
 	switch other.(type) {
 	case String:
 		return Bool(s <= other.GetString()), nil
+	case *Any:
+		return s.LwEq(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare string to " + other.GetString()))
 	}
@@ -243,10 +253,22 @@ func (s String) Append(other Type) (Type, error) {
 	switch other.(type) {
 	case String:
 		return s + other.GetString(), nil
+	case Char:
+		return s + other.GetString(), nil
+	case *Any:
+		return s.Append(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot append string")
+	return nil, errors.New("cannot append string with " + other.GetType())
 }
 
 func (s String) IsNull() bool {
 	return false
+}
+
+func (s String) GetSize() int {
+	return utils.Sizeof(s)
+}
+
+func (s String) Len() (int, error) {
+	return len(s), nil
 }

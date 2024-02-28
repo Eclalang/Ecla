@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"strconv"
 )
 
@@ -86,23 +87,25 @@ func (b Bool) Eq(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		if (b == Bool(true) && other.GetValue() == Int(1)) || (b == Bool(false) && other.GetValue() == Int(0)) {
+		if (b == Bool(true) && other.GetValue() != Int(0)) || (b == Bool(false) && other.GetValue() == Int(0)) {
 			return Bool(true), nil
 		} else {
 			return Bool(false), nil
 		}
 	case Char:
-		if (b == Bool(true) && other.GetValue() == Char(1)) || (b == Bool(false) && other.GetValue() == Char(0)) {
+		if (b == Bool(true) && other.GetValue() != Char(0)) || (b == Bool(false) && other.GetValue() == Char(0)) {
 			return Bool(true), nil
 		} else {
 			return Bool(false), nil
 		}
 	case Float:
-		if (b == Bool(true) && other.GetValue() == Float(1)) || (b == Bool(false) && other.GetValue() == Float(0)) {
+		if (b == Bool(true) && other.GetValue() != Float(0)) || (b == Bool(false) && other.GetValue() == Float(0)) {
 			return Bool(true), nil
 		} else {
 			return Bool(false), nil
 		}
+	case *Any:
+		return b.Eq(other.(*Any).Value)
 	case Bool:
 		return Bool(b == other.GetValue()), nil
 	default:
@@ -118,25 +121,27 @@ func (b Bool) NotEq(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		if (b == Bool(true) && other.GetValue() == Int(1)) || (b == Bool(false) && other.GetValue() == Int(0)) {
+		if (b == Bool(true) && other.GetValue() != Int(0)) || (b == Bool(false) && other.GetValue() == Int(0)) {
 			return Bool(false), nil
 		} else {
 			return Bool(true), nil
 		}
 	case Char:
-		if (b == Bool(true) && other.GetValue() == Char(1)) || (b == Bool(false) && other.GetValue() == Char(0)) {
+		if (b == Bool(true) && other.GetValue() != Char(0)) || (b == Bool(false) && other.GetValue() == Char(0)) {
 			return Bool(false), nil
 		} else {
 			return Bool(true), nil
 		}
 	case Float:
-		if (b == Bool(true) && other.GetValue() == Float(1)) || (b == Bool(false) && other.GetValue() == Float(0)) {
+		if (b == Bool(true) && other.GetValue() != Float(0)) || (b == Bool(false) && other.GetValue() == Float(0)) {
 			return Bool(false), nil
 		} else {
 			return Bool(true), nil
 		}
 	case Bool:
 		return Bool(b != other.GetValue()), nil
+	case *Any:
+		return b.NotEq(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
@@ -193,6 +198,8 @@ func (b Bool) And(other Type) (Type, error) {
 		} else {
 			return Bool(false), nil
 		}
+	case *Any:
+		return b.And(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
@@ -229,6 +236,8 @@ func (b Bool) Or(other Type) (Type, error) {
 		} else {
 			return Bool(false), nil
 		}
+	case *Any:
+		return b.Or(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
@@ -247,7 +256,7 @@ func (b Bool) Xor(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case Int:
-		if b == Bool(true) && other.GetValue() == Int(1) {
+		if b == Bool(true) && other.GetValue() != Int(0) {
 			return Bool(false), nil
 		} else if b == Bool(false) && other.GetValue() == Int(0) {
 			return Bool(false), nil
@@ -255,7 +264,7 @@ func (b Bool) Xor(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 	case Char:
-		if b == Bool(true) && other.GetValue() == Char(1) {
+		if b == Bool(true) && other.GetValue() != Char(0) {
 			return Bool(false), nil
 		} else if b == Bool(false) && other.GetValue() == Char(0) {
 			return Bool(false), nil
@@ -263,7 +272,7 @@ func (b Bool) Xor(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 	case Float:
-		if b == Bool(true) && other.GetValue() == Float(1) {
+		if b == Bool(true) && other.GetValue() != Float(0) {
 			return Bool(false), nil
 		} else if b == Bool(false) && other.GetValue() == Float(0) {
 			return Bool(false), nil
@@ -278,6 +287,8 @@ func (b Bool) Xor(other Type) (Type, error) {
 		} else {
 			return Bool(true), nil
 		}
+	case *Any:
+		return b.Xor(other.(*Any).Value)
 	default:
 		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
 	}
@@ -290,4 +301,12 @@ func (b Bool) Append(other Type) (Type, error) {
 
 func (b Bool) IsNull() bool {
 	return false
+}
+
+func (b Bool) GetSize() int {
+	return utils.Sizeof(b)
+}
+
+func (b Bool) Len() (int, error) {
+	return -1, errors.New("cannot get length of bool")
 }

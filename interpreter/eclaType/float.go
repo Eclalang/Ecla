@@ -3,6 +3,7 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"strconv"
 )
 
@@ -61,6 +62,8 @@ func (f Float) Add(other Type) (Type, error) {
 		return f.GetString() + other.GetString(), nil
 	case Char:
 		return f + Float(Int(other.(Char))), nil
+	case *Any:
+		return f.Add(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot add " + string(other.GetString()) + " to float")
 	}
@@ -79,6 +82,8 @@ func (f Float) Sub(other Type) (Type, error) {
 		return f - Float(Int(other.(Char))), nil
 	case Float:
 		return f - other.(Float), nil
+	case *Any:
+		return f.Sub(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from float")
 	}
@@ -89,6 +94,8 @@ func (f Float) Mod(other Type) (Type, error) {
 	switch other.(type) {
 	case *Var:
 		other = other.(*Var).Value
+	case *Any:
+		return f.Mod(other.(*Any).Value)
 	}
 	return nil, errors.New("cannot mod float")
 }
@@ -106,6 +113,8 @@ func (f Float) Mul(other Type) (Type, error) {
 		return f * Float(Int(other.(Char))), nil
 	case Float:
 		return f * other.(Float), nil
+	case *Any:
+		return f.Mul(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot multiply " + string(other.GetString()) + " by float")
 	}
@@ -124,6 +133,8 @@ func (f Float) Div(other Type) (Type, error) {
 		return f / Float(other.(Char)), nil
 	case Float:
 		return f / other.(Float), nil
+	case *Any:
+		return f.Div(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot divide " + string(other.GetString()) + " by float")
 	}
@@ -147,6 +158,8 @@ func (f Float) Eq(other Type) (Type, error) {
 		return Bool(f == Float(other.(Char))), nil
 	case Float:
 		return Bool(f == other.(Float)), nil
+	case *Any:
+		return f.Eq(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot compare float to " + string(other.GetString()))
 	}
@@ -165,6 +178,8 @@ func (f Float) NotEq(other Type) (Type, error) {
 		return Bool(f != Float(other.(Char))), nil
 	case Float:
 		return Bool(f != other.(Float)), nil
+	case *Any:
+		return f.NotEq(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot compare float to " + string(other.GetString()))
 	}
@@ -183,6 +198,8 @@ func (f Float) Gt(other Type) (Type, error) {
 		return Bool(f > Float(other.(Char))), nil
 	case Float:
 		return Bool(f > other.(Float)), nil
+	case *Any:
+		return f.Gt(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot compare float to " + string(other.GetString()))
 	}
@@ -201,6 +218,8 @@ func (f Float) GtEq(other Type) (Type, error) {
 		return Bool(f >= Float(other.(Char))), nil
 	case Float:
 		return Bool(f >= other.(Float)), nil
+	case *Any:
+		return f.GtEq(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot compare float to " + string(other.GetString()))
 	}
@@ -219,6 +238,8 @@ func (f Float) Lw(other Type) (Type, error) {
 		return Bool(f < Float(other.(Char))), nil
 	case Float:
 		return Bool(f < other.(Float)), nil
+	case *Any:
+		return f.Lw(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot compare float to " + string(other.GetString()))
 	}
@@ -237,6 +258,8 @@ func (f Float) LwEq(other Type) (Type, error) {
 		return Bool(f <= Float(other.(Char))), nil
 	case Float:
 		return Bool(f <= other.(Float)), nil
+	case *Any:
+		return f.LwEq(other.(*Any).Value)
 	default:
 		return nil, errors.New("cannot compare float to " + string(other.GetString()))
 	}
@@ -269,4 +292,12 @@ func (f Float) Append(other Type) (Type, error) {
 
 func (f Float) IsNull() bool {
 	return false
+}
+
+func (f Float) GetSize() int {
+	return utils.Sizeof(f)
+}
+
+func (f Float) Len() (int, error) {
+	return 0, errors.New("cannot get len of float")
 }

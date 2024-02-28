@@ -1,6 +1,9 @@
 package eclaType
 
-import "errors"
+import (
+	"errors"
+	"github.com/Eclalang/Ecla/interpreter/utils"
+)
 
 type Null struct {
 	typ string
@@ -27,7 +30,7 @@ func (n Null) String() string {
 }
 
 func (n Null) GetString() String {
-	return NewString("null")
+	return "null"
 }
 
 func (n Null) GetType() string {
@@ -40,7 +43,7 @@ func (n Null) GetIndex(number Type) (*Type, error) {
 
 func (n Null) Add(other Type) (Type, error) {
 	if other.GetType() == "string" {
-		return NewString("null" + string(other.GetString())), nil
+		return String("null" + string(other.GetString())), nil
 	}
 	return nil, errors.New("cannot add null to " + other.GetType())
 }
@@ -117,4 +120,12 @@ func (n Null) Append(other Type) (Type, error) {
 
 func (n Null) IsNull() bool {
 	return true
+}
+
+func (n Null) GetSize() int {
+	return utils.Sizeof(n)
+}
+
+func (n Null) Len() (int, error) {
+	return -1, errors.New("cannot get length of null")
 }

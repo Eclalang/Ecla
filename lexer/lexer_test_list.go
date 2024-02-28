@@ -400,6 +400,10 @@ var (
 			},
 		},
 	}
+	testCHARSTRING3 = testList{
+		input:  `'\'' and '\"' and "\"" and "\'"`,
+		output: []Token{},
+	}
 	testEOL = testList{
 		input: "();\nmgrlgrl;\n_aa_",
 		output: []Token{
@@ -671,6 +675,65 @@ var (
 				Value:     ``,
 				Position:  18,
 				Line:      1,
+			},
+		},
+	}
+	testMultiLigneString = testList{
+		input: "b := \"hello\nworld\";",
+		output: []Token{
+			{
+				TokenType: TEXT,
+				Value:     `b`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: COLON,
+				Value:     `:`,
+				Position:  3,
+				Line:      1,
+			},
+			{
+				TokenType: ASSIGN,
+				Value:     `=`,
+				Position:  4,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     "hello\n",
+				Position:  7,
+				Line:      1,
+			},
+			{
+				TokenType: TEXT,
+				Value:     `world`,
+				Position:  1,
+				Line:      2,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  6,
+				Line:      2,
+			},
+			{
+				TokenType: STRING,
+				Value:     `;`,
+				Position:  7,
+				Line:      2,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      2,
 			},
 		},
 	}

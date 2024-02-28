@@ -1,0 +1,19 @@
+import "console";
+
+function TestBloc(str : string){
+    console.println(str);
+
+    if (str == "test")
+    {
+        var str string = "working";
+        console.println(str);
+    }
+
+    {
+        var str string = "working";
+        console.println(str);
+    }
+    console.println(str);
+}
+
+TestBloc("test");
