@@ -7,6 +7,18 @@ import (
 
 // Bool interacts with Bool
 
+func TestNewBool(t *testing.T) {
+	_, err := NewBool("true")
+	if err != nil {
+		t.Errorf("Error: %s", err)
+	}
+
+	_, err = NewBool("not a bool")
+	if err == nil {
+		t.Errorf("Expected error, got nil")
+	}
+}
+
 func TestBoolGetSize(t *testing.T) {
 	t1 := Bool(true)
 	expected := utils.Sizeof(t1)
@@ -886,7 +898,7 @@ func TestAddBoolString(t *testing.T) {
 }
 
 func TestBoolString(t *testing.T) {
-	t1 := NewBool("true")
+	t1, _ := NewBool("true")
 	t2 := "true"
 	if t1.String() != t2 {
 		t.Errorf("Expected \"true\", got %s", t1.String())
@@ -894,7 +906,7 @@ func TestBoolString(t *testing.T) {
 }
 
 func TestBoolGetString(t *testing.T) {
-	t1 := NewBool("false")
+	t1, _ := NewBool("false")
 	t2 := String("false")
 	if t1.GetString() != t2 {
 		t.Errorf("Expected \"false\", got %s", t1.GetString())
