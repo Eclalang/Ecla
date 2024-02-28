@@ -25,7 +25,7 @@ func (f Float) GetValue() any {
 
 // SetValue
 func (f Float) SetValue(value any) error {
-	return errors.New("cannot set value to Float")
+	return errors.New("cannot set value to float")
 }
 
 func (f Float) String() string {
@@ -65,7 +65,7 @@ func (f Float) Add(other Type) (Type, error) {
 	case *Any:
 		return f.Add(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot add " + string(other.GetString()) + " to float")
+		return nil, errors.New("cannot add " + f.String() + " and " + other.String())
 	}
 }
 
@@ -85,7 +85,7 @@ func (f Float) Sub(other Type) (Type, error) {
 	case *Any:
 		return f.Sub(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from float")
+		return nil, errors.New("cannot subtract " + other.String() + " from " + f.String())
 	}
 }
 
@@ -97,7 +97,7 @@ func (f Float) Mod(other Type) (Type, error) {
 	case *Any:
 		return f.Mod(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot mod float")
+	return nil, errors.New("cannot get remainder of float")
 }
 
 // Mul multiplies two Type objects compatible with Float
@@ -116,7 +116,7 @@ func (f Float) Mul(other Type) (Type, error) {
 	case *Any:
 		return f.Mul(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot multiply " + string(other.GetString()) + " by float")
+		return nil, errors.New("cannot multiply " + f.String() + " by " + other.String())
 	}
 }
 
@@ -136,13 +136,13 @@ func (f Float) Div(other Type) (Type, error) {
 	case *Any:
 		return f.Div(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot divide " + string(other.GetString()) + " by float")
+		return nil, errors.New("cannot divide " + f.String() + " by " + other.String())
 	}
 }
 
 // DivEc returns error because you cannot div ec float
 func (f Float) DivEc(other Type) (Type, error) {
-	return nil, errors.New("cannot divide ec by float")
+	return nil, errors.New("cannot get quotient of float")
 }
 
 // Eq returns true if two Type objects are equal
@@ -161,7 +161,7 @@ func (f Float) Eq(other Type) (Type, error) {
 	case *Any:
 		return f.Eq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -181,7 +181,7 @@ func (f Float) NotEq(other Type) (Type, error) {
 	case *Any:
 		return f.NotEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -201,7 +201,7 @@ func (f Float) Gt(other Type) (Type, error) {
 	case *Any:
 		return f.Gt(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -221,7 +221,7 @@ func (f Float) GtEq(other Type) (Type, error) {
 	case *Any:
 		return f.GtEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -241,7 +241,7 @@ func (f Float) Lw(other Type) (Type, error) {
 	case *Any:
 		return f.Lw(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -261,7 +261,7 @@ func (f Float) LwEq(other Type) (Type, error) {
 	case *Any:
 		return f.LwEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -287,7 +287,7 @@ func (f Float) Xor(other Type) (Type, error) {
 
 // Append returns errors
 func (f Float) Append(other Type) (Type, error) {
-	return nil, errors.New("cannot append float")
+	return nil, errors.New("cannot add " + other.String() + " to " + f.String())
 }
 
 func (f Float) IsNull() bool {
@@ -299,5 +299,5 @@ func (f Float) GetSize() int {
 }
 
 func (f Float) Len() (int, error) {
-	return 0, errors.New("cannot get len of float")
+	return 0, errors.New("cannot get length of float")
 }

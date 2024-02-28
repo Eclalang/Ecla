@@ -98,12 +98,12 @@ func RunTreeLoad(tree parser.Node, env *Env) []*Bus {
 func RunBinaryExpr(tree parser.BinaryExpr, env *Env) *Bus {
 	BusCollection := RunTree(tree.LeftExpr, env)
 	if IsMultipleBus(BusCollection) {
-		env.ErrorHandle.HandleError(tree.LeftExpr.StartLine(), tree.LeftExpr.StartPos(), "MULTIPLE BUS IN RunBinaryExpr", errorHandler.LevelFatal)
+		env.ErrorHandle.HandleError(tree.LeftExpr.StartLine(), tree.LeftExpr.StartPos(), "MULTIPLE BUS IN RunBinaryExpr.\nPlease open issue", errorHandler.LevelFatal)
 	}
 	left := BusCollection[0].GetVal()
 	BusCollection = RunTree(tree.RightExpr, env)
 	if IsMultipleBus(BusCollection) {
-		env.ErrorHandle.HandleError(tree.RightExpr.StartLine(), tree.RightExpr.StartPos(), "MULTIPLE BUS IN RunBinaryExpr", errorHandler.LevelFatal)
+		env.ErrorHandle.HandleError(tree.RightExpr.StartLine(), tree.RightExpr.StartPos(), "MULTIPLE BUS IN RunBinaryExpr.\nPlease open issue", errorHandler.LevelFatal)
 	}
 	right := BusCollection[0].GetVal()
 	var t eclaType.Type
@@ -152,7 +152,7 @@ func RunBinaryExpr(tree parser.BinaryExpr, env *Env) *Bus {
 func RunUnaryExpr(tree parser.UnaryExpr, env *Env) *Bus {
 	BusCollection := RunTree(tree.RightExpr, env)
 	if IsMultipleBus(BusCollection) {
-		env.ErrorHandle.HandleError(tree.RightExpr.StartLine(), tree.RightExpr.StartPos(), "MULTIPLE BUS IN RunUnaryExpr", errorHandler.LevelFatal)
+		env.ErrorHandle.HandleError(tree.RightExpr.StartLine(), tree.RightExpr.StartPos(), "MULTIPLE BUS IN RunUnaryExpr.\nPlease open issue", errorHandler.LevelFatal)
 	}
 	switch tree.Operator.TokenType {
 	case lexer.SUB:
@@ -228,9 +228,8 @@ func RunFunctionCallExprWithArgs(Name string, env *Env, fn *eclaType.Function, a
 	defer env.EndScope()
 	ok, argsList := fn.TypeAndNumberOfArgsIsCorrect(args, env.TypeDecl)
 	if !ok {
-		return nil, fmt.Errorf("Function %s called with incorrect arguments", Name)
+		return nil, fmt.Errorf("function %s called with incorrect arguments", Name)
 	}
-
 	for i, v := range argsList {
 		env.SetVar(i, v)
 	}
@@ -275,7 +274,7 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 	for i := range tree.Indexes {
 		BusCollection := RunTree(tree.Indexes[i], env)
 		if IsMultipleBus(BusCollection) {
-			env.ErrorHandle.HandleError(tree.Indexes[i].StartLine(), tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(tree.Indexes[i].StartLine(), tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr.\nPlease open issue", errorHandler.LevelFatal)
 		}
 		elem := BusCollection[0].GetVal()
 		temp, err := result.GetIndex(elem)
@@ -292,7 +291,7 @@ func RunIndexableAccessExpr(tree parser.IndexableAccessExpr, env *Env) *Bus {
 func RunAnonymousFunctionCallExpr(tree parser.AnonymousFunctionCallExpr, env *Env) []*Bus {
 	fn := RunTree(tree.AnonymousFunction, env)
 	if IsMultipleBus(fn) {
-		env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN RunAnonymousFunctionCallExpr", errorHandler.LevelFatal)
+		env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN RunAnonymousFunctionCallExpr.\nPlease open issue", errorHandler.LevelFatal)
 	}
 	var f *eclaType.Function
 	switch fn[0].GetVal().(type) {
@@ -339,7 +338,7 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 	if Struct == nil {
 		expr1 := RunTree(expr.Expr, env)
 		if IsMultipleBus(expr1) {
-			env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "MULTIPLE BUS IN RunSelectorExpr.\nPlease open issue", errorHandler.LevelFatal)
 		}
 
 		switch expr1[0].GetVal().(type) {
@@ -388,7 +387,7 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			}
 			return returnBuses
 		default:
-			env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "SelectorExpr not implemented", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "cannot use "+prev.String()+" here", errorHandler.LevelFatal)
 		}
 	case *eclaType.Struct:
 		switch expr.Sel.(type) {
@@ -398,7 +397,7 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 				s := prev.(*eclaType.Struct)
 				result, ok := s.Fields[sel.Value]
 				if !ok {
-					env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "field "+sel.Value+" does not exist", errorHandler.LevelFatal)
 				}
 				return []*Bus{NewMainBus(*result)}
 			}
@@ -419,7 +418,7 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 
 			fn, ok := prev.(*eclaType.Struct).Fields[tree.Name]
 			if !ok {
-				env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "field does not exist", errorHandler.LevelFatal)
+				env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "field "+tree.Name+" does not exist", errorHandler.LevelFatal)
 			}
 			var foo *eclaType.Function
 			switch (*fn).(type) {
@@ -445,7 +444,7 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 					s := prev.(*eclaType.Struct)
 					result, ok := s.Fields[sel.Value]
 					if !ok {
-						env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+						env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "field "+sel.Value+" does not exist", errorHandler.LevelFatal)
 					}
 					prev = *result
 				}
@@ -466,7 +465,7 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 
 				fn, ok := prev.(*eclaType.Struct).Fields[tree.Name]
 				if !ok {
-					env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "field does not exist", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "field "+tree.Name+" does not exist", errorHandler.LevelFatal)
 				}
 				var foo *eclaType.Function
 				switch (*fn).(type) {
@@ -484,19 +483,19 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 				if len(retValues) == 1 {
 					prev = retValues[0].GetVal()
 				} else {
-					env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN RunSelectorExpr", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN RunSelectorExpr.\nPlease open issue", errorHandler.LevelFatal)
 				}
 			case parser.IndexableAccessExpr:
 				tree := sel.Expr.(parser.IndexableAccessExpr)
 				s := prev.(*eclaType.Struct)
 				result, ok := s.Fields[tree.VariableName]
 				if !ok {
-					env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "field "+tree.VariableName+" does not exist", errorHandler.LevelFatal)
 				}
 				for i := range tree.Indexes {
 					BusCollection := RunTree(tree.Indexes[i], env)
 					if IsMultipleBus(BusCollection) {
-						env.ErrorHandle.HandleError(tree.Indexes[i].StartLine(), tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
+						env.ErrorHandle.HandleError(tree.Indexes[i].StartLine(), tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr\nPlease open issue", errorHandler.LevelFatal)
 					}
 					elem := BusCollection[0].GetVal()
 					temp, err := (*result).GetIndex(elem)
@@ -517,12 +516,12 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			s := prev.(*eclaType.Struct)
 			result, ok := s.Fields[tree.VariableName]
 			if !ok {
-				env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "field does not exist", errorHandler.LevelFatal)
+				env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "field "+tree.VariableName+" does not exist", errorHandler.LevelFatal)
 			}
 			for i := range tree.Indexes {
 				BusCollection := RunTree(tree.Indexes[i], env)
 				if IsMultipleBus(BusCollection) {
-					env.ErrorHandle.HandleError(tree.Indexes[i].StartLine(), tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(tree.Indexes[i].StartLine(), tree.Indexes[i].StartPos(), "MULTIPLE BUS IN RunIndexableAccessExpr\nPlease open issue", errorHandler.LevelFatal)
 				}
 				elem := BusCollection[0].GetVal()
 				temp, err := (*result).GetIndex(elem)
@@ -553,7 +552,7 @@ func RunStructInstantiationExpr(tree parser.StructInstantiationExpr, env *Env) [
 	for i, arg := range tree.Args {
 		val := RunTree(arg, env)
 		if IsMultipleBus(val) {
-			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN StructInstantiationExpr", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN StructInstantiationExpr.\nPlease open issue", errorHandler.LevelFatal)
 		}
 		temp := val[0].GetVal()
 		switch temp.(type) {

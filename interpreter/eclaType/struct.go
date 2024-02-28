@@ -79,13 +79,13 @@ func (s *Struct) Set(fieldName string, FieldValue Type) error {
 	}
 
 	if _, ok := s.Fields[fieldName]; !ok {
-		return errors.New("fieldName does not exist")
+		return errors.New("field " + fieldName + " does not exist")
 	}
 	if (*s.Fields[fieldName]).GetType() == parser.Any {
 		return (*s.Fields[fieldName]).(*Any).SetAny(FieldValue)
 	}
 	if (*s.Fields[fieldName]).GetType() != FieldValue.GetType() {
-		return errors.New("fieldValue is of type " + FieldValue.GetType() + ", expected " + (*s.Fields[fieldName]).GetType())
+		return errors.New("field " + fieldName + " value is of type " + FieldValue.GetType() + ", expected " + (*s.Fields[fieldName]).GetType())
 	}
 
 	s.Fields[fieldName] = &FieldValue
@@ -94,14 +94,14 @@ func (s *Struct) Set(fieldName string, FieldValue Type) error {
 
 func (s *Struct) Get(fieldName string) (Type, error) {
 	if _, ok := s.Fields[fieldName]; !ok {
-		return nil, errors.New("fieldName does not exist")
+		return nil, errors.New("field " + fieldName + " does not exist")
 	}
 	return *s.Fields[fieldName], nil
 }
 
 func (s *Struct) GetIndex(index Type) (*Type, error) {
 	if index.GetType() != parser.String {
-		return nil, errors.New("index type not match")
+		return nil, errors.New("cannot set " + index.String() + " as index")
 	}
 	val, err := s.Get(index.String())
 	return &val, err
@@ -118,30 +118,27 @@ func (s *Struct) Add(other Type) (Type, error) {
 	case *Any:
 		return s.Add(other.(*Any).Value)
 	}
-	return nil, fmt.Errorf("cannot add %s to list", other.GetString())
+	return nil, fmt.Errorf("cannot add %s to struct", other.GetString())
 }
 
 func (s *Struct) Sub(value Type) (Type, error) {
-	return nil, errors.New("Cannot sub struct")
+	return nil, errors.New("cannot subtract " + value.String() + " from " + s.String())
 }
 
 func (s *Struct) Mul(value Type) (Type, error) {
-	return nil, errors.New("cannot mul struct")
+	return nil, errors.New("cannot multiply " + s.String() + " by " + value.String())
 }
 
 func (s *Struct) Div(value Type) (Type, error) {
-	return nil, errors.New("cannot div struct")
+	return nil, errors.New("cannot divide " + s.String() + " by " + value.String())
 }
 
 func (s *Struct) Mod(value Type) (Type, error) {
-	return nil, errors.New("cannot mod struct")
+	return nil, errors.New("cannot get remainder of " + s.String() + " by " + value.String())
 }
 
 func (s *Struct) DivEc(value Type) (Type, error) {
-	return nil, errors.New("cannot divec struct")
-}
-func (s *Struct) DivMod(value Type) (Type, error) {
-	return nil, errors.New("cannot divmod struct")
+	return nil, errors.New("cannot get quotient " + s.String() + " by " + value.String())
 }
 
 // TODO add case var ?
@@ -164,7 +161,7 @@ func (s *Struct) Eq(value Type) (Type, error) {
 	case *Any:
 		return s.Eq(value.(*Any).Value)
 	default:
-		return Bool(false), errors.New("cannot compare struct with other type")
+		return Bool(false), errors.New("cannot compare struct of type " + s.GetType() + " with " + value.String())
 	}
 }
 
@@ -177,39 +174,39 @@ func (s *Struct) NotEq(value Type) (Type, error) {
 }
 
 func (s *Struct) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and struct")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 func (s *Struct) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or struct")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 func (s *Struct) Not() (Type, error) {
-	return nil, errors.New("cannot not struct")
+	return nil, errors.New("cannot \"not\" struct")
 }
 
 func (s *Struct) Xor(other Type) (Type, error) {
-	return nil, errors.New("cannot xor struct")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 func (s *Struct) Gt(other Type) (Type, error) {
-	return nil, errors.New("cannot gt struct")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 func (s *Struct) GtEq(other Type) (Type, error) {
-	return nil, errors.New("cannot gtEq struct")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 func (s *Struct) Lw(other Type) (Type, error) {
-	return nil, errors.New("cannot lw struct")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 func (s *Struct) LwEq(other Type) (Type, error) {
-	return nil, errors.New("cannot lwEq struct")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 func (s *Struct) Append(other Type) (Type, error) {
-	return nil, errors.New("cannot append struct")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 func (s *Struct) IsNull() bool {

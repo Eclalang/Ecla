@@ -24,7 +24,7 @@ func (b Bool) GetValue() any {
 
 // SetValue
 func (b Bool) SetValue(value any) error {
-	return errors.New("cannot set value to Bool")
+	return errors.New("cannot set value to bool")
 }
 
 func (b Bool) String() string {
@@ -54,32 +54,32 @@ func (b Bool) Add(other Type) (Type, error) {
 	if other.GetType() == "string" {
 		return b.GetString() + other.GetString(), nil
 	}
-	return nil, errors.New("cannot add to bool")
+	return nil, errors.New("cannot add " + b.String() + " and " + other.String())
 }
 
 // returns error
 func (b Bool) Sub(other Type) (Type, error) {
-	return nil, errors.New("cannot subtract from bool")
+	return nil, errors.New("cannot subtract " + other.String() + " from " + b.String())
 }
 
 // returns error
 func (b Bool) Mod(other Type) (Type, error) {
-	return nil, errors.New("cannot mod bool")
+	return nil, errors.New("cannot get remainder of  " + b.String() + " by " + other.String())
 }
 
-// returns error
+// returns error"cannot add " + b.String() + " and " + other.String()
 func (b Bool) Mul(other Type) (Type, error) {
-	return nil, errors.New("cannot multiply bool")
+	return nil, errors.New("cannot multiply " + b.String() + " by " + other.String())
 }
 
 // returns error
 func (b Bool) Div(other Type) (Type, error) {
-	return nil, errors.New("cannot divide bool")
+	return nil, errors.New("cannot divide " + b.String() + " by " + other.String())
 }
 
 // returns error
 func (b Bool) DivEc(other Type) (Type, error) {
-	return nil, errors.New("cannot divide ec bool")
+	return nil, errors.New("cannot get quotient of " + b.String() + " by " + other.String())
 }
 
 // Eq returns true if two Type objects are equal
@@ -112,7 +112,7 @@ func (b Bool) Eq(other Type) (Type, error) {
 	case Bool:
 		return Bool(b == other.GetValue()), nil
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New("cannot compare " + b.String() + " and " + other.String())
 	}
 }
 
@@ -146,28 +146,28 @@ func (b Bool) NotEq(other Type) (Type, error) {
 	case *Any:
 		return b.NotEq(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New("cannot compare " + b.String() + " and " + other.String())
 	}
 }
 
 // returns error
 func (b Bool) Gt(other Type) (Type, error) {
-	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	return nil, errors.New("cannot compare " + b.String() + " and " + other.String())
 }
 
 // returns error
 func (b Bool) GtEq(other Type) (Type, error) {
-	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	return nil, errors.New("cannot compare " + b.String() + " and " + other.String())
 }
 
 // returns error
 func (b Bool) Lw(other Type) (Type, error) {
-	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	return nil, errors.New("cannot compare " + b.String() + " and " + other.String())
 }
 
 // returns error
 func (b Bool) LwEq(other Type) (Type, error) {
-	return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+	return nil, errors.New("cannot compare " + b.String() + " and " + other.String())
 }
 
 // And returns true if both Types are true
@@ -204,7 +204,7 @@ func (b Bool) And(other Type) (Type, error) {
 	case *Any:
 		return b.And(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New("cannot compare " + b.String() + " and " + other.String())
 	}
 }
 
@@ -242,7 +242,7 @@ func (b Bool) Or(other Type) (Type, error) {
 	case *Any:
 		return b.Or(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New("cannot compare " + b.String() + " and " + other.String())
 	}
 }
 
@@ -293,13 +293,13 @@ func (b Bool) Xor(other Type) (Type, error) {
 	case *Any:
 		return b.Xor(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New("cannot compare " + b.String() + " and " + other.String())
 	}
 }
 
 // Append returns errors
 func (b Bool) Append(other Type) (Type, error) {
-	return nil, errors.New("cannot append bool")
+	return nil, errors.New("cannot add " + other.String() + " to " + b.String())
 }
 
 func (b Bool) IsNull() bool {

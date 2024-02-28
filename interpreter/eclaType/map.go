@@ -27,12 +27,12 @@ func (m *Map) SetAutoType() error {
 		m.TypVal = m.Values[0].GetType()
 		for _, v := range m.Values {
 			if v.GetType() != m.TypVal {
-				return errors.New("you cannot have a map with different value type")
+				return errors.New("cannot create a map with different value types")
 			}
 		}
 		for _, v := range m.Keys {
 			if v.GetType() != m.TypKey {
-				return errors.New("you cannot have a map with different key type")
+				return errors.New("cannot create a map with different key types")
 			}
 		}
 		typ = "map[" + m.TypKey + "]" + m.TypVal
@@ -55,7 +55,7 @@ func (m *Map) SetValue(v any) error {
 	case *Any:
 		return m.SetValue(v.(*Any).Value)
 	default:
-		return errors.New("cannot set value of map")
+		return errors.New(fmt.Sprintf("cannot set value %s to map of type %s", v, m.Typ))
 	}
 }
 
@@ -88,10 +88,10 @@ func (m *Map) SetType(t string) {
 
 func (m *Map) Set(key Type, value Type) {
 	if key.GetType() != m.TypKey && m.TypKey != "string" {
-		panic("key type not match")
+		panic("cannot set " + key.String() + " as key of type " + m.GetKeyTypes())
 	}
 	if value.GetType() != m.TypVal && m.TypVal != "string" {
-		panic("value type not match")
+		panic("cannot set " + key.String() + " as value of type " + m.GetValueTypes())
 	}
 	for index, k := range m.Keys {
 		if k.GetString().String() == key.GetString().String() {
@@ -105,7 +105,7 @@ func (m *Map) Set(key Type, value Type) {
 
 func (m *Map) AddKey(key Type) error {
 	if key.GetType() != m.TypKey && m.TypKey != "string" {
-		return errors.New("key type not match")
+		return errors.New("cannot set " + key.String() + " as key of type " + m.GetKeyTypes())
 	}
 	m.Keys = append(m.Keys, key)
 	m.Values = append(m.Values, NewNullType(m.TypVal))
@@ -123,7 +123,7 @@ func (m *Map) Get(key Type) (Type, bool) {
 
 func (m *Map) GetIndex(index Type) (*Type, error) {
 	if index.GetType() != m.TypKey && m.TypKey != "string" {
-		return nil, errors.New("index type not match")
+		return nil, errors.New("cannot set " + index.String() + " as index of type " + m.GetKeyTypes())
 	}
 	for i, k := range m.Keys {
 		if k.GetString().String() == index.GetString().String() {
@@ -150,7 +150,7 @@ func (m *Map) Add(value Type) (Type, error) {
 	switch value.(type) {
 	case *Map:
 		if value.GetType() != m.Typ && m.TypKey != "string" && m.TypVal != "string" {
-			return nil, errors.New("cannot add map with " + value.GetType())
+			return nil, errors.New("cannot add map with " + value.String())
 		}
 
 		for index, v := range value.(*Map).Keys {
@@ -162,7 +162,7 @@ func (m *Map) Add(value Type) (Type, error) {
 	case *Any:
 		return m.Add(value.(*Any).Value)
 	}
-	return nil, errors.New("cannot add map with " + value.GetType())
+	return nil, errors.New("cannot add map with " + value.String())
 }
 
 func (m *Map) Delete(key Type) {
@@ -183,7 +183,7 @@ func (m *Map) Sub(value Type) (Type, error) {
 	switch value.(type) {
 	case *Map:
 		if value.GetType() != m.Typ && m.TypKey != "string" && m.TypVal != "string" {
-			return nil, errors.New("cannot add map with " + value.GetType())
+			return nil, errors.New("cannot subtract " + value.String() + " from map")
 		}
 		for _, v := range value.(*Map).Keys {
 			value.(*Map).Delete(v)
@@ -195,22 +195,19 @@ func (m *Map) Sub(value Type) (Type, error) {
 }
 
 func (m *Map) Mul(value Type) (Type, error) {
-	return nil, errors.New("cannot mul map")
+	return nil, errors.New("cannot multiply " + value.String() + " with map")
 }
 
 func (m *Map) Div(value Type) (Type, error) {
-	return nil, errors.New("cannot div map")
+	return nil, errors.New("cannot divide map by " + value.String())
 }
 
 func (m *Map) Mod(value Type) (Type, error) {
-	return nil, errors.New("cannot mod map")
+	return nil, errors.New("cannot get remainder of map by " + value.String())
 }
 
 func (m *Map) DivEc(value Type) (Type, error) {
-	return nil, errors.New("cannot divec map")
-}
-func (m *Map) DivMod(value Type) (Type, error) {
-	return nil, errors.New("cannot divmod map")
+	return nil, errors.New("cannot get quotient of map by " + value.String())
 }
 
 // TODO add case var ?
@@ -229,7 +226,7 @@ func (m *Map) Eq(value Type) (Type, error) {
 	case *Any:
 		return m.Eq(value.(*Any).Value)
 	default:
-		return Bool(false), errors.New("cannot compare map with other type")
+		return Bool(false), errors.New("cannot compare map of type " + m.GetType() + " with " + value.String())
 	}
 }
 
@@ -242,39 +239,39 @@ func (m *Map) NotEq(value Type) (Type, error) {
 }
 
 func (m *Map) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and null")
+	return nil, errors.New("cannot compare map with " + other.String())
 }
 
 func (m *Map) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or null")
+	return nil, errors.New("cannot compare map with " + other.String())
 }
 
 func (m *Map) Not() (Type, error) {
-	return nil, errors.New("cannot not null")
+	return nil, errors.New("cannot \"not\" map")
 }
 
 func (m *Map) Xor(other Type) (Type, error) {
-	return nil, errors.New("cannot xor null")
+	return nil, errors.New("cannot compare map with " + other.String())
 }
 
 func (m *Map) Gt(other Type) (Type, error) {
-	return nil, errors.New("cannot gt null")
+	return nil, errors.New("cannot compare map with " + other.String())
 }
 
 func (m *Map) GtEq(other Type) (Type, error) {
-	return nil, errors.New("cannot gtEq null")
+	return nil, errors.New("cannot compare map with " + other.String())
 }
 
 func (m *Map) Lw(other Type) (Type, error) {
-	return nil, errors.New("cannot lw null")
+	return nil, errors.New("cannot compare map with " + other.String())
 }
 
 func (m *Map) LwEq(other Type) (Type, error) {
-	return nil, errors.New("cannot lwEq null")
+	return nil, errors.New("cannot compare map with " + other.String())
 }
 
 func (m *Map) Append(other Type) (Type, error) {
-	return nil, errors.New("cannot append null")
+	return nil, errors.New("cannot compare map with " + other.String())
 }
 
 func (m *Map) IsNull() bool {

@@ -61,7 +61,7 @@ func (i Int) Add(other Type) (Type, error) {
 	case *Any:
 		return i.Add(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot add " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot add " + i.String() + " and " + other.String())
 	}
 }
 
@@ -81,7 +81,7 @@ func (i Int) Sub(other Type) (Type, error) {
 	case *Any:
 		return i.Sub(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
+		return nil, errors.New("cannot subtract " + other.String() + " from " + i.String())
 	}
 }
 
@@ -94,18 +94,18 @@ func (i Int) Mod(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		if other.(Int) == 0 {
-			return nil, errors.New("cannot mod by zero")
+			return nil, errors.New("cannot divide by zero")
 		}
 		return i % other.(Int), nil
 	case Char:
 		if other.(Char) == 0 {
-			return nil, errors.New("cannot mod by zero")
+			return nil, errors.New("cannot divide by zero")
 		}
 		return i % Int(other.(Char)), nil
 	case *Any:
 		return i.Mod(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot mod " + string(other.GetString()) + " by int")
+		return nil, errors.New("cannot get remainder of " + i.String() + " by " + other.String())
 	}
 }
 
@@ -131,7 +131,7 @@ func (i Int) Mul(other Type) (Type, error) {
 	case *Any:
 		return i.Mul(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot multiply " + string(other.GetString()) + " by int")
+		return nil, errors.New("cannot multiply " + i.String() + " and " + other.String())
 	}
 }
 
@@ -160,7 +160,7 @@ func (i Int) Div(other Type) (Type, error) {
 	case *Any:
 		return i.Div(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot divide " + string(other.GetString()) + " by int")
+		return nil, errors.New("cannot divide " + i.String() + " by " + other.String())
 	}
 }
 
@@ -184,7 +184,7 @@ func (i Int) DivEc(other Type) (Type, error) {
 	case *Any:
 		return i.DivEc(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot divide ec int by " + string(other.GetString()))
+		return nil, errors.New("cannot get quotient of " + i.String() + " by " + other.String())
 	}
 }
 
@@ -204,7 +204,7 @@ func (i Int) Eq(other Type) (Type, error) {
 	case *Any:
 		return i.Eq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + i.String() + " and " + other.String())
 	}
 }
 
@@ -224,7 +224,7 @@ func (i Int) NotEq(other Type) (Type, error) {
 	case *Any:
 		return i.NotEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + i.String() + " and " + other.String())
 	}
 }
 
@@ -244,7 +244,7 @@ func (i Int) Gt(other Type) (Type, error) {
 	case *Any:
 		return i.Gt(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + i.String() + " and " + other.String())
 	}
 }
 
@@ -264,7 +264,7 @@ func (i Int) GtEq(other Type) (Type, error) {
 	case *Any:
 		return i.GtEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + i.String() + " and " + other.String())
 	}
 }
 
@@ -284,7 +284,7 @@ func (i Int) Lw(other Type) (Type, error) {
 	case *Any:
 		return i.Lw(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + i.String() + " and " + other.String())
 	}
 }
 
@@ -304,7 +304,7 @@ func (i Int) LwEq(other Type) (Type, error) {
 	case *Any:
 		return i.LwEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + i.String() + " and " + other.String())
 	}
 }
 
@@ -342,7 +342,7 @@ func (i Int) And(other Type) (Type, error) {
 	case *Any:
 		return i.And(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New("cannot compare " + i.String() + " and " + other.String())
 	}
 }
 
@@ -380,7 +380,7 @@ func (i Int) Or(other Type) (Type, error) {
 	case *Any:
 		return i.Or(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New("cannot compare " + i.String() + " and " + other.String())
 	}
 }
 
@@ -436,13 +436,13 @@ func (i Int) Xor(other Type) (Type, error) {
 	case *Any:
 		return i.Xor(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New("cannot compare " + i.String() + " and " + other.String())
 	}
 }
 
 // Append returns errors
 func (i Int) Append(other Type) (Type, error) {
-	return nil, errors.New("cannot append int")
+	return nil, errors.New("cannot add " + other.String() + " to " + i.String())
 }
 
 func (i Int) IsNull() bool {

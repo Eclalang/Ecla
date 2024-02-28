@@ -41,7 +41,7 @@ func (s String) GetValue() any {
 
 // SetValue
 func (s String) SetValue(value any) error {
-	return errors.New("cannot set value to String")
+	return errors.New("cannot set value of string")
 }
 
 func (s String) String() string {
@@ -73,13 +73,13 @@ func (s String) GetIndex(other Type) (*Type, error) {
 	if other.GetType() == "int" {
 		ind := int(other.GetValue().(Int))
 		if ind >= len(s) || ind < 0 {
-			return nil, errors.New("Index out of range")
+			return nil, errors.New("index out of range")
 		}
 		res := Char(s[ind])
 		temp := Type(res)
 		return &temp, nil
 	}
-	return nil, errors.New("index must be an integer")
+	return nil, errors.New("index must be an int")
 }
 
 // Add adds two Type objects
@@ -89,12 +89,12 @@ func (s String) Add(other Type) (Type, error) {
 
 // Sub returns errors because you cannot subtract strings
 func (s String) Sub(other Type) (Type, error) {
-	return nil, errors.New("cannot subtract from string")
+	return nil, errors.New("cannot subtract " + other.String() + " from " + s.String())
 }
 
 // Mod returns errors because you cannot mod strings
 func (s String) Mod(other Type) (Type, error) {
-	return nil, errors.New("cannot mod string")
+	return nil, errors.New("cannot get remainder of " + s.String() + " by " + other.String())
 }
 
 // Mul if other is Int , return n * String
@@ -125,12 +125,12 @@ func (s String) Mul(other Type) (Type, error) {
 
 // Div returns errors because you cannot divide strings
 func (s String) Div(other Type) (Type, error) {
-	return nil, errors.New("cannot divide string")
+	return nil, errors.New("cannot divide string by " + other.String())
 }
 
 // DivEc returns error because you cannot div ec strings
 func (s String) DivEc(other Type) (Type, error) {
-	return nil, errors.New("cannot divide ec by string")
+	return nil, errors.New("cannot get quotient of " + s.String() + " by " + other.String())
 }
 
 // Eq returns true if two Type objects are equal
@@ -145,7 +145,7 @@ func (s String) Eq(other Type) (Type, error) {
 	case *Any:
 		return s.Eq(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare string by " + other.GetString()))
+		return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 	}
 }
 
@@ -161,7 +161,7 @@ func (s String) NotEq(other Type) (Type, error) {
 	case *Any:
 		return s.NotEq(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+		return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 	}
 }
 
@@ -177,7 +177,7 @@ func (s String) Gt(other Type) (Type, error) {
 	case *Any:
 		return s.Gt(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+		return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 	}
 }
 
@@ -193,7 +193,7 @@ func (s String) GtEq(other Type) (Type, error) {
 	case *Any:
 		return s.GtEq(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+		return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 	}
 }
 
@@ -209,7 +209,7 @@ func (s String) Lw(other Type) (Type, error) {
 	case *Any:
 		return s.Lw(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+		return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 	}
 }
 
@@ -225,28 +225,28 @@ func (s String) LwEq(other Type) (Type, error) {
 	case *Any:
 		return s.LwEq(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare string to " + other.GetString()))
+		return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 	}
 }
 
 // And returns errors
 func (s String) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and string")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 // Or returns errors
 func (s String) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or string")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 // Not returns errors
 func (s String) Not() (Type, error) {
-	return nil, errors.New("cannot opposite string")
+	return nil, errors.New("cannot \"not\" string")
 }
 
 // Xor returns errors
 func (s String) Xor(other Type) (Type, error) {
-	return nil, errors.New("cannot xor string")
+	return nil, errors.New("cannot compare " + s.String() + " and " + other.String())
 }
 
 func (s String) Append(other Type) (Type, error) {
@@ -258,7 +258,7 @@ func (s String) Append(other Type) (Type, error) {
 	case *Any:
 		return s.Append(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot append string with " + other.GetType())
+	return nil, errors.New("cannot append " + other.String() + " to " + s.String())
 }
 
 func (s String) IsNull() bool {
