@@ -108,7 +108,11 @@ It also runs the dependency checker to find any missing dependencies and notifie
 */
 func (p *Parser) Parse() *File {
 	tempFile := new(File)
-	p.VarTypes = VarTypes
+	// create a deep copy of the VarTypes map
+	p.VarTypes = make(map[string]interface{})
+	for k, v := range VarTypes {
+		p.VarTypes[k] = v
+	}
 	p.Tokens = tempFile.ConsumeComments(p.Tokens)
 	p.CurrentToken = p.Tokens[0]
 	file := p.ParseFile()
