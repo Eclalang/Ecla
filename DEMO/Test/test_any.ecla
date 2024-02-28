@@ -1,0 +1,38 @@
+import "console";
+
+# int
+var val any = 3;
+console.println(val+1);
+console.println(1+val);
+console.println(1 < val);
+console.println(val < 1);
+
+for(i := 0, i < val, i++){
+    console.println(i);
+}
+
+console.println("----------");
+# string
+val = "tes";
+val += 't';
+console.println(val);
+
+var i any;
+i = 0;
+while(val != "testtesttesttest"){
+    console.print(i);
+    console.println(": " + val);
+    i++;
+    val += val;
+}
+
+console.print(i);
+console.println(": " + val);
+
+# functions
+var foo any;
+foo = function (a : any, b : any)(any){
+    return a+b;
+};
+
+console.println(foo(i, 1));

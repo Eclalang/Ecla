@@ -1,0 +1,68 @@
+# Test the encoding library
+
+import "console";
+import "encoding";
+
+# Test function AsciiToString
+function testAsciiToString() {
+    var intArr []int = [65, 66, 67];
+    var str string = encoding.asciiToString(intArr);
+    console.println(str);
+}
+testAsciiToString();
+
+# Test function DecodeBase64
+function testDecodeBase64() {
+    var str string = "QUJD";
+    var intArr []int = encoding.decodeBase64(str);
+    console.println(intArr);
+}
+testDecodeBase64();
+
+# Test function DecodeGob
+function testDecodeGob() {
+    var intArr []int = [16, 12, 0, 13, 72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33];
+    var str string = encoding.decodeGob(intArr);
+    console.println(str);
+}
+testDecodeGob();
+
+# Test function DecodeHex
+function testDecodeHex() {
+    var str string = "414243";
+    var intArr []int = encoding.decodeHex(str);
+    console.println(intArr);
+}
+testDecodeHex();
+
+# Test function EncodeBase64
+function testEncodeBase64() {
+    var intArr []int = [65, 66, 67];
+    var str string = encoding.encodeBase64(intArr);
+    console.println(str);
+}
+testEncodeBase64();
+
+# Test function EncodeGob
+function testEncodeGob() {
+    var str string = "Gob is awesome!";
+    var intArr []int = encoding.encodeGob(str);
+    console.println(intArr);
+}
+testEncodeGob();
+
+# Test function EncodeHex
+function testEncodeHex() {
+    var intArr []int = [65, 66, 67];
+    var str string = encoding.encodeHex(intArr);
+    console.println(str);
+}
+testEncodeHex();
+
+# Test function StringToAscii
+function testStringToAscii() {
+    var str string = "ABC";
+    var intArr []int = encoding.stringToAscii(str);
+    console.println(intArr);
+}
+testStringToAscii();

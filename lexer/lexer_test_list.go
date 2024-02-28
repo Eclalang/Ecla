@@ -7,7 +7,7 @@ type testList struct {
 
 var (
 	testCalc = testList{
-		input: `+= -= /= *= %= ++ -- a++ b-- //=`,
+		input: `+= -= /= *= %= ++ -- a++ b-- //= ^^ ^`,
 		output: []Token{
 			{
 				TokenType: ADD + ASSIGN,
@@ -82,9 +82,21 @@ var (
 				Line:      1,
 			},
 			{
+				TokenType: XOR,
+				Value:     `^^`,
+				Position:  34,
+				Line:      1,
+			},
+			{
+				TokenType: XORBIN,
+				Value:     `^`,
+				Position:  37,
+				Line:      1,
+			},
+			{
 				TokenType: EOF,
 				Value:     "",
-				Position:  33,
+				Position:  38,
 				Line:      1,
 			},
 		},
@@ -265,6 +277,133 @@ var (
 				Line:      2,
 			}},
 	}
+	testCHAR = testList{
+		input: "'Ok'",
+		output: []Token{
+			{
+				TokenType: SQUOTE,
+				Value:     `'`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: CHAR,
+				Value:     `Ok`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: SQUOTE,
+				Value:     `'`,
+				Position:  4,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  5,
+				Line:      1,
+			},
+		},
+	}
+	testCHARSTRING = testList{
+		input: "\"Ok'\"\"'Ok\"",
+		output: []Token{
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     `Ok'`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  5,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     `'Ok`,
+				Position:  7,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  10,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  11,
+				Line:      1,
+			},
+		},
+	}
+	testCHARSTRING2 = testList{
+		input: `'Ok'"'Ok"`,
+		output: []Token{
+			{
+				TokenType: SQUOTE,
+				Value:     `'`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: CHAR,
+				Value:     `Ok`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: SQUOTE,
+				Value:     `'`,
+				Position:  4,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  5,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     `'Ok`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  9,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  10,
+				Line:      1,
+			},
+		},
+	}
+	testCHARSTRING3 = testList{
+		input:  `'\'' and '\"' and "\"" and "\'"`,
+		output: []Token{},
+	}
 	testEOL = testList{
 		input: "();\nmgrlgrl;\n_aa_",
 		output: []Token{
@@ -300,8 +439,8 @@ var (
 			},
 			{
 				TokenType: TEXT,
-				Value:     `aa`,
-				Position:  2,
+				Value:     `_aa_`,
+				Position:  1,
 				Line:      3,
 			},
 			{
@@ -508,7 +647,7 @@ var (
 				Line:      1,
 			},
 			{
-				TokenType: XOR,
+				TokenType: XORBIN,
 				Value:     `^`,
 				Position:  7,
 				Line:      1,
@@ -536,6 +675,65 @@ var (
 				Value:     ``,
 				Position:  18,
 				Line:      1,
+			},
+		},
+	}
+	testMultiLigneString = testList{
+		input: "b := \"hello\nworld\";",
+		output: []Token{
+			{
+				TokenType: TEXT,
+				Value:     `b`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: COLON,
+				Value:     `:`,
+				Position:  3,
+				Line:      1,
+			},
+			{
+				TokenType: ASSIGN,
+				Value:     `=`,
+				Position:  4,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     "hello\n",
+				Position:  7,
+				Line:      1,
+			},
+			{
+				TokenType: TEXT,
+				Value:     `world`,
+				Position:  1,
+				Line:      2,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  6,
+				Line:      2,
+			},
+			{
+				TokenType: STRING,
+				Value:     `;`,
+				Position:  7,
+				Line:      2,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      2,
 			},
 		},
 	}

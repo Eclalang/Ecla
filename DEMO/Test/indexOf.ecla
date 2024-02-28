@@ -1,0 +1,6 @@
+import "console";
+
+var str string = "test";
+var i int = 1;
+
+type(str[i]);

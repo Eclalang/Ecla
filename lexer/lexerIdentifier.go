@@ -4,6 +4,7 @@ package lexer
 var (
 	TEXT              = "TEXT"
 	STRING            = "STRING"
+	CHAR              = "CHAR"
 	PRINT             = "PRINT"
 	INT               = "INT"
 	FLOAT             = "FLOAT"
@@ -22,6 +23,7 @@ var (
 	LEQ               = "LEQ"
 	GEQ               = "GEQ"
 	XOR               = "XOR"
+	XORBIN            = "XORBIN"
 	OR                = "OR"
 	AND               = "AND"
 	EQUAL             = "EQUAL"
@@ -29,6 +31,7 @@ var (
 	RPAREN            = "RPAREN"
 	EOL               = "EOL"
 	DQUOTE            = "DQUOTE"
+	SQUOTE            = "SQUOTE"
 	PERIOD            = "PERIOD"
 	COLON             = "COLON"
 	LBRACE            = "LBRACE"
@@ -54,11 +57,11 @@ var (
 var Identifier []identifier = []identifier{
 	{
 		Identifier: TEXT,
-		Syntaxe:    []string{},
+		Syntax:     []string{},
 	},
 	{
 		Identifier: INT,
-		Syntaxe: []string{
+		Syntax: []string{
 			"0",
 			"1",
 			"2",
@@ -73,187 +76,192 @@ var Identifier []identifier = []identifier{
 	},
 	{
 		Identifier: ADD,
-		Syntaxe: []string{
+		Syntax: []string{
 			"+",
 		},
 	},
 	{
 		Identifier: SUB,
-		Syntaxe: []string{
+		Syntax: []string{
 			"-",
 		},
 	},
 	{
 		Identifier: MULT,
-		Syntaxe: []string{
+		Syntax: []string{
 			"*",
 		},
 	},
 	{
 		Identifier: DIV,
-		Syntaxe: []string{
+		Syntax: []string{
 			"/",
 		},
 	},
 	{
 		Identifier: MOD,
-		Syntaxe: []string{
+		Syntax: []string{
 			"%",
 		},
 	},
 	{
 		Identifier: ASSIGN,
-		Syntaxe: []string{
+		Syntax: []string{
 			"=",
 		},
 	},
 	{
 		Identifier: GTR,
-		Syntaxe: []string{
+		Syntax: []string{
 			">",
 		},
 	},
 	{
 		Identifier: LSS,
-		Syntaxe: []string{
+		Syntax: []string{
 			"<",
 		},
 	},
 	{
-		Identifier: XOR,
-		Syntaxe: []string{
+		Identifier: XORBIN,
+		Syntax: []string{
 			"^",
 		},
 	},
 	{
 		Identifier: AND,
-		Syntaxe: []string{
+		Syntax: []string{
 			"&&",
 		},
 	},
 	{
 		Identifier: OR,
-		Syntaxe: []string{
+		Syntax: []string{
 			"||",
 		},
 	},
 	{
 		Identifier: LPAREN,
-		Syntaxe: []string{
+		Syntax: []string{
 			"(",
 		},
 	},
 	{
 		Identifier: RPAREN,
-		Syntaxe: []string{
+		Syntax: []string{
 			")",
 		},
 	},
 	{
 		Identifier: EOL,
-		Syntaxe: []string{
+		Syntax: []string{
 			";",
 		},
 	},
 	{
 		Identifier: DQUOTE,
-		Syntaxe: []string{
+		Syntax: []string{
 			"\"",
 		},
 	},
 	{
+		Identifier: SQUOTE,
+		Syntax: []string{
+			"'",
+		},
+	},
+	{
 		Identifier: MURLOC,
-		Syntaxe: []string{
+		Syntax: []string{
 			"mgrlgrl",
 		},
 	},
 	{
 		Identifier: PERIOD,
-		Syntaxe: []string{
+		Syntax: []string{
 			".",
 		},
 	},
 	{
 		Identifier: COLON,
-		Syntaxe: []string{
+		Syntax: []string{
 			":",
 		},
 	},
 	{
 		Identifier: COMMA,
-		Syntaxe: []string{
+		Syntax: []string{
 			",",
 		},
 	},
 	{
 		Identifier: LBRACE,
-		Syntaxe: []string{
+		Syntax: []string{
 			"{",
 		},
 	},
 	{
 		Identifier: RBRACE,
-		Syntaxe: []string{
+		Syntax: []string{
 			"}",
 		},
 	},
 	{
 		Identifier: LBRACKET,
-		Syntaxe: []string{
+		Syntax: []string{
 			"[",
 		},
 	},
 	{
 		Identifier: RBRACKET,
-		Syntaxe: []string{
+		Syntax: []string{
 			"]",
 		},
 	},
 	{
 		Identifier: COMMENT,
-		Syntaxe: []string{
+		Syntax: []string{
 			"#",
 		},
 	},
 	{
 		Identifier: "",
-		Syntaxe: []string{
+		Syntax: []string{
 			" ",
 			"\n",
 			"\t",
 			"\r",
-			"_",
 		},
 	},
 	{
 		Identifier: BOOL,
-		Syntaxe: []string{
+		Syntax: []string{
 			"true",
 			"false",
 		},
 	},
 	{
 		Identifier: NOT,
-		Syntaxe: []string{
+		Syntax: []string{
 			"!",
 		},
 	},
 	{
 		Identifier: EOF,
-		Syntaxe:    []string{},
+		Syntax:     []string{},
 	},
 }
 
 type identifier struct {
 	Identifier string
-	Syntaxe    []string
+	Syntax     []string
 }
 
 // IsSyntaxe verify is the string tempVal exist in the current identifier
 //
 // return a true false value
 func (ident identifier) IsSyntaxe(tempVal string) bool {
-	for _, syntaxe := range ident.Syntaxe {
+	for _, syntaxe := range ident.Syntax {
 		if syntaxe == tempVal {
 			return true
 		}

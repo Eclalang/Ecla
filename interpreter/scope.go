@@ -1,6 +1,8 @@
 package interpreter
 
-import "github.com/Eclalang/Ecla/interpreter/eclaType"
+import (
+	"github.com/Eclalang/Ecla/interpreter/eclaType"
+)
 
 // ScopeType is the type of scope.
 type ScopeType int
@@ -50,7 +52,7 @@ func (s *Scope) Get(name string) (*eclaType.Var, bool) {
 	for cursor.next != nil {
 		cursor = cursor.next
 	}
-	var ok bool = false
+	var ok = false
 	var v *eclaType.Var
 	for cursor != nil && !ok {
 		v, ok = cursor.Var[name]
@@ -59,7 +61,17 @@ func (s *Scope) Get(name string) (*eclaType.Var, bool) {
 	return v, ok
 }
 
-// GoDeep creates a new scope was is deeper than the current one.
+// CheckIfVarExistsInCurrentScope returns true if the variable exists in the current scope.
+func (s *Scope) CheckIfVarExistsInCurrentScope(name string) bool {
+	cursor := s
+	for cursor.next != nil {
+		cursor = cursor.next
+	}
+	_, ok := cursor.Var[name]
+	return ok
+}
+
+// GoDeep creates a new scope was deeper than the current one.
 func (s *Scope) GoDeep(Type ScopeType) {
 	cursor := s
 	for cursor.next != nil {
@@ -114,4 +126,13 @@ func (s *Scope) GetFunctionScope() *Scope {
 // InFunction returns true if the scope is in a function.
 func (s *Scope) InFunction() bool {
 	return s.InFunc
+}
+
+// GoDeepWithSpecificScope goes deep with a specific scope.
+func (s *Scope) GoDeepWithSpecificScope(Scope *Scope) {
+	cursor := s
+	for cursor.next != nil {
+		cursor = cursor.next
+	}
+	cursor.next = Scope
 }

@@ -27,6 +27,7 @@ func Lexer(sentence string) []Token {
 	var isSpaces bool
 	var inQuote bool
 	var inQuoteStep bool
+	var QuoteIdentifier string
 	var endOfComm int = -1
 	var endOfCommGroup int = -1
 
@@ -49,6 +50,7 @@ func Lexer(sentence string) []Token {
 			// syntaxes with our tempVal, If the comparison is true,
 			// tempVal is a known syntaxes, and then a token
 			if ident.IsSyntaxe(tempVal) {
+
 				// canot be a text now
 				canBeText = false
 				if (ident.Identifier == COMMENT || ident.Identifier == COMMENTGROUP) && inQuote && len(ret) != 0 {
@@ -76,7 +78,6 @@ func Lexer(sentence string) []Token {
 					}
 					// same things for the COMMENTGROUP, but with a different ending close.
 					if ret[len(ret)-1].TokenType == COMMENTGROUP && len(ret)-1 != endOfCommGroup && !inQuote {
-						println("in com")
 						if tempVal[len(tempVal)-1] == '/' {
 							break
 						} else if len(tempVal) > 1 {
@@ -103,17 +104,36 @@ func Lexer(sentence string) []Token {
 					tempVal = sentence[prevIndex:i]
 					break
 				}
-				if ident.Identifier == DQUOTE {
-					// if the current lecture head in inside of a string, we we be carefull about \", cause
+				if ident.Identifier == DQUOTE && (QuoteIdentifier != "'" && !inQuoteStep) {
+
+					// if the current lecture head is inside a string, we must be carefull about \", cause
 					// it does not end the current string.
 					// if we have a token DQUOTE without being in a string, its the start of a new string
-					if inQuote {
+					if inQuote && QuoteIdentifier == "\"" {
 						if ret[len(ret)-1].Value[len(ret[len(ret)-1].Value)-1] != '\\' {
 							inQuote = false
+							QuoteIdentifier = ""
 						}
 					} else {
 						inQuote = true
 						inQuoteStep = true
+						QuoteIdentifier = "\""
+					}
+				}
+				if ident.Identifier == SQUOTE && (QuoteIdentifier != "\"" && !inQuoteStep) {
+
+					// if the current lecture head is inside a char, we must be carefull about \", cause
+					// it does not end the current string.
+					// if we have a token SQUOTE without being in a char, its the start of a new char
+					if inQuote && QuoteIdentifier == "'" {
+						if ret[len(ret)-1].Value[len(ret[len(ret)-1].Value)-1] != '\\' {
+							inQuote = false
+							QuoteIdentifier = ""
+						}
+					} else {
+						inQuote = true
+						inQuoteStep = true
+						QuoteIdentifier = "'"
 					}
 				}
 				// -----------Quote Token Part END-------------
@@ -127,10 +147,11 @@ func Lexer(sentence string) []Token {
 				ret = tokenComment(ident, ret, &prevIndex, &tempVal, i, line, sentence)
 				ret = tokenInt(ident, ret, &prevIndex, &tempVal, i, isSpaces)
 				ret = tokenPeriod(ident, ret, &prevIndex, &tempVal, i, isSpaces, inQuote, sentence)
-				ret = tokenAssign(ident, ret, &prevIndex, &tempVal, i)
+				ret = tokenAssign(ident, ret, &prevIndex, &tempVal, i, isSpaces)
 				ret = tokenDiv(ident, ret, &prevIndex, &tempVal, i)
-				ret = tokenAddSub(ident.Identifier == ADD, ret, &prevIndex, &tempVal, i, ADD, INC)
-				ret = tokenAddSub(ident.Identifier == SUB, ret, &prevIndex, &tempVal, i, SUB, DEC)
+				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, isSpaces, ADD, INC)
+				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, isSpaces, SUB, DEC)
+				ret = tokenAddSub(ident, ret, &prevIndex, &tempVal, i, isSpaces, XORBIN, XOR)
 				if beforeChangeVal != tempVal {
 					break
 				}
@@ -139,7 +160,36 @@ func Lexer(sentence string) []Token {
 				// ---------Normal Token Part END-----------
 				//
 				// append a new Token to the variable ret
-				ret = inQuoteChange(inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+
+				if QuoteIdentifier == "\"" {
+					if inQuote {
+						if inQuote && tempVal == "\n" {
+							ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+							QuoteIdentifier = ""
+							inQuote = false
+						} else {
+							ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						}
+					} else {
+						ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						QuoteIdentifier = ""
+					}
+				} else if QuoteIdentifier == "'" {
+					if inQuote {
+						if inQuote && tempVal == "\n" {
+							ret = inQuoteChange(CHAR, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+							QuoteIdentifier = ""
+							inQuote = false
+						} else {
+							ret = inQuoteChange(CHAR, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						}
+					} else {
+						ret = inQuoteChange(CHAR, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+						QuoteIdentifier = ""
+					}
+				} else {
+					ret = inQuoteChange(ident.Identifier, QuoteIdentifier, inQuote && !inQuoteStep, ret, ident, tempVal, prevIndex, sentence)
+				}
 
 				isSpaces = false
 
@@ -197,7 +247,7 @@ func Lexer(sentence string) []Token {
 					if ident.Identifier != INT {
 						if ident.IsSyntaxe(tempVal[y:]) {
 							canBeText = false
-							ret = inQuoteChange(inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
+							ret = inQuoteChange(STRING, QuoteIdentifier, inQuote && !inQuoteStep, ret, Identifier[0], tempVal[:y], prevIndex, sentence)
 							i += y - len(tempVal)
 							isSpaces = false
 							prevIndex = i
@@ -237,17 +287,25 @@ func Lexer(sentence string) []Token {
 	// -----------End of lexer Part END-------------
 }
 
-func inQuoteChange(inQuote bool, ret []Token, identi identifier, val string, prevIndex int, sentence string) []Token {
+func inQuoteChange(ttoken string, PreviousQuote string, inQuote bool, ret []Token, identi identifier, val string, prevIndex int, sentence string) []Token {
 	actualIndex, line := positionDetector(prevIndex, sentence)
 	if inQuote {
 		if len(ret) >= 1 {
-			if ret[len(ret)-1].TokenType == STRING {
+			if ret[len(ret)-1].TokenType == ttoken {
 				ret[len(ret)-1].Value += val
 			} else {
-				ret = append(ret, addToken(STRING, val, actualIndex, line))
+				if PreviousQuote == "'" {
+					ret = append(ret, addToken(CHAR, val, actualIndex, line))
+				} else if PreviousQuote == "\"" {
+					ret = append(ret, addToken(STRING, val, actualIndex, line))
+				}
 			}
 		} else {
-			ret = append(ret, addToken(STRING, val, actualIndex, line))
+			if PreviousQuote == "'" {
+				ret = append(ret, addToken(CHAR, val, actualIndex, line))
+			} else if PreviousQuote == "\"" {
+				ret = append(ret, addToken(STRING, val, actualIndex, line))
+			}
 		}
 	} else {
 		ret = append(ret, addToken(identi.Identifier, val, actualIndex, line))
@@ -290,16 +348,14 @@ func addToken(TokenType string, Value string, Position int, Line int) Token {
 // tokenAddSub replace the previous token.tokenType in ret to toReplace if the current token.tokenType is equal to toFind.
 //
 // return the changed []Token
-func tokenAddSub(isIdentifier bool, ret []Token, prevIndex *int, tempVal *string, index int, toFind string, toReplace string) []Token {
-	if isIdentifier {
+func tokenAddSub(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, isSpaces bool, toFind string, toReplace string) []Token {
+	if ident.Identifier == ADD || ident.Identifier == SUB || ident.Identifier == XORBIN {
 		if len(ret) >= 1 {
-			if ret[len(ret)-1].TokenType == toFind {
-
+			if ret[len(ret)-1].TokenType == toFind && ret[len(ret)-1].TokenType == ident.Identifier && !isSpaces {
 				ret[len(ret)-1].TokenType = toReplace
 				ret[len(ret)-1].Value += *tempVal
 				*tempVal = ""
 				*prevIndex = index
-
 			}
 		}
 	}
@@ -311,8 +367,8 @@ func tokenAddSub(isIdentifier bool, ret []Token, prevIndex *int, tempVal *string
 // ASSIGN.
 //
 // return the changed []Token
-func tokenAssign(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int) []Token {
-	if ident.Identifier == ASSIGN {
+func tokenAssign(ident identifier, ret []Token, prevIndex *int, tempVal *string, index int, isSpaces bool) []Token {
+	if ident.Identifier == ASSIGN && !isSpaces {
 		if len(ret) >= 1 {
 			if concatEqual(ret[len(ret)-1].TokenType) {
 				if ret[len(ret)-1].TokenType == ASSIGN {

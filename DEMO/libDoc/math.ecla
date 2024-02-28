@@ -1,0 +1,190 @@
+# Test the math library
+
+import "console";
+import "math";
+
+# Test function Abs
+function testAbs() {
+    console.println(math.abs(-5.0));
+}
+testAbs();
+
+# Test function Acos
+function testAcos() {
+    console.println(math.acos(0.5));
+}
+testAcos();
+
+# Test function Acosh
+function testAcosh() {
+    console.println(math.acosh(1.5));
+}
+testAcosh();
+
+# Test function Asin
+function testAsin() {
+    console.println(math.asin(0.5));
+}
+testAsin();
+
+# Test function Asinh
+function testAsinh() {
+    console.println(math.asinh(1.5));
+}
+testAsinh();
+
+# Test function Atan
+function testAtan() {
+    console.println(math.atan(0.5));
+}
+testAtan();
+
+# Test function Atanh
+function testAtanh() {
+    console.println(math.atanh(0.5));
+}
+testAtanh();
+
+# Test function Cbrt
+function testCbrt() {
+    console.println(math.cbrt(8.0));
+}
+testCbrt();
+
+# Test function Ceil
+function testCeil() {
+    console.println(math.ceil(1.5));
+}
+testCeil();
+
+# Test function Cos
+function testCos() {
+    console.println(math.cos(3.0, 5.0));
+}
+testCos();
+
+# Test function Cosh
+function testCosh() {
+    console.println(math.cosh(1.5));
+}
+testCosh();
+
+# Test function DegreesToRadians
+function testDegreesToRadians() {
+    console.println(math.degreesToRadians(180.0));
+}
+testDegreesToRadians();
+
+# Test function Exp
+function testExp() {
+    console.println(math.exp(1.0));
+}
+testExp();
+
+# Test function Fact
+function testFact() {
+    console.println(math.fact(5.0));
+}
+testFact();
+
+# Test function Floor
+function testFloor() {
+    console.println(math.floor(1.5));
+}
+testFloor();
+
+# Test function Ln
+function testLn() {
+    console.println(math.ln(1.0));
+}
+testLn();
+
+# Test function Log10
+function testLog10() {
+    console.println(math.log10(10.0));
+}
+testLog10();
+
+# Test function Max
+function testMax() {
+    console.println(math.max(1.0, 2.0));
+}
+testMax();
+
+# Test function Min
+function testMin() {
+    console.println(math.min(1.0, 2.0));
+}
+testMin();
+
+# Test function Modulo
+function testModulo() {
+    console.println(math.modulo(5.0, 2.0));
+}
+testModulo();
+
+# Test function Pi
+function testPi() {
+    console.println(math.pi());
+}
+testPi();
+
+# Test function Pow
+function testPow() {
+    console.println(math.pow(2.0, 3.0));
+}
+testPow();
+
+# Test function RadiansToDegrees
+function testRadiansToDegrees() {
+    console.println(math.radiansToDegrees(3.14));
+}
+testRadiansToDegrees();
+
+# Test function Random
+function testRandom() {
+    console.println(math.random(0.0, 1.0));
+}
+testRandom();
+
+# Test function Round
+function testRound() {
+    console.println(math.round(1.5));
+}
+testRound();
+
+# Test function Sin
+function testSin() {
+    console.println(math.sin(3.0, 5.0));
+}
+testSin();
+
+# Test function Sinh
+function testSinh() {
+    console.println(math.sinh(1.5));
+}
+testSinh();
+
+# Test function Sqrt
+function testSqrt() {
+    console.println(math.sqrt(4.0));
+}
+testSqrt();
+
+# Test function Tan
+function testTan() {
+    console.println(math.tan(3.0, 5.0));
+}
+testTan();
+
+# Test function Tanh
+function testTanh() {
+    console.println(math.tanh(1.5));
+}
+testTanh();
+
+# Test function Trunc
+function testTrunc() {
+    console.println(math.trunc(1.5));
+}
+testTrunc();

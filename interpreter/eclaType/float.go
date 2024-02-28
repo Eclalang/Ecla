@@ -3,6 +3,7 @@ package eclaType
 import (
 	"errors"
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"strconv"
 )
 
@@ -24,16 +25,16 @@ func (f Float) GetValue() any {
 
 // SetValue
 func (f Float) SetValue(value any) error {
-	return errors.New("cannot set value to Float")
+	return errors.New("cannot set value to float")
 }
 
 func (f Float) String() string {
-	return fmt.Sprintf("%f", f)
+	return fmt.Sprintf("%g", f)
 }
 
 // GetString returns the string representation of the float
 func (f Float) GetString() String {
-	return String(fmt.Sprint(f))
+	return String(f.String())
 }
 
 // GetType returns the type Float
@@ -59,8 +60,12 @@ func (f Float) Add(other Type) (Type, error) {
 		return f + other.(Float), nil
 	case String:
 		return f.GetString() + other.GetString(), nil
+	case Char:
+		return f + Float(Int(other.(Char))), nil
+	case *Any:
+		return f.Add(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot add " + string(other.GetString()) + " to float")
+		return nil, errors.New("cannot add " + f.String() + " and " + other.String())
 	}
 }
 
@@ -73,20 +78,20 @@ func (f Float) Sub(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return f - Float(other.(Int)), nil
+	case Char:
+		return f - Float(Int(other.(Char))), nil
 	case Float:
 		return f - other.(Float), nil
+	case *Any:
+		return f.Sub(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from float")
+		return nil, errors.New("cannot subtract " + other.String() + " from " + f.String())
 	}
 }
 
 // Mod returns error
 func (f Float) Mod(other Type) (Type, error) {
-	switch other.(type) {
-	case *Var:
-		other = other.(*Var).Value
-	}
-	return nil, errors.New("cannot mod float")
+	return nil, errors.New("cannot get remainder of float")
 }
 
 // Mul multiplies two Type objects compatible with Float
@@ -98,10 +103,14 @@ func (f Float) Mul(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return f * Float(other.(Int)), nil
+	case Char:
+		return f * Float(Int(other.(Char))), nil
 	case Float:
 		return f * other.(Float), nil
+	case *Any:
+		return f.Mul(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot multiply " + string(other.GetString()) + " by float")
+		return nil, errors.New("cannot multiply " + f.String() + " by " + other.String())
 	}
 }
 
@@ -114,16 +123,20 @@ func (f Float) Div(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return f / Float(other.(Int)), nil
+	case Char:
+		return f / Float(other.(Char)), nil
 	case Float:
 		return f / other.(Float), nil
+	case *Any:
+		return f.Div(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot divide " + string(other.GetString()) + " by float")
+		return nil, errors.New("cannot divide " + f.String() + " by " + other.String())
 	}
 }
 
 // DivEc returns error because you cannot div ec float
 func (f Float) DivEc(other Type) (Type, error) {
-	return nil, errors.New("cannot divide ec by float")
+	return nil, errors.New("cannot get quotient of float")
 }
 
 // Eq returns true if two Type objects are equal
@@ -135,10 +148,14 @@ func (f Float) Eq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f == Float(other.(Int))), nil
+	case Char:
+		return Bool(f == Float(other.(Char))), nil
 	case Float:
 		return Bool(f == other.(Float)), nil
+	case *Any:
+		return f.Eq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -151,10 +168,14 @@ func (f Float) NotEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f != Float(other.(Int))), nil
+	case Char:
+		return Bool(f != Float(other.(Char))), nil
 	case Float:
 		return Bool(f != other.(Float)), nil
+	case *Any:
+		return f.NotEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -167,10 +188,14 @@ func (f Float) Gt(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f > Float(other.(Int))), nil
+	case Char:
+		return Bool(f > Float(other.(Char))), nil
 	case Float:
 		return Bool(f > other.(Float)), nil
+	case *Any:
+		return f.Gt(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -183,10 +208,14 @@ func (f Float) GtEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f >= Float(other.(Int))), nil
+	case Char:
+		return Bool(f >= Float(other.(Char))), nil
 	case Float:
 		return Bool(f >= other.(Float)), nil
+	case *Any:
+		return f.GtEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -199,10 +228,14 @@ func (f Float) Lw(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f < Float(other.(Int))), nil
+	case Char:
+		return Bool(f < Float(other.(Char))), nil
 	case Float:
 		return Bool(f < other.(Float)), nil
+	case *Any:
+		return f.Lw(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
@@ -215,33 +248,162 @@ func (f Float) LwEq(other Type) (Type, error) {
 	switch other.(type) {
 	case Int:
 		return Bool(f <= Float(other.(Int))), nil
+	case Char:
+		return Bool(f <= Float(other.(Char))), nil
 	case Float:
 		return Bool(f <= other.(Float)), nil
+	case *Any:
+		return f.LwEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare float to " + string(other.GetString()))
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 	}
 }
 
 // And returns errors
 func (f Float) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and float")
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if f == Float(0) || other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if f == Float(0) || other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if f == Float(0) || other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if f == Float(0) || other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case *Any:
+		return f.And(other.(*Any).Value)
+	default:
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
+	}
 }
 
 // Or returns errors
 func (f Float) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or float")
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if f == Float(0) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if f == Float(0) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if f == Float(0) && other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if f == Float(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case *Any:
+		return f.Or(other.(*Any).Value)
+	default:
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
+	}
 }
 
 // Not returns errors
 func (f Float) Not() (Type, error) {
-	return nil, errors.New("cannot opposite float")
+	switch f.GetValue() {
+	case Float(0):
+		return Float(1), nil
+	default:
+		return Float(0), nil
+	}
+}
+
+// Xor
+func (f Float) Xor(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
+	case Int:
+		if f == Float(0) && other.GetValue() == Int(0) {
+			return Bool(false), nil
+		} else if f != Float(0) && other.GetValue() != Int(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Char:
+		if f == Float(0) && other.GetValue() == Char(0) {
+			return Bool(false), nil
+		} else if f != Float(0) && other.GetValue() != Char(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Float:
+		if f == Float(0) && other.GetValue() == Float(0) {
+			return Bool(false), nil
+		} else if f != Float(0) && other.GetValue() != Float(0) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case Bool:
+		if f == Float(0) && other.GetValue() == Bool(false) {
+			return Bool(false), nil
+		} else if f != Float(0) && other.GetValue() == Bool(true) {
+			return Bool(false), nil
+		} else {
+			return Bool(true), nil
+		}
+	case *Any:
+		return f.Xor(other.(*Any).Value)
+	default:
+		return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
+	}
 }
 
 // Append returns errors
 func (f Float) Append(other Type) (Type, error) {
-	return nil, errors.New("cannot append float")
+	return nil, errors.New("cannot add " + other.String() + " to " + f.String())
 }
 
 func (f Float) IsNull() bool {
 	return false
+}
+
+func (f Float) GetSize() int {
+	return utils.Sizeof(f)
+}
+
+func (f Float) Len() (int, error) {
+	return 0, errors.New("cannot get length of float")
 }
