@@ -12,12 +12,10 @@ type TokenTypeBaseBehavior struct {
 //
 // imply no special behavior
 func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
-	l.DEBUGLEXER("in resolve base")
 	index := -1
 
 	if (*l).TriggerBy != "" {
 		// in Trigger By Behavior
-		l.DEBUGLEXER("in resolve TriggerBy")
 
 		// verify the previous token created (even in a merging situation) to detect for exemple the end of a
 		// COMMENTGROUP "trigger by" behavior.
@@ -32,22 +30,25 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 
 			// related = what is the possible merged or composed result token if the actual token and the previous
 			// one merge or compose together.
-			related := t.Result[index]
-			l.DEBUGLEXER(t.Name)
-			triggerByToken := findNameInEveryTokenType((*l).TriggerBy, Every)
 
+			related := t.Result[index]
+			triggerByToken := findNameInEveryTokenType((*l).TriggerBy, Every)
+			finded := -1
 			// update the lexer to acknoledge the new token to work with.
-			for _, v := range triggerByToken.InvolvedWith() {
+			for i, v := range triggerByToken.InvolvedWith() {
 				if v.Get()[len(v.Get())-1] == related.Name {
+					finded = i
 					l.indent[0] = &related
 				}
 			}
-			// compose the token BUT end the triggerBy
-			(*l).ComposeToken(t.Result[index].Name)
-			l.TriggerBy = ""
+			if finded != -1 {
+				// compose the token BUT end the triggerBy
+				(*l).ComposeToken(t.Result[index].Name)
+				l.TriggerBy = ""
+				// reset the reading head of our lexer.
+				l.prevIndex = l.index
+			}
 
-			// reset the reading head of our lexer.
-			l.prevIndex = l.index
 		}
 	} else {
 		// classic Behavior

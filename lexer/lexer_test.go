@@ -13,7 +13,7 @@ func tLexer(t *testing.T, tested testList, name string) {
 	result += "\n--------------------------------------------------\n--------------------------------------------------\n\t\t---" + name + "-INPUT---\n--------------------------------------------------\n" + code + "\n--------------------------------------------------"
 	result += "\n\t\t---DIFF LIST---\n--------------------------------------------------\n"
 	diff := 0
-	l := LexerR(code)
+	l := Lexer(code)
 	if l == nil {
 		result += "Expected a lexer, got nil\n--------------------------------------------------\n"
 	} else if len(l) != expectedLenth {

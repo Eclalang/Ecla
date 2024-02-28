@@ -11,7 +11,6 @@ type TokenTypeTriggerBehavior struct {
 }
 
 func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
-	l.DEBUGLEXER("in resolve trigger")
 
 	if l.TriggerBy == "" {
 		l.TriggerBy = t.Name
@@ -24,6 +23,7 @@ func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 		} else if l.sizeOfTokenReversed != -1 {
 			identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
 			indexOfClose := t.IsClosedBySyntaxe(identified)
+			println("prout2")
 			if indexOfClose != -1 {
 				//close , donc doit mettre RESULT | CLOSE en token
 				l.FindSyntax()
@@ -32,13 +32,13 @@ func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 				l.position -= 1
 				l.AddToken(t.Result[indexOfClose].Name)
 				l.position += 1
-				l.DEBUGLEXER("in resolve trigger AFTER ADD")
 				l.tempVal = temp
 				l.TriggerBy = ""
 				l.indent[0].Resolve(l)
 				l.TriggerBy = ""
 				l.prevIndex = l.index
 			}
+			println("prout2")
 		}
 
 	}

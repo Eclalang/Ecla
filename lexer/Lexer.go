@@ -1,7 +1,5 @@
 package lexer
 
-import "strconv"
-
 type ReadingType int
 
 const (
@@ -50,11 +48,12 @@ func (l *TLexer) Ret() []Token {
 func (l *TLexer) Step() {
 
 	if l.index < len(l.sentence) {
+
 		l.position++
 		l.index++
 		l.tempVal = l.sentence[l.prevIndex:l.index]
 		l.stepFind = l.IsSyntax()
-		l.DEBUGLEXER("each step " + strconv.Itoa(l.index))
+		l.DEBUGLEXER("STEP")
 		switch l.stepFind {
 		case NOTFOUND:
 
@@ -154,7 +153,6 @@ func (l *TLexer) FindSyntax() {
 }
 
 func (l *TLexer) AddToken(TokenType string) {
-	l.DEBUGLEXER("before add " + TokenType)
 	var tmp = Token{
 		TokenType: TokenType,
 		Value:     l.tempVal,
@@ -166,7 +164,6 @@ func (l *TLexer) AddToken(TokenType string) {
 }
 
 func (l *TLexer) ComposeToken(NewName string) {
-	l.DEBUGLEXER("before compose " + NewName)
 	l.ret[len(l.ret)-1].TokenType = NewName
 	l.ret[len(l.ret)-1].Value += l.tempVal
 
@@ -176,11 +173,13 @@ func (l *TLexer) Inquote() bool {
 	return l.TriggerBy != ""
 }
 
-var (
-	Lex = &TLexer{
+func Lexer(sentence string) []Token {
+	var Lex = &TLexer{
 		ret:           []Token{},
 		lastStepToken: &TokenTypeBaseBehavior{Name: ""},
 		index:         0,
+		indent:        []ITokenType{},
+		stepFind:      -1,
 		sentence:      "",
 		tempVal:       "",
 
@@ -199,9 +198,6 @@ var (
 		maxLen:              -1,
 		sizeOfTokenReversed: -1,
 	}
-)
-
-func LexerR(sentence string) []Token {
 	println("\n---------------------\n-----PRINT DEBUG-----\n---------------------\n")
 	Lex.SetSentence(sentence)
 	Lex.Step()
@@ -218,22 +214,21 @@ func LexerR(sentence string) []Token {
 }
 
 func (l *TLexer) DEBUGLEXER(s string) {
-	//println("\n-------------"+s+"-------------\nl.tempVal\t\t:", "\""+l.tempVal+"\"")
-	//println("l.TriggerBy\t\t:", l.TriggerBy)
-	//if (len(l.indent) - 1) >= 0 {
-	//	println("l.indent name\t\t:", l.indent[0].Get()[len(l.indent[0].Get())-1])
-	//} else {
-	//	println("l.indent name\t\t: None")
-	//}
-	//
-	//println("l.lastSTepToken\t\t:", l.lastStepToken.Get()[len(l.lastStepToken.Get())-1])
-	//println("l.isSpaces\t\t:", l.isSpaces)
-	//println("l.index\t\t\t:", l.index)
-	//println("l.prevIndex\t\t:", l.prevIndex)
-	//println("l.position\t\t:", l.position)
-	//println("l.line\t\t\t:", l.line)
-	//println("l.sizeOfTokenReversed\t:", l.sizeOfTokenReversed)
-	//println("l.sentence\t\t:", l.sentence)
-	//println("l.sentence readed\t:", l.sentence[:l.prevIndex]+"|")
+	println("\n-------------"+s+"-------------\nl.tempVal\t\t:", "\""+l.tempVal+"\"")
+	println("l.TriggerBy\t\t:", l.TriggerBy)
+	if (len(l.indent) - 1) >= 0 {
+		println("l.indent name\t\t:", l.indent[0].Get()[len(l.indent[0].Get())-1])
+	} else {
+		println("l.indent name\t\t: None")
+	}
 
+	println("l.lastSTepToken\t\t:", l.lastStepToken.Get()[len(l.lastStepToken.Get())-1])
+	println("l.isSpaces\t\t:", l.isSpaces)
+	println("l.index\t\t\t:", l.index)
+	println("l.prevIndex\t\t:", l.prevIndex)
+	println("l.position\t\t:", l.position)
+	println("l.line\t\t\t:", l.line)
+	println("l.sizeOfTokenReversed\t:", l.sizeOfTokenReversed)
+	println("l.sentence\t\t\t:", l.sentence)
+	println("l.sentence readed\t:", l.sentence[:l.prevIndex]+"|")
 }

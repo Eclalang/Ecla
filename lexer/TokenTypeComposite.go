@@ -5,7 +5,6 @@ type TokenTypeCompositeBehavior struct {
 }
 
 func (t *TokenTypeCompositeBehavior) Resolve(l *TLexer) {
-	l.DEBUGLEXER("in resolve composite")
 	if l.ret[len(l.ret)-1].TokenType == t.Name {
 		l.ComposeToken(t.Name)
 		l.prevIndex = l.index

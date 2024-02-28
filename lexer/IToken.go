@@ -54,6 +54,7 @@ var (
 		&BNOT,
 		&BMULT,
 		&TDQUOTE,
+		&TSQUOTE,
 		&TCOMMENT,
 		&TCOMMENTGROUP,
 	}

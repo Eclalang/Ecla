@@ -459,7 +459,7 @@ var (
 		},
 	}
 	testHashtag = testList{
-		input: "prout# in comment\n#/ in commentgroup\n and next ligne\n and test for / and #/ /#\nOutside of the comment group",
+		input: "prout# in comment\n/# in commentgroup\n and next ligne\n and test for / and /# #/\nOutside of the comment group",
 		output: []Token{
 			{
 				TokenType: TEXT,
@@ -469,13 +469,13 @@ var (
 			},
 			{
 				TokenType: COMMENT,
-				Value:     " in comment",
+				Value:     "# in comment\n",
 				Position:  6,
 				Line:      1,
 			},
 			{
 				TokenType: COMMENTGROUP,
-				Value:     " in commentgroup\n and next ligne\n and test for / and #/ ",
+				Value:     "/# in commentgroup\n and next ligne\n and test for / and /# #/",
 				Position:  1,
 				Line:      2,
 			},
@@ -518,7 +518,7 @@ var (
 		},
 	}
 	testHashtag2 = testList{
-		input: "prout# in comment\n#/ in commentgroup\n and next ligne\n and test for / and #/",
+		input: "prout# in comment\n/# in commentgroup\n and next ligne\n and test for / and #/",
 		output: []Token{
 			{
 				TokenType: TEXT,
@@ -528,20 +528,20 @@ var (
 			},
 			{
 				TokenType: COMMENT,
-				Value:     ` in comment`,
+				Value:     "# in comment\n",
 				Position:  6,
 				Line:      1,
 			},
 			{
 				TokenType: COMMENTGROUP,
-				Value:     " in commentgroup\n and next ligne\n and test for / and #/",
+				Value:     "/# in commentgroup\n and next ligne\n and test for / and #/",
 				Position:  1,
 				Line:      2,
 			},
 			{
 				TokenType: EOF,
 				Value:     ``,
-				Position:  22,
+				Position:  23,
 				Line:      4,
 			},
 		},

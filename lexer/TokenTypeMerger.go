@@ -11,7 +11,6 @@ type TokenTypeMergerBehavior struct {
 }
 
 func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
-	l.DEBUGLEXER("in resolve merger")
 	index := -1
 	if l.TriggerBy == "" {
 		if !(*l).isSpaces {
@@ -24,17 +23,18 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 			l.TriggerBy = t.Name
 			l.prevIndex = l.index
 		} else {
-			l.DEBUGLEXER("COMMENTGROUP TEST")
 			(*l).ComposeToken(t.Composite[index].Name)
 			l.TriggerBy = t.Composite[index].Name
 			l.prevIndex = l.index
 		}
 	} else {
 		if !(*l).isSpaces {
+
 			_, index = t.IsInvolvedWith(l)
 		} else {
 			(*l).isSpaces = false
 		}
+		println("ok", index)
 		if index == -1 {
 			if l.index > len(l.sentence) {
 				l.AddToken(t.Result[0].Name)
@@ -42,6 +42,7 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 			} else if l.sizeOfTokenReversed != -1 {
 				identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
 				indexOfClose := t.IsClosedBySyntaxe(identified)
+				println("prout")
 				if indexOfClose != -1 {
 					//close , donc doit mettre RESULT+CLOSE en token
 					l.FindSyntax()
@@ -53,13 +54,18 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 						l.ComposeToken(l.TriggerBy)
 						l.tempVal = temp
 						l.TriggerBy = ""
+						if l.indent[0].Get()[len(l.indent[0].Get())-1] == "\n" {
+							l.line -= 1
+						}
 						l.indent[0].Resolve(l)
 					}
 					l.tempVal = ""
 					l.TriggerBy = ""
 					l.prevIndex = l.index
 				}
+				println("prout")
 			}
+			println("caca")
 		} else {
 			t.Resolve(l)
 		}
