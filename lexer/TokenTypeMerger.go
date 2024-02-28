@@ -11,6 +11,7 @@ type TokenTypeMergerBehavior struct {
 }
 
 func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
+	l.DEBUGLEXER("IN MERGER")
 	index := -1
 	if l.TriggerBy == "" {
 		if !(*l).isSpaces {
@@ -29,7 +30,6 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 		}
 	} else {
 		if !(*l).isSpaces {
-
 			_, index = t.IsInvolvedWith(l)
 		} else {
 			(*l).isSpaces = false
@@ -42,7 +42,7 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 			} else if l.sizeOfTokenReversed != -1 {
 				identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
 				indexOfClose := t.IsClosedBySyntaxe(identified)
-				println("prout")
+				println("prout", indexOfClose)
 				if indexOfClose != -1 {
 					//close , donc doit mettre RESULT+CLOSE en token
 					l.FindSyntax()
@@ -62,10 +62,12 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 					l.tempVal = ""
 					l.TriggerBy = ""
 					l.prevIndex = l.index
+				} else {
+					l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+					l.tempVal = ""
+					l.prevIndex = l.index
 				}
-				println("prout")
 			}
-			println("caca")
 		} else {
 			t.Resolve(l)
 		}

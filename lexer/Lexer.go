@@ -215,7 +215,9 @@ func Lexer(sentence string) []Token {
 
 func (l *TLexer) DEBUGLEXER(s string) {
 	println("\n-------------"+s+"-------------\nl.tempVal\t\t:", "\""+l.tempVal+"\"")
+
 	println("l.TriggerBy\t\t:", l.TriggerBy)
+	println("l.ret.len()\t\t:", len(l.ret))
 	if (len(l.indent) - 1) >= 0 {
 		println("l.indent name\t\t:", l.indent[0].Get()[len(l.indent[0].Get())-1])
 	} else {

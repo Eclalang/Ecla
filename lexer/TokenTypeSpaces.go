@@ -6,11 +6,8 @@ type TokenTypeSpacesBehavior struct {
 }
 
 func (t *TokenTypeSpacesBehavior) Resolve(l *TLexer) {
-	if t.Name == "\n" {
-	}
 	if (*l).TriggerBy != "" {
 		findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
-
 	} else {
 		if (*l).Inquote() {
 			findNameInEveryTokenType((*l).TriggerBy, Every).Resolve(l)
