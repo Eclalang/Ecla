@@ -16,6 +16,7 @@ type Parser struct {
 	CurrentToken lexer.Token
 	CurrentFile  *File
 	IsEndOfBrace bool
+	VarTypes     map[string]interface{}
 }
 
 // Step moves the parser to the next token
@@ -107,6 +108,7 @@ It also runs the dependency checker to find any missing dependencies and notifie
 */
 func (p *Parser) Parse() *File {
 	tempFile := new(File)
+	p.VarTypes = VarTypes
 	p.Tokens = tempFile.ConsumeComments(p.Tokens)
 	p.CurrentToken = p.Tokens[0]
 	file := p.ParseFile()
@@ -275,7 +277,7 @@ func (p *Parser) ParseStructDecl() Node {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as struct name")
 		}
-		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as struct name")
 		}
 		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
@@ -286,7 +288,7 @@ func (p *Parser) ParseStructDecl() Node {
 	}
 	tempStructDecl.Name = p.CurrentToken.Value
 	// add the struct name to the list of types
-	VarTypes[tempStructDecl.Name] = nil
+	p.VarTypes[tempStructDecl.Name] = nil
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LBRACE {
 		p.HandleFatal("Expected '{' after struct name")
@@ -319,7 +321,7 @@ func (p *Parser) ParseStructField() StructField {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as struct field name")
 		}
-		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as struct field name")
 		}
 		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
@@ -347,7 +349,7 @@ func (p *Parser) ParseIdent() Node {
 	if p.Peek(1).TokenType == lexer.LPAREN {
 		return p.ParseFunctionCallExpr()
 	} else if p.Peek(1).TokenType == lexer.LBRACE {
-		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 			if _, ok2 := DefaultVarTypes[p.CurrentToken.Value]; !ok2 {
 				return p.ParseStructInstantiation()
 			}
@@ -551,7 +553,7 @@ func (p *Parser) ParseVariableDecl() Decl {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
 		}
-		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
 		}
 		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
@@ -588,7 +590,7 @@ func (p *Parser) ParseImplicitVariableDecl() Decl {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
 		}
-		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
 		}
 		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
@@ -615,7 +617,7 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as function name")
 		}
-		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 			if _, ok2 := DefaultVarTypes[p.CurrentToken.Value]; ok2 {
 				p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
 			}
@@ -689,7 +691,7 @@ func (p *Parser) ParseStructInstantiation() StructInstantiationExpr {
 // ParseType parses a valid type
 func (p *Parser) ParseType() (string, bool) {
 	p.Step()
-	if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+	if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 		tempType := ""
 		switch p.CurrentToken.Value {
 		case ArrayStart:
@@ -909,7 +911,7 @@ func (p *Parser) ParseOperand() Expr {
 			return p.ParseFunctionCallExpr()
 		}
 		if lookAhead.TokenType == lexer.LBRACE {
-			if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+			if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 				if _, ok2 := DefaultVarTypes[p.CurrentToken.Value]; !ok2 {
 					return p.ParseStructInstantiation()
 				}
@@ -1060,7 +1062,7 @@ func (p *Parser) ParseFunctionDecl() Node {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as function name")
 		}
-		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as function name")
 		}
 		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
@@ -1130,7 +1132,7 @@ func (p *Parser) ParseVariableAccess() Expr {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
 		}
-		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
 		}
 		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
@@ -1162,7 +1164,7 @@ func (p *Parser) ParseLiteral() Expr {
 			}
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
 		}
-		if _, ok := VarTypes[p.CurrentToken.Value]; ok {
+		if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use type name " + p.CurrentToken.Value + " as variable name")
 		}
 		if _, ok := BuiltInFunctions[p.CurrentToken.Value]; ok {
