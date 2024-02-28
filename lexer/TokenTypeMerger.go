@@ -1,4 +1,4 @@
-package v2
+package lexer
 
 type TokenTypeMergerBehavior struct {
 	Name   string
@@ -36,7 +36,10 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 			(*l).isSpaces = false
 		}
 		if index == -1 {
-			if l.sizeOfTokenReversed != -1 {
+			if l.index >= len(l.sentence) {
+				l.AddToken(t.Result[0].Name)
+				l.prevIndex = l.index
+			} else if l.sizeOfTokenReversed != -1 {
 				identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
 				indexOfClose := t.IsClosedBySyntaxe(identified)
 				if indexOfClose != -1 {

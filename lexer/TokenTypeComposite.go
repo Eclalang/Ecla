@@ -1,4 +1,4 @@
-package v2
+package lexer
 
 type TokenTypeCompositeBehavior struct {
 	Name string

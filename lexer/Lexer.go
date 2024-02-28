@@ -1,4 +1,4 @@
-package v2
+package lexer
 
 import "strconv"
 
@@ -207,12 +207,9 @@ func LexerR(sentence string) []Token {
 	Lex.Step()
 	Lex.tempVal = Lex.sentence[Lex.prevIndex:Lex.index]
 	if Lex.tempVal != "" {
-		if Lex.TriggerBy != "" {
-			//findNameInEveryTokenType(Lex.TriggerBy, Every).Resolve(Lex)
-			Lex.AddToken(Lex.TriggerBy + " FIN")
-		} else {
-			Lex.AddToken(TEXT)
-		}
+
+		Lex.AddToken(TEXT)
+
 		Lex.tempVal = ""
 	}
 	Lex.AddToken(EOF)

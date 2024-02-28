@@ -1,4 +1,4 @@
-package v2
+package lexer
 
 type TokenTypeTriggerBehavior struct {
 	Name   string
@@ -18,7 +18,10 @@ func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 		(*l).AddToken(t.Name)
 		l.prevIndex = l.index
 	} else {
-		if l.sizeOfTokenReversed != -1 {
+		if l.index >= len(l.sentence) {
+			l.AddToken(t.Result[0].Name)
+			l.prevIndex = l.index
+		} else if l.sizeOfTokenReversed != -1 {
 			identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
 			indexOfClose := t.IsClosedBySyntaxe(identified)
 			if indexOfClose != -1 {
@@ -78,10 +81,10 @@ var (
 			"\"",
 		},
 		CloseBy: []ITokenType{
-			&SELF,
+			&SELF, &RETURN,
 		},
 		Result: []TokenTypeCompositeBehavior{
-			CSTRING,
+			CSTRING, CSTRING,
 		},
 	}
 	TSQUOTE = TokenTypeTriggerBehavior{
@@ -90,10 +93,10 @@ var (
 			"'",
 		},
 		CloseBy: []ITokenType{
-			&SELF,
+			&SELF, &RETURN,
 		},
 		Result: []TokenTypeCompositeBehavior{
-			CCHAR,
+			CCHAR, CCHAR,
 		},
 	}
 )

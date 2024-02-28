@@ -1,4 +1,4 @@
-package v2
+package lexer
 
 type ITokenType interface {
 	// Resolve use the actual l *TLexer to create a new Token. the lexer is ready for the next step when the resolve end

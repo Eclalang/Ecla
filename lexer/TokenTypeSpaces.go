@@ -1,4 +1,4 @@
-package v2
+package lexer
 
 type TokenTypeSpacesBehavior struct {
 	Name   string
@@ -19,7 +19,7 @@ func (t *TokenTypeSpacesBehavior) Resolve(l *TLexer) {
 		}
 		if t.Name == "\n" {
 			(*l).line++
-			(*l).position = 0
+			(*l).position = 1
 		}
 
 		l.prevIndex = l.index

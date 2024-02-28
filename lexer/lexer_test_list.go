@@ -400,10 +400,6 @@ var (
 			},
 		},
 	}
-	testCHARSTRING3 = testList{
-		input:  `'\'' and '\"' and "\"" and "\'"`,
-		output: []Token{},
-	}
 	testEOL = testList{
 		input: "();\nmgrlgrl;\n_aa_",
 		output: []Token{
@@ -707,7 +703,7 @@ var (
 			},
 			{
 				TokenType: STRING,
-				Value:     "hello\n",
+				Value:     "hello",
 				Position:  7,
 				Line:      1,
 			},
