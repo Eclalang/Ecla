@@ -1,9 +1,9 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: ''
+title: "[REQUEST] : "
 labels: feature request
-assignees: ''
+assignees: mkarten, tot0p
 
 ---
 
@@ -16,7 +16,7 @@ A clear and concise description of what you want to happen.
 **Describe alternatives you've considered**
 A clear and concise description of any alternative solutions or features you've considered.
 
-**Add a real world example (Optionaly)**
+**Add a real world example (Optional)**
 Some code that describe the use of this feature in a real world situation
 
 **Additional context**
