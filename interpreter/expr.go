@@ -90,6 +90,8 @@ func RunTreeLoad(tree parser.Node, env *Env) []*Bus {
 		RunFunctionDecl(tree.(parser.FunctionDecl), env)
 	case parser.ImportStmt:
 		RunImportStmt(tree.(parser.ImportStmt), env)
+	case parser.StructDecl:
+		RunStructDecl(tree.(parser.StructDecl), env)
 	}
 	return []*Bus{NewNoneBus()}
 }
@@ -386,6 +388,27 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 				env.EndScope()
 			}
 			return returnBuses
+		case parser.Literal:
+			sel := expr.Sel.(parser.Literal)
+			if sel.Type == "VAR" { //TODO don't hard code "VAR"
+				v, ok := lib.(*envLib).GetVar(sel.Value)
+				if !ok {
+					env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "variable "+sel.Value+" does not exist", errorHandler.LevelFatal)
+				}
+				return []*Bus{NewMainBus(v)}
+			}
+		case parser.SelectorExpr:
+			sel := expr.Sel.(parser.SelectorExpr)
+			//check if sel is a struct
+			expr := RunTree(sel.Expr, env)
+			if IsMultipleBus(expr) {
+				env.ErrorHandle.HandleError(sel.StartLine(), sel.StartPos(), "MULTIPLE BUS IN RunSelectorExpr.\nPlease open issue", errorHandler.LevelFatal)
+			}
+			switch expr[0].GetVal().(type) {
+			case *eclaType.Struct:
+				//s := expr[0].GetVal().(*eclaType.Struct)
+				//return RunSelectorExpr(sel, env, nil)
+			}
 		default:
 			env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "cannot use "+prev.String()+" here", errorHandler.LevelFatal)
 		}
