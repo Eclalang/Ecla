@@ -37,7 +37,7 @@ func New(t parser.Literal, env *Env) *Bus {
 	case "VAR":
 		v, ok := env.GetVar(t.Value)
 		if !ok {
-			env.ErrorHandle.HandleError(t.StartLine(), t.StartPos(), "variable not found", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(t.StartLine(), t.StartPos(), "variable "+t.Value+" not found", errorHandler.LevelFatal)
 		}
 		return NewMainBus(v)
 	case "NULL":
@@ -52,7 +52,7 @@ func New(t parser.Literal, env *Env) *Bus {
 func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 	if tree.Value == nil {
 		if env.CheckIfVarExistsInCurrentScope(tree.Name) {
-			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "variable already exists", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "variable "+tree.Name+" already exists", errorHandler.LevelFatal)
 			return
 		}
 		switch tree.Type {
@@ -139,7 +139,7 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 	} else {
 		busCollection := RunTree(tree.Value, env)
 		if IsMultipleBus(busCollection) {
-			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "variable decl : MULTIPLE BUS IN RunVariableDecl", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN RunVariableDecl.\nPlease open issue", errorHandler.LevelFatal)
 		}
 		v, err := eclaType.NewVar(tree.Name, tree.Type, busCollection[0].GetVal())
 		if err != nil {
@@ -150,24 +150,24 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 				if fn.IsFunction() {
 					fn2 := v.GetFunction()
 					if slices.Contains(fn.GetFunction().GetTypes(), fn2.GetType()) {
-						env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "Cannot overwrite this function", errorHandler.LevelFatal)
+						env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "Cannot overwrite this function "+tree.Name, errorHandler.LevelFatal)
 					}
 					fn.GetFunction().AddOverload(fn2.Args[0], fn2.GetBody(), fn2.GetReturn())
 				} else {
-					env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "Cannot overload a non-function variable", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "Cannot overload a non-function variable "+tree.Name, errorHandler.LevelFatal)
 				}
 			} else {
 				if !env.CheckIfVarExistsInCurrentScope(tree.Name) {
 					env.SetVar(tree.Name, v)
 				} else {
-					env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "Cannot reassign a variable", errorHandler.LevelFatal)
+					env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "Cannot reassign a variable "+tree.Name, errorHandler.LevelFatal)
 				}
 			}
 		} else {
 			if !env.CheckIfVarExistsInCurrentScope(tree.Name) {
 				env.SetVar(tree.Name, v)
 			} else {
-				env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "Cannot reassign a variable", errorHandler.LevelFatal)
+				env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "Cannot reassign a variable "+tree.Name, errorHandler.LevelFatal)
 			}
 		}
 	}
@@ -179,7 +179,7 @@ func RunArrayLiteral(tree parser.ArrayLiteral, env *Env) *Bus {
 	for _, v := range tree.Values {
 		busCollection := RunTree(v, env)
 		if IsMultipleBus(busCollection) {
-			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "variable decl : MULTIPLE BUS IN RunVariableDecl", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN RunArrayLiteral.\nPlease open issue", errorHandler.LevelFatal)
 		}
 		values = append(values, busCollection[0].GetVal())
 	}
@@ -214,7 +214,7 @@ func RunFunctionDecl(tree parser.FunctionDecl, env *Env) {
 		if !declared.IsFunction() {
 			env.ErrorHandle.HandleError(tree.StartPos(),
 				0,
-				"var "+tree.Name+" already exists.",
+				"Variable "+tree.Name+" already exists.",
 				errorHandler.LevelFatal)
 		} else {
 			declared.GetFunction().AddOverload(tree.Prototype.Parameters, tree.Body, tree.Prototype.ReturnTypes)
@@ -229,14 +229,14 @@ func RunMapLiteral(tree parser.MapLiteral, env *Env) *Bus {
 	for _, v := range tree.Values {
 		busCollection := RunTree(v, env)
 		if IsMultipleBus(busCollection) {
-			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "variable decl : MULTIPLE BUS IN RunVariableDecl", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN RunMapLiteral.\nPlease open issue", errorHandler.LevelFatal)
 		}
 		values = append(values, busCollection[0].GetVal())
 	}
 	for _, k := range tree.Keys {
 		busCollection := RunTree(k, env)
 		if IsMultipleBus(busCollection) {
-			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "variable decl : MULTIPLE BUS IN RunVariableDecl", errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "MULTIPLE BUS IN RunMapLiteral.\nPlease open issue", errorHandler.LevelFatal)
 		}
 		keys = append(keys, busCollection[0].GetVal())
 	}

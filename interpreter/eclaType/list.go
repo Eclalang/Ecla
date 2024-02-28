@@ -39,7 +39,7 @@ func (l *List) SetValue(v any) error {
 		*l = *t
 		return nil
 	}
-	return errors.New("cannot set value of list")
+	return fmt.Errorf("cannot set value %s of list", v)
 }
 
 func (l *List) String() string {
@@ -73,11 +73,11 @@ func (l *List) GetIndex(index Type) (*Type, error) {
 	if index.GetType() == "int" {
 		ind := int(index.GetValue().(Int))
 		if ind >= len(l.Value) || ind < 0 {
-			return nil, errors.New("Index out of range")
+			return nil, errors.New("index out of range")
 		}
 		return &l.Value[ind], nil
 	}
-	return nil, errors.New("index must be an integer")
+	return nil, errors.New("index must be an int")
 
 }
 
@@ -112,7 +112,7 @@ func (l *List) Add(other Type) (Type, error) {
 			}
 			return tmpList, nil
 		}
-		return nil, errors.New("cannot add lists of different types")
+		return nil, errors.New("cannot add list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
 	case String:
 		return l.GetString() + other.GetString(), nil
 	case *Any:
@@ -123,12 +123,12 @@ func (l *List) Add(other Type) (Type, error) {
 
 // Sub returns errors because you cannot subtract lists
 func (l *List) Sub(other Type) (Type, error) {
-	return nil, fmt.Errorf("cannot subtract from list")
+	return nil, fmt.Errorf("cannot subtract " + other.String() + " from list")
 }
 
 // Mod returns errors because you cannot mod lists
 func (l *List) Mod(other Type) (Type, error) {
-	return nil, fmt.Errorf("cannot mod list")
+	return nil, fmt.Errorf("cannot get remainder of list by " + other.String())
 }
 
 // Mul if other is Int , return n * List
@@ -148,12 +148,12 @@ func (l *List) Mul(other Type) (Type, error) {
 
 // Div returns errors because you cannot divide lists
 func (l *List) Div(other Type) (Type, error) {
-	return nil, fmt.Errorf("cannot divide list")
+	return nil, fmt.Errorf("cannot divide list by " + other.String())
 }
 
 // DivEc returns error because you cannot div ec lists
 func (l *List) DivEc(other Type) (Type, error) {
-	return nil, errors.New("cannot divide ec by list")
+	return nil, errors.New("cannot get quotient of list by " + other.String())
 }
 
 // Eq returns true if two Type objects are equal
@@ -161,7 +161,7 @@ func (l *List) Eq(other Type) (Type, error) {
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
-			return nil, errors.New("cannot compare lists of different types")
+			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
 		}
 		if len(l.Value) != len(other.(*List).Value) {
 			return Bool(false), nil
@@ -175,7 +175,7 @@ func (l *List) Eq(other Type) (Type, error) {
 	case *Any:
 		return l.Eq(other.(*Any).Value)
 	}
-	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
 }
 
 // NotEq returns true if two Type objects are not equal
@@ -183,7 +183,7 @@ func (l *List) NotEq(other Type) (Type, error) {
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
-			return nil, errors.New("cannot compare lists of different types")
+			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
 		}
 		if len(l.Value) != len(other.(*List).Value) {
 			return Bool(true), nil
@@ -197,7 +197,7 @@ func (l *List) NotEq(other Type) (Type, error) {
 	case *Any:
 		return l.NotEq(other.(*Any).Value)
 	}
-	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
 }
 
 // Gt returns true if the first Type object is greater than the second
@@ -205,7 +205,7 @@ func (l *List) Gt(other Type) (Type, error) {
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
-			return nil, errors.New("cannot compare lists of different types")
+			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
 		}
 		if len(l.Value) > len(other.(*List).Value) {
 			return Bool(true), nil
@@ -214,7 +214,7 @@ func (l *List) Gt(other Type) (Type, error) {
 	case *Any:
 		return l.Gt(other.(*Any).Value)
 	}
-	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
 }
 
 // GtEq returns true if the first Type object is greater than or equal the second
@@ -223,7 +223,7 @@ func (l *List) GtEq(other Type) (Type, error) {
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
-			return nil, errors.New("cannot compare lists of different types")
+			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
 		}
 		if len(l.Value) >= len(other.(*List).Value) {
 			return Bool(true), nil
@@ -232,7 +232,7 @@ func (l *List) GtEq(other Type) (Type, error) {
 	case *Any:
 		return l.GtEq(other.(*Any).Value)
 	}
-	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
 }
 
 // Lw returns true if the first Type object is lower than the second
@@ -240,7 +240,7 @@ func (l *List) Lw(other Type) (Type, error) {
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
-			return nil, errors.New("cannot compare lists of different types")
+			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
 		}
 		if len(l.Value) < len(other.(*List).Value) {
 			return Bool(true), nil
@@ -249,7 +249,7 @@ func (l *List) Lw(other Type) (Type, error) {
 	case *Any:
 		return l.Lw(other.(*Any).Value)
 	}
-	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
 }
 
 // LwEq returns true if the first Type object is lower than or equal the second
@@ -257,7 +257,7 @@ func (l *List) LwEq(other Type) (Type, error) {
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
-			return nil, errors.New("cannot compare lists of different types")
+			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
 		}
 		if len(l.Value) <= len(other.(*List).Value) {
 			return Bool(true), nil
@@ -266,27 +266,27 @@ func (l *List) LwEq(other Type) (Type, error) {
 	case *Any:
 		return l.LwEq(other.(*Any).Value)
 	}
-	return nil, errors.New(string("cannot compare list to " + other.GetString()))
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
 }
 
 // And returns errors
 func (l *List) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and list")
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
 }
 
 // Or returns errors
 func (l *List) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or list")
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
 }
 
 // Not returns errors
 func (l *List) Not() (Type, error) {
-	return nil, errors.New("cannot opposite list")
+	return nil, errors.New("cannot \"not\" list")
 }
 
 // Xor returns errors
 func (l *List) Xor(other Type) (Type, error) {
-	return nil, errors.New("cannot xor list")
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
 }
 
 // Append to list
@@ -309,7 +309,7 @@ func (l *List) Append(other Type) (Type, error) {
 			return l, nil
 		}
 	}
-	return nil, errors.New("cannot append to list with " + other.GetType())
+	return nil, errors.New("cannot append to list with " + other.String())
 }
 
 func (l *List) IsNull() bool {
