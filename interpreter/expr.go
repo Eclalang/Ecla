@@ -399,16 +399,31 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			}
 		case parser.SelectorExpr:
 			sel := expr.Sel.(parser.SelectorExpr)
-			//check if sel is a struct
+			switch lib.(type) {
+			case *envLib:
+				env.SetScope(lib.(*envLib).Var)
+				env.Libs = lib.(*envLib).Libs
+			}
 			expr := RunTree(sel.Expr, env)
 			if IsMultipleBus(expr) {
 				env.ErrorHandle.HandleError(sel.StartLine(), sel.StartPos(), "MULTIPLE BUS IN RunSelectorExpr.\nPlease open issue", errorHandler.LevelFatal)
 			}
+			var returnBuses []*Bus
 			switch expr[0].GetVal().(type) {
-			case *eclaType.Struct:
-				//s := expr[0].GetVal().(*eclaType.Struct)
-				//return RunSelectorExpr(sel, env, nil)
+			case *eclaType.Var:
+				val := expr[0].GetVal().(*eclaType.Var).GetValue()
+				switch val.(type) {
+				case *eclaType.Struct:
+					returnBuses = RunSelectorExpr(sel, env, val.(*eclaType.Struct))
+				default:
+					env.ErrorHandle.HandleError(sel.StartLine(), sel.StartPos(), "cannot use "+prev.String()+" here", errorHandler.LevelFatal)
+				}
 			}
+			switch lib.(type) {
+			case *envLib:
+				env.EndScope()
+			}
+			return returnBuses
 		default:
 			env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "cannot use "+prev.String()+" here", errorHandler.LevelFatal)
 		}
