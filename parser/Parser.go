@@ -19,6 +19,8 @@ type Parser struct {
 	VarTypes     map[string]interface{}
 }
 
+var selectorDepth int
+
 // Step moves the parser to the next token
 func (p *Parser) Step() {
 	p.TokenIndex++
@@ -127,8 +129,7 @@ func (p *Parser) Parse() *File {
 				Unresolved += dep
 			}
 		}
-		UnresolvedString := strings.Join(UnresolvedDep, ",\n")
-		p.HandleFatal("Some dependencies are not satisfied: " + UnresolvedString)
+		p.HandleFatal("Some dependencies are not satisfied: " + Unresolved)
 	}
 	return file
 }
@@ -203,7 +204,15 @@ func (p *Parser) ParseText() Node {
 			// check if the ident is a Expr
 			p.Step()
 			if _, ok := tempNode.(Expr); ok {
-				return p.ParseSelector(tempNode.(Expr))
+				selectorDepth++
+				exp := p.ParseSelector(tempNode.(Expr))
+				selectorDepth--
+				// check if exp.Expr is a Literal
+				if _, ok := exp.(SelectorExpr).Expr.(Literal); ok {
+					p.CurrentFile.AddDependency(exp.(SelectorExpr).Expr.(Literal).Token.Value)
+				}
+
+				return exp
 			} else {
 				p.HandleFatal("Cannot use a selector on a non-expression")
 				return nil
@@ -583,6 +592,12 @@ func (p *Parser) ParseVariableDecl() Decl {
 	}
 	p.Step()
 	tempDecl.Value = p.ParseExpr()
+
+	// check if the Expr is a StructInstantiationExpr
+	if _, ok := tempDecl.Value.(StructInstantiationExpr); ok {
+		p.CurrentFile.StructInstances = append(p.CurrentFile.StructInstances, tempDecl.Name)
+	}
+
 	p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
 	return tempDecl
 }
@@ -611,6 +626,10 @@ func (p *Parser) ParseImplicitVariableDecl() Decl {
 	}
 	p.Step()
 	tempDecl.Value = p.ParseExpr()
+	// check if the Expr is a StructInstantiationExpr
+	if _, ok := tempDecl.Value.(StructInstantiationExpr); ok {
+		p.CurrentFile.StructInstances = append(p.CurrentFile.StructInstances, tempDecl.Name)
+	}
 	p.CurrentFile.VariableDecl = append(p.CurrentFile.VariableDecl, tempDecl.Name)
 	return tempDecl
 }
@@ -893,7 +912,13 @@ func (p *Parser) ParsePrimaryExpr(exp Expr) Expr {
 
 	if p.CurrentToken.TokenType == lexer.PERIOD {
 		p.Step()
+		selectorDepth++
 		exp = p.ParseSelector(exp)
+		selectorDepth--
+		// check if exp.Expr is a Literal
+		if _, ok := exp.(SelectorExpr).Expr.(Literal); ok && selectorDepth == 0 {
+			p.CurrentFile.AddDependency(exp.(SelectorExpr).Expr.(Literal).Token.Value)
+		}
 	}
 
 	return exp
