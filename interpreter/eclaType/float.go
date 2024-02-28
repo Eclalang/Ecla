@@ -29,12 +29,12 @@ func (f Float) SetValue(value any) error {
 }
 
 func (f Float) String() string {
-	return fmt.Sprintf("%f", f)
+	return fmt.Sprintf("%g", f)
 }
 
 // GetString returns the string representation of the float
 func (f Float) GetString() String {
-	return String(fmt.Sprint(f))
+	return String(f.String())
 }
 
 // GetType returns the type Float

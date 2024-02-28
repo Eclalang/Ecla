@@ -2,7 +2,6 @@ package eclaType
 
 import (
 	"fmt"
-	"strconv"
 	"testing"
 )
 
@@ -59,8 +58,7 @@ func TestAddStringFloat(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expect1, _ := strconv.ParseFloat("1.1", 32)
-	Newexpect1 := fmt.Sprintf("%6f", expect1)
+	Newexpect1 := fmt.Sprintf("%g", 1.1)
 	expect2 := "Hello"
 	expect := expect2 + Newexpect1
 	expected := String(expect)
