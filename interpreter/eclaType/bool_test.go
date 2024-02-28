@@ -870,7 +870,10 @@ func TestXorBoolCharFalseBoth(t *testing.T) {
 // Bool interacts with String
 
 func TestAddBoolString(t *testing.T) {
-	t1 := NewBool("true")
+	t1, err := NewBool("true")
+	if err != nil {
+		t.Errorf("Error: %s", err)
+	}
 	t2, _ := NewString("Hello")
 	actual, err := t1.Add(t2)
 	if err != nil {

@@ -89,7 +89,7 @@ func (c Char) Sub(other Type) (Type, error) {
 	case *Any:
 		return c.Sub(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
+		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from char")
 	}
 }
 
@@ -107,7 +107,7 @@ func (c Char) Mul(other Type) (Type, error) {
 	case *Any:
 		return c.Mul(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
+		return nil, errors.New("cannot multiply " + string(other.GetString()) + " with char")
 	}
 }
 
@@ -131,7 +131,7 @@ func (c Char) Div(other Type) (Type, error) {
 	case *Any:
 		return c.Div(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
+		return nil, errors.New("cannot divide char by " + string(other.GetString()))
 	}
 }
 
@@ -155,7 +155,7 @@ func (c Char) Mod(other Type) (Type, error) {
 	case *Any:
 		return c.Mod(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot subtract " + string(other.GetString()) + " from int")
+		return nil, errors.New("cannot get modulo of char by " + string(other.GetString()))
 	}
 }
 
@@ -178,7 +178,7 @@ func (c Char) Eq(other Type) (Type, error) {
 	case *Any:
 		return c.Eq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to char")
 	}
 }
 
@@ -206,7 +206,7 @@ func (c Char) Gt(other Type) (Type, error) {
 	case *Any:
 		return c.Gt(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to char")
 	}
 }
 
@@ -224,7 +224,7 @@ func (c Char) GtEq(other Type) (Type, error) {
 	case *Any:
 		return c.GtEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to char")
 	}
 }
 
@@ -242,7 +242,7 @@ func (c Char) Lw(other Type) (Type, error) {
 	case *Any:
 		return c.Lw(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to char")
 	}
 }
 
@@ -260,7 +260,7 @@ func (c Char) LwEq(other Type) (Type, error) {
 	case *Any:
 		return c.LwEq(other.(*Any).Value)
 	default:
-		return nil, errors.New("cannot compare " + string(other.GetString()) + " to int")
+		return nil, errors.New("cannot compare " + string(other.GetString()) + " to char")
 	}
 }
 
@@ -290,7 +290,7 @@ func (c Char) And(other Type) (Type, error) {
 			return Bool(true), nil
 		}
 	case Bool:
-		if c == Char(0) && other.GetValue() == Bool(false) {
+		if c == Char(0) || other.GetValue() == Bool(false) {
 			return Bool(false), nil
 		} else {
 			return Bool(true), nil
@@ -298,7 +298,7 @@ func (c Char) And(other Type) (Type, error) {
 	case *Any:
 		return c.And(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New(string("cannot compare char to " + other.GetString()))
 	}
 }
 
@@ -336,7 +336,7 @@ func (c Char) Or(other Type) (Type, error) {
 	case *Any:
 		return c.Or(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New(string("cannot compare char to " + other.GetString()))
 	}
 }
 
@@ -391,7 +391,7 @@ func (c Char) Xor(other Type) (Type, error) {
 	case *Any:
 		return c.Xor(other.(*Any).Value)
 	default:
-		return nil, errors.New(string("cannot compare bool to " + other.GetString()))
+		return nil, errors.New(string("cannot compare char to " + other.GetString()))
 	}
 }
 

@@ -2,9 +2,9 @@ package parser
 
 import (
 	"fmt"
-
 	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/lexer"
+	"strings"
 )
 
 // Parser is the parser for the Ecla language
@@ -1184,6 +1184,10 @@ func (p *Parser) ParseLiteral() Expr {
 				p.PrintBacktrace()
 				p.HandleFatal("Expected string")
 			}
+			// check if there is any \n or \r in the string
+			if strings.Contains(p.CurrentToken.Value, "\n") || strings.Contains(p.CurrentToken.Value, "\r") {
+				p.HandleFatal("strings cannot be multiline")
+			}
 			tempLiteral = Literal{Token: p.CurrentToken, Type: lexer.STRING, Value: p.CurrentToken.Value}
 		}
 
@@ -1205,6 +1209,10 @@ func (p *Parser) ParseLiteral() Expr {
 			if p.CurrentToken.TokenType != lexer.CHAR {
 				p.PrintBacktrace()
 				p.HandleFatal("Expected char")
+			}
+			// check if there is any \n or \r in the char
+			if strings.Contains(p.CurrentToken.Value, "\n") || strings.Contains(p.CurrentToken.Value, "\r") {
+				p.HandleFatal("chars cannot be multiline")
 			}
 			tempLiteral = Literal{Token: p.CurrentToken, Type: lexer.CHAR, Value: p.CurrentToken.Value}
 		}
