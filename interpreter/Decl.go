@@ -21,7 +21,11 @@ func New(t parser.Literal, env *Env) *Bus {
 		}
 		return NewMainBus(str)
 	case lexer.BOOL:
-		return NewMainBus(eclaType.NewBool(t.Value))
+		b, err := eclaType.NewBool(t.Value)
+		if err != nil {
+			env.ErrorHandle.HandleError(t.StartLine(), t.StartPos(), err.Error(), errorHandler.LevelFatal)
+		}
+		return NewMainBus(b)
 	case lexer.FLOAT:
 		return NewMainBus(eclaType.NewFloat(t.Value))
 	case lexer.CHAR:
@@ -69,7 +73,11 @@ func RunVariableDecl(tree parser.VariableDecl, env *Env) {
 			}
 			env.SetVar(tree.Name, v)
 		case parser.Bool:
-			v, err := eclaType.NewVar(tree.Name, tree.Type, eclaType.NewBool("false"))
+			b, err := eclaType.NewBool("false")
+			if err != nil {
+				env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), err.Error(), errorHandler.LevelFatal)
+			}
+			v, err := eclaType.NewVar(tree.Name, tree.Type, b)
 			if err != nil {
 				env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), err.Error(), errorHandler.LevelFatal)
 			}
