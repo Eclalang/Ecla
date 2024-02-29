@@ -90,6 +90,8 @@ func RunTreeLoad(tree parser.Node, env *Env) []*Bus {
 		RunFunctionDecl(tree.(parser.FunctionDecl), env)
 	case parser.ImportStmt:
 		RunImportStmt(tree.(parser.ImportStmt), env)
+	case parser.StructDecl:
+		RunStructDecl(tree.(parser.StructDecl), env)
 	}
 	return []*Bus{NewNoneBus()}
 }
@@ -380,6 +382,42 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			}
 			for _, elem := range result {
 				returnBuses = append(returnBuses, NewMainBus(elem))
+			}
+			switch lib.(type) {
+			case *envLib:
+				env.EndScope()
+			}
+			return returnBuses
+		case parser.Literal:
+			sel := expr.Sel.(parser.Literal)
+			if sel.Type == "VAR" { //TODO don't hard code "VAR"
+				v, ok := lib.(*envLib).GetVar(sel.Value)
+				if !ok {
+					env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "variable "+sel.Value+" does not exist", errorHandler.LevelFatal)
+				}
+				return []*Bus{NewMainBus(v)}
+			}
+		case parser.SelectorExpr:
+			sel := expr.Sel.(parser.SelectorExpr)
+			switch lib.(type) {
+			case *envLib:
+				env.SetScope(lib.(*envLib).Var)
+				env.Libs = lib.(*envLib).Libs
+			}
+			expr := RunTree(sel.Expr, env)
+			if IsMultipleBus(expr) {
+				env.ErrorHandle.HandleError(sel.StartLine(), sel.StartPos(), "MULTIPLE BUS IN RunSelectorExpr.\nPlease open issue", errorHandler.LevelFatal)
+			}
+			var returnBuses []*Bus
+			switch expr[0].GetVal().(type) {
+			case *eclaType.Var:
+				val := expr[0].GetVal().(*eclaType.Var).GetValue()
+				switch val.(type) {
+				case *eclaType.Struct:
+					returnBuses = RunSelectorExpr(sel, env, val.(*eclaType.Struct))
+				default:
+					env.ErrorHandle.HandleError(sel.StartLine(), sel.StartPos(), "cannot use "+prev.String()+" here", errorHandler.LevelFatal)
+				}
 			}
 			switch lib.(type) {
 			case *envLib:
