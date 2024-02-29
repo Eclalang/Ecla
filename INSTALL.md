@@ -1,8 +1,16 @@
 # How to install Ecla
 
-## Install Requirements
+## Download a release
 
-Install Go 1.19 or later.
+you can download the Ecla interpreter as a prebuilt standalone binary for your system from the latest release in https://github.com/Eclalang/Ecla/releases
+
+## Build from sources
+
+alternatively you can build the Ecla interpreter from the sources
+
+### Install Requirements
+
+Install Go 1.21.1 or later.
 
 ### Windows:
 
@@ -16,8 +24,8 @@ Install Go 1.19 or later.
 - Use the following command to install Go:
 
 ```bash
-wget https://dl.google.com/go/go1.19.linux-amd64.tar.gz
-sudo tar -xvf go1.19.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz
+sudo tar -xvf go1.21.1.linux-amd64.tar.gz
 sudo mv go /usr/local
 ```
 
@@ -31,7 +39,7 @@ export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 - Save and close the file. Then, reload your terminal and type "go version". This should display the version of Go you just installed.
 
-## Build the Ecla Interpreter
+### Build the Ecla Interpreter
 
 - Clone the repository:
 
