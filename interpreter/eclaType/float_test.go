@@ -1,6 +1,7 @@
 package eclaType
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -951,128 +952,227 @@ func TestXorFloatCharFalseBoth(t *testing.T) {
 	}
 }
 
-/*
-// Int interacts with String
+// Float interacts with String
 
 func TestAddFloatString(t *testing.T) {
-	t1 := Float(0)
+	t1 := Float(3.14)
 	t2 := String("hello")
 
 	result, err := t1.Add(t2)
 	if err != nil {
 		t.Error(err)
 	}
+
 	Newexpect1 := fmt.Sprintf("%g", 3.14)
 	expect2 := "hello"
 	expect := Newexpect1 + expect2
 	expected := String(expect)
-	fmt.Println(expected)
 	if result.GetValue() != expected {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 }
 
+// Float errors
+
 func TestDivEcFloatErr(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(4.12)
+	t2 := Float(2)
+
+	_, err := t1.DivEc(t2)
+	if err == nil {
+		t.Error("Expected error when getting quotient of a Float")
+	}
+}
+
+func TestNewFloatErr(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("Expected a panic when creating a new float with wrong argument, got nil")
+		}
+	}()
+
+	NewFloat("not a float")
+}
+
+func TestFloatSetValueErr(t *testing.T) {
+	t1 := Float(3.14)
+
+	err := t1.SetValue(1.2)
+	if err == nil {
+		t.Error("Expected error when setting value of float, got nil")
+	}
+}
+
+func TestFloatGetIndexErr(t *testing.T) {
+	t1 := Float(3.14)
+
+	_, err := t1.GetIndex(Float(1.2))
+	if err == nil {
+		t.Error("Expected error, got nil")
+	}
+}
+
+func TestFloatAddErr(t *testing.T) {
+	t1 := Float(3.14)
 	t2 := Bool(true)
 
-	_, err := t1.DivEc(t2)
+	_, err := t1.Add(t2)
 	if err == nil {
-		t.Error("Expected error when dividing a Float by a bool")
+		t.Error("Expected error when adding a bool and a float, got nil")
 	}
 }
 
-func TestDivEcBy0FloatErr(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(0)
+func TestFloatSubErr(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Bool(true)
 
-	_, err := t1.DivEc(t2)
+	_, err := t1.Sub(t2)
 	if err == nil {
-		t.Error("Expected error when dividing a Float by 0")
+		t.Error("Expected error when subtracting a bool from a float, got nil")
 	}
 }
 
-func TestDivEcBy0FloatCharErr(t *testing.T) {
-	t1 := Float(1)
-	t2 := Char(0)
+func TestModFloatErr(t *testing.T) {
+	t1 := Float(4.12)
+	t2 := Float(2)
 
-	_, err := t1.DivEc(t2)
+	_, err := t1.Mod(t2)
 	if err == nil {
-		t.Error("Expected error when dividing a Float by 0")
+		t.Error("Expected error when getting remainder of a Float")
 	}
 }
 
-func TestEqFloatErr(t *testing.T) {
-	t1 := Float('A')
+func TestFloatMulErr(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Bool(true)
+
+	_, err := t1.Mul(t2)
+	if err == nil {
+		t.Error("Expected error when multiplying a bool and a float, got nil")
+	}
+}
+
+func TestFloatDivErr(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Bool(true)
+
+	_, err := t1.Div(t2)
+	if err == nil {
+		t.Error("Expected error when dividing a float by a bool, got nil")
+	}
+}
+
+func TestFloatEqErr(t *testing.T) {
+	t1 := Float(3.14)
 	t2 := Bool(true)
 
 	_, err := t1.Eq(t2)
 	if err == nil {
-		t.Error("Expected error when testing equality between Float and bool")
+		t.Error("Expected error when comparing a bool and a float, got nil")
 	}
 }
 
-func TestNotEqFloatErr(t *testing.T) {
-	t1 := Float('A')
+func TestFloatNotEqErr(t *testing.T) {
+	t1 := Float(3.14)
 	t2 := Bool(true)
 
 	_, err := t1.NotEq(t2)
 	if err == nil {
-		t.Error("Expected error when testing inequality between Float and bool")
+		t.Error("Expected error when comparing a bool and a float, got nil")
 	}
 }
 
-func TestGtFloatErr(t *testing.T) {
-	t1 := Float('A')
+func TestFloatGtErr(t *testing.T) {
+	t1 := Float(3.14)
 	t2 := Bool(true)
 
 	_, err := t1.Gt(t2)
 	if err == nil {
-		t.Error("Expected error when testing if a Float is greater than a bool")
+		t.Error("Expected error when comparing a bool and a float, got nil")
 	}
 }
 
-func TestGtEqFloatErr(t *testing.T) {
-	t1 := Float('A')
+func TestFloatGtEqErr(t *testing.T) {
+	t1 := Float(3.14)
 	t2 := Bool(true)
 
 	_, err := t1.GtEq(t2)
 	if err == nil {
-		t.Error("Expected error when testing if a Float is greater or equal to a bool")
+		t.Error("Expected error when comparing a bool and a float, got nil")
 	}
 }
 
-func TestLwFloatErr(t *testing.T) {
-	t1 := Float('A')
+func TestFloatLwErr(t *testing.T) {
+	t1 := Float(3.14)
 	t2 := Bool(true)
 
 	_, err := t1.Lw(t2)
 	if err == nil {
-		t.Error("Expected error when testing if a Float is lower than a bool")
+		t.Error("Expected error when comparing a bool and a float, got nil")
 	}
 }
 
-func TestLwEqFloatErr(t *testing.T) {
-	t1 := Float('A')
+func TestFloatLwEqErr(t *testing.T) {
+	t1 := Float(3.14)
 	t2 := Bool(true)
 
 	_, err := t1.LwEq(t2)
 	if err == nil {
-		t.Error("Expected error when testing if a Float is lower or equal to a bool")
+		t.Error("Expected error when comparing a bool and a float, got nil")
 	}
 }
 
-func TestFloatAppendTypeErr(t *testing.T) {
-	t1 := Float('A')
-	t2 := Bool(true)
+func TestFloatAppendErr(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := Float(1.0)
 
 	_, err := t1.Append(t2)
 	if err == nil {
-		t.Error("Expected error when appending a bool to a Float")
+		t.Error("Expected error when appending to a float, got nil")
 	}
 }
 
-// Int interacts with float
+func TestFloatLengthErr(t *testing.T) {
+	t1 := Float(3.14)
+
+	_, err := t1.Len()
+	if err == nil {
+		t.Error("Expected error when getting length of float, got nil")
+	}
+}
+
+func TestFloatAndErr(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := String("test")
+
+	_, err := t1.And(t2)
+	if err == nil {
+		t.Error("Expected error when comparing a string and a float, got nil")
+	}
+}
+
+func TestFloatOrErr(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := String("test")
+
+	_, err := t1.Or(t2)
+	if err == nil {
+		t.Error("Expected error when comparing a string and a float, got nil")
+	}
+}
+
+func TestFloatXorErr(t *testing.T) {
+	t1 := Float(3.14)
+	t2 := String("test")
+
+	_, err := t1.Xor(t2)
+	if err == nil {
+		t.Error("Expected error when comparing a string and a float, got nil")
+	}
+}
+
+/*
+// Float interacts with Int
 
 func TestAddFloatFloat(t *testing.T) {
 	t1 := Float(1)
