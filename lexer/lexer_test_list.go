@@ -458,7 +458,24 @@ var (
 			},
 		},
 	}
-	testHashtag = testList{
+	testHashtag0 = testList{
+		input: "# in comment ",
+		output: []Token{
+			{
+				TokenType: COMMENT,
+				Value:     "# in comment ",
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  14,
+				Line:      1,
+			},
+		},
+	}
+	testHashtag1 = testList{
 		input: "prout# in comment\n/# in commentgroup\n and next ligne\n and test for / and /# #/\nOutside of the comment group",
 		output: []Token{
 			{

@@ -57,8 +57,11 @@ func TestEOL(t *testing.T) {
 	tLexer(t, testEOL, "testEOL")
 }
 
-func TestHashtag(t *testing.T) {
-	tLexer(t, testHashtag, " testHashtag")
+func TestHashtag0(t *testing.T) {
+	tLexer(t, testHashtag0, " testHashtag")
+}
+func TestHashtag1(t *testing.T) {
+	tLexer(t, testHashtag1, " testHashtag")
 }
 
 func TestHashtag2(t *testing.T) {

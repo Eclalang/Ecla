@@ -37,7 +37,7 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 		println("ok", index)
 		if index == -1 {
 			if l.index > len(l.sentence) {
-				l.AddToken(t.Result[0].Name)
+				l.ComposeToken(t.Result[0].Name)
 				l.prevIndex = l.index
 			} else if l.sizeOfTokenReversed != -1 {
 				triggerByToken := findNameInMergerTokenType(l.TriggerBy)
@@ -63,10 +63,14 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 					l.TriggerBy = ""
 					l.prevIndex = l.index
 				} else {
-					//triggerByToken.Resolve(l)
-					l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
-					l.tempVal = ""
-					l.prevIndex = l.index
+					if triggerByToken.Name == "NULL" {
+						findNameInEveryTokenType(l.TriggerBy).Resolve(l)
+					} else {
+						l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+						l.tempVal = ""
+						l.prevIndex = l.index
+					}
+
 				}
 			}
 		} else {

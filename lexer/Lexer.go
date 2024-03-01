@@ -204,9 +204,14 @@ func Lexer(sentence string) []Token {
 	Lex.SetSentence(sentence)
 	Lex.Step()
 	Lex.tempVal = Lex.sentence[Lex.prevIndex:Lex.index]
+	Lex.index++
 	if Lex.tempVal != "" {
+		if Lex.TriggerBy == "" {
+			Lex.AddToken(TEXT)
+		} else {
+			findNameInEveryTokenType(Lex.TriggerBy).Resolve(Lex)
 
-		Lex.AddToken(TEXT)
+		}
 
 		Lex.tempVal = ""
 	}
