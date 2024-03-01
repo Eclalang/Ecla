@@ -36,13 +36,11 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 			finded := -1
 			// update the lexer to acknoledge the new token to work with.
 			for i, v := range triggerByToken.InvolvedWith() {
-				println("caca", related.Name, "|", v.Get()[len(v.Get())-1], "|", related.Name)
 				if v.Get()[len(v.Get())-1] == related.Name {
 					finded = i
 					l.indent[0] = &related
 				}
 			}
-			println(finded)
 			if finded != -1 {
 				// compose the token BUT end the triggerBy
 				(*l).ComposeToken(triggerByToken.Get()[len(triggerByToken.Get())-1])

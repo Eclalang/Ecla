@@ -750,4 +750,27 @@ var (
 			},
 		},
 	}
+	testCondInParen = testList{
+		input: "import \"console\";\n\n# This function returns the nth number in the Fibonacci sequence\nfunction Fibonacci(n : int) (int) {\n    if (n < 2) {\n        return n;\n    }\n    return Fibonacci(n - 1) + Fibonacci(n - 2);\n}\n",
+		output: []Token{
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      2,
+			},
+		},
+	}
+
+	testDump = testList{
+		input: "",
+		output: []Token{
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  1,
+				Line:      1,
+			},
+		},
+	}
 )

@@ -11,7 +11,7 @@ type TokenTypeTriggerBehavior struct {
 }
 
 func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
-	l.DEBUGLEXER("IN TRIGGER" + t.Name)
+	//l.DEBUGLEXER("IN TRIGGER" + t.Name)
 	if l.TriggerBy == "" {
 		l.TriggerBy = t.Name
 		(*l).AddToken(t.Name)
@@ -22,11 +22,10 @@ func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 			l.AddToken(t.Result[0].Name)
 			l.prevIndex = l.index
 		} else if l.sizeOfTokenReversed != -1 {
-			println(l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:])
+			//println(l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:])
 			identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
 			triggerByToken := findNameInTriggerTokenType(l.TriggerBy)
 			indexOfClose := triggerByToken.IsClosedBySyntaxe(NameFromGet(l.indent[0].Get()))
-			println("prout2", indexOfClose)
 			if indexOfClose != -1 {
 				//close , donc doit mettre RESULT | CLOSE en token
 				l.FindSyntax()
@@ -44,8 +43,6 @@ func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 				l.indent[0].Resolve(l)
 				l.TriggerBy = ""
 				l.prevIndex = l.index
-
-				println("prout2")
 			}
 		}
 
@@ -69,7 +66,6 @@ func (t *TokenTypeTriggerBehavior) IsClosedByName(otherName string) int {
 }
 func (t *TokenTypeTriggerBehavior) IsClosedBySyntaxe(otherName string) int {
 	for i, tokenType := range t.CloseBy {
-		println(tokenType.Get()[len(tokenType.Get())-1], "ok", otherName)
 		if tokenType.Get()[len(tokenType.Get())-1] == SELF.Name {
 			if t.Name == otherName {
 				return i

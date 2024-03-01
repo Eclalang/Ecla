@@ -53,7 +53,7 @@ func (l *TLexer) Step() {
 		l.index++
 		l.tempVal = l.sentence[l.prevIndex:l.index]
 		l.stepFind = l.IsSyntax()
-		l.DEBUGLEXER("STEP")
+		//l.DEBUGLEXER("STEP")
 		switch l.stepFind {
 		case NOTFOUND:
 
@@ -83,10 +83,6 @@ func (l *TLexer) Step() {
 		l.Step()
 	}
 
-}
-
-func (l *TLexer) GetTempVal() string {
-	return l.tempVal
 }
 
 func (l *TLexer) IsSyntax() ReadingType {
@@ -199,8 +195,7 @@ func Lexer(sentence string) []Token {
 		sizeOfTokenReversed: -1,
 	}
 	Lex.allTokenType = BuildEvery()
-	println(len(Every))
-	println("\n---------------------\n-----PRINT DEBUG-----\n---------------------\n")
+	//println("\n---------------------\n-----PRINT DEBUG-----\n---------------------\n")
 	Lex.SetSentence(sentence)
 	Lex.Step()
 	Lex.tempVal = Lex.sentence[Lex.prevIndex:Lex.index]
@@ -216,28 +211,28 @@ func Lexer(sentence string) []Token {
 		Lex.tempVal = ""
 	}
 	Lex.AddToken(EOF)
-	println("\n---------------------\n---FIN PRINT DEBUG---\n---------------------")
+	//println("\n---------------------\n---FIN PRINT DEBUG---\n---------------------")
 	return Lex.Ret()
 }
 
 func (l *TLexer) DEBUGLEXER(s string) {
-	println("\n-------------"+s+"-------------\nl.tempVal\t\t:", "\""+l.tempVal+"\"")
-
-	println("l.TriggerBy\t\t:", l.TriggerBy)
-	println("l.ret.len()\t\t:", len(l.ret))
-	if (len(l.indent) - 1) >= 0 {
-		println("l.indent name\t\t:", l.indent[0].Get()[len(l.indent[0].Get())-1])
-	} else {
-		println("l.indent name\t\t: None")
-	}
-
-	println("l.lastSTepToken\t\t:", l.lastStepToken.Get()[len(l.lastStepToken.Get())-1])
-	println("l.isSpaces\t\t:", l.isSpaces)
-	println("l.index\t\t\t:", l.index)
-	println("l.prevIndex\t\t:", l.prevIndex)
-	println("l.position\t\t:", l.position)
-	println("l.line\t\t\t:", l.line)
-	println("l.sizeOfTokenReversed\t:", l.sizeOfTokenReversed)
-	println("l.sentence\t\t\t:", l.sentence)
-	println("l.sentence readed\t:", l.sentence[:l.prevIndex]+"|")
+	//println("\n-------------"+s+"-------------\nl.tempVal\t\t:", "\""+l.tempVal+"\"")
+	//
+	//println("l.TriggerBy\t\t:", l.TriggerBy)
+	//println("l.ret.len()\t\t:", len(l.ret))
+	//if (len(l.indent) - 1) >= 0 {
+	//	println("l.indent name\t\t:", l.indent[0].Get()[len(l.indent[0].Get())-1])
+	//} else {
+	//	println("l.indent name\t\t: None")
+	//}
+	//
+	//println("l.lastSTepToken\t\t:", l.lastStepToken.Get()[len(l.lastStepToken.Get())-1])
+	//println("l.isSpaces\t\t:", l.isSpaces)
+	//println("l.index\t\t\t:", l.index)
+	//println("l.prevIndex\t\t:", l.prevIndex)
+	//println("l.position\t\t:", l.position)
+	//println("l.line\t\t\t:", l.line)
+	//println("l.sizeOfTokenReversed\t:", l.sizeOfTokenReversed)
+	//println("l.sentence\t\t\t:", l.sentence)
+	//println("l.sentence readed\t:", l.sentence[:l.prevIndex]+"|")
 }

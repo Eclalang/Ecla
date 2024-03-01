@@ -99,3 +99,7 @@ func TestCharString2(t *testing.T) {
 func TestMultiLigneString(t *testing.T) {
 	tLexer(t, testMultiLigneString, "testMultiLigneString")
 }
+
+func TestCondInParen(t *testing.T) {
+	tLexer(t, testCondInParen, "testMultiLigneString")
+}

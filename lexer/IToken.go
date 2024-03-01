@@ -90,6 +90,8 @@ var (
 		&BDIV,
 		&BNOT,
 		&BMULT,
+		&BLSS,
+		&BGTR,
 	}
 	Trigger []*TokenTypeTriggerBehavior = []*TokenTypeTriggerBehavior{
 		&TDQUOTE,
