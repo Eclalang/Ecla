@@ -7,10 +7,10 @@ type TokenTypeSpacesBehavior struct {
 
 func (t *TokenTypeSpacesBehavior) Resolve(l *TLexer) {
 	if (*l).TriggerBy != "" {
-		findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
+		findNameInEveryTokenType(l.TriggerBy).Resolve(l)
 	} else {
 		if (*l).Inquote() {
-			findNameInEveryTokenType((*l).TriggerBy, Every).Resolve(l)
+			findNameInEveryTokenType((*l).TriggerBy).Resolve(l)
 
 		} else {
 			(*l).isSpaces = true

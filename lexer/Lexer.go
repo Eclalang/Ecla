@@ -198,6 +198,8 @@ func Lexer(sentence string) []Token {
 		maxLen:              -1,
 		sizeOfTokenReversed: -1,
 	}
+	Lex.allTokenType = BuildEvery()
+	println(len(Every))
 	println("\n---------------------\n-----PRINT DEBUG-----\n---------------------\n")
 	Lex.SetSentence(sentence)
 	Lex.Step()

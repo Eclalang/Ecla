@@ -17,17 +17,56 @@ type Token struct {
 	Line      int
 }
 
-func findNameInEveryTokenType(name string, Every []ITokenType) ITokenType {
+func findNameInEveryTokenType(name string) ITokenType {
 	for _, tokenType := range Every {
-		if tokenType.Get()[len(tokenType.Get())-1] == name {
+		if NameFromGet(tokenType.Get()) == name {
 			return tokenType
 		}
 	}
 	return nil
 }
 
+func findNameInTriggerTokenType(name string) *TokenTypeTriggerBehavior {
+	for _, tokenType := range Trigger {
+		if NameFromGet(tokenType.Get()) == name {
+			return tokenType
+		}
+	}
+	return &TokenTypeTriggerBehavior{Name: "NULL"}
+}
+
+func findNameInMergerTokenType(name string) *TokenTypeMergerBehavior {
+	for _, tokenType := range Merger {
+		if NameFromGet(tokenType.Get()) == name {
+			return tokenType
+		}
+	}
+	return &TokenTypeMergerBehavior{Name: "NULL"}
+}
+
+func NameFromGet(Get []string) string {
+	return Get[len(Get)-1]
+}
+
+func BuildEvery() []ITokenType {
+	for _, behavior := range Base {
+		Every = append(Every, behavior)
+	}
+	for _, behavior := range Merger {
+		Every = append(Every, behavior)
+	}
+	for _, behavior := range Trigger {
+		Every = append(Every, behavior)
+	}
+	for _, behavior := range Spaces {
+		Every = append(Every, behavior)
+	}
+	return Every
+}
+
 var (
-	Every []ITokenType = []ITokenType{
+	Every []ITokenType             = []ITokenType{}
+	Base  []*TokenTypeBaseBehavior = []*TokenTypeBaseBehavior{
 		&BPERIOD,
 		&BCOLON,
 		&BLBRACE,
@@ -43,8 +82,6 @@ var (
 		&BRPAREN,
 		&BEOL,
 		&BMURLOC,
-		&EMPTY,
-		&RETURN,
 		&BINT,
 		&BADD,
 		&BASSIGN,
@@ -53,10 +90,18 @@ var (
 		&BDIV,
 		&BNOT,
 		&BMULT,
+	}
+	Trigger []*TokenTypeTriggerBehavior = []*TokenTypeTriggerBehavior{
 		&TDQUOTE,
 		&TSQUOTE,
+	}
+	Merger []*TokenTypeMergerBehavior = []*TokenTypeMergerBehavior{
 		&TCOMMENT,
 		&TCOMMENTGROUP,
+	}
+	Spaces []*TokenTypeSpacesBehavior = []*TokenTypeSpacesBehavior{
+		&EMPTY,
+		&RETURN,
 	}
 )
 

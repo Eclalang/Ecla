@@ -24,7 +24,7 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 		// if no matching, classic behavior, otherwise, COMMENTGROUPEND style behavior.
 		if index == -1 {
 			// Classic TriggerBy Behavior
-			findNameInEveryTokenType(l.TriggerBy, Every).Resolve(l)
+			findNameInEveryTokenType(l.TriggerBy).Resolve(l)
 		} else {
 			// Special TriggerBy Behavior
 
@@ -32,11 +32,11 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 			// one merge or compose together.
 
 			related := t.Result[index]
-			triggerByToken := findNameInEveryTokenType((*l).TriggerBy, Every)
+			triggerByToken := findNameInEveryTokenType((*l).TriggerBy)
 			finded := -1
 			// update the lexer to acknoledge the new token to work with.
 			for i, v := range triggerByToken.InvolvedWith() {
-				println("caca", v.Get()[len(v.Get())-1], " ", related.Name)
+				println("caca", related.Name, "|", v.Get()[len(v.Get())-1], "|", related.Name)
 				if v.Get()[len(v.Get())-1] == related.Name {
 					finded = i
 					l.indent[0] = &related
@@ -49,6 +49,8 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 				l.TriggerBy = ""
 				// reset the reading head of our lexer.
 				l.prevIndex = l.index
+			} else {
+				triggerByToken.Resolve(l)
 			}
 
 		}
