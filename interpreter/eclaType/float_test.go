@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"testing"
 )
 
@@ -531,6 +532,16 @@ func TestNotFloatTrue(t *testing.T) {
 	}
 	if result != Float(1) {
 		t.Error("Expected true, got", result)
+	}
+}
+
+func TestFloatGetSize(t *testing.T) {
+	t1 := Float(0)
+	expected := utils.Sizeof(t1)
+
+	result := t1.GetSize()
+	if result != expected {
+		t.Errorf("expected %d, got %d", expected, result)
 	}
 }
 
@@ -1171,116 +1182,115 @@ func TestFloatXorErr(t *testing.T) {
 	}
 }
 
-/*
 // Float interacts with Int
 
-func TestAddFloatFloat(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(2)
+func TestAddFloatInt(t *testing.T) {
+	t1 := Float(1.3)
+	t2 := Int(2)
 
 	result, err := t1.Add(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(3.0) {
-		t.Error("Expected 3.0, got ", result)
+	if result.GetValue() != Float(3.3) {
+		t.Error("Expected 3.3, got ", result)
 	}
 }
 
-func TestAddNegFloatFloat(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(-2.0)
+func TestAddNegFloatInt(t *testing.T) {
+	t1 := Float(1.5)
+	t2 := Int(-2)
 
 	result, err := t1.Add(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(-1.0) {
-		t.Error("Expected -1.0, got ", result)
+	if result.GetValue() != Float(-0.5) {
+		t.Error("Expected -0.5, got ", result)
 	}
 }
 
-func TestSubFloatFloat(t *testing.T) {
-	t1 := Float(4)
-	t2 := Float(3.0)
+func TestSubFloatInt(t *testing.T) {
+	t1 := Float(4.2)
+	t2 := Int(3)
 
 	result, err := t1.Sub(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(1.0) {
-		t.Error("Expected 1.0, got ", result)
+	if result.GetValue() != Float(1.2) {
+		t.Error("Expected 1.2, got ", result)
 	}
 }
 
-func TestNegSubFloatFloat(t *testing.T) {
-	t1 := Float(4)
-	t2 := Float(-3)
+func TestNegSubFloatInt(t *testing.T) {
+	t1 := Float(4.1)
+	t2 := Int(-3)
 
 	result, err := t1.Sub(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(7.0) {
-		t.Error("Expected 7.0, got ", result)
+	if result.GetValue() != Float(7.1) {
+		t.Error("Expected 7.1, got ", result)
 	}
 }
 
-func TestMulFloatFloat(t *testing.T) {
-	t1 := Float(4)
-	t2 := Float(2.0)
+func TestMulFloatInt(t *testing.T) {
+	t1 := Float(4.4)
+	t2 := Int(2)
 
 	result, err := t1.Mul(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(8.0) {
-		t.Error("Expected 8.0, got ", result)
+	if result.GetValue() != Float(8.8) {
+		t.Error("Expected 8.8, got ", result)
 	}
 }
 
-func TestMulNegFloatFloat(t *testing.T) {
-	t1 := Float(4)
-	t2 := Float(-2.0)
+func TestMulNegFloatInt(t *testing.T) {
+	t1 := Float(4.4)
+	t2 := Int(-2)
 
 	result, err := t1.Mul(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(-8.0) {
-		t.Error("Expected -8.0, got ", result)
+	if result.GetValue() != Float(-8.8) {
+		t.Error("Expected -8.8, got ", result)
 	}
 }
 
-func TestDivFloatFloat(t *testing.T) {
-	t1 := Float(4)
-	t2 := Float(2.0)
+func TestDivFloatInt(t *testing.T) {
+	t1 := Float(4.2)
+	t2 := Int(2)
 
 	result, err := t1.Div(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(2.0) {
-		t.Error("Expected 2.0, got ", result)
+	if result.GetValue() != Float(2.1) {
+		t.Error("Expected 2.1, got ", result)
 	}
 }
 
-func TestDivNegFloatFloat(t *testing.T) {
-	t1 := Float(4)
-	t2 := Float(-2.0)
+func TestDivNegFloatInt(t *testing.T) {
+	t1 := Float(4.2)
+	t2 := Int(-2)
 
 	result, err := t1.Div(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(-2.0) {
-		t.Error("Expected -2.0, got ", result)
+	if result.GetValue() != Float(-2.1) {
+		t.Error("Expected -2.1, got ", result)
 	}
 }
 
-func TestAndFloatFloat(t *testing.T) {
-	t1 := Float(2)
-	t2 := Float(1)
+func TestAndFloatInt(t *testing.T) {
+	t1 := Float(2.4)
+	t2 := Int(1)
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -1291,9 +1301,9 @@ func TestAndFloatFloat(t *testing.T) {
 	}
 }
 
-func TestAndFloatFloatFalseRight(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(0)
+func TestAndFloatIntFalseRight(t *testing.T) {
+	t1 := Float(1.6)
+	t2 := Int(0)
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -1304,9 +1314,9 @@ func TestAndFloatFloatFalseRight(t *testing.T) {
 	}
 }
 
-func TestAndFloatFloatFalseLeft(t *testing.T) {
+func TestAndFloatIntFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2 := Float(1)
+	t2 := Int(1)
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -1317,9 +1327,9 @@ func TestAndFloatFloatFalseLeft(t *testing.T) {
 	}
 }
 
-func TestAndFloatFloatFalseBoth(t *testing.T) {
+func TestAndFloatIntFalseBoth(t *testing.T) {
 	t1 := Float(0)
-	t2 := Float(0)
+	t2 := Int(0)
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -1330,9 +1340,9 @@ func TestAndFloatFloatFalseBoth(t *testing.T) {
 	}
 }
 
-func TestOrFloatFloat(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(1)
+func TestOrFloatInt(t *testing.T) {
+	t1 := Float(1.4)
+	t2 := Int(1)
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -1343,9 +1353,9 @@ func TestOrFloatFloat(t *testing.T) {
 	}
 }
 
-func TestOrFloatFloatFalseRight(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(0)
+func TestOrFloatIntFalseRight(t *testing.T) {
+	t1 := Float(1.8)
+	t2 := Int(0)
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -1356,9 +1366,9 @@ func TestOrFloatFloatFalseRight(t *testing.T) {
 	}
 }
 
-func TestOrFloatFloatFalseLeft(t *testing.T) {
+func TestOrFloatIntFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2 := Float(1)
+	t2 := Int(4)
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -1369,9 +1379,9 @@ func TestOrFloatFloatFalseLeft(t *testing.T) {
 	}
 }
 
-func TestOrFloatFloatFalseBoth(t *testing.T) {
+func TestOrFloatIntFalseBoth(t *testing.T) {
 	t1 := Float(0)
-	t2 := Float(0)
+	t2 := Int(0)
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -1382,9 +1392,9 @@ func TestOrFloatFloatFalseBoth(t *testing.T) {
 	}
 }
 
-func TestXorFloatFloat(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(1)
+func TestXorFloatInt(t *testing.T) {
+	t1 := Float(2.9)
+	t2 := Int(1)
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -1395,9 +1405,9 @@ func TestXorFloatFloat(t *testing.T) {
 	}
 }
 
-func TestXorFloatFloatFalseRight(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(0)
+func TestXorFloatIntFalseRight(t *testing.T) {
+	t1 := Float(1.7)
+	t2 := Int(0)
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -1408,9 +1418,9 @@ func TestXorFloatFloatFalseRight(t *testing.T) {
 	}
 }
 
-func TestXorFloatFloatFalseLeft(t *testing.T) {
+func TestXorFloatIntFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2 := Float(1)
+	t2 := Int(7)
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -1421,9 +1431,9 @@ func TestXorFloatFloatFalseLeft(t *testing.T) {
 	}
 }
 
-func TestXorFloatFloatFalseBoth(t *testing.T) {
+func TestXorFloatIntFalseBoth(t *testing.T) {
 	t1 := Float(0)
-	t2 := Float(0)
+	t2 := Int(0)
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -1434,9 +1444,9 @@ func TestXorFloatFloatFalseBoth(t *testing.T) {
 	}
 }
 
-func TestEqFloatFloat(t *testing.T) {
-	t1 := Float(0)
-	t2 := Float(0)
+func TestEqFloatInt(t *testing.T) {
+	t1 := Float(4.0)
+	t2 := Int(4)
 
 	result, err := t1.Eq(t2)
 	if err != nil {
@@ -1447,9 +1457,9 @@ func TestEqFloatFloat(t *testing.T) {
 	}
 }
 
-func TestEqFloatFloatFalse(t *testing.T) {
-	t1 := Float(0)
-	t2 := Float(1)
+func TestEqFloatIntFalse(t *testing.T) {
+	t1 := Float(1.1)
+	t2 := Int(1)
 
 	result, err := t1.Eq(t2)
 	if err != nil {
@@ -1460,9 +1470,9 @@ func TestEqFloatFloatFalse(t *testing.T) {
 	}
 }
 
-func TestNotEqFloatFloat(t *testing.T) {
-	t1 := Float(0)
-	t2 := Float(1)
+func TestNotEqFloatInt(t *testing.T) {
+	t1 := Float(0.9)
+	t2 := Int(1)
 
 	result, err := t1.NotEq(t2)
 	if err != nil {
@@ -1473,11 +1483,11 @@ func TestNotEqFloatFloat(t *testing.T) {
 	}
 }
 
-func TestNotEqFloatFloatFalse(t *testing.T) {
-	t1 := Float(0)
-	t2 := Float(1)
+func TestNotEqFloatIntFalse(t *testing.T) {
+	t1 := Float(1.0)
+	t2 := Int(1)
 
-	result, err := t1.Eq(t2)
+	result, err := t1.NotEq(t2)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1486,9 +1496,9 @@ func TestNotEqFloatFloatFalse(t *testing.T) {
 	}
 }
 
-func TestGtFloatFloat(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(0.5)
+func TestGtFloatInt(t *testing.T) {
+	t1 := Float(1.1)
+	t2 := Int(1)
 
 	result, err := t1.Gt(t2)
 	if err != nil {
@@ -1499,9 +1509,9 @@ func TestGtFloatFloat(t *testing.T) {
 	}
 }
 
-func TestGtFloatFloatEq(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(1)
+func TestGtFloatIntEq(t *testing.T) {
+	t1 := Float(1.0)
+	t2 := Int(1)
 
 	result, err := t1.Gt(t2)
 	if err != nil {
@@ -1512,9 +1522,9 @@ func TestGtFloatFloatEq(t *testing.T) {
 	}
 }
 
-func TestGtFloatFloatFalse(t *testing.T) {
-	t1 := Float(0)
-	t2 := Float(1)
+func TestGtFloatIntFalse(t *testing.T) {
+	t1 := Float(0.4)
+	t2 := Int(1)
 
 	result, err := t1.Gt(t2)
 	if err != nil {
@@ -1525,9 +1535,9 @@ func TestGtFloatFloatFalse(t *testing.T) {
 	}
 }
 
-func TestGtEqFloatFloat(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(0.5)
+func TestGtEqFloatInt(t *testing.T) {
+	t1 := Float(1.2)
+	t2 := Int(1)
 
 	result, err := t1.GtEq(t2)
 	if err != nil {
@@ -1538,9 +1548,9 @@ func TestGtEqFloatFloat(t *testing.T) {
 	}
 }
 
-func TestGtEqFloatFloatEq(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(1)
+func TestGtEqFloatIntEq(t *testing.T) {
+	t1 := Float(1.0)
+	t2 := Int(1)
 
 	result, err := t1.GtEq(t2)
 	if err != nil {
@@ -1551,9 +1561,9 @@ func TestGtEqFloatFloatEq(t *testing.T) {
 	}
 }
 
-func TestGtEqFloatFloatFalse(t *testing.T) {
-	t1 := Float(0)
-	t2 := Float(1)
+func TestGtEqFloatIntFalse(t *testing.T) {
+	t1 := Float(0.3)
+	t2 := Int(1)
 
 	result, err := t1.GtEq(t2)
 	if err != nil {
@@ -1564,9 +1574,9 @@ func TestGtEqFloatFloatFalse(t *testing.T) {
 	}
 }
 
-func TestLwFloatFloat(t *testing.T) {
-	t1 := Float(1)
-	t2 := Float(2)
+func TestLwFloatInt(t *testing.T) {
+	t1 := Float(1.4)
+	t2 := Int(2)
 
 	result, err := t1.Lw(t2)
 	if err != nil {
@@ -1577,9 +1587,9 @@ func TestLwFloatFloat(t *testing.T) {
 	}
 }
 
-func TestLwFloatFloatEq(t *testing.T) {
+func TestLwFloatIntEq(t *testing.T) {
 	t1 := Float(1)
-	t2 := Float(1)
+	t2 := Int(1)
 
 	result, err := t1.Lw(t2)
 	if err != nil {
@@ -1590,9 +1600,9 @@ func TestLwFloatFloatEq(t *testing.T) {
 	}
 }
 
-func TestLwFloatFloatFalse(t *testing.T) {
-	t1 := Float(2)
-	t2 := Float(1)
+func TestLwFloatIntFalse(t *testing.T) {
+	t1 := Float(2.4)
+	t2 := Int(1)
 
 	result, err := t1.Lw(t2)
 	if err != nil {
@@ -1603,9 +1613,9 @@ func TestLwFloatFloatFalse(t *testing.T) {
 	}
 }
 
-func TestLwEqFloatFloat(t *testing.T) {
+func TestLwEqFloatInt(t *testing.T) {
 	t1 := Float(1)
-	t2 := Float(2.5)
+	t2 := Int(2)
 
 	result, err := t1.LwEq(t2)
 	if err != nil {
@@ -1616,9 +1626,9 @@ func TestLwEqFloatFloat(t *testing.T) {
 	}
 }
 
-func TestLwEqFloatFloatEq(t *testing.T) {
+func TestLwEqFloatIntEq(t *testing.T) {
 	t1 := Float(1)
-	t2 := Float(1)
+	t2 := Int(1)
 
 	result, err := t1.LwEq(t2)
 	if err != nil {
@@ -1629,9 +1639,9 @@ func TestLwEqFloatFloatEq(t *testing.T) {
 	}
 }
 
-func TestLwEqFloatFloatFalse(t *testing.T) {
-	t1 := Float(2)
-	t2 := Float(1)
+func TestLwEqFloatIntFalse(t *testing.T) {
+	t1 := Float(1.7)
+	t2 := Int(1)
 
 	result, err := t1.LwEq(t2)
 	if err != nil {
@@ -1642,10 +1652,10 @@ func TestLwEqFloatFloatFalse(t *testing.T) {
 	}
 }
 
-// Int interacts with Bool
+// Float interacts with Bool
 
 func TestAndFloatBool(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(4.1)
 	t2 := Bool(true)
 
 	result, err := t1.And(t2)
@@ -1671,7 +1681,7 @@ func TestAndFloatBoolFalseLeft(t *testing.T) {
 }
 
 func TestAndFloatBoolFalseRight(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(3.1)
 	t2 := Bool(false)
 
 	result, err := t1.And(t2)
@@ -1697,7 +1707,7 @@ func TestAndFloatBoolFalseBoth(t *testing.T) {
 }
 
 func TestOrFloatBool(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(5.7)
 	t2 := Bool(true)
 
 	result, err := t1.Or(t2)
@@ -1723,7 +1733,7 @@ func TestOrFloatBoolFalseLeft(t *testing.T) {
 }
 
 func TestOrFloatBoolFalseRight(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(4.5)
 	t2 := Bool(false)
 
 	result, err := t1.Or(t2)
@@ -1749,7 +1759,7 @@ func TestOrFloatBoolFalseBoth(t *testing.T) {
 }
 
 func TestXorFloatBool(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(2.8)
 	t2 := Bool(true)
 
 	result, err := t1.Xor(t2)
@@ -1775,7 +1785,7 @@ func TestXorFloatBoolFalseLeft(t *testing.T) {
 }
 
 func TestXorFloatBoolFalseRight(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(7.1)
 	t2 := Bool(false)
 
 	result, err := t1.Xor(t2)
@@ -1803,151 +1813,112 @@ func TestXorFloatBoolFalseBoth(t *testing.T) {
 // Int interacts with Var
 
 func TestAddFloatVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(1.2)
+	t2, _ := NewVar("testVar", "float", Float(2.1))
 
 	result, err := t1.Add(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(3) {
-		t.Error("Expected 3, got ", result)
+	if result.GetValue() != Float(3.3) {
+		t.Error("Expected 3.3, got ", result)
 	}
 }
 
 func TestAddNegFloatVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(-2))
+	t1 := Float(4.7)
+	t2, _ := NewVar("testVar", "float", Float(-2.2))
 
 	result, err := t1.Add(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(-1) {
-		t.Error("Expected -1, got ", result)
+	if result.GetValue() != Float(-2.5) {
+		t.Error("Expected -2.5, got ", result)
 	}
 }
 
 func TestSubFloatVar(t *testing.T) {
-	t1 := Float(4)
-	t2, _ := NewVar("testVar", "Float", Float(3))
+	t1 := Float(1.1)
+	t2, _ := NewVar("testVar", "float", Float(0.2))
 
 	result, err := t1.Sub(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(1) {
-		t.Error("Expected 1, got ", result)
+	if result.GetValue() != Float(0.9) {
+		t.Error("Expected 0.9, got ", result)
 	}
 }
 
 func TestNegSubFloatVar(t *testing.T) {
-	t1 := Float(4)
-	t2, _ := NewVar("testVar", "Float", Float(-3))
+	t1 := Float(4.2)
+	t2, _ := NewVar("testVar", "float", Float(-0.9))
 
 	result, err := t1.Sub(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(7) {
-		t.Error("Expected 7, got ", result)
-	}
-}
-
-func TestModFloatVar(t *testing.T) {
-	t1 := Float(3)
-	t2, _ := NewVar("testVar", "Float", Float(2))
-
-	result, err := t1.Mod(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != Float(1) {
-		t.Error("Expected 1, got ", result)
+	if result.GetValue() != Float(5.1) {
+		t.Error("Expected 5.1, got ", result)
 	}
 }
 
 func TestMulFloatVar(t *testing.T) {
-	t1 := Float(4)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(5.0)
+	t2, _ := NewVar("testVar", "float", Float(0.1))
 
 	result, err := t1.Mul(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(8) {
-		t.Error("Expected 8, got ", result)
+	if result.GetValue() != Float(0.5) {
+		t.Error("Expected 0.5, got ", result)
 	}
 }
 
 func TestMulNegFloatVar(t *testing.T) {
-	t1 := Float(4)
-	t2, _ := NewVar("testVar", "Float", Float(-2))
+	t1 := Float(5.0)
+	t2, _ := NewVar("testVar", "float", Float(-0.1))
 
 	result, err := t1.Mul(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(-8) {
-		t.Error("Expected -8, got ", result)
+	if result.GetValue() != Float(-0.5) {
+		t.Error("Expected -0.5, got ", result)
 	}
 }
 
 func TestDivFloatVar(t *testing.T) {
-	t1 := Float(4)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(3.6)
+	t2, _ := NewVar("testVar", "int", Int(3))
 
 	result, err := t1.Div(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(2.0) {
-		t.Error("Expected 2.0, got ", result)
+	if result.GetValue() != Float(1.2) {
+		t.Error("Expected 1.2, got ", result)
 	}
 }
 
 func TestDivNegFloatVar(t *testing.T) {
-	t1 := Float(4)
-	t2, _ := NewVar("testVar", "Float", Float(-2))
+	t1 := Float(3.6)
+	t2, _ := NewVar("testVar", "int", Int(-3))
 
 	result, err := t1.Div(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(-2.0) {
-		t.Error("Expected -2.0, got ", result)
-	}
-}
-
-func TestDivEcFloatVar(t *testing.T) {
-	t1 := Float(5)
-	t2, _ := NewVar("testVar", "Float", Float(2))
-
-	result, err := t1.DivEc(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != Float(2) {
-		t.Error("Expected 2, got ", result)
-	}
-}
-
-func TestDivEcNegFloatVar(t *testing.T) {
-	t1 := Float(5)
-	t2, _ := NewVar("testVar", "Float", Float(-2))
-
-	result, err := t1.DivEc(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != Float(-2) {
-		t.Error("Expected -2, got ", result)
+	if result.GetValue() != Float(-1.2) {
+		t.Error("Expected -1.2, got ", result)
 	}
 }
 
 func TestEqFloatVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(1))
+	t1 := Float(1.2)
+	t2, _ := NewVar("testVar", "float", Float(1.2))
 
 	result, err := t1.Eq(t2)
 	if err != nil {
@@ -1959,8 +1930,8 @@ func TestEqFloatVar(t *testing.T) {
 }
 
 func TestEqFloatFalseVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(1.2)
+	t2, _ := NewVar("testVar", "float", Float(2.1))
 
 	result, err := t1.Eq(t2)
 	if err != nil {
@@ -1972,8 +1943,8 @@ func TestEqFloatFalseVar(t *testing.T) {
 }
 
 func TestNotEqFloatVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(1.4)
+	t2, _ := NewVar("testVar", "float", Float(4.2))
 
 	result, err := t1.NotEq(t2)
 	if err != nil {
@@ -1985,8 +1956,8 @@ func TestNotEqFloatVar(t *testing.T) {
 }
 
 func TestNotEqFloatVarFalse(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(1))
+	t1 := Float(1.4)
+	t2, _ := NewVar("testVar", "float", Float(1.4))
 
 	result, err := t1.NotEq(t2)
 	if err != nil {
@@ -1998,8 +1969,8 @@ func TestNotEqFloatVarFalse(t *testing.T) {
 }
 
 func TestGtFloatVarTrue(t *testing.T) {
-	t1 := Float(2)
-	t2, _ := NewVar("testVar", "Float", Float(1))
+	t1 := Float(2.1)
+	t2, _ := NewVar("testVar", "float", Float(2.01))
 
 	result, err := t1.Gt(t2)
 	if err != nil {
@@ -2011,8 +1982,8 @@ func TestGtFloatVarTrue(t *testing.T) {
 }
 
 func TestGtFloatVarFalse(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(1.1)
+	t2, _ := NewVar("testVar", "float", Float(2.1))
 
 	result, err := t1.Gt(t2)
 	if err != nil {
@@ -2024,8 +1995,8 @@ func TestGtFloatVarFalse(t *testing.T) {
 }
 
 func TestGtFloatVarEq(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(1))
+	t1 := Float(1.4)
+	t2, _ := NewVar("testVar", "float", Float(1.4))
 
 	result, err := t1.Gt(t2)
 	if err != nil {
@@ -2037,8 +2008,8 @@ func TestGtFloatVarEq(t *testing.T) {
 }
 
 func TestGtEqFloatVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(0))
+	t1 := Float(1.1)
+	t2, _ := NewVar("testVar", "float", Float(0.2))
 
 	result, err := t1.GtEq(t2)
 	if err != nil {
@@ -2050,8 +2021,8 @@ func TestGtEqFloatVar(t *testing.T) {
 }
 
 func TestGtEqFloatVarEq(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(1))
+	t1 := Float(1.2)
+	t2, _ := NewVar("testVar", "float", Float(1.2))
 
 	result, err := t1.GtEq(t2)
 	if err != nil {
@@ -2063,8 +2034,8 @@ func TestGtEqFloatVarEq(t *testing.T) {
 }
 
 func TestGtEqFloatVarFalse(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(1.2)
+	t2, _ := NewVar("testVar", "float", Float(2.1))
 
 	result, err := t1.GtEq(t2)
 	if err != nil {
@@ -2076,8 +2047,8 @@ func TestGtEqFloatVarFalse(t *testing.T) {
 }
 
 func TestLwFloatVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(1.5)
+	t2, _ := NewVar("testVar", "float", Float(2.5))
 
 	result, err := t1.Lw(t2)
 	if err != nil {
@@ -2089,8 +2060,8 @@ func TestLwFloatVar(t *testing.T) {
 }
 
 func TestLwFloatVarFalse(t *testing.T) {
-	t1 := Float(2)
-	t2, _ := NewVar("testVar", "Float", Float(1))
+	t1 := Float(2.4)
+	t2, _ := NewVar("testVar", "float", Float(1.4))
 
 	result, err := t1.Lw(t2)
 	if err != nil {
@@ -2102,8 +2073,8 @@ func TestLwFloatVarFalse(t *testing.T) {
 }
 
 func TestLwFloatVarEq(t *testing.T) {
-	t1 := Float(2)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(2.7)
+	t2, _ := NewVar("testVar", "float", Float(2.7))
 
 	result, err := t1.Lw(t2)
 	if err != nil {
@@ -2115,8 +2086,8 @@ func TestLwFloatVarEq(t *testing.T) {
 }
 
 func TestLwEqFloatVar(t *testing.T) {
-	t1 := Float(2)
-	t2, _ := NewVar("testVar", "Float", Float(3))
+	t1 := Float(2.2)
+	t2, _ := NewVar("testVar", "float", Float(3.2))
 
 	result, err := t1.LwEq(t2)
 	if err != nil {
@@ -2128,8 +2099,8 @@ func TestLwEqFloatVar(t *testing.T) {
 }
 
 func TestLwEqFloatVarFalse(t *testing.T) {
-	t1 := Float(2)
-	t2, _ := NewVar("testVar", "Float", Float(1))
+	t1 := Float(2.4)
+	t2, _ := NewVar("testVar", "float", Float(1.4))
 
 	result, err := t1.LwEq(t2)
 	if err != nil {
@@ -2141,8 +2112,8 @@ func TestLwEqFloatVarFalse(t *testing.T) {
 }
 
 func TestLwEqFloatVarEq(t *testing.T) {
-	t1 := Float(2)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(2.1)
+	t2, _ := NewVar("testVar", "float", Float(2.1))
 
 	result, err := t1.LwEq(t2)
 	if err != nil {
@@ -2154,8 +2125,8 @@ func TestLwEqFloatVarEq(t *testing.T) {
 }
 
 func TestAndFloatVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(1.7)
+	t2, _ := NewVar("testVar", "float", Float(7.2))
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -2167,8 +2138,8 @@ func TestAndFloatVar(t *testing.T) {
 }
 
 func TestAndFloatVarFalseRight(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(0))
+	t1 := Float(4.1)
+	t2, _ := NewVar("testVar", "float", Float(0))
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -2181,7 +2152,7 @@ func TestAndFloatVarFalseRight(t *testing.T) {
 
 func TestAndFloatVarFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t2, _ := NewVar("testVar", "float", Float(2.7))
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -2194,7 +2165,7 @@ func TestAndFloatVarFalseLeft(t *testing.T) {
 
 func TestAndFloatVarFalseBoth(t *testing.T) {
 	t1 := Float(0)
-	t2, _ := NewVar("testVar", "Float", Float(0))
+	t2, _ := NewVar("testVar", "float", Float(0))
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -2206,8 +2177,8 @@ func TestAndFloatVarFalseBoth(t *testing.T) {
 }
 
 func TestOrFloatVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(1.1)
+	t2, _ := NewVar("testVar", "float", Float(2.1))
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -2219,8 +2190,8 @@ func TestOrFloatVar(t *testing.T) {
 }
 
 func TestOrFloatVarFalseRight(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(0))
+	t1 := Float(1.4)
+	t2, _ := NewVar("testVar", "float", Float(0))
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -2233,7 +2204,7 @@ func TestOrFloatVarFalseRight(t *testing.T) {
 
 func TestOrFloatVarFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t2, _ := NewVar("testVar", "float", Float(2.7))
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -2246,7 +2217,7 @@ func TestOrFloatVarFalseLeft(t *testing.T) {
 
 func TestOrFloatVarFalseBoth(t *testing.T) {
 	t1 := Float(0)
-	t2, _ := NewVar("testVar", "Float", Float(0))
+	t2, _ := NewVar("testVar", "float", Float(0))
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -2258,8 +2229,8 @@ func TestOrFloatVarFalseBoth(t *testing.T) {
 }
 
 func TestXorFloatVar(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t1 := Float(1.5)
+	t2, _ := NewVar("testVar", "float", Float(2.5))
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -2272,7 +2243,7 @@ func TestXorFloatVar(t *testing.T) {
 
 func TestXorFloatVarFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2, _ := NewVar("testVar", "Float", Float(2))
+	t2, _ := NewVar("testVar", "float", Float(2.7))
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -2284,8 +2255,8 @@ func TestXorFloatVarFalseLeft(t *testing.T) {
 }
 
 func TestXorFloatVarFalseRight(t *testing.T) {
-	t1 := Float(1)
-	t2, _ := NewVar("testVar", "Float", Float(0))
+	t1 := Float(1.3)
+	t2, _ := NewVar("testVar", "float", Float(0))
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -2298,7 +2269,7 @@ func TestXorFloatVarFalseRight(t *testing.T) {
 
 func TestXorFloatVarFalseBoth(t *testing.T) {
 	t1 := Float(0)
-	t2, _ := NewVar("testVar", "Float", Float(0))
+	t2, _ := NewVar("testVar", "float", Float(0))
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -2309,154 +2280,115 @@ func TestXorFloatVarFalseBoth(t *testing.T) {
 	}
 }
 
-// Int interacts with Any
+// Float interacts with Any
 
-func TestAddFloatAnt(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(2))
+func TestAddFloatAny(t *testing.T) {
+	t1 := Float(1.4)
+	t2 := NewAny(Float(2.2))
 
 	result, err := t1.Add(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(3) {
-		t.Error("Expected 3, got ", result)
+	if result.GetValue() != Float(3.6) {
+		t.Error("Expected 3.6, got ", result)
 	}
 }
 
 func TestAddNegFloatAny(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(-2))
+	t1 := Float(1.1)
+	t2 := NewAny(Float(-2.2))
 
 	result, err := t1.Add(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(-1) {
-		t.Error("Expected -1, got ", result)
+	if result.GetValue() != Float(-1.1) {
+		t.Error("Expected -1.1, got ", result)
 	}
 }
 
 func TestSubFloatAny(t *testing.T) {
-	t1 := Float(4)
-	t2 := NewAny(Float(3))
+	t1 := Float(4.1)
+	t2 := NewAny(Float(3.0))
 
 	result, err := t1.Sub(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(1) {
-		t.Error("Expected 1, got ", result)
+	if result.GetValue() != Float(1.1) {
+		t.Error("Expected 1.1, got ", result)
 	}
 }
 
 func TestNegSubFloatAny(t *testing.T) {
-	t1 := Float(4)
-	t2 := NewAny(Float(-3))
+	t1 := Float(4.1)
+	t2 := NewAny(Float(-3.0))
 
 	result, err := t1.Sub(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(7) {
-		t.Error("Expected 7, got ", result)
-	}
-}
-
-func TestModFloatAny(t *testing.T) {
-	t1 := Float(3)
-	t2 := NewAny(Float(2))
-
-	result, err := t1.Mod(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != Float(1) {
-		t.Error("Expected 1, got ", result)
+	if result.GetValue() != Float(7.1) {
+		t.Error("Expected 7.1, got ", result)
 	}
 }
 
 func TestMulFloatAny(t *testing.T) {
-	t1 := Float(4)
-	t2 := NewAny(Float(2))
+	t1 := Float(4.1)
+	t2 := NewAny(Int(2))
 
 	result, err := t1.Mul(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(8) {
-		t.Error("Expected 8, got ", result)
+	if result.GetValue() != Float(8.2) {
+		t.Error("Expected 8.2, got ", result)
 	}
 }
 
 func TestMulNegFloatAny(t *testing.T) {
-	t1 := Float(4)
-	t2 := NewAny(Float(-2))
+	t1 := Float(4.1)
+	t2 := NewAny(Int(-2))
 
 	result, err := t1.Mul(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(-8) {
-		t.Error("Expected -8, got ", result)
+	if result.GetValue() != Float(-8.2) {
+		t.Error("Expected -8.2, got ", result)
 	}
 }
 
 func TestDivFloatAny(t *testing.T) {
-	t1 := Float(4)
-	t2 := NewAny(Float(2))
+	t1 := Float(4.2)
+	t2 := NewAny(Int(2))
 
 	result, err := t1.Div(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(2.0) {
-		t.Error("Expected 2.0, got ", result)
+	if result.GetValue() != Float(2.1) {
+		t.Error("Expected 2.1, got ", result)
 	}
 }
 
 func TestDivNegFloatAny(t *testing.T) {
-	t1 := Float(4)
-	t2 := NewAny(Float(-2))
+	t1 := Float(4.2)
+	t2 := NewAny(Int(-2))
 
 	result, err := t1.Div(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(-2.0) {
-		t.Error("Expected -2.0, got ", result)
-	}
-}
-
-func TestDivEcFloatAny(t *testing.T) {
-	t1 := Float(5)
-	t2 := NewAny(Float(2))
-
-	result, err := t1.DivEc(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != Float(2) {
-		t.Error("Expected 2, got ", result)
-	}
-}
-
-func TestDivEcNegFloatAny(t *testing.T) {
-	t1 := Float(5)
-	t2 := NewAny(Float(-2))
-
-	result, err := t1.DivEc(t2)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.GetValue() != Float(-2) {
-		t.Error("Expected -2, got ", result)
+	if result.GetValue() != Float(-2.1) {
+		t.Error("Expected -2.1, got ", result)
 	}
 }
 
 func TestEqFloatAny(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(1))
+	t1 := Float(1.1)
+	t2 := NewAny(Float(1.1))
 
 	result, err := t1.Eq(t2)
 	if err != nil {
@@ -2468,8 +2400,8 @@ func TestEqFloatAny(t *testing.T) {
 }
 
 func TestEqFloatFalseAny(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(2))
+	t1 := Float(1.2)
+	t2 := NewAny(Float(2.2))
 
 	result, err := t1.Eq(t2)
 	if err != nil {
@@ -2481,8 +2413,8 @@ func TestEqFloatFalseAny(t *testing.T) {
 }
 
 func TestNotEqFloatAny(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(2))
+	t1 := Float(1.3)
+	t2 := NewAny(Float(2.3))
 
 	result, err := t1.NotEq(t2)
 	if err != nil {
@@ -2494,8 +2426,8 @@ func TestNotEqFloatAny(t *testing.T) {
 }
 
 func TestNotEqFloatAnyFalse(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(1))
+	t1 := Float(1.4)
+	t2 := NewAny(Float(1.4))
 
 	result, err := t1.NotEq(t2)
 	if err != nil {
@@ -2507,8 +2439,8 @@ func TestNotEqFloatAnyFalse(t *testing.T) {
 }
 
 func TestGtFloatAnyTrue(t *testing.T) {
-	t1 := Float(2)
-	t2 := NewAny(Float(1))
+	t1 := Float(2.5)
+	t2 := NewAny(Float(1.5))
 
 	result, err := t1.Gt(t2)
 	if err != nil {
@@ -2520,8 +2452,8 @@ func TestGtFloatAnyTrue(t *testing.T) {
 }
 
 func TestGtFloatAnyFalse(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(2))
+	t1 := Float(1.6)
+	t2 := NewAny(Float(2.6))
 
 	result, err := t1.Gt(t2)
 	if err != nil {
@@ -2533,8 +2465,8 @@ func TestGtFloatAnyFalse(t *testing.T) {
 }
 
 func TestGtFloatAnyEq(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(1))
+	t1 := Float(1.7)
+	t2 := NewAny(Float(1.7))
 
 	result, err := t1.Gt(t2)
 	if err != nil {
@@ -2546,8 +2478,8 @@ func TestGtFloatAnyEq(t *testing.T) {
 }
 
 func TestGtEqFloatAny(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(0))
+	t1 := Float(1.8)
+	t2 := NewAny(Float(0.8))
 
 	result, err := t1.GtEq(t2)
 	if err != nil {
@@ -2559,8 +2491,8 @@ func TestGtEqFloatAny(t *testing.T) {
 }
 
 func TestGtEqFloatAnyEq(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(1))
+	t1 := Float(1.9)
+	t2 := NewAny(Float(1.9))
 
 	result, err := t1.GtEq(t2)
 	if err != nil {
@@ -2572,8 +2504,8 @@ func TestGtEqFloatAnyEq(t *testing.T) {
 }
 
 func TestGtEqFloatAnyFalse(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(2))
+	t1 := Float(1.1)
+	t2 := NewAny(Float(2.1))
 
 	result, err := t1.GtEq(t2)
 	if err != nil {
@@ -2585,8 +2517,8 @@ func TestGtEqFloatAnyFalse(t *testing.T) {
 }
 
 func TestLwFloatAny(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(2))
+	t1 := Float(1.2)
+	t2 := NewAny(Float(2.2))
 
 	result, err := t1.Lw(t2)
 	if err != nil {
@@ -2598,8 +2530,8 @@ func TestLwFloatAny(t *testing.T) {
 }
 
 func TestLwFloatAnyFalse(t *testing.T) {
-	t1 := Float(2)
-	t2 := NewAny(Float(1))
+	t1 := Float(2.3)
+	t2 := NewAny(Float(1.3))
 
 	result, err := t1.Lw(t2)
 	if err != nil {
@@ -2611,8 +2543,8 @@ func TestLwFloatAnyFalse(t *testing.T) {
 }
 
 func TestLwFloatAnyEq(t *testing.T) {
-	t1 := Float(2)
-	t2 := NewAny(Float(2))
+	t1 := Float(2.4)
+	t2 := NewAny(Float(2.4))
 
 	result, err := t1.Lw(t2)
 	if err != nil {
@@ -2624,8 +2556,8 @@ func TestLwFloatAnyEq(t *testing.T) {
 }
 
 func TestLwEqFloatAny(t *testing.T) {
-	t1 := Float(2)
-	t2 := NewAny(Float(3))
+	t1 := Float(2.5)
+	t2 := NewAny(Float(3.5))
 
 	result, err := t1.LwEq(t2)
 	if err != nil {
@@ -2637,8 +2569,8 @@ func TestLwEqFloatAny(t *testing.T) {
 }
 
 func TestLwEqFloatAnyFalse(t *testing.T) {
-	t1 := Float(2)
-	t2 := NewAny(Float(1))
+	t1 := Float(2.6)
+	t2 := NewAny(Float(1.6))
 
 	result, err := t1.LwEq(t2)
 	if err != nil {
@@ -2650,8 +2582,8 @@ func TestLwEqFloatAnyFalse(t *testing.T) {
 }
 
 func TestLwEqFloatAnyEq(t *testing.T) {
-	t1 := Float(2)
-	t2 := NewAny(Float(2))
+	t1 := Float(2.7)
+	t2 := NewAny(Float(2.7))
 
 	result, err := t1.LwEq(t2)
 	if err != nil {
@@ -2663,8 +2595,8 @@ func TestLwEqFloatAnyEq(t *testing.T) {
 }
 
 func TestAndFloatAny(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(2))
+	t1 := Float(1.8)
+	t2 := NewAny(Float(2.8))
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -2676,7 +2608,7 @@ func TestAndFloatAny(t *testing.T) {
 }
 
 func TestAndFloatAnyFalseRight(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(1.9)
 	t2 := NewAny(Float(0))
 
 	result, err := t1.And(t2)
@@ -2690,7 +2622,7 @@ func TestAndFloatAnyFalseRight(t *testing.T) {
 
 func TestAndFloatAnyFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2 := NewAny(Float(2))
+	t2 := NewAny(Float(2.1))
 
 	result, err := t1.And(t2)
 	if err != nil {
@@ -2715,8 +2647,8 @@ func TestAndFloatAnyFalseBoth(t *testing.T) {
 }
 
 func TestOrFloatAny(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(2))
+	t1 := Float(1.2)
+	t2 := NewAny(Float(2.2))
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -2728,7 +2660,7 @@ func TestOrFloatAny(t *testing.T) {
 }
 
 func TestOrFloatAnyFalseRight(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(1.3)
 	t2 := NewAny(Float(0))
 
 	result, err := t1.Or(t2)
@@ -2742,7 +2674,7 @@ func TestOrFloatAnyFalseRight(t *testing.T) {
 
 func TestOrFloatAnyFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2 := NewAny(Float(2))
+	t2 := NewAny(Float(2.4))
 
 	result, err := t1.Or(t2)
 	if err != nil {
@@ -2767,8 +2699,8 @@ func TestOrFloatAnyFalseBoth(t *testing.T) {
 }
 
 func TestXorFloatAny(t *testing.T) {
-	t1 := Float(1)
-	t2 := NewAny(Float(2))
+	t1 := Float(1.5)
+	t2 := NewAny(Float(2.5))
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -2781,7 +2713,7 @@ func TestXorFloatAny(t *testing.T) {
 
 func TestXorFloatAnyFalseLeft(t *testing.T) {
 	t1 := Float(0)
-	t2 := NewAny(Float(2))
+	t2 := NewAny(Float(2.6))
 
 	result, err := t1.Xor(t2)
 	if err != nil {
@@ -2793,7 +2725,7 @@ func TestXorFloatAnyFalseLeft(t *testing.T) {
 }
 
 func TestXorFloatAnyFalseRight(t *testing.T) {
-	t1 := Float(1)
+	t1 := Float(1.7)
 	t2 := NewAny(Float(0))
 
 	result, err := t1.Xor(t2)
@@ -2817,4 +2749,3 @@ func TestXorFloatAnyFalseBoth(t *testing.T) {
 		t.Error("Expected false, got ", result)
 	}
 }
-*/
