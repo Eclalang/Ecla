@@ -15,8 +15,8 @@ func TestGetValue(t *testing.T) {
 
 func TestSetValue(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
-	if err := f.SetValue(nil); err != nil {
-		t.Errorf("Expected nil, got %v", err)
+	if err := f.SetValue(nil); err == nil {
+		t.Errorf("Expected error, got %v", err)
 	}
 }
 
@@ -44,8 +44,8 @@ func TestGetType(t *testing.T) {
 func TestGetIndex(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	expect, err := f.GetIndex(nil)
-	if expect != nil || err != nil {
-		t.Errorf("Expected nil & nil, got %v & %v", expect, err)
+	if expect != nil || err == nil {
+		t.Errorf("Expected nil & error, got %v & %v", expect, err)
 	}
 }
 

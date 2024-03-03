@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"fmt"
 	"log"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/Eclalang/Ecla/lexer"
@@ -20,6 +20,7 @@ type File struct {
 	// TODO: use a map instead of a slice for better performance
 	Dependencies     []string
 	VariableDecl     []string
+	StructInstances  []string
 	FunctionDecl     []string
 	ConsumedComments []string
 	Trace            string
@@ -27,6 +28,11 @@ type File struct {
 
 // DepChecker checks if all dependencies in the current file are resolved by the specified imports
 func (f *File) DepChecker() (bool, []string) {
+	// remove StructInstances from the Dependencies
+	for _, value := range f.StructInstances {
+		f.RemoveDependency(value)
+	}
+
 	var Unresolved []string
 	for _, value := range f.Dependencies {
 		if !contains(value, f.Imports) {
@@ -42,13 +48,17 @@ func (f *File) DepChecker() (bool, []string) {
 // AddDependency adds a new dependency to the file that is currently being parsed
 func (f *File) AddDependency(dep string) error {
 	// check if the dependency is satisfied by the imports
-	if !contains(dep, f.Imports) {
-		return fmt.Errorf("dependency %s is not satisfied by previous imports", dep)
-	}
 	if !contains(dep, f.Dependencies) {
 		f.Dependencies = append(f.Dependencies, dep)
 	}
 	return nil
+}
+
+func (f *File) RemoveDependency(dep string) {
+	if contains(dep, f.Dependencies) {
+		index := slices.Index(f.Dependencies, dep)
+		f.Dependencies = append(f.Dependencies[:index], f.Dependencies[index+1:]...)
+	}
 }
 
 func (f *File) AddImport(imp string) {

@@ -284,11 +284,11 @@ func TestAddFloatString(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expect1, _ := strconv.ParseFloat("3.14", 32)
-	Newexpect1 := fmt.Sprintf("%6f", expect1)
+	Newexpect1 := fmt.Sprintf("%g", 3.14)
 	expect2 := "hello"
 	expect := Newexpect1 + expect2
 	expected := String(expect)
+	fmt.Println(expected)
 	if result.GetValue() != expected {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}

@@ -1,0 +1,10 @@
+import "console";
+import "structImportutils.ecla";
+
+console.println("accessing Point with value, x : ", structImportutils.point.x, " y : ", structImportutils.point.y);
+console.println("accessing Point with struct as field, x : ", structImportutils.point.structAsField.x, " y : ", structImportutils.point.structAsField.y);
+console.println("accessing Point with map as field : ", structImportutils.point.mapInt);
+console.println("accessingPoint with list as field : ", structImportutils.point.listInt);
+console.println("accessing Point with function as field : ", structImportutils.point.func(1, 2));
+console.println("accessing lib map : ", structImportutils.testMap);
+console.println("accessing lib list : ", structImportutils.testList);

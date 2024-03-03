@@ -43,71 +43,71 @@ func (f *FunctionBuiltIn) GetIndex(number Type) (*Type, error) {
 }
 
 func (f *FunctionBuiltIn) Add(other Type) (Type, error) {
-	return nil, errors.New("cannot add function")
+	return nil, errors.New("cannot add " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) Sub(other Type) (Type, error) {
-	return nil, errors.New("cannot subtract function")
+	return nil, errors.New("cannot subtract " + other.String() + " from " + other.String())
 }
 
 func (f *FunctionBuiltIn) Mul(other Type) (Type, error) {
-	return nil, errors.New("cannot multiply function")
+	return nil, errors.New("cannot multiply " + f.String() + " by " + other.String())
 }
 
 func (f *FunctionBuiltIn) Div(other Type) (Type, error) {
-	return nil, errors.New("cannot divide function")
+	return nil, errors.New("cannot divide " + f.String() + " by " + other.String())
 }
 
 func (f *FunctionBuiltIn) Mod(other Type) (Type, error) {
-	return nil, errors.New("cannot mod function")
+	return nil, errors.New("cannot get remainder of " + f.String() + " by " + other.String())
 }
 
 func (f *FunctionBuiltIn) DivEc(other Type) (Type, error) {
-	return nil, errors.New("cannot divide ec by function")
+	return nil, errors.New("cannot get quotient " + f.String() + " by " + other.String())
 }
 
 func (f *FunctionBuiltIn) Eq(other Type) (Type, error) {
-	return nil, errors.New("cannot eq function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) NotEq(other Type) (Type, error) {
-	return nil, errors.New("cannot notEq function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) And(other Type) (Type, error) {
-	return nil, errors.New("cannot and function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot or function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) Not() (Type, error) {
-	return nil, errors.New("cannot not function")
+	return nil, errors.New("cannot \"not\" a function")
 }
 
 func (f *FunctionBuiltIn) Xor(other Type) (Type, error) {
-	return nil, errors.New("cannot xor function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) Gt(other Type) (Type, error) {
-	return nil, errors.New("cannot gt function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) GtEq(other Type) (Type, error) {
-	return nil, errors.New("cannot gtEq function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) Lw(other Type) (Type, error) {
-	return nil, errors.New("cannot lw function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) LwEq(other Type) (Type, error) {
-	return nil, errors.New("cannot lwEq function")
+	return nil, errors.New("cannot compare " + f.String() + " and " + other.String())
 }
 
 func (f *FunctionBuiltIn) Append(other Type) (Type, error) {
-	return nil, errors.New("cannot append function")
+	return nil, errors.New("cannot add " + other.String() + " to " + f.String())
 }
 
 func (f *FunctionBuiltIn) IsNull() bool {
@@ -119,7 +119,7 @@ func (f *FunctionBuiltIn) GetSize() int {
 }
 
 func (f *FunctionBuiltIn) Len() (int, error) {
-	return 0, errors.New("cannot get len of function")
+	return 0, errors.New("cannot get length of function")
 }
 
 func NewTypeOf() *FunctionBuiltIn {
