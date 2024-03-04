@@ -13,7 +13,7 @@ type TokenTypeBaseBehavior struct {
 // imply no special behavior
 func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 	index := -1
-
+	l.DEBUGLEXER("IN BASE")
 	if (*l).TriggerBy != "" {
 		// in Trigger By Behavior
 

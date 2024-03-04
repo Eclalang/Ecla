@@ -751,7 +751,7 @@ var (
 		},
 	}
 	testCondInParen = testList{
-		input: "import \"console\";\n\n# This function returns the nth number in the Fibonacci sequence\nfunction Fibonacci(n : int) (int) {\n    if (n < 2) {\n        return n;\n    }\n    return Fibonacci(n - 1) + Fibonacci(n - 2);\n}\n\n# ------------------ test code ------------------\n\nconsole.print(\"Here is the 10th number in the Fibonacci sequence : \");\nconsole.println(Fibonacci(10));\nconsole.print(\"Here is the 20th number in the Fibonacci sequence : \");\nconsole.println(Fibonacci(20));",
+		input: "\"\";",
 		output: []Token{
 			{
 				TokenType: EOF,

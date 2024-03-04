@@ -11,7 +11,7 @@ type TokenTypeMergerBehavior struct {
 }
 
 func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
-	//l.DEBUGLEXER("IN MERGER")
+	l.DEBUGLEXER("IN MERGER")
 	index := -1
 	if l.TriggerBy == "" {
 		if !(*l).isSpaces {
@@ -20,6 +20,7 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 			(*l).isSpaces = false
 		}
 		if index == -1 {
+
 			(*l).AddToken(t.Name)
 			l.TriggerBy = t.Name
 			l.prevIndex = l.index

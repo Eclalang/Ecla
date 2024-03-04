@@ -6,6 +6,7 @@ type TokenTypeSpacesBehavior struct {
 }
 
 func (t *TokenTypeSpacesBehavior) Resolve(l *TLexer) {
+	l.DEBUGLEXER("IN SPACES")
 	if (*l).TriggerBy != "" {
 		findNameInEveryTokenType(l.TriggerBy).Resolve(l)
 	} else {
