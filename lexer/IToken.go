@@ -61,6 +61,9 @@ func BuildEvery() []ITokenType {
 	for _, behavior := range Spaces {
 		Every = append(Every, behavior)
 	}
+	for _, behavior := range Nullable {
+		Every = append(Every, behavior)
+	}
 	return Every
 }
 
@@ -104,6 +107,9 @@ var (
 	Spaces []*TokenTypeSpacesBehavior = []*TokenTypeSpacesBehavior{
 		&EMPTY,
 		&RETURN,
+	}
+	Nullable []*TokenTypeNullableBehavior = []*TokenTypeNullableBehavior{
+		&NBSLASH,
 	}
 )
 

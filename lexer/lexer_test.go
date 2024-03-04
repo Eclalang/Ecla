@@ -103,3 +103,11 @@ func TestMultiLigneString(t *testing.T) {
 func TestCondInParen(t *testing.T) {
 	tLexer(t, testCondInParen, "testMultiLigneString")
 }
+
+func TestEmptyString(t *testing.T) {
+	tLexer(t, testEmptyString, "testMultiLigneString")
+}
+
+func TestStringWithBSlash(t *testing.T) {
+	tLexer(t, testStringWithBSlash, "testMultiLigneString")
+}

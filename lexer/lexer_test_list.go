@@ -761,6 +761,64 @@ var (
 			},
 		},
 	}
+	testEmptyString = testList{
+		input: "\"\";",
+		output: []Token{
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: EOL,
+				Value:     `;`,
+				Position:  3,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  4,
+				Line:      1,
+			},
+		},
+	}
+	testStringWithBSlash = testList{
+		input: "\"\\\"\\\"\"",
+		output: []Token{
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     `\"\"`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  7,
+				Line:      1,
+			},
+		},
+	}
 
 	testDump = testList{
 		input: "",

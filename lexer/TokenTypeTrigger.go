@@ -17,37 +17,47 @@ func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 		(*l).AddToken(t.Name)
 		l.prevIndex = l.index
 	} else {
-		identified := l.tempVal
-		triggerByToken := findNameInTriggerTokenType(l.TriggerBy)
-		indexOfClose := triggerByToken.IsClosedBySyntaxe(NameFromGet(l.indent[0].Get()))
+
 		if l.index > len(l.sentence) {
 			l.AddToken(t.Result[0].Name)
 			l.prevIndex = l.index
-		} else if indexOfClose != -1 {
-			//close , donc doit mettre CLOSE en token
-			l.TriggerBy = ""
-			l.indent[0].Resolve(l)
-			l.TriggerBy = ""
-			l.prevIndex = l.index
+
 		} else if l.sizeOfTokenReversed != -1 {
 			//println(l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:])
-			identified = l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
-			triggerByToken = findNameInTriggerTokenType(l.TriggerBy)
-			indexOfClose = triggerByToken.IsClosedBySyntaxe(NameFromGet(l.indent[0].Get()))
+			identified := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
+			triggerByToken := findNameInTriggerTokenType(l.TriggerBy)
+			indexOfClose := triggerByToken.IsClosedBySyntaxe(NameFromGet(l.indent[0].Get()))
 			if indexOfClose != -1 {
 				//close , donc doit mettre RESULT | CLOSE en token
-				l.FindSyntax()
-				temp := identified
-				l.tempVal = l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
-				l.position -= 1
+				if NameFromGet(l.lastStepToken.Get()) == NBSLASH.Name {
 
-				l.AddToken(t.Result[indexOfClose].Name)
-				l.position += 1
-				l.tempVal = temp
-				l.TriggerBy = ""
-				if NameFromGet(l.indent[0].Get()) == "\n" {
-					l.line -= 1
+				} else {
+					l.FindSyntax()
+					temp := identified
+					l.tempVal = l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
+					l.position -= 1
+
+					l.AddToken(t.Result[indexOfClose].Name)
+					l.position += 1
+					l.tempVal = temp
+					l.TriggerBy = ""
+					if NameFromGet(l.indent[0].Get()) == "\n" {
+						l.line -= 1
+					}
+					l.indent[0].Resolve(l)
+					l.TriggerBy = ""
+					l.prevIndex = l.index
 				}
+
+			}
+		} else {
+			triggerByToken := findNameInTriggerTokenType(l.TriggerBy)
+			indexOfClose := triggerByToken.IsClosedBySyntaxe(NameFromGet(l.indent[0].Get()))
+
+			if indexOfClose != -1 {
+				//close , donc doit mettre CLOSE en token
+
+				l.TriggerBy = ""
 				l.indent[0].Resolve(l)
 				l.TriggerBy = ""
 				l.prevIndex = l.index
