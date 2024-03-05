@@ -271,3 +271,136 @@ func TestRunVariableDeclIfValueIsNil(t *testing.T) {
 		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testStruct"))
 	}
 }
+
+func TestRunVariableDeclIfValueIsNotNil(t *testing.T) {
+	env := NewEnv()
+
+	decl := parser.VariableDecl{
+		Name: "test",
+		Value: parser.AnonymousFunctionExpr{
+			Prototype: parser.FunctionPrototype{
+				Parameters:  make([]parser.FunctionParams, 0),
+				ReturnTypes: make([]string, 0),
+			},
+			Body: make([]parser.Node, 0),
+		},
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("test") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("test"))
+	}
+
+	//Add Overload
+
+	decl = parser.VariableDecl{
+		Name: "test",
+		Value: parser.AnonymousFunctionExpr{
+			Prototype: parser.FunctionPrototype{
+				Parameters:  make([]parser.FunctionParams, 0),
+				ReturnTypes: []string{parser.Int},
+			},
+			Body: make([]parser.Node, 0),
+		},
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("test") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("test"))
+	}
+
+	decl = parser.VariableDecl{
+		Name: "testInt",
+		Value: parser.Literal{
+			Type:  lexer.INT,
+			Value: "0",
+		},
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("test") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("test"))
+	}
+
+	decl = parser.VariableDecl{
+		Name: "testBool",
+		Value: parser.Literal{
+			Type:  lexer.BOOL,
+			Value: "true",
+		},
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testBool") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testBool"))
+	}
+
+	decl = parser.VariableDecl{
+		Name: "testStr",
+		Value: parser.Literal{
+			Type:  lexer.STRING,
+			Value: "test",
+		},
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testStr") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testStr"))
+	}
+
+	decl = parser.VariableDecl{
+		Name: "testFloat",
+		Value: parser.Literal{
+			Type:  lexer.FLOAT,
+			Value: "1.1",
+		},
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testFloat") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testFloat"))
+	}
+
+	decl = parser.VariableDecl{
+		Name: "testChar",
+		Value: parser.Literal{
+			Type:  lexer.CHAR,
+			Value: "a",
+		},
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testChar") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testChar"))
+	}
+
+}
+
+func TestRunArrayLiteral(t *testing.T) {
+	env := NewEnv()
+
+	decl := parser.ArrayLiteral{
+		Values: []parser.Expr{
+			parser.Literal{
+				Type:  lexer.INT,
+				Value: "0",
+			},
+			parser.Literal{
+				Type:  lexer.INT,
+				Value: "1",
+			},
+		},
+	}
+
+	b := RunArrayLiteral(decl, env)
+	if b.GetVal().GetType() != "[]int" {
+		t.Error("Expected []int, got", b.GetVal().GetType())
+	}
+}
