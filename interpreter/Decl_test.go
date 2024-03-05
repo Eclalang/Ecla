@@ -403,4 +403,74 @@ func TestRunArrayLiteral(t *testing.T) {
 	if b.GetVal().GetType() != "[]int" {
 		t.Error("Expected []int, got", b.GetVal().GetType())
 	}
+
+	decl = parser.ArrayLiteral{
+		Values: []parser.Expr{},
+	}
+
+	b = RunArrayLiteral(decl, env)
+	if b.GetVal().GetType() != "empty" {
+		t.Error("Expected empty, got", b.GetVal().GetType())
+	}
+}
+
+func TestRunFunctionDecl(t *testing.T) {
+	env := NewEnv()
+
+	decl := parser.FunctionDecl{
+		Name: "test",
+		Prototype: parser.FunctionPrototype{
+			Parameters:  make([]parser.FunctionParams, 0),
+			ReturnTypes: make([]string, 0),
+		},
+	}
+
+	RunFunctionDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("test") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("test"))
+	}
+
+	s, err := eclaType.NewString("test")
+	if err != nil {
+		t.Error("Error creating string: ", err.Error())
+	}
+	v, err := eclaType.NewVar("testString", "", s)
+	env.SetVar("testString", v)
+
+	decl = parser.FunctionDecl{
+		Name: "testString",
+		Prototype: parser.FunctionPrototype{
+			Parameters:  make([]parser.FunctionParams, 0),
+			ReturnTypes: []string{parser.String},
+		},
+	}
+
+	var errCheck = false
+	env.ErrorHandle.HookExit(
+		func(i int) {
+			errCheck = true
+		})
+
+	RunFunctionDecl(decl, env)
+
+	if !errCheck {
+		t.Error("Expected error, got", decl.Name)
+	}
+
+	env.ErrorHandle.RestoreExit()
+
+	decl = parser.FunctionDecl{
+		Name: "test",
+		Prototype: parser.FunctionPrototype{
+			Parameters:  []parser.FunctionParams{{Name: "test", Type: parser.String}},
+			ReturnTypes: []string{parser.String},
+		},
+	}
+
+	RunFunctionDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("test") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("test"))
+	}
 }
