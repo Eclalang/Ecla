@@ -474,3 +474,54 @@ func TestRunFunctionDecl(t *testing.T) {
 		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("test"))
 	}
 }
+
+func TestRunMapLiteral(t *testing.T) {
+	env := NewEnv()
+
+	decl := parser.MapLiteral{
+		Keys:   make([]parser.Expr, 0),
+		Values: make([]parser.Expr, 0),
+	}
+
+	b := RunMapLiteral(decl, env)
+
+	if b.GetVal().GetType() != "empty" {
+		t.Error("Expected empty, got", b.GetVal().GetType())
+	}
+
+	decl = parser.MapLiteral{
+		Keys: []parser.Expr{
+			parser.Literal{
+				Type:  lexer.INT,
+				Value: "0",
+			},
+		},
+		Values: []parser.Expr{
+			parser.Literal{
+				Type:  lexer.STRING,
+				Value: "test",
+			},
+		},
+	}
+
+	b = RunMapLiteral(decl, env)
+
+	if b.GetVal().GetType() != "map[int]string" {
+		t.Error("Expected map[int]string, got", b.GetVal().GetType())
+	}
+}
+
+func TestRunStructDecl(t *testing.T) {
+	env := NewEnv()
+
+	decl := parser.StructDecl{
+		Name:   "test",
+		Fields: make([]parser.StructField, 0),
+	}
+
+	RunStructDecl(decl, env)
+
+	if typ, ok := env.GetTypeDecl("test"); !ok || typ.GetName() != "test" {
+		t.Error("Expected test, got", typ)
+	}
+}
