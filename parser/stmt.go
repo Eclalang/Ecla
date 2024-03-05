@@ -137,6 +137,28 @@ func (i ImportStmt) EndLine() int {
 
 func (i ImportStmt) stmtNode() {}
 
+type MurlocStmt struct {
+	MurlocToken lexer.Token
+}
+
+func (m MurlocStmt) StartPos() int {
+	return m.MurlocToken.Position
+}
+
+func (m MurlocStmt) EndPos() int {
+	return m.MurlocToken.Position + len(lexer.MURLOC)
+}
+
+func (m MurlocStmt) StartLine() int {
+	return m.MurlocToken.Line
+}
+
+func (m MurlocStmt) EndLine() int {
+	return m.MurlocToken.Line
+}
+
+func (m MurlocStmt) stmtNode() {}
+
 type ReturnStmt struct {
 	ReturnToken  lexer.Token
 	ReturnValues []Expr
