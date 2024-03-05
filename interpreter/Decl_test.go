@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
@@ -122,5 +123,151 @@ func TestNewIfNodeNotExist(t *testing.T) {
 	bus := New(parser.Literal{Type: "NODE", Value: "test"}, env)
 	if !err {
 		t.Error("Expected error, got", bus.GetVal().GetType())
+	}
+}
+
+// RunVariableDecl
+
+func TestRunVariableDeclIfValueIsNil(t *testing.T) {
+
+	env := NewEnv()
+	s, err := eclaType.NewString("test")
+	if err != nil {
+		t.Error("Error creating string: ", err.Error())
+	}
+	v, err := eclaType.NewVar("test", "", s)
+	if err != nil {
+		t.Error("Error creating var: ", err.Error())
+	}
+	env.SetVar("test", v)
+
+	decl := parser.VariableDecl{
+		Name:  "test",
+		Value: nil,
+		Type:  "string",
+	}
+
+	var errCheck = false
+	env.ErrorHandle.HookExit(
+		func(i int) {
+			errCheck = true
+		})
+	RunVariableDecl(decl, env)
+	if !errCheck {
+		t.Error("Expected error, got", decl.Name)
+	}
+	env.ErrorHandle.RestoreExit()
+
+	decl = parser.VariableDecl{
+		Name:  "testInt",
+		Value: nil,
+		Type:  parser.Int,
+	}
+
+	RunVariableDecl(decl, env)
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testInt") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testInt"))
+	}
+
+	decl = parser.VariableDecl{
+		Name:  "testString",
+		Value: nil,
+		Type:  parser.String,
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testString") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testString"))
+	}
+
+	decl = parser.VariableDecl{
+		Name:  "testBool",
+		Value: nil,
+		Type:  parser.Bool,
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testBool") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testBool"))
+	}
+
+	decl = parser.VariableDecl{
+		Name:  "testFloat",
+		Value: nil,
+		Type:  parser.Float,
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testFloat") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testFloat"))
+	}
+
+	decl = parser.VariableDecl{
+		Name:  "testChar",
+		Value: nil,
+		Type:  parser.Char,
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testChar") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testChar"))
+	}
+
+	decl = parser.VariableDecl{
+		Name:  "testAny",
+		Value: nil,
+		Type:  parser.Any,
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testAny") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testAny"))
+	}
+
+	decl = parser.VariableDecl{
+		Name:  "testArray",
+		Value: nil,
+		Type:  "[]int",
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testArray") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testArray"))
+	}
+
+	decl = parser.VariableDecl{
+		Name:  "testMap",
+		Value: nil,
+		Type:  "map[int]string",
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testMap") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testMap"))
+	}
+
+	env.AddTypeDecl(eclaDecl.TypeDecl(
+		&eclaDecl.StructDecl{
+			Name:   "Test",
+			Fields: map[string]string{},
+		}))
+
+	decl = parser.VariableDecl{
+		Name:  "testStruct",
+		Value: nil,
+		Type:  "Test",
+	}
+
+	RunVariableDecl(decl, env)
+
+	if !env.Vars.CheckIfVarExistsInCurrentScope("testStruct") {
+		t.Error("Expected true, got", env.Vars.CheckIfVarExistsInCurrentScope("testStruct"))
 	}
 }
