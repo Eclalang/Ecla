@@ -18,11 +18,11 @@ func NewNullType(typ string) Null {
 }
 
 func (n Null) GetValue() any {
-	return errors.New("cannot get index from null")
+	return errors.New("cannot get value from null")
 }
 
 func (n Null) SetValue(value any) error {
-	return nil
+	return errors.New("cannot set value of null")
 }
 
 func (n Null) String() string {
@@ -38,7 +38,7 @@ func (n Null) GetType() string {
 }
 
 func (n Null) GetIndex(number Type) (*Type, error) {
-	return nil, nil
+	return nil, errors.New("cannot get index from null")
 }
 
 func (n Null) Add(other Type) (Type, error) {
@@ -69,17 +69,11 @@ func (n Null) DivEc(other Type) (Type, error) {
 }
 
 func (n Null) Eq(other Type) (Type, error) {
-	if other.GetType() == "null" {
-		return Bool(true), nil
-	}
-	return Bool(false), nil
+	return Bool(other.IsNull()), nil
 }
 
 func (n Null) NotEq(other Type) (Type, error) {
-	if other.GetType() == "null" {
-		return Bool(false), nil
-	}
-	return Bool(true), nil
+	return Bool(!other.IsNull()), nil
 }
 
 func (n Null) And(other Type) (Type, error) {
