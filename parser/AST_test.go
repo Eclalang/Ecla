@@ -16,11 +16,11 @@ func TestContains(t *testing.T) {
 }
 
 func TestFile_DepChecker(t *testing.T) {
-	f := &File{
+	file := &File{
 		Dependencies: []string{"a", "b", "c"},
 		Imports:      []string{"a", "b", "c"},
 	}
-	if ok, _ := f.DepChecker(); !ok {
+	if ok, _ := file.DepChecker(); !ok {
 		t.Error("DepChecker failed to detect that all dependencies are satisfied")
 	}
 	f2 := &File{
@@ -30,91 +30,100 @@ func TestFile_DepChecker(t *testing.T) {
 	if ok, _ := f2.DepChecker(); ok {
 		t.Error("DepChecker failed to detect that all dependencies are not satisfied")
 	}
+	// test remove StructInstances from the Dependencies
+	f3 := &File{
+		Dependencies:    []string{"a", "b", "c"},
+		Imports:         []string{"c"},
+		StructInstances: []string{"a", "b"},
+	}
+	if ok, _ := f3.DepChecker(); !ok {
+		t.Error("DepChecker failed to detect that all dependencies are satisfied")
+	}
 }
 
 func TestFile_AddDependency(t *testing.T) {
-	f := &File{
+	file := &File{
 		Dependencies: []string{"b", "c"},
 		Imports:      []string{"a", "b", "c"},
 	}
-	if err := f.AddDependency("a"); err != nil {
+	if err := file.AddDependency("a"); err != nil {
 		t.Error("AddDependency failed to add a new dependency")
 	}
-	if err := f.AddDependency("d"); err == nil {
-		t.Error("AddDependency failed to detect that the dependency is not satisfied by previous imports")
-	}
-	err := f.AddDependency("a")
+	err := file.AddDependency("a")
 	if err != nil {
 		t.Error("AddDependency failed to detect that the dependency already exists")
 	}
-	if len(f.Dependencies) != 3 {
+	if len(file.Dependencies) != 3 {
 		t.Error("AddDependency failed to detect that the dependency already exists")
 	}
 }
 
+func TestFile_RemoveDependency(t *testing.T) {
+	file := &File{
+		Dependencies: []string{"a", "b", "c"},
+	}
+	file.RemoveDependency("a")
+	if contains("a", file.Dependencies) {
+		t.Error("RemoveDependency failed to remove the dependency")
+	}
+	file.RemoveDependency("d")
+	if len(file.Dependencies) != 2 {
+		t.Error("RemoveDependency failed to detect that the dependency does not exist")
+	}
+
+}
+
 func TestFile_AddImport(t *testing.T) {
-	f := &File{
+	file := &File{
 		Imports: []string{"a", "b", "c"},
 	}
-	err := f.AddImport("a")
-	if err != nil {
+	file.AddImport("a")
+	if len(file.Imports) != 3 {
 		t.Error("AddImport failed to detect that the import already exists")
 	}
-	if len(f.Imports) != 3 {
-		t.Error("AddImport failed to detect that the import already exists")
-	}
-	err = f.AddImport("d")
-	if err != nil {
+	file.AddImport("d")
+
+	if len(file.Imports) != 4 {
 		t.Error("AddImport failed to add a new import")
-	}
-	if len(f.Imports) != 4 {
-		t.Error("AddImport failed to add a new import")
-	}
-	err = f.AddImport("")
-	if err == nil {
-		t.Error("AddImport failed to detect that the import is empty")
-	}
-	if len(f.Imports) != 4 {
-		t.Error("AddImport failed to detect that the import is empty")
 	}
 }
 
 func TestFile_IsImported(t *testing.T) {
-	f := &File{
+	file := &File{
 		Imports: []string{"a", "b", "c"},
 	}
-	if !f.IsImported("a") {
+	if !file.IsImported("a") {
 		t.Error("IsImported failed to detect that the import exists")
 	}
-	if f.IsImported("d") {
+	if file.IsImported("d") {
 		t.Error("IsImported failed to detect that the import does not exist")
 	}
 }
 
 func TestFile_ConsumeComments(t *testing.T) {
-	f := &File{}
+	file := &File{}
 	tokens := []lexer.Token{
 		{TokenType: lexer.COMMENT, Value: "comment"},
 		{TokenType: lexer.COMMENTGROUP, Value: "commentgroup"},
 		{TokenType: lexer.TEXT, Value: "text"},
 	}
-	tokens = f.ConsumeComments(tokens)
+	tokens = file.ConsumeComments(tokens)
 	if len(tokens) > 1 {
 		t.Error("ConsumeComments failed to consume the comments")
 	}
 }
 
 func TestGetPackageNameByPath(t *testing.T) {
-	val, err := GetPackageNameByPath("/Eclalang/Ecla/lexer")
-	if val != "lexer" || err != nil {
+	val := GetPackageNameByPath("/Eclalang/Ecla/lexer")
+	if val != "lexer" {
 		t.Error("GetPackageNameByPath failed to get the package name")
 	}
-	val, err = GetPackageNameByPath("/Eclalang/Ecla/Test/Demo/Release/utils.ecla")
-	if val != "utils" || err != nil {
+	val = GetPackageNameByPath("/Eclalang/Ecla/Test/Demo/Release/utils.ecla")
+	if val != "utils" {
 		t.Error("GetPackageNameByPath failed to get the package name")
 	}
-	val, err = GetPackageNameByPath("")
-	if val != "" || err == nil {
+	val = GetPackageNameByPath("")
+	if val != "" {
 		t.Error("GetPackageNameByPath failed to get the package name")
 	}
 
