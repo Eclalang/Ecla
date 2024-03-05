@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var a_func AnonymousFunctionExpr = AnonymousFunctionExpr{
+var aFunc = AnonymousFunctionExpr{
 	FunctionToken: lexer.Token{
 		TokenType: lexer.TEXT,
 		Value:     "function",
@@ -55,8 +55,8 @@ var a_func AnonymousFunctionExpr = AnonymousFunctionExpr{
 	Body: []Node{},
 }
 
-var a_call AnonymousFunctionCallExpr = AnonymousFunctionCallExpr{
-	AnonymousFunction: a_func,
+var aCall = AnonymousFunctionCallExpr{
+	AnonymousFunction: aFunc,
 	LeftParen: lexer.Token{
 		TokenType: lexer.LPAREN,
 		Value:     "(",
@@ -73,74 +73,74 @@ var a_call AnonymousFunctionCallExpr = AnonymousFunctionCallExpr{
 }
 
 func TestAnonymousFunctionCallExpr_StartPos(t *testing.T) {
-	if a_call.StartPos() != 0 {
+	if aCall.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionCallExpr_EndPos(t *testing.T) {
-	if a_call.EndPos() != 6 {
+	if aCall.EndPos() != 6 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionCallExpr_StartLine(t *testing.T) {
-	if a_call.StartLine() != 0 {
+	if aCall.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionCallExpr_EndLine(t *testing.T) {
-	if a_call.EndLine() != 3 {
+	if aCall.EndLine() != 3 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionCallExpr_precedence(t *testing.T) {
-	if a_call.precedence() != HighestPrecedence {
+	if aCall.precedence() != HighestPrecedence {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionCallExpr_exprNode(t *testing.T) {
-	a_call.exprNode()
+	aCall.exprNode()
 }
 
 func TestAnonymousFunctionExpr_StartPos(t *testing.T) {
-	if a_func.StartPos() != 0 {
+	if aFunc.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionExpr_EndPos(t *testing.T) {
-	if a_func.EndPos() != 6 {
+	if aFunc.EndPos() != 6 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionExpr_StartLine(t *testing.T) {
-	if a_func.StartLine() != 0 {
+	if aFunc.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionExpr_EndLine(t *testing.T) {
-	if a_func.EndLine() != 3 {
+	if aFunc.EndLine() != 3 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionExpr_precedence(t *testing.T) {
-	if a_func.precedence() != HighestPrecedence {
+	if aFunc.precedence() != HighestPrecedence {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestAnonymousFunctionExpr_exprNode(t *testing.T) {
-	a_func.exprNode()
+	aFunc.exprNode()
 }
 
-var arr_Literal ArrayLiteral = ArrayLiteral{
+var arrLiteral = ArrayLiteral{
 	LBRACKET: lexer.Token{
 		TokenType: lexer.LBRACKET,
 		Value:     "[",
@@ -157,40 +157,40 @@ var arr_Literal ArrayLiteral = ArrayLiteral{
 }
 
 func TestArrayLiteral_StartPos(t *testing.T) {
-	if arr_Literal.StartPos() != 1 {
+	if arrLiteral.StartPos() != 1 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestArrayLiteral_EndPos(t *testing.T) {
-	if arr_Literal.EndPos() != 2 {
+	if arrLiteral.EndPos() != 2 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestArrayLiteral_StartLine(t *testing.T) {
-	if arr_Literal.StartLine() != 1 {
+	if arrLiteral.StartLine() != 1 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestArrayLiteral_EndLine(t *testing.T) {
-	if arr_Literal.EndLine() != 1 {
+	if arrLiteral.EndLine() != 1 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestArrayLiteral_precedence(t *testing.T) {
-	if arr_Literal.precedence() != HighestPrecedence {
+	if arrLiteral.precedence() != HighestPrecedence {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestArrayLiteral_exprNode(t *testing.T) {
-	arr_Literal.exprNode()
+	arrLiteral.exprNode()
 }
 
-var b_expr BinaryExpr = BinaryExpr{
+var bExpr = BinaryExpr{
 	LeftExpr: Literal{
 		Token: lexer.Token{
 			TokenType: lexer.TEXT,
@@ -218,40 +218,40 @@ var b_expr BinaryExpr = BinaryExpr{
 }
 
 func TestBinaryExpr_StartPos(t *testing.T) {
-	if b_expr.StartPos() != 0 {
+	if bExpr.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestBinaryExpr_EndPos(t *testing.T) {
-	if b_expr.EndPos() != 2 {
+	if bExpr.EndPos() != 2 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestBinaryExpr_StartLine(t *testing.T) {
-	if b_expr.StartLine() != 0 {
+	if bExpr.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestBinaryExpr_EndLine(t *testing.T) {
-	if b_expr.EndLine() != 0 {
+	if bExpr.EndLine() != 0 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestBinaryExpr_precedence(t *testing.T) {
-	if b_expr.precedence() != TokenPrecedence(b_expr.Operator) {
+	if bExpr.precedence() != TokenPrecedence(bExpr.Operator) {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestBinaryExpr_exprNode(t *testing.T) {
-	b_expr.exprNode()
+	bExpr.exprNode()
 }
 
-var f_call FunctionCallExpr = FunctionCallExpr{
+var fCall = FunctionCallExpr{
 	FunctionCallToken: lexer.Token{
 		TokenType: lexer.TEXT,
 		Value:     "f",
@@ -275,40 +275,40 @@ var f_call FunctionCallExpr = FunctionCallExpr{
 }
 
 func TestFunctionCallExpr_StartPos(t *testing.T) {
-	if f_call.StartPos() != 0 {
+	if fCall.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestFunctionCallExpr_EndPos(t *testing.T) {
-	if f_call.EndPos() != 2 {
+	if fCall.EndPos() != 2 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestFunctionCallExpr_StartLine(t *testing.T) {
-	if f_call.StartLine() != 0 {
+	if fCall.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestFunctionCallExpr_EndLine(t *testing.T) {
-	if f_call.EndLine() != 0 {
+	if fCall.EndLine() != 0 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestFunctionCallExpr_precedence(t *testing.T) {
-	if f_call.precedence() != HighestPrecedence {
+	if fCall.precedence() != HighestPrecedence {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestFunctionCallExpr_exprNode(t *testing.T) {
-	f_call.exprNode()
+	fCall.exprNode()
 }
 
-var i_access IndexableAccessExpr = IndexableAccessExpr{
+var iAccess = IndexableAccessExpr{
 	VariableToken: lexer.Token{
 		TokenType: lexer.TEXT,
 		Value:     "a",
@@ -337,40 +337,40 @@ var i_access IndexableAccessExpr = IndexableAccessExpr{
 }
 
 func TestIndexableAccessExpr_StartPos(t *testing.T) {
-	if i_access.StartPos() != 0 {
+	if iAccess.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestIndexableAccessExpr_EndPos(t *testing.T) {
-	if i_access.EndPos() != 2 {
+	if iAccess.EndPos() != 2 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestIndexableAccessExpr_StartLine(t *testing.T) {
-	if i_access.StartLine() != 0 {
+	if iAccess.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestIndexableAccessExpr_EndLine(t *testing.T) {
-	if i_access.EndLine() != 0 {
+	if iAccess.EndLine() != 0 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestIndexableAccessExpr_precedence(t *testing.T) {
-	if i_access.precedence() != HighestPrecedence {
+	if iAccess.precedence() != HighestPrecedence {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestIndexableAccessExpr_exprNode(t *testing.T) {
-	i_access.exprNode()
+	iAccess.exprNode()
 }
 
-var l Literal = Literal{
+var l = Literal{
 	Token: lexer.Token{
 		TokenType: lexer.TEXT,
 		Value:     "a",
@@ -415,7 +415,7 @@ func TestLiteral_exprNode(t *testing.T) {
 	l.exprNode()
 }
 
-var m_literal MapLiteral = MapLiteral{
+var mLiteral = MapLiteral{
 	LBRACE: lexer.Token{
 		TokenType: lexer.LBRACE,
 		Value:     "{",
@@ -455,40 +455,40 @@ var m_literal MapLiteral = MapLiteral{
 }
 
 func TestMapLiteral_StartPos(t *testing.T) {
-	if m_literal.StartPos() != 0 {
+	if mLiteral.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestMapLiteral_EndPos(t *testing.T) {
-	if m_literal.EndPos() != 4 {
+	if mLiteral.EndPos() != 4 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestMapLiteral_StartLine(t *testing.T) {
-	if m_literal.StartLine() != 0 {
+	if mLiteral.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestMapLiteral_EndLine(t *testing.T) {
-	if m_literal.EndLine() != 0 {
+	if mLiteral.EndLine() != 0 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestMapLiteral_precedence(t *testing.T) {
-	if m_literal.precedence() != HighestPrecedence {
+	if mLiteral.precedence() != HighestPrecedence {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestMapLiteral_exprNode(t *testing.T) {
-	m_literal.exprNode()
+	mLiteral.exprNode()
 }
 
-var p_expr ParenExpr = ParenExpr{
+var pExpr = ParenExpr{
 	Lparen: lexer.Token{
 		TokenType: lexer.LPAREN,
 		Value:     "(",
@@ -514,40 +514,40 @@ var p_expr ParenExpr = ParenExpr{
 }
 
 func TestParenExpr_StartPos(t *testing.T) {
-	if p_expr.StartPos() != 0 {
+	if pExpr.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestParenExpr_EndPos(t *testing.T) {
-	if p_expr.EndPos() != 2 {
+	if pExpr.EndPos() != 2 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestParenExpr_StartLine(t *testing.T) {
-	if p_expr.StartLine() != 0 {
+	if pExpr.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestParenExpr_EndLine(t *testing.T) {
-	if p_expr.EndLine() != 0 {
+	if pExpr.EndLine() != 0 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestParenExpr_precedence(t *testing.T) {
-	if p_expr.precedence() != HighestPrecedence {
+	if pExpr.precedence() != HighestPrecedence {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestParenExpr_exprNode(t *testing.T) {
-	p_expr.exprNode()
+	pExpr.exprNode()
 }
 
-var s_expr SelectorExpr = SelectorExpr{
+var sExpr = SelectorExpr{
 	Field: lexer.Token{
 		TokenType: lexer.TEXT,
 		Value:     "a",
@@ -577,40 +577,40 @@ var s_expr SelectorExpr = SelectorExpr{
 }
 
 func TestSelectorExpr_StartPos(t *testing.T) {
-	if s_expr.StartPos() != 0 {
+	if sExpr.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestSelectorExpr_EndPos(t *testing.T) {
-	if s_expr.EndPos() != 2 {
+	if sExpr.EndPos() != 2 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestSelectorExpr_StartLine(t *testing.T) {
-	if s_expr.StartLine() != 0 {
+	if sExpr.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestSelectorExpr_EndLine(t *testing.T) {
-	if s_expr.EndLine() != 0 {
+	if sExpr.EndLine() != 0 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestSelectorExpr_precedence(t *testing.T) {
-	if s_expr.precedence() != HighestPrecedence {
+	if sExpr.precedence() != HighestPrecedence {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestSelectorExpr_exprNode(t *testing.T) {
-	s_expr.exprNode()
+	sExpr.exprNode()
 }
 
-var s_instance StructInstantiationExpr = StructInstantiationExpr{
+var sInstance = StructInstantiationExpr{
 	StructNameToken: lexer.Token{
 		TokenType: lexer.TEXT,
 		Value:     "a",
@@ -634,40 +634,40 @@ var s_instance StructInstantiationExpr = StructInstantiationExpr{
 }
 
 func TestStructInstantiationExpr_StartPos(t *testing.T) {
-	if s_instance.StartPos() != 0 {
+	if sInstance.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestStructInstantiationExpr_EndPos(t *testing.T) {
-	if s_instance.EndPos() != 2 {
+	if sInstance.EndPos() != 2 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestStructInstantiationExpr_StartLine(t *testing.T) {
-	if s_instance.StartLine() != 0 {
+	if sInstance.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestStructInstantiationExpr_EndLine(t *testing.T) {
-	if s_instance.EndLine() != 0 {
+	if sInstance.EndLine() != 0 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestStructInstantiationExpr_precedence(t *testing.T) {
-	if s_instance.precedence() != HighestPrecedence {
+	if sInstance.precedence() != HighestPrecedence {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestStructInstantiationExpr_exprNode(t *testing.T) {
-	s_instance.exprNode()
+	sInstance.exprNode()
 }
 
-var u_expr UnaryExpr = UnaryExpr{
+var uExpr = UnaryExpr{
 	Operator: lexer.Token{
 		TokenType: lexer.SUB,
 		Value:     "-",
@@ -687,35 +687,35 @@ var u_expr UnaryExpr = UnaryExpr{
 }
 
 func TestUnaryExpr_StartPos(t *testing.T) {
-	if u_expr.StartPos() != 0 {
+	if uExpr.StartPos() != 0 {
 		t.Error("StartPos failed to return the correct value")
 	}
 }
 
 func TestUnaryExpr_EndPos(t *testing.T) {
-	if u_expr.EndPos() != 1 {
+	if uExpr.EndPos() != 1 {
 		t.Error("EndPos failed to return the correct value")
 	}
 }
 
 func TestUnaryExpr_StartLine(t *testing.T) {
-	if u_expr.StartLine() != 0 {
+	if uExpr.StartLine() != 0 {
 		t.Error("StartLine failed to return the correct value")
 	}
 }
 
 func TestUnaryExpr_EndLine(t *testing.T) {
-	if u_expr.EndLine() != 0 {
+	if uExpr.EndLine() != 0 {
 		t.Error("EndLine failed to return the correct value")
 	}
 }
 
 func TestUnaryExpr_precedence(t *testing.T) {
-	if u_expr.precedence() != TokenPrecedence(u_expr.Operator) {
+	if uExpr.precedence() != TokenPrecedence(uExpr.Operator) {
 		t.Error("precedence failed to return the correct value")
 	}
 }
 
 func TestUnaryExpr_exprNode(t *testing.T) {
-	u_expr.exprNode()
+	uExpr.exprNode()
 }
