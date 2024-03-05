@@ -217,10 +217,7 @@ func (env *Env) Import(stmt parser.ImportStmt) {
 
 		temp = tempsEnv.ConvertToLib(env)
 	}
-	name, err := parser.GetPackageNameByPath(file)
-	if err != nil {
-		env.ErrorHandle.HandleError(stmt.StartLine(), stmt.StartPos(), err.Error(), errorHandler.LevelFatal)
-	}
+	name := parser.GetPackageNameByPath(file)
 	env.Libs[name] = temp
 	v, err := eclaType.NewVar(name, "", eclaType.NewLib(name))
 	if err != nil {
