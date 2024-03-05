@@ -1,0 +1,24 @@
+#fichier à importer
+
+struct Test {
+  x : int;
+  y : int;
+}
+
+struct Point {
+  x : int;
+  y : int;
+  structAsField : Test;
+  mapInt : map[string]int;
+  listInt : []int;
+  func : function(int,int)(int);
+}
+
+function add(x : int,y : int)(int) {
+  return x + y;
+}
+
+testMap := {"a":1,"b":2};
+testList := [1,2,3];
+
+point := Point{1,2,Test{3,4},testMap,testList,add};

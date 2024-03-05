@@ -278,6 +278,10 @@ func (lib *envLib) Call(name string, args []eclaType.Type) ([]eclaType.Type, err
 	return r1, r2
 }
 
+func (lib *envLib) GetVar(name string) (*eclaType.Var, bool) {
+	return lib.Var.Get(name)
+}
+
 // ConvertToLib converts the Env to a Lib.
 func (env *Env) ConvertToLib(MainEnv *Env) libs.Lib {
 	return &envLib{
