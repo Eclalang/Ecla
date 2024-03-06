@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"github.com/Eclalang/Ecla/interpreter/eclaType"
+	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
 	"testing"
 )
@@ -94,4 +95,67 @@ func Test_getPointerToSelectorExpr(t *testing.T) {
 	}, env, nil) != v.Value.(*eclaType.Struct).Fields["a"] {
 		t.Error("Expected a, got nil")
 	}
+
+	var errCheck = false
+	env.ErrorHandle.HookExit(
+		func(int) {
+			errCheck = true
+		})
+
+	if getPointerToSelectorExpr(parser.SelectorExpr{
+		Expr: parser.Literal{
+			Type:  "VAR",
+			Value: "a",
+		},
+		Sel: parser.Literal{
+			Type:  "STRING",
+			Value: "a",
+		},
+	}, env, nil); !errCheck {
+		t.Error("Expected a, got nil")
+	}
+
+	env = NewEnv()
+	env.SetCode("struct A{a : []int;}a := A{[1,2,3]};")
+	env.Execute()
+
+	tokens := lexer.Lexer("a.a[1];")
+	pars := parser.Parser{Tokens: tokens, ErrorHandler: env.ErrorHandle}
+	pas := pars.Parse()
+	token := pas.ParseTree.Operations[0]
+
+	switch token.(type) {
+	case parser.SelectorExpr:
+		if v, _ := env.GetVar("a"); getPointerToSelectorExpr(token.(parser.SelectorExpr), env, nil) != func() *eclaType.Type {
+			v, _ := (*v.Value.(*eclaType.Struct).Fields["a"]).GetIndex(eclaType.Int(1))
+			return v
+		}() {
+			t.Error("Expected a, got nil")
+		}
+	default:
+		t.Error("Expected a, got nil")
+	}
+
+	env = NewEnv()
+	env.SetCode("struct A{a : map[int]int;}a := A{{1:1,2:2,3:3}};")
+	env.Execute()
+
+	tokens = lexer.Lexer("a.a[1];")
+	pars = parser.Parser{Tokens: tokens, ErrorHandler: env.ErrorHandle}
+
+	pas = pars.Parse()
+	token = pas.ParseTree.Operations[0]
+
+	switch token.(type) {
+	case parser.SelectorExpr:
+		if v, _ := env.GetVar("a"); getPointerToSelectorExpr(token.(parser.SelectorExpr), env, nil) != func() *eclaType.Type {
+			v, _ := (*v.Value.(*eclaType.Struct).Fields["a"]).GetIndex(eclaType.Int(1))
+			return v
+		}() {
+			t.Error("Expected a, got nil")
+		}
+	default:
+		t.Error("Expected a, got nil")
+	}
+
 }
