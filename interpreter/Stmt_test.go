@@ -159,3 +159,17 @@ func Test_getPointerToSelectorExpr(t *testing.T) {
 	}
 
 }
+
+func TestRunMurlocStmt(t *testing.T) {
+	env := NewEnv()
+	errCheck := false
+	env.ErrorHandle.HookExit(
+		func(int) {
+			errCheck = true
+		},
+	)
+	if RunMurlocStmt(parser.MurlocStmt{}, env); !errCheck {
+		t.Error("Expected a, got nil")
+	}
+
+}
