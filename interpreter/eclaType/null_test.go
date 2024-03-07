@@ -136,10 +136,15 @@ func TestNullGetSize(t *testing.T) {
 // Null test errors
 
 func TestNullGetValue(t *testing.T) {
-	//t1 := NewNull()
-	//result := t1.GetValue()
+	t1 := NewNull()
+	result := t1.GetValue()
 
-	t.Error("TODO: get value is error")
+	switch result.(type) {
+	case error:
+		return
+	default:
+		t.Errorf("expected error, got %T", result)
+	}
 }
 
 func TestNullSetValue(t *testing.T) {
