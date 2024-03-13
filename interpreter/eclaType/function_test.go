@@ -5,6 +5,15 @@ import (
 	"testing"
 )
 
+// function interacts with function
+
+func TestGetType(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if f.GetType() != "function()" {
+		t.Errorf("Expected function(), got %v", f.GetType())
+	}
+}
+
 // Useless tests for code coverage purpose
 func TestGetValue(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
@@ -31,13 +40,6 @@ func TestGetString(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if f.GetString() != "function" {
 		t.Errorf("Expected function, got %v", f.GetString().String())
-	}
-}
-
-func TestGetType(t *testing.T) {
-	f := NewFunction("test", nil, nil, nil)
-	if f.GetType() != "function()" {
-		t.Errorf("Expected function(), got %v", f.GetType())
 	}
 }
 
