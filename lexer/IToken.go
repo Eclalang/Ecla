@@ -23,7 +23,7 @@ func findNameInEveryTokenType(name string) ITokenType {
 			return tokenType
 		}
 	}
-	return nil
+	return &TokenTypeBaseBehavior{Name: "NULL"}
 }
 
 func findNameInTriggerTokenType(name string) *TokenTypeTriggerBehavior {
@@ -102,7 +102,6 @@ var (
 	}
 	Merger []*TokenTypeMergerBehavior = []*TokenTypeMergerBehavior{
 		&TCOMMENT,
-		&TCOMMENTGROUP,
 	}
 	Spaces []*TokenTypeSpacesBehavior = []*TokenTypeSpacesBehavior{
 		&EMPTY,
@@ -158,4 +157,5 @@ var (
 	COMMENT           = "COMMENT"
 	COMMENTGROUP      = "COMMENTGROUP"
 	COMMENTGROUPIDENT = "COMMENTGROUPIDENT"
+	BSLASH            = "BSLASH"
 )

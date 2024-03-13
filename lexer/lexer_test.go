@@ -60,6 +60,7 @@ func TestEOL(t *testing.T) {
 func TestHashtag0(t *testing.T) {
 	tLexer(t, testHashtag0, " testHashtag")
 }
+
 func TestHashtag1(t *testing.T) {
 	tLexer(t, testHashtag1, " testHashtag")
 }
@@ -74,6 +75,10 @@ func TestHashtag3(t *testing.T) {
 
 func TestHashtag4(t *testing.T) {
 	tLexer(t, testHashtag4, " testHashtag4")
+}
+
+func TestHashtag6(t *testing.T) {
+	tLexer(t, testHashtag6, " testHashtag6")
 }
 
 func TestMurloc(t *testing.T) {
@@ -101,13 +106,21 @@ func TestMultiLigneString(t *testing.T) {
 }
 
 func TestCondInParen(t *testing.T) {
-	tLexer(t, testCondInParen, "testMultiLigneString")
+	tLexer(t, testCondInParen, "testCondInParen")
+}
+
+func TestCommentGroup(t *testing.T) {
+	tLexer(t, testCommentGroup, "testCommentGroup")
 }
 
 func TestEmptyString(t *testing.T) {
-	tLexer(t, testEmptyString, "testMultiLigneString")
+	tLexer(t, testEmptyString, "testEmptyString")
 }
 
 func TestStringWithBSlash(t *testing.T) {
-	tLexer(t, testStringWithBSlash, "testMultiLigneString")
+	tLexer(t, testStringWithBSlash, "testStringWithBSlash")
+}
+
+func TestBSlashstring(t *testing.T) {
+	tLexer(t, testBSlashstring, "testBSlashstring")
 }

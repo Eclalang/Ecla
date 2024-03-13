@@ -535,31 +535,37 @@ var (
 		},
 	}
 	testHashtag2 = testList{
-		input: "prout# in comment\n/# in commentgroup\n and next ligne\n and test for / and #/",
+		input: "/# #/ \n /# /#",
 		output: []Token{
 			{
-				TokenType: TEXT,
-				Value:     `prout`,
+				TokenType: DIV,
+				Value:     `/`,
 				Position:  1,
 				Line:      1,
 			},
 			{
 				TokenType: COMMENT,
-				Value:     "# in comment\n",
-				Position:  6,
+				Value:     "# #/ \n",
+				Position:  2,
 				Line:      1,
 			},
 			{
-				TokenType: COMMENTGROUP,
-				Value:     "/# in commentgroup\n and next ligne\n and test for / and #/",
-				Position:  1,
+				TokenType: DIV,
+				Value:     `/`,
+				Position:  2,
+				Line:      2,
+			},
+			{
+				TokenType: COMMENT,
+				Value:     `# /#`,
+				Position:  3,
 				Line:      2,
 			},
 			{
 				TokenType: EOF,
 				Value:     ``,
-				Position:  23,
-				Line:      4,
+				Position:  7,
+				Line:      2,
 			},
 		},
 	}
@@ -641,6 +647,35 @@ var (
 				Value:     ``,
 				Position:  12,
 				Line:      1,
+			},
+		},
+	}
+	testHashtag6 = testList{
+		input: " #/ #/# ok \n #/ \n /#",
+		output: []Token{
+			{
+				TokenType: TEXT,
+				Value:     `prout`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: COMMENT,
+				Value:     "# in comment\n",
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: COMMENTGROUP,
+				Value:     "/# in commentgroup\n and next ligne\n and test for / and #/",
+				Position:  1,
+				Line:      2,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  23,
+				Line:      4,
 			},
 		},
 	}
@@ -751,7 +786,18 @@ var (
 		},
 	}
 	testCondInParen = testList{
-		input: "\"\";",
+		input: "import \"console\";\n\n# this is a comment\n\n#/ this is a block comment /#\n\nconsole.println(\"Hello, World!\");",
+		output: []Token{
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      2,
+			},
+		},
+	}
+	testCommentGroup = testList{
+		input: "#//# ok",
 		output: []Token{
 			{
 				TokenType: EOF,
@@ -815,6 +861,41 @@ var (
 				TokenType: EOF,
 				Value:     ``,
 				Position:  7,
+				Line:      1,
+			},
+		},
+	}
+	testBSlashstring = testList{
+		input: "\\\\ \"\\\\\"",
+		output: []Token{
+			{
+				TokenType: TEXT,
+				Value:     `\\`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  4,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     `\\`,
+				Position:  5,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  7,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
 				Line:      1,
 			},
 		},

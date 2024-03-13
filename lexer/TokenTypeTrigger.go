@@ -29,7 +29,7 @@ func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 			indexOfClose := triggerByToken.IsClosedBySyntaxe(NameFromGet(l.indent[0].Get()))
 			if indexOfClose != -1 {
 				//close , donc doit mettre RESULT | CLOSE en token
-				if NameFromGet(l.lastStepToken.Get()) == NBSLASH.Name {
+				if NameFromGet(l.lastStepToken.Get()) == BSLASH {
 
 				} else {
 					l.FindSyntax()

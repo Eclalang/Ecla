@@ -19,51 +19,79 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 
 		// verify the previous token created (even in a merging situation) to detect for exemple the end of a
 		// COMMENTGROUP "trigger by" behavior.
-		_, index = t.IsInvolvedWithLastStep(l)
+		var tempToken ITokenType
+		tempToken, index = t.IsInvolvedWithLastStep(l)
 
+		println("hohoho")
 		// if no matching, classic behavior, otherwise, COMMENTGROUPEND style behavior.
 		if index == -1 {
 			// Classic TriggerBy Behavior
-			findNameInEveryTokenType(l.TriggerBy).Resolve(l)
+			println("hehehe")
+			finded := findNameInEveryTokenType(l.TriggerBy)
+
+			if NameFromGet(finded.Get()) != "NULL" {
+				findNameInEveryTokenType(l.TriggerBy).Resolve(l)
+			}
 		} else {
 			// Special TriggerBy Behavior
 
 			// related = what is the possible merged or composed result token if the actual token and the previous
 			// one merge or compose together.
-
+			println("CACA")
 			related := t.Result[index]
-			triggerByToken := findNameInEveryTokenType((*l).TriggerBy)
-			finded := -1
 			// update the lexer to acknoledge the new token to work with.
-			for i, v := range triggerByToken.InvolvedWith() {
-				if v.Get()[len(v.Get())-1] == related.Name {
-					finded = i
-					l.indent[0] = &related
-				}
-			}
-			if finded != -1 {
+			if NameFromGet(findNameInTriggerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" {
+				triggerByToken := findNameInTriggerTokenType(NameFromGet(tempToken.Get()))
+				l.indent[0] = &related
 				// compose the token BUT end the triggerBy
 				(*l).ComposeToken(triggerByToken.Get()[len(triggerByToken.Get())-1])
 				l.TriggerBy = ""
 				// reset the reading head of our lexer.
 				l.prevIndex = l.index
-			} else {
-				triggerByToken.Resolve(l)
-			}
+			} else if NameFromGet(findNameInMergerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" {
+				triggerByToken := findNameInMergerTokenType(NameFromGet(tempToken.Get()))
+				if NameFromGet(triggerByToken.Get()) == l.TriggerBy {
+					(*l).ComposeToken(NameFromGet(related.Get()))
+					l.TriggerBy = NameFromGet(related.Get())
+					l.prevIndex = l.index
+				} else {
+					l.indent[0] = &related
+					// compose the token BUT end the triggerBy
+					(*l).ComposeToken(NameFromGet(triggerByToken.Get()))
+					l.TriggerBy = ""
+					// reset the reading head of our lexer.
+					l.prevIndex = l.index
+				}
 
+			} else {
+				println("CACA")
+				findNameInEveryTokenType(l.TriggerBy).Resolve(l)
+			}
 		}
 	} else {
 		// classic Behavior
 
 		// spaces must be ignored for all merge or compose behavior.
 		if !(*l).isSpaces {
+			var finded ITokenType
 			// try to find some Involved token if possible.
 			// if none find, classic behavior, otherwise compose behavior.
-			_, index = t.IsInvolvedWith(l)
+			finded, index = t.IsInvolvedWith(l)
+			if index != -1 {
+				println(index)
+				println(NameFromGet(finded.Get()))
+				// avoid compose with an ended merger or trigger token
+				if NameFromGet(findNameInMergerTokenType(NameFromGet(finded.Get())).Get()) != "NULL" {
+					index = -1
+				} else if NameFromGet(findNameInTriggerTokenType(NameFromGet(finded.Get())).Get()) != "NULL" {
+					index = -1
+				}
+			}
 		} else {
 			// this tokentype is not a spaces.
 			(*l).isSpaces = false
 		}
+		println("hahaha", index)
 		if index == -1 {
 			// classic behavior
 			(*l).AddToken(t.Name)
@@ -261,10 +289,10 @@ var (
 			&SELF, &TokenTypeMergerBehavior{
 				Name: COMMENT, Syntax: []string{"#"},
 				CloseBy: []ITokenType{&RETURN},
-				Result:  []TokenTypeCompositeBehavior{CCOMMENT}},
+				Result:  []TokenTypeCompositeBehavior{CCOMMENTGROUP}},
 		},
 		Result: []TokenTypeCompositeBehavior{
-			CQOT, CCOMMENTGROUPEND,
+			CQOT, CCOMMENTGROUP,
 		},
 	}
 	BMULT = TokenTypeBaseBehavior{

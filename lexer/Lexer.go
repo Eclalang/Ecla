@@ -1,5 +1,7 @@
 package lexer
 
+import "strconv"
+
 type ReadingType int
 
 const (
@@ -33,6 +35,7 @@ type TLexer struct {
 	TriggerBy string
 
 	allTokenType        []ITokenType
+	allTokenTypeInRev   []ITokenType
 	maxLen              int
 	sizeOfTokenReversed int
 }
@@ -53,7 +56,7 @@ func (l *TLexer) Step() {
 		l.index++
 		l.tempVal = l.sentence[l.prevIndex:l.index]
 		l.stepFind = l.IsSyntax()
-		l.DEBUGLEXER("STEP")
+		l.DEBUGLEXER("STEP " + strconv.Itoa(l.index))
 		switch l.stepFind {
 		case NOTFOUND:
 
@@ -67,12 +70,15 @@ func (l *TLexer) Step() {
 				l.FindSyntax()
 			} else {
 				l.FindSyntax()
-				temp := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
-				l.tempVal = l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
-				l.position -= 1
-				l.AddToken(TEXT)
-				l.position += 1
-				l.tempVal = temp
+				if NameFromGet(l.indent[0].Get()) != BSLASH {
+					temp := l.tempVal[len(l.tempVal)-l.sizeOfTokenReversed:]
+					l.tempVal = l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
+					l.position -= 1
+					l.AddToken(TEXT)
+					l.position += 1
+					l.tempVal = temp
+				}
+
 			}
 			l.indent[0].Resolve(l)
 			l.lastStepToken = l.indent[0]
@@ -190,7 +196,6 @@ func Lexer(sentence string) []Token {
 
 		TriggerBy: "",
 
-		allTokenType:        Every,
 		maxLen:              -1,
 		sizeOfTokenReversed: -1,
 	}

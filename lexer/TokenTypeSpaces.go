@@ -8,7 +8,11 @@ type TokenTypeSpacesBehavior struct {
 func (t *TokenTypeSpacesBehavior) Resolve(l *TLexer) {
 	l.DEBUGLEXER("IN SPACES")
 	if (*l).TriggerBy != "" {
-		findNameInEveryTokenType(l.TriggerBy).Resolve(l)
+		finded := findNameInEveryTokenType((*l).TriggerBy)
+		if NameFromGet(finded.Get()) != "NULL" {
+			finded.Resolve(l)
+		}
+
 	} else {
 		if (*l).Inquote() {
 			findNameInEveryTokenType((*l).TriggerBy).Resolve(l)

@@ -8,9 +8,7 @@ type TokenTypeNullableBehavior struct {
 func (t *TokenTypeNullableBehavior) Resolve(l *TLexer) {
 	l.DEBUGLEXER("IN NULLABLE")
 	if NameFromGet(l.lastStepToken.Get()) == t.Name {
-		l.lastStepToken = &SELF
-		l.prevIndex++
-		l.tempVal = l.sentence[l.prevIndex:l.index]
+		l.indent[0] = &SELF
 	}
 }
 
@@ -23,7 +21,7 @@ func (t *TokenTypeNullableBehavior) InvolvedWith() []ITokenType {
 
 var (
 	NBSLASH = TokenTypeNullableBehavior{
-		Name: "BSLASH",
+		Name: BSLASH,
 		Syntax: []string{
 			`\`,
 		},

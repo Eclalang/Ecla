@@ -25,17 +25,25 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 			l.TriggerBy = t.Name
 			l.prevIndex = l.index
 		} else {
-			(*l).ComposeToken(t.Composite[index].Name)
-			l.TriggerBy = t.Composite[index].Name
-			l.prevIndex = l.index
+			if t.Name != COMMENT {
+				(*l).ComposeToken(t.Composite[index].Name)
+				l.TriggerBy = t.Composite[index].Name
+				l.prevIndex = l.index
+			} else {
+				(*l).AddToken(t.Name)
+				l.TriggerBy = t.Name
+				l.prevIndex = l.index
+			}
 		}
 	} else {
+		println("heho")
 		if !(*l).isSpaces {
 			_, index = t.IsInvolvedWith(l)
 		} else {
 			(*l).isSpaces = false
 		}
 		if index == -1 {
+			println("he")
 			if l.index > len(l.sentence) {
 				l.ComposeToken(t.Result[0].Name)
 				l.prevIndex = l.index
@@ -62,17 +70,44 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 					l.TriggerBy = ""
 					l.prevIndex = l.index
 				} else {
+					println("prout")
+
 					if triggerByToken.Name == "NULL" {
 						findNameInEveryTokenType(l.TriggerBy).Resolve(l)
 					} else {
-						l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
-						l.tempVal = ""
-						l.prevIndex = l.index
+						if triggerByToken.IsClosedBySyntaxe(NameFromGet(l.lastStepToken.Get())) != -1 {
+
+							temp := l.tempVal[:1]
+							println("\""+temp+"\"", "MOUAHAHH")
+							if findNameInEveryTokenType(temp) != nil {
+								l.tempVal = temp
+								l.ComposeToken(t.Result[0].Get()[len(t.Result[0].Get())-1])
+							} else {
+								l.ComposeToken(l.TriggerBy)
+								l.tempVal = temp
+								l.TriggerBy = ""
+								if l.indent[0].Get()[len(l.indent[0].Get())-1] == "\n" {
+									l.line -= 1
+								}
+								l.indent[0].Resolve(l)
+							}
+							l.tempVal = ""
+							l.TriggerBy = ""
+							l.prevIndex = l.index
+						} else {
+							l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+							l.tempVal = ""
+							l.prevIndex = l.index
+						}
+
 					}
 
 				}
+			} else {
+
 			}
 		} else {
+			println("ho")
 			t.Resolve(l)
 		}
 	}
@@ -151,19 +186,7 @@ var (
 			},
 		},
 		Composite: []TokenTypeCompositeBehavior{
-			CCOMMENTGROUP,
-		},
-	}
-	TCOMMENTGROUP = TokenTypeMergerBehavior{
-		Name: COMMENTGROUP,
-		Syntax: []string{
-			"/#",
-		},
-		CloseBy: []ITokenType{
-			&CCOMMENTGROUPEND,
-		},
-		Result: []TokenTypeCompositeBehavior{
-			CCOMMENT,
+			CCOMMENTGROUPEND,
 		},
 	}
 )
