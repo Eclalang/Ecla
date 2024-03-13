@@ -2311,13 +2311,16 @@ func TestAddNegFloatAny(t *testing.T) {
 func TestSubFloatAny(t *testing.T) {
 	t1 := Float(4.1)
 	t2 := NewAny(Float(3.0))
+	var a float32 = 4.1
+	var b float32 = 3.0
+	var expected = float32(a - b)
 
 	result, err := t1.Sub(t2)
 	if err != nil {
 		t.Error(err)
 	}
-	if result.GetValue() != Float(1.1) {
-		t.Error("Expected 1.1, got ", result)
+	if result.GetValue() != expected {
+		t.Errorf("Expected %f, got %f", expected, result.GetValue())
 	}
 }
 
