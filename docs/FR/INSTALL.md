@@ -1,8 +1,20 @@
 # Comment installer Ecla
 
+## Télécharger une release
+
+Vous pouvez télécharger l'interpréteur Ecla en tant que binaire autonome pré-construit pour votre système depuis la dernière release sur https://github.com/Eclalang/Ecla/releases
+
+Renommez le fichier exécutable en `ecla` ou `ecla.exe` selon votre système d'exploitation, et ajoutez le chemin du fichier à votre variable d'environnement PATH.
+
+Redémarrez votre terminal pour appliquer les changements.
+
+## Construire depuis les sources
+
+Alternativement, vous pouvez construire l'interpréteur Ecla depuis les sources
+
 ## Prérequis
 
-Installer Go 1.19 ou plus.
+Installer Go 1.21.1 ou plus.
 
 ### Windows:
 
@@ -16,8 +28,8 @@ Installer Go 1.19 ou plus.
 - Utilisez les commandes suivantes pour installer Go:
 
 ```bash
-wget https://dl.google.com/go/go1.19.linux-amd64.tar.gz
-sudo tar -xvf go1.19.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz
+sudo tar -xvf go1.21.1.linux-amd64.tar.gz
 sudo mv go /usr/local
 ```
 
