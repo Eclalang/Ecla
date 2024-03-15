@@ -4,7 +4,7 @@ Bienvenue dans Ecla ! Ce guide vous aidera à démarrer avec les bases du langag
 
 ## Installation
 
-Avant de pouvoir commencer à coder en Ecla, vous devrez installer le langage sur votre système. Veuillez suivre le [guide d'installation](https://github.com/Eclalang/Ecla/blob/main/INSTALL.md) pour des instructions détaillées.
+Avant de pouvoir commencer à coder en Ecla, vous devrez installer le langage sur votre système. Veuillez suivre le [guide d'installation](https://github.com/Eclalang/Ecla/blob/main/docs/FR/INSTALL.md) pour des instructions détaillées.
 
 ## Création d'un Simple Programme Bonjour le Monde
 
