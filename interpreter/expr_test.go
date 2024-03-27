@@ -965,3 +965,79 @@ func Test_RunBinaryExpr(t *testing.T) {
 	}
 
 }
+
+func Test_RunUnaryExpr(t *testing.T) {
+	env := NewEnv()
+
+	bus := RunTree(
+		parser.VariableDecl{
+			Name: "test",
+			Type: parser.Int,
+			Value: parser.Literal{
+				Type:  lexer.INT,
+				Value: "1",
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	busS := RunUnaryExpr(
+		parser.UnaryExpr{
+			RightExpr: parser.Literal{
+				Type:  "VAR",
+				Value: "test",
+			},
+			Operator: lexer.Token{
+				TokenType: lexer.ADD,
+			},
+		}, env)
+
+	if busS == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	if busS.GetVal().GetValue() != eclaType.Int(1) {
+		t.Error("Expected 1, got ", busS.GetVal())
+	}
+
+	busS = RunUnaryExpr(
+		parser.UnaryExpr{
+			RightExpr: parser.Literal{
+				Type:  "VAR",
+				Value: "test",
+			},
+			Operator: lexer.Token{
+				TokenType: lexer.SUB,
+			},
+		}, env)
+
+	if busS == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	if busS.GetVal().GetValue() != eclaType.Int(-1) {
+		t.Error("Expected -1, got ", busS.GetVal())
+	}
+
+	busS = RunUnaryExpr(
+		parser.UnaryExpr{
+			RightExpr: parser.Literal{
+				Type:  "VAR",
+				Value: "test",
+			},
+			Operator: lexer.Token{
+				TokenType: lexer.NOT,
+			},
+		}, env)
+
+	if busS == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	if busS.GetVal().GetValue() != eclaType.Int(0) {
+		t.Error("Expected 0, got ", busS.GetVal())
+	}
+
+}
