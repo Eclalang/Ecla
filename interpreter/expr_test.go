@@ -1091,3 +1091,144 @@ func Test_RunFunctionCallExpr(t *testing.T) {
 	}
 
 }
+
+func Test_RunFunctionCallExprWithArgs(t *testing.T) {
+	env := NewEnv()
+	bus := RunTree(
+		parser.FunctionDecl{
+			Name: "testFunc",
+			Prototype: parser.FunctionPrototype{
+				Parameters:  []parser.FunctionParams{{Name: "a", Type: "int"}},
+				ReturnTypes: []string{"int"},
+			},
+			Body: []parser.Node{
+				parser.VariableDecl{
+					Name: "test",
+					Type: parser.Int,
+					Value: parser.Literal{
+						Type:  lexer.INT,
+						Value: "1",
+					},
+				},
+				parser.ReturnStmt{
+					ReturnValues: []parser.Expr{
+						parser.Literal{
+							Type:  "VAR",
+							Value: "a",
+						},
+					},
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+	f, ok := env.Vars.Get("testFunc")
+
+	if !ok {
+		t.Error("Expected testFunc to be non-nil")
+	}
+
+	if f == nil {
+		t.Error("Expected testFunc to be non-nil")
+	}
+
+	body := f.GetFunction()
+
+	if body == nil {
+		t.Error("Expected body to be non-nil")
+
+	}
+	result, err := RunFunctionCallExprWithArgs("testFunc", env, body, []eclaType.Type{eclaType.Int(1)})
+
+	if err != nil {
+		t.Error("Expected nil, got ", err)
+	}
+
+	if len(result) != 1 {
+		t.Error("Expected 1, got ", len(result))
+	}
+
+	if result[0].GetValue() != eclaType.Int(1) {
+		t.Error("Expected 1, got ", result[0].GetValue())
+	}
+
+	result, err = RunFunctionCallExprWithArgs("testFunc", env, body, []eclaType.Type{})
+
+	if err == nil {
+		t.Error("Expected error")
+	}
+
+}
+
+func Test_RunBodyFunction(t *testing.T) {
+	env := NewEnv()
+	bus := RunTree(
+		parser.FunctionDecl{
+			Name: "testFunc",
+			Prototype: parser.FunctionPrototype{
+				Parameters:  make([]parser.FunctionParams, 0),
+				ReturnTypes: []string{"int"},
+			},
+			Body: []parser.Node{
+				parser.VariableDecl{
+					Name: "test",
+					Type: parser.Int,
+					Value: parser.Literal{
+						Type:  lexer.INT,
+						Value: "1",
+					},
+				},
+				parser.ReturnStmt{
+					ReturnValues: []parser.Expr{
+						parser.Literal{
+							Type:  lexer.INT,
+							Value: "1",
+						},
+					},
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	f, ok := env.Vars.Get("testFunc")
+
+	if !ok {
+		t.Error("Expected testFunc to be non-nil")
+	}
+
+	if f == nil {
+		t.Error("Expected testFunc to be non-nil")
+	}
+
+	body := f.GetFunction()
+
+	if body == nil {
+		t.Error("Expected body to be non-nil")
+
+	}
+	{
+		env.NewScope(SCOPE_FUNCTION)
+		defer env.EndScope()
+		env.AddFunctionExecuted(body)
+		defer env.RemoveFunctionExecuted()
+		result, err := RunBodyFunction(body, env)
+
+		if err != nil {
+			t.Error("Expected nil, got ", err)
+		}
+
+		if len(result) != 1 {
+			t.Error("Expected 1, got ", len(result))
+		}
+
+		if result[0].GetValue() != eclaType.Int(1) {
+			t.Error("Expected 1, got ", result[0].GetValue())
+		}
+	}
+
+}

@@ -1,4 +1,4 @@
 import "console";
 
-console.println("this should throw an error")
+console.println("this should throw an err")
 console.println("and this should not print");
