@@ -7,6 +7,9 @@ import (
 )
 
 var t = lexer.Lexer("import \"console\";")
+var unresolved1Tokens = lexer.Lexer("console.println(\"not working\");")
+var unresolved2Tokens = lexer.Lexer("console.println(\"not working\");math.abs(-10);")
+var helloWorld = lexer.Lexer("import \"console\";console.println(\"Hello, World!\");")
 var e = errorHandler.NewHandler()
 var TestParser = Parser{Tokens: t, ErrorHandler: e}
 
@@ -162,4 +165,35 @@ func TestParser_DisableEOLChecking(t *testing.T) {
 	}
 	// restore the parser to the original state
 	par = TestParser
+}
+
+func TestParser_Parse(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+	par.Tokens = unresolved1Tokens
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	par.ErrorHandler.HookExit(f)
+	par.Parse()
+	if !ok {
+		t.Errorf("Parse() did not raise the unsatisfied dependancy error")
+	}
+
+	par = TestParser
+	ok = false
+	par.Tokens = unresolved2Tokens
+	par.Parse()
+	if !ok {
+		t.Errorf("Parse() did not raise the unsatisfied dependancy error")
+	}
+
+	par = TestParser
+	ok = false
+	par.Tokens = helloWorld
+	par.Parse()
+	if ok {
+		t.Errorf("Parse() raised an error when it should not")
+	}
 }
