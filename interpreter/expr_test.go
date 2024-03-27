@@ -235,7 +235,7 @@ func Test_RunTree(t *testing.T) {
 	}
 
 	bus = RunTree(parser.FunctionDecl{
-		Name: "test",
+		Name: "testFunc",
 		Prototype: parser.FunctionPrototype{
 			Parameters:  make([]parser.FunctionParams, 0),
 			ReturnTypes: make([]string, 0),
@@ -263,4 +263,65 @@ func Test_RunTree(t *testing.T) {
 		t.Error("Expected bus to be non-nil")
 	}
 
+	bus = RunTree(parser.FunctionCallExpr{
+		Name: "testFunc",
+		Args: []parser.Expr{},
+	}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunTree(parser.VariableDecl{
+		Name: "testArray",
+		Value: parser.ArrayLiteral{
+			Values: []parser.Expr{
+				parser.Literal{
+					Type:  lexer.INT,
+					Value: "0",
+				},
+			},
+		},
+		Type: "[]int",
+	}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunTree(parser.IndexableAccessExpr{
+		VariableName: "testArray",
+		Indexes:      []parser.Expr{parser.Literal{Type: lexer.INT, Value: "0"}},
+	}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunTree(parser.MapLiteral{
+		Keys:   []parser.Expr{parser.Literal{Type: lexer.INT, Value: "0"}},
+		Values: []parser.Expr{parser.Literal{Type: lexer.INT, Value: "0"}},
+	}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	// TODO Test ReturnStmt
+
+	checkErr := false
+
+	env.ErrorHandle.HookExit(
+		func(i int) {
+			checkErr = true
+		})
+
+	RunTree(
+		parser.MurlocStmt{}, env)
+
+	if !checkErr {
+		t.Error("Expected error")
+	}
+
+	env.ErrorHandle.RestoreExit()
 }
