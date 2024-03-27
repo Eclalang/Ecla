@@ -107,9 +107,9 @@ func TestNewVAR(t *testing.T) {
 }
 
 func TestNewNull(t *testing.T) {
-	bus := New(parser.Literal{Type: "NULL", Value: "null"}, &Env{})
-	if bus.GetVal().GetType() != "" {
-		t.Error("Expected NULL, got", bus.GetVal().GetType())
+	bus := New(parser.Literal{Type: "NULL", Value: ""}, &Env{})
+	if bus.GetVal().GetType() != "null" {
+		t.Error("Expected null, got", bus.GetVal().GetType())
 	}
 }
 

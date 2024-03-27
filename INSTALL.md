@@ -2,11 +2,15 @@
 
 ## Download a release
 
-you can download the Ecla interpreter as a prebuilt standalone binary for your system from the latest release in https://github.com/Eclalang/Ecla/releases
+You can download the Ecla interpreter as a prebuilt standalone binary for your system from the latest release in https://github.com/Eclalang/Ecla/releases
+
+Rename the executable file to `ecla` or `ecla.exe` depending on your os, and add the file path to your PATH.
+
+Restart your terminal to apply the changes.
 
 ## Build from sources
 
-alternatively you can build the Ecla interpreter from the sources
+Alternatively you can build the Ecla interpreter from the sources
 
 ### Install Requirements
 
