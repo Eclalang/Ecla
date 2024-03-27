@@ -1041,3 +1041,53 @@ func Test_RunUnaryExpr(t *testing.T) {
 	}
 
 }
+
+func Test_RunFunctionCallExpr(t *testing.T) {
+	env := NewEnv()
+
+	bus := RunTree(
+		parser.FunctionDecl{
+			Name: "testFunc",
+			Prototype: parser.FunctionPrototype{
+				Parameters:  make([]parser.FunctionParams, 0),
+				ReturnTypes: make([]string, 0),
+			},
+			Body: []parser.Node{
+				parser.VariableDecl{
+					Name: "test",
+					Type: parser.Int,
+					Value: parser.Literal{
+						Type:  lexer.INT,
+						Value: "1",
+					},
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunFunctionCallExpr(
+		parser.FunctionCallExpr{
+			Name: "testFunc",
+			Args: []parser.Expr{},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	// test builtin functions
+
+	bus = RunFunctionCallExpr(
+		parser.FunctionCallExpr{
+			Name: "typeOf",
+			Args: []parser.Expr{parser.Literal{Type: lexer.INT, Value: "0"}},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+}
