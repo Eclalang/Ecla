@@ -36,10 +36,9 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 			// one merge or compose together.
 			related := t.Result[index]
 			// update the lexer to acknoledge the new token to work with.
-			println("prout")
+
 			if NameFromGet(findNameInTriggerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" &&
 				NameFromGet(findNameInTriggerTokenType(l.TriggerBy).Get()) != "NULL" {
-				println("prat")
 
 				triggerByToken := findNameInTriggerTokenType(NameFromGet(tempToken.Get()))
 				l.indent[0] = &related
@@ -50,24 +49,28 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 				l.prevIndex = l.index
 			} else if NameFromGet(findNameInMergerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" &&
 				NameFromGet(findNameInMergerTokenType(l.TriggerBy).Get()) != "NULL" {
-				println("prit")
 
 				triggerByToken := findNameInMergerTokenType(NameFromGet(tempToken.Get()))
 
-				println()
 				if NameFromGet(triggerByToken.Get()) == l.TriggerBy {
-					println("prot")
+
 					(*l).ComposeToken(NameFromGet(related.Get()))
 					l.TriggerBy = NameFromGet(related.Get())
 					l.prevIndex = l.index
 				} else {
-					l.indent[0] = &related
-					println("prit")
-					// compose the token BUT end the triggerBy
-					(*l).ComposeToken(NameFromGet(triggerByToken.Get()))
-					l.TriggerBy = ""
-					// reset the reading head of our lexer.
-					l.prevIndex = l.index
+					if findNameInMergerTokenType(l.TriggerBy).IsClosedBySyntaxe(NameFromGet(tempToken.Get())) == -1 {
+
+						(*l).ComposeToken(NameFromGet(related.Get()))
+						l.TriggerBy = NameFromGet(related.Get())
+						l.prevIndex = l.index
+					} else {
+						l.indent[0] = &related
+						// compose the token BUT end the triggerBy
+						(*l).ComposeToken(NameFromGet(triggerByToken.Get()))
+						l.TriggerBy = ""
+						// reset the reading head of our lexer.
+						l.prevIndex = l.index
+					}
 				}
 
 			} else {
@@ -85,8 +88,6 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 			// if none find, classic behavior, otherwise compose behavior.
 			finded, index = t.IsInvolvedWith(l)
 			if index != -1 {
-				println(index)
-				println(NameFromGet(finded.Get()))
 				// avoid compose with an ended merger or trigger token
 				if NameFromGet(findNameInMergerTokenType(NameFromGet(finded.Get())).Get()) != "NULL" {
 					index = -1

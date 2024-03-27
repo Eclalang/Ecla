@@ -124,3 +124,7 @@ func TestStringWithBSlash(t *testing.T) {
 func TestBSlashstring(t *testing.T) {
 	tLexer(t, testBSlashstring, "testBSlashstring")
 }
+
+//func TestHshTagminus(t *testing.T) {
+//	tLexer(t, testHshTagminus, "testHshTagminus")
+//}

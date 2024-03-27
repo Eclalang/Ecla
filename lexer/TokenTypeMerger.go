@@ -127,6 +127,57 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 					l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
 					l.tempVal = ""
 					l.prevIndex = l.index
+				} else {
+					triggerByToken := findNameInMergerTokenType(l.TriggerBy)
+					if triggerByToken.Name == "NULL" {
+						findNameInEveryTokenType(l.TriggerBy).Resolve(l)
+					} else {
+						if triggerByToken.IsClosedBySyntaxe(NameFromGet(l.lastStepToken.Get())) != -1 {
+							temp := l.tempVal[:1]
+							if findNameInEveryTokenType(temp) != nil {
+								l.tempVal = temp
+								l.ComposeToken(t.Result[0].Get()[len(t.Result[0].Get())-1])
+							} else {
+								l.ComposeToken(l.TriggerBy)
+								l.tempVal = temp
+								l.TriggerBy = ""
+								if l.indent[0].Get()[len(l.indent[0].Get())-1] == "\n" {
+									l.line -= 1
+								}
+								l.indent[0].Resolve(l)
+							}
+							l.tempVal = ""
+							l.TriggerBy = ""
+							l.prevIndex = l.index
+						} else {
+							IndentToken := findNameInMergerTokenType(NameFromGet(l.indent[0].Get()))
+
+							if NameFromGet(IndentToken.Get()) != "NULL" {
+								indexOfResultIndent := 0
+								if NameFromGet(IndentToken.Involved[0].Get()) == NameFromGet(l.lastStepToken.Get()) {
+									ResultIndentToken := IndentToken.Composite[indexOfResultIndent]
+									if triggerByToken.IsClosedBySyntaxe(NameFromGet(ResultIndentToken.Get())) != -1 {
+										l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+										l.TriggerBy = ""
+										l.tempVal = ""
+										l.prevIndex = l.index
+									} else {
+										l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+										l.tempVal = ""
+										l.prevIndex = l.index
+									}
+								} else {
+									l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+									l.tempVal = ""
+									l.prevIndex = l.index
+								}
+							} else {
+								l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+								l.tempVal = ""
+								l.prevIndex = l.index
+							}
+						}
+					}
 				}
 			}
 		} else {
