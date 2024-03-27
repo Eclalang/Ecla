@@ -44,6 +44,15 @@ func findNameInMergerTokenType(name string) *TokenTypeMergerBehavior {
 	return &TokenTypeMergerBehavior{Name: "NULL"}
 }
 
+func findNameInBaseTokenType(name string) *TokenTypeBaseBehavior {
+	for _, tokenType := range Base {
+		if NameFromGet(tokenType.Get()) == name {
+			return tokenType
+		}
+	}
+	return &TokenTypeBaseBehavior{Name: "NULL"}
+}
+
 func NameFromGet(Get []string) string {
 	return Get[len(Get)-1]
 }
@@ -95,6 +104,7 @@ var (
 		&BMULT,
 		&BLSS,
 		&BGTR,
+		&BCOMMENTGROUPEND,
 	}
 	Trigger []*TokenTypeTriggerBehavior = []*TokenTypeTriggerBehavior{
 		&TDQUOTE,
@@ -102,6 +112,7 @@ var (
 	}
 	Merger []*TokenTypeMergerBehavior = []*TokenTypeMergerBehavior{
 		&TCOMMENT,
+		&TCOMMENTGROUP,
 	}
 	Spaces []*TokenTypeSpacesBehavior = []*TokenTypeSpacesBehavior{
 		&EMPTY,

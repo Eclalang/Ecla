@@ -36,20 +36,21 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 			}
 		}
 	} else {
-		println("heho")
+		// in trigger
+
 		if !(*l).isSpaces {
 			_, index = t.IsInvolvedWith(l)
 		} else {
 			(*l).isSpaces = false
 		}
 		if index == -1 {
-			println("he")
 			if l.index > len(l.sentence) {
 				l.ComposeToken(t.Result[0].Name)
 				l.prevIndex = l.index
 			} else if l.sizeOfTokenReversed != -1 {
 				triggerByToken := findNameInMergerTokenType(l.TriggerBy)
 				indexOfClose := triggerByToken.IsClosedBySyntaxe(NameFromGet(l.indent[0].Get()))
+
 				if indexOfClose != -1 {
 					//close , donc doit mettre RESULT+CLOSE en token
 					l.FindSyntax()
@@ -70,15 +71,12 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 					l.TriggerBy = ""
 					l.prevIndex = l.index
 				} else {
-					println("prout")
 
 					if triggerByToken.Name == "NULL" {
 						findNameInEveryTokenType(l.TriggerBy).Resolve(l)
 					} else {
 						if triggerByToken.IsClosedBySyntaxe(NameFromGet(l.lastStepToken.Get())) != -1 {
-
 							temp := l.tempVal[:1]
-							println("\""+temp+"\"", "MOUAHAHH")
 							if findNameInEveryTokenType(temp) != nil {
 								l.tempVal = temp
 								l.ComposeToken(t.Result[0].Get()[len(t.Result[0].Get())-1])
@@ -95,19 +93,43 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 							l.TriggerBy = ""
 							l.prevIndex = l.index
 						} else {
-							l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
-							l.tempVal = ""
-							l.prevIndex = l.index
+							IndentToken := findNameInMergerTokenType(NameFromGet(l.indent[0].Get()))
+
+							if NameFromGet(IndentToken.Get()) != "NULL" {
+								indexOfResultIndent := 0
+								if NameFromGet(IndentToken.Involved[0].Get()) == NameFromGet(l.lastStepToken.Get()) {
+									ResultIndentToken := IndentToken.Composite[indexOfResultIndent]
+									if triggerByToken.IsClosedBySyntaxe(NameFromGet(ResultIndentToken.Get())) != -1 {
+										l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+										l.TriggerBy = ""
+										l.tempVal = ""
+										l.prevIndex = l.index
+									} else {
+										l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+										l.tempVal = ""
+										l.prevIndex = l.index
+									}
+								} else {
+									l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+									l.tempVal = ""
+									l.prevIndex = l.index
+								}
+							} else {
+								l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+								l.tempVal = ""
+								l.prevIndex = l.index
+							}
 						}
-
 					}
-
 				}
 			} else {
-
+				if NameFromGet(l.indent[0].Get()) == "" {
+					l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+					l.tempVal = ""
+					l.prevIndex = l.index
+				}
 			}
 		} else {
-			println("ho")
 			t.Resolve(l)
 		}
 	}
@@ -187,6 +209,16 @@ var (
 		},
 		Composite: []TokenTypeCompositeBehavior{
 			CCOMMENTGROUPEND,
+		},
+	}
+	TCOMMENTGROUP = TokenTypeMergerBehavior{
+		Name:   COMMENTGROUP,
+		Syntax: []string{},
+		CloseBy: []ITokenType{
+			&CCOMMENTGROUPEND,
+		},
+		Result: []TokenTypeCompositeBehavior{
+			CCOMMENTGROUP,
 		},
 	}
 )

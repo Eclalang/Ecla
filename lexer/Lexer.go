@@ -225,6 +225,9 @@ func (l *TLexer) DEBUGLEXER(s string) {
 
 	println("l.TriggerBy\t\t:", l.TriggerBy)
 	println("l.ret.len()\t\t:", len(l.ret))
+	if len(l.ret) > 1 {
+		println("l.ret[-1]\t\t:", l.ret[len(l.ret)-1].TokenType)
+	}
 	if (len(l.indent) - 1) >= 0 {
 		println("l.indent name\t\t:", l.indent[0].Get()[len(l.indent[0].Get())-1])
 	} else {

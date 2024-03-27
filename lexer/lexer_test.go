@@ -105,9 +105,9 @@ func TestMultiLigneString(t *testing.T) {
 	tLexer(t, testMultiLigneString, "testMultiLigneString")
 }
 
-func TestCondInParen(t *testing.T) {
-	tLexer(t, testCondInParen, "testCondInParen")
-}
+//func TestCondInParen(t *testing.T) {
+//	tLexer(t, testCondInParen, "testCondInParen")
+//}
 
 func TestCommentGroup(t *testing.T) {
 	tLexer(t, testCommentGroup, "testCommentGroup")

@@ -21,12 +21,9 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 		// COMMENTGROUP "trigger by" behavior.
 		var tempToken ITokenType
 		tempToken, index = t.IsInvolvedWithLastStep(l)
-
-		println("hohoho")
 		// if no matching, classic behavior, otherwise, COMMENTGROUPEND style behavior.
 		if index == -1 {
 			// Classic TriggerBy Behavior
-			println("hehehe")
 			finded := findNameInEveryTokenType(l.TriggerBy)
 
 			if NameFromGet(finded.Get()) != "NULL" {
@@ -37,10 +34,13 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 
 			// related = what is the possible merged or composed result token if the actual token and the previous
 			// one merge or compose together.
-			println("CACA")
 			related := t.Result[index]
 			// update the lexer to acknoledge the new token to work with.
-			if NameFromGet(findNameInTriggerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" {
+			println("prout")
+			if NameFromGet(findNameInTriggerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" &&
+				NameFromGet(findNameInTriggerTokenType(l.TriggerBy).Get()) != "NULL" {
+				println("prat")
+
 				triggerByToken := findNameInTriggerTokenType(NameFromGet(tempToken.Get()))
 				l.indent[0] = &related
 				// compose the token BUT end the triggerBy
@@ -48,14 +48,21 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 				l.TriggerBy = ""
 				// reset the reading head of our lexer.
 				l.prevIndex = l.index
-			} else if NameFromGet(findNameInMergerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" {
+			} else if NameFromGet(findNameInMergerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" &&
+				NameFromGet(findNameInMergerTokenType(l.TriggerBy).Get()) != "NULL" {
+				println("prit")
+
 				triggerByToken := findNameInMergerTokenType(NameFromGet(tempToken.Get()))
+
+				println()
 				if NameFromGet(triggerByToken.Get()) == l.TriggerBy {
+					println("prot")
 					(*l).ComposeToken(NameFromGet(related.Get()))
 					l.TriggerBy = NameFromGet(related.Get())
 					l.prevIndex = l.index
 				} else {
 					l.indent[0] = &related
+					println("prit")
 					// compose the token BUT end the triggerBy
 					(*l).ComposeToken(NameFromGet(triggerByToken.Get()))
 					l.TriggerBy = ""
@@ -64,7 +71,7 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 				}
 
 			} else {
-				println("CACA")
+
 				findNameInEveryTokenType(l.TriggerBy).Resolve(l)
 			}
 		}
@@ -91,7 +98,6 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 			// this tokentype is not a spaces.
 			(*l).isSpaces = false
 		}
-		println("hahaha", index)
 		if index == -1 {
 			// classic behavior
 			(*l).AddToken(t.Name)
@@ -350,5 +356,9 @@ var (
 		Result: []TokenTypeCompositeBehavior{
 			CEQUAL, CADDASSIGN, CSUBASSIGN, CMODASSIGN, CDIVASSIGN, CMULTASSIGN, CNEQ, CGEQ, CLEQ, CQOTASSIGN,
 		},
+	}
+	BCOMMENTGROUPEND = TokenTypeBaseBehavior{
+		Name:   COMMENTGROUP + "END",
+		Syntax: []string{},
 	}
 )

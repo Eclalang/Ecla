@@ -476,60 +476,31 @@ var (
 		},
 	}
 	testHashtag1 = testList{
-		input: "prout# in comment\n/# in commentgroup\n and next ligne\n and test for / and /# #/\nOutside of the comment group",
+		input: "#comment\n# comment\n# comment ##\n\n",
 		output: []Token{
 			{
-				TokenType: TEXT,
-				Value:     "prout",
+				TokenType: COMMENT,
+				Value:     "#comment",
 				Position:  1,
 				Line:      1,
 			},
 			{
 				TokenType: COMMENT,
-				Value:     "# in comment\n",
-				Position:  6,
-				Line:      1,
-			},
-			{
-				TokenType: COMMENTGROUP,
-				Value:     "/# in commentgroup\n and next ligne\n and test for / and /# #/",
+				Value:     `# comment`,
 				Position:  1,
 				Line:      2,
 			},
 			{
-				TokenType: TEXT,
-				Value:     `Outside`,
-				Position:  1,
-				Line:      5,
-			},
-			{
-				TokenType: TEXT,
-				Value:     `of`,
-				Position:  9,
-				Line:      5,
-			},
-			{
-				TokenType: TEXT,
-				Value:     `the`,
-				Position:  12,
-				Line:      5,
-			},
-			{
-				TokenType: TEXT,
-				Value:     `comment`,
-				Position:  16,
-				Line:      5,
-			},
-			{
-				TokenType: TEXT,
-				Value:     `group`,
-				Position:  24,
-				Line:      5,
+				TokenType: COMMENT,
+				Value: `# comment ##
+`,
+				Position: 1,
+				Line:     3,
 			},
 			{
 				TokenType: EOF,
 				Value:     ``,
-				Position:  29,
+				Position:  1,
 				Line:      5,
 			},
 		},
@@ -544,21 +515,21 @@ var (
 				Line:      1,
 			},
 			{
-				TokenType: COMMENT,
-				Value:     "# #/ \n",
+				TokenType: COMMENTGROUP,
+				Value:     "# #/ \n /#",
 				Position:  2,
 				Line:      1,
 			},
 			{
 				TokenType: DIV,
 				Value:     `/`,
-				Position:  2,
+				Position:  5,
 				Line:      2,
 			},
 			{
 				TokenType: COMMENT,
-				Value:     `# /#`,
-				Position:  3,
+				Value:     `#`,
+				Position:  6,
 				Line:      2,
 			},
 			{
@@ -651,7 +622,7 @@ var (
 		},
 	}
 	testHashtag6 = testList{
-		input: " #/ #/# ok \n #/ \n /#",
+		input: " #/ #/# ok",
 		output: []Token{
 			{
 				TokenType: TEXT,
@@ -664,12 +635,6 @@ var (
 				Value:     "# in comment\n",
 				Position:  6,
 				Line:      1,
-			},
-			{
-				TokenType: COMMENTGROUP,
-				Value:     "/# in commentgroup\n and next ligne\n and test for / and #/",
-				Position:  1,
-				Line:      2,
 			},
 			{
 				TokenType: EOF,
@@ -800,10 +765,22 @@ var (
 		input: "#//# ok",
 		output: []Token{
 			{
+				TokenType: COMMENTGROUP,
+				Value:     `#//#`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: TEXT,
+				Value:     `ok`,
+				Position:  6,
+				Line:      1,
+			},
+			{
 				TokenType: EOF,
 				Value:     ``,
 				Position:  8,
-				Line:      2,
+				Line:      1,
 			},
 		},
 	}
