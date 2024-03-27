@@ -324,4 +324,106 @@ func Test_RunTree(t *testing.T) {
 	}
 
 	env.ErrorHandle.RestoreExit()
+
+	bus = RunTree(
+		parser.AnonymousFunctionExpr{
+			Prototype: parser.FunctionPrototype{
+				Parameters:  make([]parser.FunctionParams, 0),
+				ReturnTypes: make([]string, 0),
+			},
+			Body: []parser.Node{
+				parser.VariableAssignStmt{
+					Names: []parser.Expr{
+						parser.Literal{
+							Type:  "VAR",
+							Value: "test",
+						},
+					},
+					Values: []parser.Expr{
+						parser.Literal{
+							Type:  lexer.INT,
+							Value: "1",
+						},
+					},
+					Operator: parser.ASSIGN,
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunTree(
+		parser.BlockScopeStmt{
+			Body: []parser.Node{
+				parser.VariableAssignStmt{
+					Names: []parser.Expr{
+						parser.Literal{
+							Type:  "VAR",
+							Value: "test",
+						},
+					},
+					Values: []parser.Expr{
+						parser.Literal{
+							Type:  lexer.INT,
+							Value: "1",
+						},
+					},
+					Operator: parser.ASSIGN,
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunTree(
+		parser.AnonymousFunctionCallExpr{
+			AnonymousFunction: parser.AnonymousFunctionExpr{
+				Prototype: parser.FunctionPrototype{
+					Parameters:  make([]parser.FunctionParams, 0),
+					ReturnTypes: make([]string, 0),
+				},
+				Body: []parser.Node{
+					parser.VariableAssignStmt{
+						Names: []parser.Expr{
+							parser.Literal{
+								Type:  "VAR",
+								Value: "test",
+							},
+						},
+						Values: []parser.Expr{
+							parser.Literal{
+								Type:  lexer.INT,
+								Value: "1",
+							},
+						},
+						Operator: parser.ASSIGN,
+					},
+				},
+			},
+			Args: []parser.Expr{},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunTree(
+		parser.StructDecl{
+			Name: "testStruct",
+			Fields: []parser.StructField{
+				{
+					Name: "test",
+					Type: "int",
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
 }
