@@ -426,4 +426,39 @@ func Test_RunTree(t *testing.T) {
 		t.Error("Expected bus to be non-nil")
 	}
 
+	bus = RunTree(
+		parser.VariableDecl{
+			Name: "testStructVar",
+			Type: "testStruct",
+			Value: parser.StructInstantiationExpr{
+				Name: "testStruct",
+				Args: []parser.Expr{
+					parser.Literal{
+						Type:  lexer.INT,
+						Value: "0",
+					},
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunTree(
+		parser.SelectorExpr{
+			Expr: parser.Literal{
+				Type:  "VAR",
+				Value: "testStructVar",
+			},
+			Sel: parser.Literal{
+				Type:  "VAR",
+				Value: "test",
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+	
 }
