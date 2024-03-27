@@ -185,4 +185,32 @@ func Test_RunTree(t *testing.T) {
 		t.Error("Expected bus to be non-nil")
 	}
 
+	bus = RunTree(parser.IfStmt{
+		Cond: parser.Literal{
+			Type:  lexer.BOOL,
+			Value: "true",
+		},
+		Body: []parser.Node{
+			parser.VariableAssignStmt{
+				Names: []parser.Expr{
+					parser.Literal{
+						Type:  "VAR",
+						Value: "test",
+					},
+				},
+				Values: []parser.Expr{
+					parser.Literal{
+						Type:  lexer.INT,
+						Value: "1",
+					},
+				},
+				Operator: parser.ASSIGN,
+			},
+		},
+	}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+	
 }
