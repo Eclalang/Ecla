@@ -26,6 +26,17 @@ func TestNewNullType(t *testing.T) {
 	}
 }
 
+func TestEmptyNullGetType(t *testing.T) {
+	t1 := NewNull()
+	t2 := "null"
+
+	result := t1.GetType()
+
+	if result != t2 {
+		t.Error("Expected ", t2, ", got ", result)
+	}
+}
+
 func TestNullString(t *testing.T) {
 	t1 := NewNull()
 	t2 := "null"
