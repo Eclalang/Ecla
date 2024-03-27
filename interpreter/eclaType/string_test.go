@@ -605,7 +605,7 @@ func TestStringGetSize(t *testing.T) {
 	}
 }
 
-func TestStrinLen(t *testing.T) {
+func TestStringLen(t *testing.T) {
 	t1 := String("test")
 	expected := 4
 

@@ -139,11 +139,8 @@ func TestNullGetValue(t *testing.T) {
 	t1 := NewNull()
 	result := t1.GetValue()
 
-	switch result.(type) {
-	case error:
-		return
-	default:
-		t.Errorf("expected error, got %T", result)
+	if t1 != result {
+		t.Error("Expected ", t1, ", got ", result)
 	}
 }
 
