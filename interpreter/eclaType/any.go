@@ -165,6 +165,6 @@ func NewAny(value Type) *Any {
 	}
 }
 
-func NewAnyEmpty(Type string) (*Any, error) {
-	return &Any{Value: NewNullType("string")}, nil
+func NewAnyEmpty() (*Any, error) {
+	return &Any{Value: NewNull()}, nil
 }

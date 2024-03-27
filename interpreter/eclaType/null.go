@@ -18,7 +18,7 @@ func NewNullType(typ string) Null {
 }
 
 func (n Null) GetValue() any {
-	return errors.New("cannot get value from null")
+	return n
 }
 
 func (n Null) SetValue(value any) error {
@@ -34,7 +34,10 @@ func (n Null) GetString() String {
 }
 
 func (n Null) GetType() string {
-	return n.typ
+	if n.typ != "" {
+		return n.typ
+	}
+	return "null"
 }
 
 func (n Null) GetIndex(number Type) (*Type, error) {
