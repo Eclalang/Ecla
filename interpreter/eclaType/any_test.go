@@ -338,9 +338,20 @@ func TestIsNullAny(t *testing.T) {
 	}
 }
 
-func TestGetFunction(t *testing.T) {
+func TestGetFunctionAny(t *testing.T) {
 	expected := NewFunction("test", []parser.FunctionParams{}, []parser.Node{}, []string{"int"})
 	t1 := NewAny(expected)
+
+	result := t1.GetFunction()
+	if result != expected {
+		t.Error("Expected ", expected, ", got ", result)
+	}
+}
+
+func TestGetFunctionAnyAny(t *testing.T) {
+	expected := NewFunction("test", []parser.FunctionParams{}, []parser.Node{}, []string{"int"})
+	a := NewAny(expected)
+	t1 := NewAny(a)
 
 	result := t1.GetFunction()
 	if result != expected {
