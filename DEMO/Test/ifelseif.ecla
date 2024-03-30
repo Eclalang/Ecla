@@ -4,5 +4,5 @@ if (true==false){
 }else if (true==false){
     console.print("false");
 }else {
-    console.print("err");
+    console.print("error");
 };

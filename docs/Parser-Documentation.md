@@ -19,7 +19,7 @@
     - Omitted semicolons
   - Error handling
     - Error detection
-    - Information about the err
+    - Information about the error
     - Error recovery
     - Error reporting
   - Performance
@@ -57,7 +57,7 @@ It is composed but not limited to :
 
 - The Tokens yielded by the Ecla lexer.
 - The Current `File`.
-- And the err handler.
+- And the error handler.
 
 It also contains all the parsing methods that are used to parse the input.
 #### AST
@@ -102,27 +102,27 @@ All the comments are stored inside the `File` structure in the `Comments` field.
 During the parsing operations step, the `Parser` will parse the input and build the AST.  
 Since the 'Parser' is a recursive descent parser, it will use the `Parse` method to parse the input.  
 During the parsing operations, the `Parser` will try to parse the input following the grammar rules.  
-The last valid grammar rule that can be parsed is a 'Literal' Node if the input does not match this rule since it is the last one it will throw an err.
+The last valid grammar rule that can be parsed is a 'Literal' Node if the input does not match this rule since it is the last one it will throw an error.
 Also when inside a parsing method, the `Parser` can throw errors if the subsequent tokens are not what is expected for the current grammar rule.  
 For example :
     
 ```ecla
 import console;
 ```
-In the above example the method `ParseImportStmt` will not throw an err since the syntax is correct.
+In the above example the method `ParseImportStmt` will not throw an error since the syntax is correct.
 But if the input was :
     
 ```ecla
 import "con"+"sole";
 ```
-The method `ParseImportStmt` will throw an err.  
-In fact it is valid because you can concatenate strings but since the parser expects a static text and not an expression so it will throw an err.  
+The method `ParseImportStmt` will throw an error.
+In fact it is valid because you can concatenate strings but since the parser expects a static text and not an expression so it will throw an error.
 After the parsing operations step, the `Parser` will have built the AST and be ready to run the postprocessing step onto it.
 
 #### Postprocessing
 During the postprocessing step, the Ecla parser will check for dependencies resolution.  
 This is done by the `File` structure which contains the `DepChecker` method.  
-It is run at the end of the parsing operations and throws an err if a dependency is not resolved.  
+It is run at the end of the parsing operations and throws an error if a dependency is not resolved.  
 ### Edge cases
 Here are the edge cases that are handled by the Ecla parser.  
 #### Operator precedence
@@ -145,26 +145,26 @@ The Ecla parser handles the omitting of semicolons after conditional and loop st
 By tracking the state of the `IsEndOfBrace` field of the `Parser` structure, the parser skip the `EOL` check.  
 If a semicolon is still present, the parser will throw a `Warning` to notify the user that the semicolon is not needed.
 ### Error handling
-Here are the err handling methods used by the Ecla parser.
+Here are the error handling methods used by the Ecla parser.
 #### Error detection
 The detection of errors is done by the `Parser`, it is done in a failsafe way.  
-By making the err the first priority, if the `Parser` encounters an err, it will throw an err and stop the parsing process instead of continuing and throwing a panic.
-Furthermore, the `Parser` uses the centralised err handling system of the Ecla interpreter.
-#### Information about the err
-The `Parser` will throw an err with the following information :
+By making the error the first priority, if the `Parser` encounters an error, it will throw an error and stop the parsing process instead of continuing and throwing a panic.
+Furthermore, the `Parser` uses the centralised error handling system of the Ecla interpreter.
+#### Information about the error
+The `Parser` will throw an error with the following information :
 
-- The time of the err.
-- The type of the err.
-- The err message.
-- The line of the err.
-- The column of the err.
-- A little snippet of the source code around the err.
+- The time of the error.
+- The type of the error.
+- The error message.
+- The line of the error.
+- The column of the error.
+- A little snippet of the source code around the error.
 
 some information may be missing like the file name because it is not implemented yet.
 #### Error recovery
-Recovering from an err is not implemented yet but will be implemented in the future by using the `try` and `catch` keywords.
+Recovering from an error is not implemented yet but will be implemented in the future by using the `try` and `catch` keywords.
 #### Error reporting
-The err reporting is not implemented yet but will be implemented in the future by implementing logging.
+The error reporting is not implemented yet but will be implemented in the future by implementing logging.
 ### Performance
 Here are the performance metrics of the Ecla parser.
 #### Time complexity
