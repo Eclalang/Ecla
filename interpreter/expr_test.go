@@ -1232,3 +1232,154 @@ func Test_RunBodyFunction(t *testing.T) {
 	}
 
 }
+
+func Test_RunIndexableAccessExpr(t *testing.T) {
+	env := NewEnv()
+
+	bus := RunTree(
+		parser.VariableDecl{
+			Name: "testArray",
+			Type: "[]int",
+			Value: parser.ArrayLiteral{
+				Values: []parser.Expr{
+					parser.Literal{
+						Type:  lexer.INT,
+						Value: "0",
+					},
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunTree(
+		parser.IndexableAccessExpr{
+			VariableName: "testArray",
+			Indexes:      []parser.Expr{parser.Literal{Type: lexer.INT, Value: "0"}},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	if bus[0].GetVal().GetValue() != eclaType.Int(0) {
+		t.Error("Expected 0, got ", bus[0].GetVal())
+	}
+
+}
+
+func Test_RunAnonymousFunctionCallExpr(t *testing.T) {
+	env := NewEnv()
+
+	bus := RunTree(
+		parser.AnonymousFunctionCallExpr{
+			AnonymousFunction: parser.AnonymousFunctionExpr{
+				Prototype: parser.FunctionPrototype{
+					Parameters:  make([]parser.FunctionParams, 0),
+					ReturnTypes: []string{"int"},
+				},
+				Body: []parser.Node{
+					parser.VariableDecl{
+						Name: "test",
+						Type: parser.Int,
+						Value: parser.Literal{
+							Type:  lexer.INT,
+							Value: "1",
+						},
+					},
+					parser.ReturnStmt{
+						ReturnValues: []parser.Expr{
+							parser.Literal{
+								Type:  lexer.INT,
+								Value: "1",
+							},
+						},
+					},
+				},
+			},
+			Args: []parser.Expr{},
+		},
+		env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	if bus[0].GetVal() == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	if bus[0].GetVal().GetValue() != eclaType.Int(1) {
+		t.Error("Expected 1, got ", bus[0].GetVal().GetValue())
+	}
+}
+
+func Test_RunBlockStmt(t *testing.T) {
+	env := NewEnv()
+
+	bus := RunTree(
+		parser.BlockScopeStmt{
+			Body: []parser.Node{
+				parser.VariableDecl{
+					Name: "test",
+					Type: parser.Int,
+					Value: parser.Literal{
+						Type:  lexer.INT,
+						Value: "1",
+					},
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+}
+
+//TODO Test RunSelectorExpr
+
+func Test_RunStructInstantiationExpr(t *testing.T) {
+	env := NewEnv()
+
+	bus := RunTree(
+		parser.StructDecl{
+			Name: "testStruct",
+			Fields: []parser.StructField{
+				{
+					Name: "test",
+					Type: "int",
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	bus = RunTree(
+		parser.VariableDecl{
+			Name: "testStructVar",
+			Type: "testStruct",
+			Value: parser.StructInstantiationExpr{
+				Name: "testStruct",
+				Args: []parser.Expr{
+					parser.Literal{
+						Type:  lexer.INT,
+						Value: "0",
+					},
+				},
+			},
+		}, env)
+
+	if bus == nil {
+		t.Error("Expected bus to be non-nil")
+	}
+
+	if v, _ := env.Vars.Get("testStructVar"); v == nil {
+		t.Error("Expected testStructVar to be non-nil")
+	}
+
+}
