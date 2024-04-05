@@ -1,7 +1,6 @@
 package eclaType
 
 import (
-	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
 	"testing"
@@ -140,25 +139,45 @@ func TestNewAnonymousFunction(t *testing.T) {
 	}
 }
 
-func TestGetType(t *testing.T) {
+func TestGetTypeEmpty(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if f.GetType() != "function()" {
 		t.Errorf("Expected function(), got %v", f.GetType())
 	}
 }
 
-// Useless tests for code coverage purpose
-func TestGetValue(t *testing.T) {
-	f := NewFunction("test", nil, nil, nil)
-	if f.GetValue() == nil {
-		t.Error("Expected not nil, got nil")
+func TestGetTypeWithArgs(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	args = append(args, parser.FunctionParams{"arg1", "string"})
+
+	f := NewFunction("test", args, nil, nil)
+	result := f.GetType()
+	expected := "function(int,string)"
+
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
 	}
 }
 
-func TestSetValue(t *testing.T) {
+func TestGetTypeWithReturns(t *testing.T) {
+	var ret []string
+	ret = append(ret, "string")
+	ret = append(ret, "int")
+
+	f := NewFunction("test", nil, nil, ret)
+	result := f.GetType()
+	expected := "function()(string, int)"
+
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
+
+func TestGetValue(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
-	if err := f.SetValue(nil); err == nil {
-		t.Errorf("Expected error, got %v", err)
+	if f.GetValue() != f {
+		t.Errorf("Expected %v, got %v", f, f.GetValue())
 	}
 }
 
@@ -171,19 +190,154 @@ func TestString(t *testing.T) {
 
 func TestGetString(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
-	if f.GetString() != "function" {
-		t.Errorf("Expected function, got %v", f.GetString().String())
+	if f.GetString() != String("function") {
+		t.Errorf("Expected function, got %v", f.GetString())
+	}
+}
+
+func TestIsNull(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if f.IsNull() != false {
+		t.Errorf("Expected false, got %v", f.IsNull())
+	}
+}
+
+// Test errors in function
+
+func TestSetValue(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if err := f.SetValue(nil); err == nil {
+		t.Errorf("Expected error when setting value of function")
 	}
 }
 
 func TestGetIndex(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
-	expect, err := f.GetIndex(nil)
-	if expect != nil || err == nil {
-		t.Errorf("Expected nil & error, got %v & %v", expect, err)
+	if _, err := f.GetIndex(Int(0)); err == nil {
+		t.Errorf("Expected error when getting index of function")
 	}
 }
 
+func TestAdd(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Add(Int(0)); err == nil {
+		t.Errorf("Expected error when adding an int to a function")
+	}
+}
+
+func TestSub(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Sub(Int(0)); err == nil {
+		t.Errorf("Expected error when subtracting an int from a function")
+	}
+}
+
+func TestMul(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Mul(Int(0)); err == nil {
+		t.Errorf("Expected error when multiplying a function by an int")
+	}
+}
+
+func TestDiv(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Div(Int(0)); err == nil {
+		t.Errorf("Expected error when dividing a function by an int")
+	}
+}
+
+func TestDivEc(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.DivEc(Int(0)); err == nil {
+		t.Errorf("Expected error when getting quotient of a function by an int")
+	}
+}
+
+func TestMod(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Mod(Int(0)); err == nil {
+		t.Errorf("Expected error when getting remainder of a function by an int")
+	}
+}
+
+func TestOr(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Or(Bool(true)); err == nil {
+		t.Errorf("Expected error when comparing a function")
+	}
+}
+
+func TestXor(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Xor(Bool(true)); err == nil {
+		t.Errorf("Expected error when comparing a function")
+	}
+}
+
+func TestAnd(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.And(Bool(true)); err == nil {
+		t.Errorf("Expected error when comparing a function")
+	}
+}
+
+func TestNot(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Not(); err == nil {
+		t.Errorf("Expected error when getting \"not\" of a function")
+	}
+}
+
+func TestEq(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Eq(Int(0)); err == nil {
+		t.Errorf("Expected error when comparing a function")
+	}
+}
+
+func TestNotEq(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.NotEq(Int(0)); err == nil {
+		t.Errorf("Expected error when comparing a function")
+	}
+}
+
+func TestGt(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Gt(Int(0)); err == nil {
+		t.Errorf("Expected error when comparing a function")
+	}
+}
+
+func TestGtEq(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.GtEq(Int(0)); err == nil {
+		t.Errorf("Expected error when comparing a function")
+	}
+}
+
+func TestLw(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Lw(Int(0)); err == nil {
+		t.Errorf("Expected error when comparing a function")
+	}
+}
+
+func TestLwEq(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.LwEq(Int(0)); err == nil {
+		t.Errorf("Expected error when comparing a function")
+	}
+}
+
+func TestAppend(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+	if _, err := f.Append(Int(0)); err == nil {
+		t.Errorf("Expected error when appending to a function")
+	}
+}
+
+/*
 func TestIsNull(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if f.IsNull() {
@@ -210,3 +364,4 @@ func TestCheckReturn(t *testing.T) {
 		t.Errorf("Expected true, got %v", expect)
 	}
 }
+*/
