@@ -1,6 +1,7 @@
 package eclaType
 
 import (
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
 	"testing"
@@ -61,7 +62,7 @@ func TestNewFunction(t *testing.T) {
 
 	//test return
 	if len(f.Return) != 1 {
-		t.Errorf("Expected exactly 1 set of return types, got %d", len(f.Args))
+		t.Errorf("Expected exactly 1 set of return types, got %d", len(f.Return))
 	}
 	for i, r := range f.Return["int"] {
 		if r != ret[i] {
@@ -71,7 +72,7 @@ func TestNewFunction(t *testing.T) {
 
 	//test body
 	if len(f.Body) != 1 {
-		t.Errorf("Expected exactly 1 body, got %d", len(f.Args))
+		t.Errorf("Expected exactly 1 body, got %d", len(f.Body))
 	}
 	for i, b := range f.Body["int"] {
 		if b != body[i] {
@@ -120,7 +121,7 @@ func TestNewAnonymousFunction(t *testing.T) {
 
 	//test return
 	if len(f.Return) != 1 {
-		t.Errorf("Expected exactly 1 set of return types, got %d", len(f.Args))
+		t.Errorf("Expected exactly 1 set of return types, got %d", len(f.Return))
 	}
 	for i, r := range f.Return["int"] {
 		if r != ret[i] {
@@ -130,7 +131,7 @@ func TestNewAnonymousFunction(t *testing.T) {
 
 	//test body
 	if len(f.Body) != 1 {
-		t.Errorf("Expected exactly 1 body, got %d", len(f.Args))
+		t.Errorf("Expected exactly 1 body, got %d", len(f.Body))
 	}
 	for i, b := range f.Body["int"] {
 		if b != body[i] {
@@ -139,14 +140,68 @@ func TestNewAnonymousFunction(t *testing.T) {
 	}
 }
 
-func TestGetTypeEmpty(t *testing.T) {
+func TestAddOverload(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	var ret []string
+	ret = append(ret, "string")
+	var body []parser.Node
+	body = append(
+		body, parser.Literal{
+			lexer.Token{
+				"type",
+				"val",
+				0,
+				0},
+			"type",
+			"val"})
+
+	f := NewFunction("test", nil, nil, nil)
+	if f == nil {
+		t.Errorf("Error when creating function")
+	}
+
+	f.AddOverload(args, body, ret)
+
+	//test args
+	if len(f.Args) != 2 {
+		t.Errorf("Expected exactly 2 set of arguments, got %d", len(f.Args))
+	}
+	for i, arg := range f.Args[1] {
+		if arg != args[i] {
+			t.Errorf("Expected %v, got %v", args[i], arg)
+		}
+	}
+
+	//test return
+	if len(f.Return) != 2 {
+		t.Errorf("Expected exactly 2 set of return types, got %d", len(f.Return))
+	}
+	for i, r := range f.Return["int"] {
+		if r != ret[i] {
+			t.Errorf("Expected %v, got %v", ret[i], r)
+		}
+	}
+
+	//test body
+	if len(f.Body) != 2 {
+		t.Errorf("Expected exactly 2 bodies, got %d", len(f.Body))
+	}
+	for i, b := range f.Body["int"] {
+		if b != body[i] {
+			t.Errorf("Expected %v, got %v", body[i], b)
+		}
+	}
+}
+
+func TestGetTypeEmptyFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if f.GetType() != "function()" {
 		t.Errorf("Expected function(), got %v", f.GetType())
 	}
 }
 
-func TestGetTypeWithArgs(t *testing.T) {
+func TestGetTypeWithArgsFunction(t *testing.T) {
 	var args []parser.FunctionParams
 	args = append(args, parser.FunctionParams{"arg0", "int"})
 	args = append(args, parser.FunctionParams{"arg1", "string"})
@@ -160,7 +215,7 @@ func TestGetTypeWithArgs(t *testing.T) {
 	}
 }
 
-func TestGetTypeWithReturns(t *testing.T) {
+func TestGetTypeWithReturnsFunction(t *testing.T) {
 	var ret []string
 	ret = append(ret, "string")
 	ret = append(ret, "int")
@@ -174,176 +229,291 @@ func TestGetTypeWithReturns(t *testing.T) {
 	}
 }
 
-func TestGetValue(t *testing.T) {
+func TestGetValueFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if f.GetValue() != f {
 		t.Errorf("Expected %v, got %v", f, f.GetValue())
 	}
 }
 
-func TestString(t *testing.T) {
+func TestStringFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if f.String() != "function" {
 		t.Errorf("Expected function, got %v", f.String())
 	}
 }
 
-func TestGetString(t *testing.T) {
+func TestGetStringFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if f.GetString() != String("function") {
 		t.Errorf("Expected function, got %v", f.GetString())
 	}
 }
 
-func TestIsNull(t *testing.T) {
+func TestIsNullFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if f.IsNull() != false {
 		t.Errorf("Expected false, got %v", f.IsNull())
 	}
 }
 
+func TestGetSizeFunction(t *testing.T) {
+	f := NewFunction("test", nil, nil, nil)
+
+	expected := utils.Sizeof(f)
+	result := f.GetSize()
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+}
+
+func TestGetBodySimple(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	var body []parser.Node
+	body = append(
+		body, parser.Literal{
+			lexer.Token{
+				"type",
+				"val",
+				0,
+				0},
+			"type",
+			"val"})
+
+	f := NewFunction("test", args, body, nil)
+
+	if len(f.GetBody()) != 1 {
+		t.Errorf("Expected exactly 1 body, got %d", len(f.Body))
+	}
+	for i, b := range f.GetBody() {
+		if b != body[i] {
+			t.Errorf("Expected %v, got %v", body[i], b)
+		}
+	}
+}
+
+func TestGetBodyOverload(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	var body []parser.Node
+	body = append(
+		body, parser.Literal{
+			lexer.Token{
+				"type",
+				"val",
+				0,
+				0},
+			"type",
+			"val"})
+
+	f := NewFunction("test", args, body, nil)
+	f.AddOverload(nil, nil, nil)
+
+	if len(f.GetBody()) != 1 {
+		t.Errorf("Expected exactly 1 bodies, got %d", len(f.GetBody()))
+	}
+	for i, b := range f.GetBody() {
+		if b != body[i] {
+			t.Errorf("Expected %v, got %v", body[i], b)
+		}
+	}
+}
+
+func TestGetReturnSimple(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	var ret []string
+	ret = append(ret, "string")
+
+	f := NewFunction("test", args, nil, ret)
+
+	if len(f.GetReturn()) != 1 {
+		t.Errorf("Expected exactly 1 body, got %d", len(f.Return))
+	}
+	for i, r := range f.GetReturn() {
+		if r != ret[i] {
+			t.Errorf("Expected %v, got %v", ret[i], r)
+		}
+	}
+}
+
+func TestGetReturnOverload(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	var ret []string
+	ret = append(ret, "string")
+
+	f := NewFunction("test", args, nil, ret)
+	f.AddOverload(nil, nil, nil)
+
+	if len(f.GetReturn()) != 1 {
+		t.Errorf("Expected exactly 1 bodies, got %d", len(f.GetReturn()))
+	}
+	for i, r := range f.GetReturn() {
+		if r != ret[i] {
+			t.Errorf("Expected %v, got %v", ret[i], r)
+		}
+	}
+}
+
 // Test errors in function
 
-func TestSetValue(t *testing.T) {
+func TestSetValueFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if err := f.SetValue(nil); err == nil {
 		t.Errorf("Expected error when setting value of function")
 	}
 }
 
-func TestGetIndex(t *testing.T) {
+func TestGetIndexFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.GetIndex(Int(0)); err == nil {
 		t.Errorf("Expected error when getting index of function")
 	}
 }
 
-func TestAdd(t *testing.T) {
+func TestAddFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Add(Int(0)); err == nil {
 		t.Errorf("Expected error when adding an int to a function")
 	}
 }
 
-func TestSub(t *testing.T) {
+func TestSubFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Sub(Int(0)); err == nil {
 		t.Errorf("Expected error when subtracting an int from a function")
 	}
 }
 
-func TestMul(t *testing.T) {
+func TestMulFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Mul(Int(0)); err == nil {
 		t.Errorf("Expected error when multiplying a function by an int")
 	}
 }
 
-func TestDiv(t *testing.T) {
+func TestDivFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Div(Int(0)); err == nil {
 		t.Errorf("Expected error when dividing a function by an int")
 	}
 }
 
-func TestDivEc(t *testing.T) {
+func TestDivEcFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.DivEc(Int(0)); err == nil {
 		t.Errorf("Expected error when getting quotient of a function by an int")
 	}
 }
 
-func TestMod(t *testing.T) {
+func TestModFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Mod(Int(0)); err == nil {
 		t.Errorf("Expected error when getting remainder of a function by an int")
 	}
 }
 
-func TestOr(t *testing.T) {
+func TestOrFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Or(Bool(true)); err == nil {
 		t.Errorf("Expected error when comparing a function")
 	}
 }
 
-func TestXor(t *testing.T) {
+func TestXorFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Xor(Bool(true)); err == nil {
 		t.Errorf("Expected error when comparing a function")
 	}
 }
 
-func TestAnd(t *testing.T) {
+func TestAndFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.And(Bool(true)); err == nil {
 		t.Errorf("Expected error when comparing a function")
 	}
 }
 
-func TestNot(t *testing.T) {
+func TestNotFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Not(); err == nil {
 		t.Errorf("Expected error when getting \"not\" of a function")
 	}
 }
 
-func TestEq(t *testing.T) {
+func TestEqFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Eq(Int(0)); err == nil {
 		t.Errorf("Expected error when comparing a function")
 	}
 }
 
-func TestNotEq(t *testing.T) {
+func TestNotEqFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.NotEq(Int(0)); err == nil {
 		t.Errorf("Expected error when comparing a function")
 	}
 }
 
-func TestGt(t *testing.T) {
+func TestGtFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Gt(Int(0)); err == nil {
 		t.Errorf("Expected error when comparing a function")
 	}
 }
 
-func TestGtEq(t *testing.T) {
+func TestGtEqFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.GtEq(Int(0)); err == nil {
 		t.Errorf("Expected error when comparing a function")
 	}
 }
 
-func TestLw(t *testing.T) {
+func TestLwFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Lw(Int(0)); err == nil {
 		t.Errorf("Expected error when comparing a function")
 	}
 }
 
-func TestLwEq(t *testing.T) {
+func TestLwEqFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.LwEq(Int(0)); err == nil {
 		t.Errorf("Expected error when comparing a function")
 	}
 }
 
-func TestAppend(t *testing.T) {
+func TestAppendFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	if _, err := f.Append(Int(0)); err == nil {
 		t.Errorf("Expected error when appending to a function")
 	}
 }
 
-/*
-func TestIsNull(t *testing.T) {
+func TestLenFunction(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
-	if f.IsNull() {
-		t.Errorf("Expected false, got %v", f.IsNull())
+	if _, err := f.Len(); err == nil {
+		t.Errorf("Expected error when getting length of a function")
 	}
 }
+
+func TestOverrideError(t *testing.T) {
+	/*
+		var args []parser.FunctionParams
+		args = append(args, parser.FunctionParams{"arg0", "int"})
+		f := NewFunction("test", args, nil, nil)
+		args = append(args, parser.FunctionParams{"arg1", "int"})
+
+		err := f.Override(args, nil, nil)
+		if err == nil {
+			t.Errorf("Expected error when overriding non-existing prototype")
+		}
+	*/
+}
+
+/*
 
 func TestTypeAndNumberOfArgsIsCorrect(t *testing.T) {
 	var structDecl []eclaDecl.TypeDecl
