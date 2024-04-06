@@ -357,6 +357,94 @@ func TestGetReturnOverload(t *testing.T) {
 	}
 }
 
+func TestOverride(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	f := NewFunction("test", args, nil, nil)
+
+	var ret []string
+	ret = append(ret, "string")
+	var body []parser.Node
+	body = append(
+		body, parser.Literal{
+			lexer.Token{
+				"type",
+				"val",
+				0,
+				0},
+			"type",
+			"val"})
+
+	err := f.Override(args, body, ret)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//test return
+	if len(f.Return) != 1 {
+		t.Errorf("Expected exactly 1 set of return types, got %d", len(f.Return))
+	}
+	for i, r := range f.Return["int"] {
+		if r != ret[i] {
+			t.Errorf("Expected %v, got %v", ret[i], r)
+		}
+	}
+
+	//test body
+	if len(f.Body) != 1 {
+		t.Errorf("Expected exactly 1 body, got %d", len(f.Body))
+	}
+	for i, b := range f.Body["int"] {
+		if b != body[i] {
+			t.Errorf("Expected %v, got %v", body[i], b)
+		}
+	}
+}
+
+func TestGetIndexOfArgsFalse(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "char"})
+	var types []Type
+	types = append(types, Int(0))
+
+	f := NewAnonymousFunction(args, nil, nil)
+
+	result := f.GetIndexOfArgs(types)
+	if result != -1 {
+		t.Errorf("Expected -1, got %d", result)
+	}
+}
+
+func TestGetIndexOfArgsSimple(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+
+	f := NewAnonymousFunction(args, nil, nil)
+
+	var types []Type
+	types = append(types, Int(0))
+
+	result := f.GetIndexOfArgs(types)
+	if result != 0 {
+		t.Errorf("Expected 0, got %d", result)
+	}
+}
+
+func TestGetIndexOfArgsWithAny(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", parser.Any})
+
+	f := NewAnonymousFunction(args, nil, nil)
+
+	var types []Type
+	types = append(types, Int(0))
+
+	result := f.GetIndexOfArgs(types)
+	if result != 0 {
+		t.Errorf("Expected 0, got %d", result)
+	}
+}
+
 // Test errors in function
 
 func TestSetValueFunction(t *testing.T) {
@@ -512,7 +600,6 @@ func TestOverrideError(t *testing.T) {
 }
 
 /*
-
 func TestTypeAndNumberOfArgsIsCorrect(t *testing.T) {
 	var structDecl []eclaDecl.TypeDecl
 	f := NewFunction("test", nil, nil, nil)
