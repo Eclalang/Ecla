@@ -500,17 +500,15 @@ func TestLenFunction(t *testing.T) {
 }
 
 func TestOverrideError(t *testing.T) {
-	/*
-		var args []parser.FunctionParams
-		args = append(args, parser.FunctionParams{"arg0", "int"})
-		f := NewFunction("test", args, nil, nil)
-		args = append(args, parser.FunctionParams{"arg1", "int"})
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	f := NewFunction("test", args, nil, nil)
+	args = append(args, parser.FunctionParams{"arg1", "string"})
 
-		err := f.Override(args, nil, nil)
-		if err == nil {
-			t.Errorf("Expected error when overriding non-existing prototype")
-		}
-	*/
+	err := f.Override(args, nil, nil)
+	if err == nil {
+		t.Errorf("Expected error when overriding non-existing prototype")
+	}
 }
 
 /*
