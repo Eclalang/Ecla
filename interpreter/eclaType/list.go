@@ -293,8 +293,8 @@ func (l *List) Xor(other Type) (Type, error) {
 func (l *List) Append(other Type) (Type, error) {
 	switch other.(type) {
 	case *List:
-		if l.Typ == other.(*List).Typ {
-			l.Value = append(l.Value, other.(*List).Value...)
+		if other.(*List).Typ == l.GetValueType() {
+			l.Value = append(l.Value, other.(*List))
 			return l, nil
 		}
 		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char ||
@@ -304,12 +304,12 @@ func (l *List) Append(other Type) (Type, error) {
 	case *Any:
 		return l.Append(other.(*Any).Value)
 	default:
-		if other.GetType() == l.Typ[2:] {
+		if other.GetType() == l.GetValueType() {
 			l.Value = append(l.Value, other)
 			return l, nil
 		}
 	}
-	return nil, errors.New("cannot append to list with " + other.String())
+	return nil, errors.New("cannot append " + other.GetType() + " to list of " + l.GetValueType())
 }
 
 func (l *List) IsNull() bool {
