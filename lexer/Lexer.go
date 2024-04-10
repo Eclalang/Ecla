@@ -1,6 +1,8 @@
 package lexer
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type ReadingType int
 
@@ -75,6 +77,7 @@ func (l *TLexer) Step() {
 					l.tempVal = l.tempVal[:len(l.tempVal)-l.sizeOfTokenReversed]
 					l.position -= 1
 					l.AddToken(TEXT)
+					l.isSpaces = false
 					l.position += 1
 					l.tempVal = temp
 				}
@@ -199,6 +202,7 @@ func Lexer(sentence string) []Token {
 		maxLen:              -1,
 		sizeOfTokenReversed: -1,
 	}
+	sentence = trimBSR(sentence)
 	Lex.allTokenType = BuildEvery()
 	//println("\n---------------------\n-----PRINT DEBUG-----\n---------------------\n")
 	Lex.SetSentence(sentence)
@@ -217,7 +221,18 @@ func Lexer(sentence string) []Token {
 	}
 	Lex.AddToken(EOF)
 	//println("\n---------------------\n---FIN PRINT DEBUG---\n---------------------")
+
 	return Lex.Ret()
+}
+
+func trimBSR(sentence string) string {
+	var ret string = ""
+	for _, v := range sentence {
+		if v != '\r' {
+			ret += string(v)
+		}
+	}
+	return ret
 }
 
 func (l *TLexer) DEBUGLEXER(s string) {

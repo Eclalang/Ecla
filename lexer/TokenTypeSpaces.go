@@ -44,7 +44,6 @@ var (
 		Syntax: []string{
 			" ",
 			"\t",
-			"\r",
 		},
 	}
 	RETURN = TokenTypeSpacesBehavior{

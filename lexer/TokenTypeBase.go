@@ -249,10 +249,10 @@ var (
 			"9",
 		},
 		Involved: []ITokenType{
-			&SELF, &CFLOAT,
+			&SELF, &CFLOAT, &BTEXT,
 		},
 		Result: []TokenTypeCompositeBehavior{
-			CINT, CFLOAT,
+			CINT, CFLOAT, CTEXT,
 		},
 	}
 	BADD = TokenTypeBaseBehavior{
@@ -360,6 +360,10 @@ var (
 	}
 	BCOMMENTGROUPEND = TokenTypeBaseBehavior{
 		Name:   COMMENTGROUP + "END",
+		Syntax: []string{},
+	}
+	BTEXT = TokenTypeBaseBehavior{
+		Name:   TEXT,
 		Syntax: []string{},
 	}
 )

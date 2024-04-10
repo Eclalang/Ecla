@@ -82,4 +82,7 @@ var (
 	CCOMMENTGROUPEND = TokenTypeCompositeBehavior{
 		Name: COMMENTGROUP + "END",
 	}
+	CTEXT = TokenTypeCompositeBehavior{
+		Name: TEXT,
+	}
 )

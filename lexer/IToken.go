@@ -105,6 +105,7 @@ var (
 		&BLSS,
 		&BGTR,
 		&BCOMMENTGROUPEND,
+		&BTEXT,
 	}
 	Trigger []*TokenTypeTriggerBehavior = []*TokenTypeTriggerBehavior{
 		&TDQUOTE,
