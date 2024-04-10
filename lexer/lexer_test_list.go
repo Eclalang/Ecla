@@ -400,10 +400,6 @@ var (
 			},
 		},
 	}
-	testCHARSTRING3 = testList{
-		input:  `'\'' and '\"' and "\"" and "\'"`,
-		output: []Token{},
-	}
 	testEOL = testList{
 		input: "();\nmgrlgrl;\n_aa_",
 		output: []Token{
@@ -462,91 +458,85 @@ var (
 			},
 		},
 	}
-	testHashtag = testList{
-		input: "prout# in comment\n#/ in commentgroup\n and next ligne\n and test for / and #/ /#\nOutside of the comment group",
+	testHashtag0 = testList{
+		input: "# in comment ",
 		output: []Token{
 			{
-				TokenType: TEXT,
-				Value:     "prout",
+				TokenType: COMMENT,
+				Value:     "# in comment ",
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  14,
+				Line:      1,
+			},
+		},
+	}
+	testHashtag1 = testList{
+		input: "#comment\n# comment\n# comment ##\n\n",
+		output: []Token{
+			{
+				TokenType: COMMENT,
+				Value:     "#comment",
 				Position:  1,
 				Line:      1,
 			},
 			{
 				TokenType: COMMENT,
-				Value:     " in comment",
-				Position:  6,
-				Line:      1,
-			},
-			{
-				TokenType: COMMENTGROUP,
-				Value:     " in commentgroup\n and next ligne\n and test for / and #/ ",
+				Value:     `# comment`,
 				Position:  1,
 				Line:      2,
 			},
 			{
-				TokenType: TEXT,
-				Value:     `Outside`,
-				Position:  1,
-				Line:      5,
-			},
-			{
-				TokenType: TEXT,
-				Value:     `of`,
-				Position:  9,
-				Line:      5,
-			},
-			{
-				TokenType: TEXT,
-				Value:     `the`,
-				Position:  12,
-				Line:      5,
-			},
-			{
-				TokenType: TEXT,
-				Value:     `comment`,
-				Position:  16,
-				Line:      5,
-			},
-			{
-				TokenType: TEXT,
-				Value:     `group`,
-				Position:  24,
-				Line:      5,
+				TokenType: COMMENT,
+				Value: `# comment ##
+`,
+				Position: 1,
+				Line:     3,
 			},
 			{
 				TokenType: EOF,
 				Value:     ``,
-				Position:  29,
+				Position:  1,
 				Line:      5,
 			},
 		},
 	}
 	testHashtag2 = testList{
-		input: "prout# in comment\n#/ in commentgroup\n and next ligne\n and test for / and #/",
+		input: "/# #/ \n /# /#",
 		output: []Token{
 			{
-				TokenType: TEXT,
-				Value:     `prout`,
+				TokenType: DIV,
+				Value:     `/`,
 				Position:  1,
-				Line:      1,
-			},
-			{
-				TokenType: COMMENT,
-				Value:     ` in comment`,
-				Position:  6,
 				Line:      1,
 			},
 			{
 				TokenType: COMMENTGROUP,
-				Value:     " in commentgroup\n and next ligne\n and test for / and #/",
-				Position:  1,
+				Value:     "# #/ \n /#",
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: DIV,
+				Value:     `/`,
+				Position:  5,
+				Line:      2,
+			},
+			{
+				TokenType: COMMENT,
+				Value:     `#`,
+				Position:  6,
 				Line:      2,
 			},
 			{
 				TokenType: EOF,
 				Value:     ``,
-				Position:  22,
-				Line:      4,
+				Position:  7,
+				Line:      2,
 			},
 		},
 	}
@@ -631,6 +621,29 @@ var (
 			},
 		},
 	}
+	testHashtag6 = testList{
+		input: " #/ #/# ok",
+		output: []Token{
+			{
+				TokenType: COMMENTGROUP,
+				Value:     `#/ #/#`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: TEXT,
+				Value:     "ok",
+				Position:  9,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  11,
+				Line:      1,
+			},
+		},
+	}
 	testBoolOpperand = testList{
 		input: "&& || ^ \"&& || ^\"",
 		output: []Token{
@@ -707,7 +720,7 @@ var (
 			},
 			{
 				TokenType: STRING,
-				Value:     "hello\n",
+				Value:     "hello",
 				Position:  7,
 				Line:      1,
 			},
@@ -734,6 +747,219 @@ var (
 				Value:     ``,
 				Position:  8,
 				Line:      2,
+			},
+		},
+	}
+	testCondInParen = testList{
+		input: "import \"console\";\n\n# this is a comment\n\n#/ this is a block comment /#\n\nconsole.println(\"Hello, World!\");",
+		output: []Token{
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      2,
+			},
+		},
+	}
+	testCommentGroup = testList{
+		input: "#//# ok",
+		output: []Token{
+			{
+				TokenType: COMMENTGROUP,
+				Value:     `#//#`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: TEXT,
+				Value:     `ok`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      1,
+			},
+		},
+	}
+	testComment = testList{
+		input: "# ------------\nok",
+		output: []Token{
+			{
+				TokenType: COMMENTGROUP,
+				Value:     `#//#`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: TEXT,
+				Value:     `ok`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      1,
+			},
+		},
+	}
+	testComment2 = testList{
+		input: "#ok ok\nok",
+		output: []Token{
+			{
+				TokenType: COMMENTGROUP,
+				Value:     `#//#`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: TEXT,
+				Value:     `ok`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      1,
+			},
+		},
+	}
+	testEmptyString = testList{
+		input: "\"\";",
+		output: []Token{
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: EOL,
+				Value:     `;`,
+				Position:  3,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  4,
+				Line:      1,
+			},
+		},
+	}
+	testStringWithBSlash = testList{
+		input: "\"\\\"\\\"\"",
+		output: []Token{
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     `\"\"`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  7,
+				Line:      1,
+			},
+		},
+	}
+	testBSlashstring = testList{
+		input: "\\\\ \"\\\\\"",
+		output: []Token{
+			{
+				TokenType: TEXT,
+				Value:     `\\`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  4,
+				Line:      1,
+			},
+			{
+				TokenType: STRING,
+				Value:     `\\`,
+				Position:  5,
+				Line:      1,
+			},
+			{
+				TokenType: DQUOTE,
+				Value:     `"`,
+				Position:  7,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      1,
+			},
+		},
+	}
+
+	testHshTagminus = testList{
+		input: " table2 ",
+		output: []Token{
+			{
+				TokenType: TEXT,
+				Value:     `table2`,
+				Position:  2,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  9,
+				Line:      1,
+			},
+		},
+	}
+	testHeHo = testList{
+		input: "console.println(\n\"this is a the first program wrote using the ECLA programming language\\nit is a brainfuck interpreter\\nThe next line should be HelloWorld!\"\n);\nok",
+		output: []Token{
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  1,
+				Line:      1,
+			},
+		},
+	}
+	testDump = testList{
+		input: "",
+		output: []Token{
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  1,
+				Line:      1,
 			},
 		},
 	}

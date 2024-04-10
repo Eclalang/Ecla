@@ -15,4 +15,5 @@ require (
 	github.com/Eclalang/regex v1.0.1 // indirect
 	github.com/Eclalang/strings v1.0.0 // indirect
 	github.com/Eclalang/time v1.0.1 // indirect
+
 )
