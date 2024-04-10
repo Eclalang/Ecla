@@ -6,13 +6,78 @@ import (
 	"testing"
 )
 
-var t = lexer.Lexer("import \"console\";")
+var tok = lexer.Lexer("import \"console\";")
 var unresolved1Tokens = lexer.Lexer("console.println(\"not working\");")
 var unresolved2Tokens = lexer.Lexer("console.println(\"not working\");math.abs(-10);")
 var helloWorld = lexer.Lexer("import \"console\";console.println(\"Hello, World!\");")
 var eol = lexer.Lexer("{};")
+
+var nodesTok = [][]lexer.Token{
+	lexer.Lexer(`mgrlgrl;`),
+	lexer.Lexer(`{}`),
+	lexer.Lexer(`1+1;`),
+	lexer.Lexer(`var test string;`),
+	lexer.Lexer(`var test int`),
+}
+
+var bodyTok = lexer.Lexer(`{
+console.println("Hello, World!");
+console.println("This is a test");
+
+var test string;
+var test2 int;
+var test3 bool;}`)
+
+var textTok = [][]lexer.Token{
+	// keyword
+	lexer.Lexer(`import "console";`),
+	// identifier
+	lexer.Lexer(`test();`),
+	// selector
+	lexer.Lexer(`console.println("Hello, World!");`),
+	// selector of a selector
+	lexer.Lexer(`data.transform.x;`),
+	// selector of a value returned by a function
+	lexer.Lexer(`getPoint(p).printSelf(p);`),
+	lexer.Lexer(`getPoint(p).x;`),
+	lexer.Lexer(`getPoint(p).x.y;`),
+}
+
+var blockTok = lexer.Lexer(`{
+console.println("Hello, World!");
+}`)
+
+var keywords = [][]lexer.Token{
+	lexer.Lexer(Var),
+	lexer.Lexer(Function + " test(){}"),
+	lexer.Lexer(Function + "(){}"),
+	lexer.Lexer(Return),
+	lexer.Lexer(If + " (true){}"),
+	lexer.Lexer(While + " (true){}"),
+	lexer.Lexer(For + " (i:=0,i<10,i++){}"),
+	lexer.Lexer(Import + " \"console\";"),
+	lexer.Lexer(Null),
+	lexer.Lexer(Murloc),
+	lexer.Lexer(Any),
+	lexer.Lexer(Struct + " test{}"),
+	lexer.Lexer("randomName"),
+}
+
 var e = errorHandler.NewHandler()
-var TestParser = Parser{Tokens: t, ErrorHandler: e}
+var TestParser = Parser{Tokens: tok, ErrorHandler: e}
+
+func resetWithTokens(parser *Parser, tokens []lexer.Token) {
+	parser.VarTypes = make(map[string]interface{})
+	for k, v := range VarTypes {
+		parser.VarTypes[k] = v
+	}
+	tempFile := new(File)
+	tempFile.ParseTree = new(AST)
+	parser.CurrentFile = tempFile
+	parser.Tokens = tokens
+	parser.TokenIndex = 0
+	parser.CurrentToken = parser.Tokens[0]
+}
 
 func TestParser_Step(t *testing.T) {
 	// save the current state of the parser
@@ -200,13 +265,129 @@ func TestParser_Parse(t *testing.T) {
 	if ok {
 		t.Errorf("Parse() raised an error when it should not")
 	}
+	e.RestoreExit()
 }
 
 func TestParser_ParseFile(t *testing.T) {
 	// save the current state of the parser
 	par := TestParser
-	par.Tokens = helloWorld
-	par.TokenIndex = 0
-	par.CurrentToken = par.Tokens[0]
+	resetWithTokens(&par, helloWorld)
 	par.ParseFile()
+}
+
+func TestParser_ParseNode(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+	// test the different nodes
+	// murloc node
+	resetWithTokens(&par, nodesTok[0])
+	par.ParseNode()
+	// block node
+	resetWithTokens(&par, nodesTok[1])
+	par.ParseNode()
+	// expression node
+	resetWithTokens(&par, nodesTok[2])
+	par.ParseNode()
+	// text node
+	resetWithTokens(&par, nodesTok[3])
+	par.ParseNode()
+	// text node without semicolon
+	// hook the error handler
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	e.HookExit(f)
+	resetWithTokens(&par, nodesTok[4])
+	par.ParseNode()
+	if !ok {
+		t.Errorf("ParseNode() did not raise the missing semicolon error")
+	}
+	e.RestoreExit()
+
+	// text node with endOfBrace turned On
+	resetWithTokens(&par, nodesTok[3])
+	par.IsEndOfBrace = true
+	par.ParseNode()
+	// check if the endOfBrace is turned off
+	if par.IsEndOfBrace {
+		t.Errorf("ParseNode() did not turn off the endOfBrace")
+	}
+}
+
+func TestParser_ParseBody(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+	resetWithTokens(&par, bodyTok)
+	// skip the first token since it is a brace
+	par.Step()
+	par.ParseBody()
+}
+
+func TestParser_ParseText(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	for _, v := range textTok {
+		resetWithTokens(&par, v)
+		par.ParseText()
+	}
+}
+
+func TestParser_ParseBlock(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+	resetWithTokens(&par, blockTok)
+	par.ParseBlock()
+}
+
+func TestParser_ParseKeyword(t *testing.T) {
+	// save the current state of the parser
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+
+	var f = func(i int) {
+	}
+	e.HookExit(f)
+
+	par := TestParser
+	for _, v := range keywords {
+		resetWithTokens(&par, v)
+		par.ParseKeyword()
+	}
+	e.RestoreExit()
+}
+
+func TestParser_ParseStructDecl(t *testing.T) {
+	// save the current state of the parser
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var f = func(i int) {
+	}
+	e.HookExit(f)
+
+	par := TestParser
+	resetWithTokens(&par, lexer.Lexer("struct test{}"))
+	par.ParseStructDecl()
+	// test the struct with type as name
+	resetWithTokens(&par, lexer.Lexer("struct int{}"))
+	par.ParseStructDecl()
+	// test the struct with built-in function as name
+	resetWithTokens(&par, lexer.Lexer("struct len{}"))
+	par.ParseStructDecl()
+	// test the struct with keyword as name
+	resetWithTokens(&par, lexer.Lexer("struct var{}"))
+	par.ParseStructDecl()
+	// test the struct with no name
+	resetWithTokens(&par, lexer.Lexer("struct ;{}"))
+	par.ParseStructDecl()
+	// test the struct without left brace
+	resetWithTokens(&par, lexer.Lexer("struct test 1 2{}"))
+	par.ParseStructDecl()
+	// test the struct without semicolon after the fields
+	resetWithTokens(&par, lexer.Lexer("struct test{test : int test2 : int}"))
+	par.ParseStructDecl()
+	// test the struct without semicolon after the fields 2
+	resetWithTokens(&par, lexer.Lexer("struct test{test : int; test2 : int}"))
+	par.ParseStructDecl()
+
+	e.RestoreExit()
 }
