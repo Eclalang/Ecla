@@ -493,7 +493,6 @@ var (
 			{
 				TokenType: COMMENT,
 				Value: `# comment ##
-
 `,
 				Position: 1,
 				Line:     3,
@@ -764,6 +763,52 @@ var (
 	}
 	testCommentGroup = testList{
 		input: "#//# ok",
+		output: []Token{
+			{
+				TokenType: COMMENTGROUP,
+				Value:     `#//#`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: TEXT,
+				Value:     `ok`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      1,
+			},
+		},
+	}
+	testComment = testList{
+		input: "# ------------\nok",
+		output: []Token{
+			{
+				TokenType: COMMENTGROUP,
+				Value:     `#//#`,
+				Position:  1,
+				Line:      1,
+			},
+			{
+				TokenType: TEXT,
+				Value:     `ok`,
+				Position:  6,
+				Line:      1,
+			},
+			{
+				TokenType: EOF,
+				Value:     ``,
+				Position:  8,
+				Line:      1,
+			},
+		},
+	}
+	testComment2 = testList{
+		input: "#ok ok\nok",
 		output: []Token{
 			{
 				TokenType: COMMENTGROUP,

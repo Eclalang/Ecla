@@ -67,11 +67,11 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 						}
 						l.indent[0].Resolve(l)
 					}
+
 					l.tempVal = ""
 					l.TriggerBy = ""
 					l.prevIndex = l.index
 				} else {
-
 					if triggerByToken.Name == "NULL" {
 						findNameInEveryTokenType(l.TriggerBy).Resolve(l)
 					} else {
@@ -94,7 +94,6 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 							l.prevIndex = l.index
 						} else {
 							IndentToken := findNameInMergerTokenType(NameFromGet(l.indent[0].Get()))
-
 							if NameFromGet(IndentToken.Get()) != "NULL" {
 								indexOfResultIndent := 0
 								if NameFromGet(IndentToken.Involved[0].Get()) == NameFromGet(l.lastStepToken.Get()) {
@@ -115,9 +114,27 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 									l.prevIndex = l.index
 								}
 							} else {
-								l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
-								l.tempVal = ""
-								l.prevIndex = l.index
+								IndentToken := findNameInSpacesTokenType(NameFromGet(l.indent[0].Get()))
+								if NameFromGet(IndentToken.Get()) != "NULL" {
+									if triggerByToken.IsClosedBySyntaxe(NameFromGet(IndentToken.Get())) != -1 {
+										l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+										l.TriggerBy = ""
+										l.tempVal = ""
+										l.prevIndex = l.index
+									} else {
+										l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+										l.tempVal = ""
+										l.prevIndex = l.index
+									}
+									l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+									l.tempVal = ""
+									l.prevIndex = l.index
+
+								} else {
+									l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+									l.tempVal = ""
+									l.prevIndex = l.index
+								}
 							}
 						}
 					}
@@ -151,7 +168,6 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 							l.prevIndex = l.index
 						} else {
 							IndentToken := findNameInMergerTokenType(NameFromGet(l.indent[0].Get()))
-
 							if NameFromGet(IndentToken.Get()) != "NULL" {
 								indexOfResultIndent := 0
 								if NameFromGet(IndentToken.Involved[0].Get()) == NameFromGet(l.lastStepToken.Get()) {
@@ -172,6 +188,23 @@ func (t *TokenTypeMergerBehavior) Resolve(l *TLexer) {
 									l.prevIndex = l.index
 								}
 							} else {
+								IndentToken := findNameInSpacesTokenType(NameFromGet(l.indent[0].Get()))
+								if NameFromGet(IndentToken.Get()) != "NULL" {
+									if t.IsClosedBySyntaxe(IndentToken.Syntax[0]) != -1 {
+										l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+										l.TriggerBy = ""
+										l.tempVal = ""
+										l.prevIndex = l.index
+									} else {
+										l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+										l.tempVal = ""
+										l.prevIndex = l.index
+									}
+								} else {
+									l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
+									l.tempVal = ""
+									l.prevIndex = l.index
+								}
 								l.ComposeToken(l.ret[(len(l.ret))-1].TokenType)
 								l.tempVal = ""
 								l.prevIndex = l.index

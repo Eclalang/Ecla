@@ -53,6 +53,15 @@ func findNameInBaseTokenType(name string) *TokenTypeBaseBehavior {
 	return &TokenTypeBaseBehavior{Name: "NULL"}
 }
 
+func findNameInSpacesTokenType(name string) *TokenTypeSpacesBehavior {
+	for _, tokenType := range Spaces {
+		if NameFromGet(tokenType.Get()) == name {
+			return tokenType
+		}
+	}
+	return &TokenTypeSpacesBehavior{Name: "NULL"}
+}
+
 func NameFromGet(Get []string) string {
 	return Get[len(Get)-1]
 }
