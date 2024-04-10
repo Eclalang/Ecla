@@ -10,6 +10,7 @@ var t = lexer.Lexer("import \"console\";")
 var unresolved1Tokens = lexer.Lexer("console.println(\"not working\");")
 var unresolved2Tokens = lexer.Lexer("console.println(\"not working\");math.abs(-10);")
 var helloWorld = lexer.Lexer("import \"console\";console.println(\"Hello, World!\");")
+var eol = lexer.Lexer("{};")
 var e = errorHandler.NewHandler()
 var TestParser = Parser{Tokens: t, ErrorHandler: e}
 
@@ -152,12 +153,15 @@ func TestParser_HandleFatal(t *testing.T) {
 func TestParser_DisableEOLChecking(t *testing.T) {
 	// save the current state of the parser
 	par := TestParser
+	par.Tokens = eol
+	par.TokenIndex = 0
 	par.Step()
 	lastToken := par.CurrentToken
 	par.DisableEOLChecking()
 	if par.CurrentToken == lastToken {
 		t.Errorf("DisableEOLChecking() did not change the current token")
 	}
+	par.MultiStep(2)
 	lastToken = par.CurrentToken
 	par.DisableEOLChecking()
 	if par.CurrentToken != lastToken {
@@ -196,4 +200,13 @@ func TestParser_Parse(t *testing.T) {
 	if ok {
 		t.Errorf("Parse() raised an error when it should not")
 	}
+}
+
+func TestParser_ParseFile(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+	par.Tokens = helloWorld
+	par.TokenIndex = 0
+	par.CurrentToken = par.Tokens[0]
+	par.ParseFile()
 }
