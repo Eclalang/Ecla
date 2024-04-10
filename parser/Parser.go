@@ -166,20 +166,15 @@ func (p *Parser) ParseNode() Node {
 		tempExpr := p.ParseExpr()
 		return tempExpr
 	} else {
-		if p.CurrentToken.Value == "\n" || p.CurrentToken.Value == "\r" {
-			p.HandleWarning("Nil node was added to the AST report the issue to the Ecla development team")
-			return nil
-		} else {
-			tempExpr := p.ParseText()
-			if p.CurrentToken.TokenType != lexer.EOL && !p.IsEndOfBrace {
-				p.PrintBacktrace()
-				p.HandleFatal("Expected semicolon at the end of the line")
-			}
-			if p.IsEndOfBrace {
-				p.IsEndOfBrace = false
-			}
-			return tempExpr
+		tempExpr := p.ParseText()
+		if p.CurrentToken.TokenType != lexer.EOL && !p.IsEndOfBrace {
+			p.PrintBacktrace()
+			p.HandleFatal("Expected semicolon at the end of the line")
 		}
+		if p.IsEndOfBrace {
+			p.IsEndOfBrace = false
+		}
+		return tempExpr
 	}
 }
 
