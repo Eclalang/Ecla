@@ -149,9 +149,9 @@ func NewFunction(Name string, args []parser.FunctionParams, body []parser.Node, 
 	argsList = append(argsList, args)
 	argsString := generateArgsString(args)
 	var returnMap = make(map[string][]string)
-	returnMap[argsString] = ret
+	returnMap[argsString] = ret // associating a set of return types with args for overloading
 	var bodyMap = make(map[string][]parser.Node)
-	bodyMap[argsString] = body
+	bodyMap[argsString] = body // associating a body with args for overloading
 	return &Function{
 		Name:            Name,
 		Args:            argsList,
