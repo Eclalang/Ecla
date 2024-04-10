@@ -1,7 +1,13 @@
 import "console";
 
-# this is a comment
+var hello string = "Hello";
+world := "World !";
 
-#/ this is a block comment /#
+var helloWorld string;
+helloWorld = hello + ", " + world;
 
-console.println("Hello, World!");
+function printHelloWorld() {
+    console.println(helloWorld);
+}
+
+printHelloWorld();
