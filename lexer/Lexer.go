@@ -1,9 +1,5 @@
 package lexer
 
-import (
-	"strconv"
-)
-
 type ReadingType int
 
 const (
@@ -51,14 +47,11 @@ func (l *TLexer) Ret() []Token {
 }
 
 func (l *TLexer) Step() {
-
 	if l.index < len(l.sentence) {
-
 		l.position++
 		l.index++
 		l.tempVal = l.sentence[l.prevIndex:l.index]
 		l.stepFind = l.IsSyntax()
-		l.DEBUGLEXER("STEP " + strconv.Itoa(l.index))
 		switch l.stepFind {
 		case NOTFOUND:
 

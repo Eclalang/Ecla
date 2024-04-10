@@ -7,9 +7,9 @@ type TokenTypeSpacesBehavior struct {
 
 func (t *TokenTypeSpacesBehavior) Resolve(l *TLexer) {
 	l.DEBUGLEXER("IN SPACES")
-	if (*l).TriggerBy != "" {
+	if (*l).TriggerBy != EMPTY.Name {
 		finded := findNameInEveryTokenType((*l).TriggerBy)
-		if NameFromGet(finded.Get()) != "NULL" {
+		if NameFromGet(finded.Get()) != NULL.Name {
 			finded.Resolve(l)
 		}
 
@@ -54,6 +54,10 @@ var (
 	}
 	SELF = TokenTypeSpacesBehavior{
 		Name:   "SELF",
+		Syntax: []string{},
+	}
+	NULL = TokenTypeSpacesBehavior{
+		Name:   "NULL",
 		Syntax: []string{},
 	}
 )

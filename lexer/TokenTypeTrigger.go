@@ -12,7 +12,7 @@ type TokenTypeTriggerBehavior struct {
 
 func (t *TokenTypeTriggerBehavior) Resolve(l *TLexer) {
 	l.DEBUGLEXER("IN TRIGGER")
-	if l.TriggerBy == "" {
+	if l.TriggerBy == EMPTY.Name {
 		l.TriggerBy = t.Name
 		(*l).AddToken(t.Name)
 		l.prevIndex = l.index

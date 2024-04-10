@@ -14,7 +14,7 @@ type TokenTypeBaseBehavior struct {
 func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 	index := -1
 	l.DEBUGLEXER("IN BASE")
-	if (*l).TriggerBy != "" {
+	if (*l).TriggerBy != EMPTY.Name {
 		// in Trigger By Behavior
 
 		// verify the previous token created (even in a merging situation) to detect for exemple the end of a
@@ -26,7 +26,7 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 			// Classic TriggerBy Behavior
 			finded := findNameInEveryTokenType(l.TriggerBy)
 
-			if NameFromGet(finded.Get()) != "NULL" {
+			if NameFromGet(finded.Get()) != NULL.Name {
 				findNameInEveryTokenType(l.TriggerBy).Resolve(l)
 			}
 		} else {
@@ -37,8 +37,8 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 			related := t.Result[index]
 			// update the lexer to acknoledge the new token to work with.
 
-			if NameFromGet(findNameInTriggerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" &&
-				NameFromGet(findNameInTriggerTokenType(l.TriggerBy).Get()) != "NULL" {
+			if NameFromGet(findNameInTriggerTokenType(NameFromGet(tempToken.Get())).Get()) != NULL.Name &&
+				NameFromGet(findNameInTriggerTokenType(l.TriggerBy).Get()) != NULL.Name {
 
 				triggerByToken := findNameInTriggerTokenType(NameFromGet(tempToken.Get()))
 				l.indent[0] = &related
@@ -47,8 +47,8 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 				l.TriggerBy = ""
 				// reset the reading head of our lexer.
 				l.prevIndex = l.index
-			} else if NameFromGet(findNameInMergerTokenType(NameFromGet(tempToken.Get())).Get()) != "NULL" &&
-				NameFromGet(findNameInMergerTokenType(l.TriggerBy).Get()) != "NULL" {
+			} else if NameFromGet(findNameInMergerTokenType(NameFromGet(tempToken.Get())).Get()) != NULL.Name &&
+				NameFromGet(findNameInMergerTokenType(l.TriggerBy).Get()) != NULL.Name {
 
 				triggerByToken := findNameInMergerTokenType(NameFromGet(tempToken.Get()))
 
@@ -89,9 +89,9 @@ func (t *TokenTypeBaseBehavior) Resolve(l *TLexer) {
 			finded, index = t.IsInvolvedWith(l)
 			if index != -1 {
 				// avoid compose with an ended merger or trigger token
-				if NameFromGet(findNameInMergerTokenType(NameFromGet(finded.Get())).Get()) != "NULL" {
+				if NameFromGet(findNameInMergerTokenType(NameFromGet(finded.Get())).Get()) != NULL.Name {
 					index = -1
-				} else if NameFromGet(findNameInTriggerTokenType(NameFromGet(finded.Get())).Get()) != "NULL" {
+				} else if NameFromGet(findNameInTriggerTokenType(NameFromGet(finded.Get())).Get()) != NULL.Name {
 					index = -1
 				}
 			}
@@ -124,7 +124,7 @@ func (t *TokenTypeBaseBehavior) InvolvedWith() []ITokenType {
 func (t *TokenTypeBaseBehavior) IsInvolvedWith(lexer *TLexer) (ITokenType, int) {
 	for i, token := range t.Involved {
 		if len(lexer.Ret())-1 >= 0 {
-			if token.Get()[len(token.Get())-1] == lexer.Ret()[len(lexer.Ret())-1].TokenType || (token.Get()[len(token.Get())-1] == "SELF" && t.Name == lexer.Ret()[len(lexer.Ret())-1].TokenType) {
+			if token.Get()[len(token.Get())-1] == lexer.Ret()[len(lexer.Ret())-1].TokenType || (token.Get()[len(token.Get())-1] == SELF.Name && t.Name == lexer.Ret()[len(lexer.Ret())-1].TokenType) {
 				return token, i
 			}
 		}
