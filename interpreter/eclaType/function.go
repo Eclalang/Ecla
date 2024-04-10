@@ -38,7 +38,7 @@ func (f *Function) GetType() string {
 	length := len(f.Args[0])
 	for i := 0; i < length-1; i++ {
 		typ += f.Args[0][i].Type
-		typ += ","
+		typ += ", "
 	}
 	if length > 0 {
 		typ += f.Args[0][length-1].Type
