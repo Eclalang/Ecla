@@ -192,7 +192,7 @@ func (f *Function) Override(args []parser.FunctionParams, body []parser.Node, re
 	for i, arg := range f.Args {
 		for j, argTyp := range arg {
 			isSameArgs = true
-			if argTyp.Type != args[j].Type {
+			if len(arg) != len(args) || argTyp.Type != args[j].Type {
 				isSameArgs = false
 				break
 			}

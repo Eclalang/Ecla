@@ -115,8 +115,8 @@ But if the input was :
 ```ecla
 import "con"+"sole";
 ```
-The method `ParseImportStmt` will throw an error.  
-In fact it is valid because you can concatenate strings but since the parser expects a static text and not an expression so it will throw an error.  
+The method `ParseImportStmt` will throw an error.
+In fact it is valid because you can concatenate strings but since the parser expects a static text and not an expression so it will throw an error.
 After the parsing operations step, the `Parser` will have built the AST and be ready to run the postprocessing step onto it.
 
 #### Postprocessing
