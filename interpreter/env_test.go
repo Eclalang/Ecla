@@ -70,18 +70,15 @@ func TestEnv_String(t *testing.T) {
 }
 
 func TestEnv_ReadFile(t *testing.T) {
-	s := readFile("scope.go")
+	s, _ := readFile("scope.go")
 	if s == "" {
 		t.Error("Expected a string, got empty string")
 	}
 
-	defer func() {
-		if r := recover(); r == nil {
-			t.Error("Expected a panic, got nil")
-		}
-	}()
-
-	readFile("nonexistentfile")
+	_, err := readFile("nonexistentfile")
+	if err == nil {
+		t.Error("Expected an error, got nil")
+	}
 
 }
 
