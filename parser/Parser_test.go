@@ -359,35 +359,167 @@ func TestParser_ParseKeyword(t *testing.T) {
 
 func TestParser_ParseStructDecl(t *testing.T) {
 	// save the current state of the parser
-	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var ok bool
 	var f = func(i int) {
+		ok = i == 1
 	}
 	e.HookExit(f)
 
 	par := TestParser
 	resetWithTokens(&par, lexer.Lexer("struct test{}"))
 	par.ParseStructDecl()
+	if ok {
+		t.Errorf("ParseStructDecl() raised an error when it should not")
+	}
+	ok = false
 	// test the struct with type as name
 	resetWithTokens(&par, lexer.Lexer("struct int{}"))
 	par.ParseStructDecl()
+	if !ok {
+		t.Errorf("ParseStructDecl() did not raise the invalid name error")
+	}
+	ok = false
 	// test the struct with built-in function as name
 	resetWithTokens(&par, lexer.Lexer("struct len{}"))
 	par.ParseStructDecl()
+	if !ok {
+		t.Errorf("ParseStructDecl() did not raise the invalid name error")
+	}
+	ok = false
 	// test the struct with keyword as name
 	resetWithTokens(&par, lexer.Lexer("struct var{}"))
 	par.ParseStructDecl()
+	if !ok {
+		t.Errorf("ParseStructDecl() did not raise the invalid name error")
+	}
+	ok = false
 	// test the struct with no name
 	resetWithTokens(&par, lexer.Lexer("struct ;{}"))
 	par.ParseStructDecl()
+	if !ok {
+		t.Errorf("ParseStructDecl() did not raise the invalid name error")
+	}
+	ok = false
 	// test the struct without left brace
 	resetWithTokens(&par, lexer.Lexer("struct test 1 2{}"))
 	par.ParseStructDecl()
+	if !ok {
+		t.Errorf("ParseStructDecl() did not raise the missing left brace error")
+
+	}
+	ok = false
 	// test the struct without semicolon after the fields
 	resetWithTokens(&par, lexer.Lexer("struct test{test : int test2 : int}"))
 	par.ParseStructDecl()
+	if !ok {
+		t.Errorf("ParseStructDecl() did not raise the missing semicolon error")
+
+	}
+	ok = false
 	// test the struct without semicolon after the fields 2
 	resetWithTokens(&par, lexer.Lexer("struct test{test : int; test2 : int}"))
 	par.ParseStructDecl()
+	if !ok {
+		t.Errorf("ParseStructDecl() did not raise the missing semicolon error")
+	}
+	ok = false
 
 	e.RestoreExit()
+}
+
+func TestParser_ParseStructField(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	e.HookExit(f)
+
+	resetWithTokens(&par, lexer.Lexer("test : int;"))
+	par.ParseStructField()
+	if ok {
+		t.Errorf("ParseStructField() raised an error when it should not")
+	}
+	ok = false
+	// test the field with no name
+	resetWithTokens(&par, lexer.Lexer(": int;"))
+	par.ParseStructField()
+	if !ok {
+		t.Errorf("ParseStructField() did not raise the invalid name error")
+	}
+	ok = false
+	// test the field with no type
+	resetWithTokens(&par, lexer.Lexer("test : ;"))
+	par.ParseStructField()
+	if !ok {
+		t.Errorf("ParseStructField() did not raise the invalid type error")
+	}
+	ok = false
+	// test the field with no colon
+	resetWithTokens(&par, lexer.Lexer("test int;"))
+	par.ParseStructField()
+	if !ok {
+		t.Errorf("ParseStructField() did not raise the missing colon error")
+	}
+	ok = false
+	// test the field with keyword as name
+	resetWithTokens(&par, lexer.Lexer("var : int;"))
+	par.ParseStructField()
+	if !ok {
+		t.Errorf("ParseStructField() did not raise the invalid name error")
+	}
+	ok = false
+	// test the field with built-in function as name
+	resetWithTokens(&par, lexer.Lexer("len : int;"))
+	par.ParseStructField()
+	if !ok {
+		t.Errorf("ParseStructField() did not raise the invalid name error")
+	}
+	ok = false
+	// test the field with type as name
+	resetWithTokens(&par, lexer.Lexer("int : int;"))
+	par.ParseStructField()
+	if !ok {
+		t.Errorf("ParseStructField() did not raise the invalid name error")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseIdent(t *testing.T) {
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var f = func(i int) {
+	}
+	e.HookExit(f)
+
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different identifiers
+	// a function call
+	resetWithTokens(&par, lexer.Lexer("test();"))
+	par.ParseIdent()
+	// a struct instanciation
+	resetWithTokens(&par, lexer.Lexer("TEST{}"))
+	par.VarTypes["TEST"] = "struct"
+	par.ParseIdent()
+	// a variable assignment with a selector
+	resetWithTokens(&par, lexer.Lexer("test.a = 1;"))
+	par.ParseIdent()
+	resetWithTokens(&par, lexer.Lexer("test.a;"))
+	par.ParseIdent()
+	// an implicit variable declaration
+	resetWithTokens(&par, lexer.Lexer("test := 1;"))
+	par.ParseIdent()
+	// a variable assignment
+	resetWithTokens(&par, lexer.Lexer("test = 1;"))
+	par.ParseIdent()
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseIfStmt(t *testing.T) {
+
 }

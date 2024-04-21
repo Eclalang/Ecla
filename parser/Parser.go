@@ -203,6 +203,7 @@ func (p *Parser) ParseText() Node {
 				exp := p.ParseSelector(tempNode.(Expr))
 				selectorDepth--
 				// check if exp.Expr is a Literal
+				// TODO: remove this line since it is not called and is handled in ParsePrimaryExpr
 				if _, ok := exp.(SelectorExpr).Expr.(Literal); ok {
 					p.CurrentFile.AddDependency(exp.(SelectorExpr).Expr.(Literal).Token.Value)
 				}
@@ -313,6 +314,7 @@ func (p *Parser) ParseStructDecl() Node {
 			p.Step()
 		}
 	}
+	// TODO: remove this condition since the for loop will stop when it reaches the RBRACE
 	if p.CurrentToken.TokenType != lexer.RBRACE {
 		p.HandleFatal("Expected '}' after struct fields")
 	}
@@ -376,6 +378,7 @@ func (p *Parser) ParseIdent() Node {
 	} else {
 		return p.ParseVariableAssign(nil)
 	}
+	// TODO: refactor this code to remove the last else statement
 	p.HandleFatal("Unknown identifier: " + p.CurrentToken.Value)
 	return nil
 }
