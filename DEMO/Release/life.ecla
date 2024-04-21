@@ -1,0 +1,118 @@
+import "console";
+import "math";
+import "time";
+import "cast";
+
+# Define the default size of the grid
+var rows int = 50;
+var cols int = 50;
+
+# Function to generate a random grid
+function generateRandomGrid() ([][]int) {
+    var grid [][]int;
+
+    for (i:=0, i<rows, i++) {
+        var row []int;
+        for (j:=0, j<cols, j++) {
+            time.sleep(1.1);
+            var randomNum float = math.random(0.0, 1.0);
+            if (randomNum < 0.5) {
+                row = row + [0]; # Dead cell
+            } else {
+                row = row + [1]; # Alive cell
+            }
+        }
+        grid = grid + [row];
+    }
+
+    return grid;
+}
+
+# Function to print the grid
+function printGrid(grid : [][]int) {
+    console.clear();
+    for (i, row range grid) {
+        for (j, cell range row) {
+            if (cell == 0) {
+                console.print("  "); # Dead cell
+            } else {
+                console.print("██"); # Alive cell
+            }
+        }
+        console.println("");
+    }
+}
+
+# Function to count the number of live neighbors for a cell
+function countLiveNeighbors(grid : [][]int, x : int, y : int) (int) {
+    var count int = 0;
+
+    # check all 8 neighbors of the cell using a double for loop
+    for (i:=-1, i<=1, i++) {
+        for (j:=-1, j<=1, j++) {
+            if (i != 0 || j != 0) {
+                var newX int = x + i;
+                var newY int = y + j;
+                if (newX >= 0 && newX < rows && newY >= 0 && newY < cols) {
+                    count = count + grid[newX][newY];
+                }
+            }
+        }
+    }
+    return count;
+}
+
+# Function to evolve the grid for one step
+function evolveGrid(grid : [][]int) ([][]int) {
+    var newGrid [][]int;
+
+    for (i, row range grid) {
+        var newRow []int;
+        for (j, cell range row) {
+            var liveNeighbors int = countLiveNeighbors(grid, i, j);
+            if (cell == 1) {
+                if (liveNeighbors < 2 || liveNeighbors > 3) {
+                    newRow = newRow + [0]; # Cell dies due to underpopulation or overpopulation
+                } else {
+                    newRow = newRow + [1]; # Cell survives
+                }
+            } else {
+                if (liveNeighbors == 3) {
+                    newRow = newRow + [1]; # Dead cell becomes alive due to reproduction
+                } else {
+                    newRow = newRow + [0]; # Dead cell remains dead
+                }
+            }
+        }
+        newGrid = newGrid + [newRow];
+    }
+
+    return newGrid;
+}
+
+# Main function
+function main() {
+    console.clear();
+    # prompt the user to enter the size of the grid
+    console.println("Enter the number of rows in the grid:");
+    rows = cast.atoi(console.input());
+    console.println("Enter the number of columns in the grid:");
+    cols = cast.atoi(console.input());
+
+    # Generate random initial grid
+    var grid [][]int = generateRandomGrid();
+
+    # Print initial grid
+    console.println("Initial Grid:");
+    printGrid(grid);
+
+    # Evolve the grid for 5 steps && print each step
+    for (step:=0, step<2000, step++) {
+        grid = evolveGrid(grid);
+        console.println("Step ", step+1, ":");
+        printGrid(grid);
+    }
+}
+
+# Run the main function
+main();
