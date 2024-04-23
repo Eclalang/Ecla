@@ -1,0 +1,290 @@
+import "console";
+import "math";
+import "time";
+import "cast";
+import "strings";
+import "os";
+
+# Define the default size of the grid
+var rows int = 50;
+var cols int = 50;
+
+# Grid padding
+var padding int = 10;
+
+# Function to decode pattern files and convert them into a grid
+function decodePatternFile(rows : int, cols : int, filename : string) ([][]int) {
+    # Read the pattern file
+    var fileData string = os.readFile(filename);
+    var grid [][]int;
+    # Split the file data by newline characters to get individual rows
+    var rowsData []string = strings.split(fileData, "\n");
+
+    # add top padding
+    for (i:=0, i<padding, i++) {
+        var row []int;
+        # add left padding
+        for (j:=0, j<cols+2*padding, j++) {
+            row = row + [0];
+        }
+        grid = grid + [row];
+    }
+    # Iterate over each row data
+    for (i, rowData range rowsData) {
+        # Skip comments (lines starting with '!')
+        if (len(rowData) > 0 && rowData[0] != '!') {
+            var row []int;
+            # add left padding
+            for (j:=0, j<padding, j++) {
+                row = row + [0];
+            }
+            # Iterate over each character in the row data
+            for (j, chara range rowData) {
+                if (chara == '.') {
+                    row = row + [0]; # Dead cell
+                } else if (chara == 'O') {
+                    row = row + [1]; # Alive cell
+                }
+            }
+            # add the rest of the row as dead cells
+            for (j:=len(row), j<cols+(padding*2), j++) {
+                row = row + [0];
+            }
+            grid = grid + [row];
+        }
+    }
+    # add the rest of the rows as dead cells
+    for (i:=len(grid), i<rows+(padding*2), i++) {
+        var row []int;
+        for (j:=0, j<cols+2*padding, j++) {
+            row = row + [0];
+        }
+        grid = grid + [row];
+    }
+    console.println(len(grid));
+    return grid;
+}
+
+# Function to generate a random grid
+function generateRandomGrid() ([][]int) {
+    var grid [][]int;
+
+    # add top padding
+    for (i:=0, i<padding, i++) {
+        var row []int;
+        # add left padding
+        for (j:=0, j<cols+2*padding, j++) {
+            row = row + [0];
+        }
+        grid = grid + [row];
+    }
+    for (i:=0, i<rows, i++) {
+        var row []int;
+        # add left padding
+        for (j:=0, j<padding, j++) {
+            row = row + [0];
+        }
+        for (j:=0, j<cols, j++) {
+            time.sleep(0.5);
+            var randomNum float = math.random(0.0, 1.0);
+            if (randomNum < 0.5) {
+                row = row + [0]; # Dead cell
+            } else {
+                row = row + [1]; # Alive cell
+            }
+        }
+        # add right padding
+        for (j:=cols+padding, j<cols+(padding*2), j++) {
+            row = row + [0];
+        }
+        grid = grid + [row];
+    }
+    # add bottom padding
+    for (i:=rows, i<rows+(padding*2), i++) {
+        var row []int;
+        # add left padding
+        for (j:=0, j<cols+2*padding, j++) {
+            row = row + [0];
+        }
+        grid = grid + [row];
+    }
+    return grid;
+}
+
+# Function to print the grid
+function printGrid(grid : [][]int) {
+    console.clear();
+    # draw a border around the grid
+    console.printInColor("\033[0;31m"+"+" + "-"*(2*cols) + "+"+"\n");
+    for (i, row range grid) {
+        console.printInColor("\033[0;31m"+"|");
+        for (j, cell range row) {
+            if (cell == 0) {
+                console.print("  "); # Dead cell
+            } else {
+                console.print("██"); # Alive cell
+            }
+        }
+        console.printInColor("\033[0;31m"+"|\n");
+    }
+    console.printInColor("\033[0;31m"+"+" + "-"*(2*cols) + "+"+"\n");
+}
+
+# Function to count the number of live neighbors for a cell
+function countLiveNeighbors(grid : [][]int, x : int, y : int) (int) {
+    var count int = 0;
+
+    # use if statements to check neighbors
+    if (x > 0) {
+        count = count + grid[x-1][y];
+    }
+    if (x < rows-1) {
+        count = count + grid[x+1][y];
+    }
+    if (y > 0) {
+        count = count + grid[x][y-1];
+    }
+    if (y < cols-1) {
+        count = count + grid[x][y+1];
+    }
+    if (x > 0 && y > 0) {
+        count = count + grid[x-1][y-1];
+    }
+    if (x > 0 && y < cols-1) {
+        count = count + grid[x-1][y+1];
+    }
+    if (x < rows-1 && y > 0) {
+        count = count + grid[x+1][y-1];
+    }
+    if (x < rows-1 && y < cols-1) {
+        count = count + grid[x+1][y+1];
+    }
+    return count;
+}
+
+# Function to evolve the grid for one step
+function evolveGrid(grid : [][]int) ([][]int) {
+    var newGrid [][]int;
+
+    for (i, row range grid) {
+        var newRow []int;
+        for (j, cell range row) {
+            var liveNeighbors int = countLiveNeighbors(grid, i, j);
+            if (cell == 1) {
+                if (liveNeighbors < 2 || liveNeighbors > 3) {
+                    newRow = newRow + [0]; # Cell dies due to underpopulation or overpopulation
+                } else {
+                    newRow = newRow + [1]; # Cell survives
+                }
+            } else {
+                if (liveNeighbors == 3) {
+                    newRow = newRow + [1]; # Dead cell becomes alive due to reproduction
+                } else {
+                    newRow = newRow + [0]; # Dead cell remains dead
+                }
+            }
+        }
+        newGrid = newGrid + [newRow];
+    }
+
+    return newGrid;
+}
+
+# Function to choose a pattern file
+function ChooseFile() (string) {
+    var files []string = os.readDir("./patterns");
+    if (len(files) == 0) {
+        console.println("\nNo pattern files found in the 'patterns' directory or the directory does not exist.");
+        return "";
+    }
+    console.println("\nChoose a pattern file:");
+    for (i, file range files) {
+        console.println("\t",i+1, ": ", file);
+    }
+    console.print("\nEnter the number of the pattern file: ");
+    var fileNum int;
+    var inChoice bool = true;
+    while (inChoice) {
+        fileNum = cast.atoi(console.input());
+        if (fileNum > 0 && fileNum <= len(files)) {
+            inChoice = false;
+        } else {
+            console.println("Invalid file number. Please enter a valid number between 1 and", len(files));
+        }
+    }
+    console.println("You chose: ", files[fileNum]);
+    return files[fileNum];
+}
+
+function SetGridSize() {
+    var inp string;
+    console.print("\nEnter the number of rows for the grid (default is 50): ");
+    inp = console.input();
+    if (inp != "") {
+        rows = cast.atoi(inp);
+    }
+    console.print("\nEnter the number of columns for the grid (default is 50): ");
+    inp = console.input();
+    if (inp != "") {
+        cols = cast.atoi(inp);
+    }
+}
+
+# Main function
+function main() {
+    console.clear();
+
+    # Print a welcome message
+    console.println("Welcome to the terminal-based Game of Life!");
+
+    # choose between a random grid or a pattern file
+    console.println("\nWhat would you like to do?");
+    console.println("\t1. Generate a random grid");
+    console.println("\t2. Choose a pattern file");
+    console.print("\nEnter the number of your choice: ");
+    var inChoice bool = true;
+    var choice int;
+    while (inChoice) {
+        choice = cast.atoi(console.input());
+        if (choice == 1 || choice == 2) {
+            inChoice = false;
+        } else {
+            console.println("Invalid choice. Please enter 1 or 2.");
+        }
+    }
+    var grid [][]int;
+    if (choice == 1) {
+        SetGridSize();
+        grid = generateRandomGrid();
+    } else {
+        var filename string = ChooseFile();
+        if (filename == "") {
+            console.println("Since no pattern file was chosen, a random grid will be generated.");
+            SetGridSize();
+            grid = generateRandomGrid();
+        }else{
+            SetGridSize();
+            grid = decodePatternFile(rows, cols, "patterns/"+filename);
+        }
+    }
+
+    # add padding to the grid
+    rows = rows + 2*padding;
+    cols = cols + 2*padding;
+
+    # Print initial grid
+    console.println("Initial Grid:");
+    printGrid(grid);
+
+    console.println("Press Enter to start the simulation...");
+    console.input();
+
+    # Evolve the grid for 5 steps && print each step
+    while (true) {
+        grid = evolveGrid(grid);
+        printGrid(grid);
+    }
+}
+
+# Run the main function
+main();
