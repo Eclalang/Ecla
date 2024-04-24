@@ -38,7 +38,7 @@ func (f *Function) GetType() string {
 	length := len(f.Args[0])
 	for i := 0; i < length-1; i++ {
 		typ += f.Args[0][i].Type
-		typ += ", "
+		typ += ","
 	}
 	if length > 0 {
 		typ += f.Args[0][length-1].Type
@@ -50,7 +50,7 @@ func (f *Function) GetType() string {
 		typ += "("
 		for i := 0; i < length-1; i++ {
 			typ += f.Return[key][i]
-			typ += ", "
+			typ += ","
 		}
 		typ += f.Return[key][length-1] + ")"
 	}
@@ -346,7 +346,7 @@ func (f *Function) GetTypes() []string {
 			typ += "("
 			for j := 0; j < length-1; j++ {
 				typ += f.Return[key][j]
-				typ += ", "
+				typ += ","
 			}
 			typ += f.Return[key][length-1] + ")"
 		}
