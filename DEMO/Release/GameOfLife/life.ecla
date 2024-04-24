@@ -212,6 +212,7 @@ function ChooseFile() (string) {
             console.println("Invalid file number. Please enter a valid number between 1 and", len(files));
         }
     }
+    fileNum--;
     console.println("You chose: ", files[fileNum]);
     return files[fileNum];
 }
