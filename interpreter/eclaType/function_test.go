@@ -415,6 +415,21 @@ func TestGetIndexOfArgsFalse(t *testing.T) {
 	}
 }
 
+func TestGetIndexOfArgsWithSeveralArgsFalse(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "char"})
+	var types []Type
+	types = append(types, Int(0))
+	types = append(types, Int(0))
+
+	f := NewAnonymousFunction(args, nil, nil)
+
+	result := f.GetIndexOfArgs(types)
+	if result != -1 {
+		t.Errorf("Expected -1, got %d", result)
+	}
+}
+
 func TestGetIndexOfArgsSimple(t *testing.T) {
 	var args []parser.FunctionParams
 	args = append(args, parser.FunctionParams{"arg0", "int"})
@@ -596,6 +611,71 @@ func TestOverrideError(t *testing.T) {
 	err := f.Override(args, nil, nil)
 	if err == nil {
 		t.Errorf("Expected error when overriding non-existing prototype")
+	}
+}
+
+func TestGetTypeFunctionEmpty(t *testing.T) {
+	expected := "function()"
+	foo := NewFunction("test", nil, nil, nil)
+	result := foo.GetTypes()
+
+	if len(result) != 1 {
+		t.Error("Expected exactly 1 types, got ", len(result))
+	}
+	if expected != result[0] {
+		t.Errorf("Expected %s, got %s", expected, result[0])
+	}
+}
+
+func TestGetTypeFunctionWithArgsAndReturn(t *testing.T) {
+	expected := "function(int, string)(string, int)"
+
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	args = append(args, parser.FunctionParams{"arg1", "string"})
+	var ret []string
+	ret = append(ret, "string")
+	ret = append(ret, "int")
+
+	foo := NewFunction("test", args, nil, ret)
+	result := foo.GetTypes()
+
+	if len(result) != 1 {
+		t.Error("Expected exactly 1 types, got ", len(result))
+	}
+	if expected != result[0] {
+		t.Errorf("Expected %s, got %s", expected, result[0])
+	}
+}
+
+func TestGetTypeFunctionsWithArgsAndReturn(t *testing.T) {
+	var expected []string
+	expected = append(expected, "function(int)(string)")
+	expected = append(expected, "function(double)(char)")
+
+	var args1 []parser.FunctionParams
+	args1 = append(args1, parser.FunctionParams{"arg0", "int"})
+	var ret1 []string
+	ret1 = append(ret1, "string")
+
+	foo := NewFunction("test", args1, nil, ret1)
+
+	var args2 []parser.FunctionParams
+	args2 = append(args2, parser.FunctionParams{"arg0", "double"})
+	var ret2 []string
+	ret2 = append(ret2, "char")
+
+	foo.AddOverload(args2, nil, ret2)
+
+	result := foo.GetTypes()
+
+	if len(result) != 2 {
+		t.Error("Expected exactly 2 types, got ", len(result))
+	}
+	for i := 0; i < 2; i++ {
+		if expected[i] != result[i] {
+			t.Errorf("Expected \"%s\", got \"%s\"", expected[i], result[i])
+		}
 	}
 }
 
