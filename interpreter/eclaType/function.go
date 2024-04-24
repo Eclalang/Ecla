@@ -285,7 +285,7 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type, StructDecl []eclaDe
 			}
 		}
 		v, err := NewVar(paramName, tp, elem)
-		if err != nil {
+		if err != nil { //TODO we can never reach this
 			panic(err)
 		}
 		argsType[paramName] = v
@@ -295,7 +295,6 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type, StructDecl []eclaDe
 }
 
 func (f *Function) CheckReturn(ret []Type, StructDecl []eclaDecl.TypeDecl) bool {
-
 	key := generateArgsString(f.Args[f.lastIndexOfArgs])
 	if len(f.Return[key]) != len(ret) {
 		return false

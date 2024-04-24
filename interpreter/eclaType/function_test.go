@@ -222,7 +222,7 @@ func TestGetTypeWithReturnsFunction(t *testing.T) {
 
 	f := NewFunction("test", nil, nil, ret)
 	result := f.GetType()
-	expected := "function()(string, int)"
+	expected := "function()(string,int)"
 
 	if result != expected {
 		t.Errorf("Expected %s, got %s", expected, result)
@@ -460,6 +460,188 @@ func TestGetIndexOfArgsWithAny(t *testing.T) {
 	}
 }
 
+func TestGetTypeFunctionEmpty(t *testing.T) {
+	expected := "function()"
+	foo := NewFunction("test", nil, nil, nil)
+	result := foo.GetTypes()
+
+	if len(result) != 1 {
+		t.Error("Expected exactly 1 types, got ", len(result))
+	}
+	if expected != result[0] {
+		t.Errorf("Expected %s, got %s", expected, result[0])
+	}
+}
+
+func TestGetTypeFunctionWithArgsAndReturn(t *testing.T) {
+	expected := "function(int,string)(string,int)"
+
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "int"})
+	args = append(args, parser.FunctionParams{"arg1", "string"})
+	var ret []string
+	ret = append(ret, "string")
+	ret = append(ret, "int")
+
+	foo := NewFunction("test", args, nil, ret)
+	result := foo.GetTypes()
+
+	if len(result) != 1 {
+		t.Error("Expected exactly 1 types, got ", len(result))
+	}
+	if expected != result[0] {
+		t.Errorf("Expected %s, got %s", expected, result[0])
+	}
+}
+
+func TestGetTypeFunctionsWithArgsAndReturn(t *testing.T) {
+	var expected []string
+	expected = append(expected, "function(int)(string)")
+	expected = append(expected, "function(double)(char)")
+
+	var args1 []parser.FunctionParams
+	args1 = append(args1, parser.FunctionParams{"arg0", "int"})
+	var ret1 []string
+	ret1 = append(ret1, "string")
+
+	foo := NewFunction("test", args1, nil, ret1)
+
+	var args2 []parser.FunctionParams
+	args2 = append(args2, parser.FunctionParams{"arg0", "double"})
+	var ret2 []string
+	ret2 = append(ret2, "char")
+
+	foo.AddOverload(args2, nil, ret2)
+
+	result := foo.GetTypes()
+
+	if len(result) != 2 {
+		t.Error("Expected exactly 2 types, got ", len(result))
+	}
+	for i := 0; i < 2; i++ {
+		if expected[i] != result[i] {
+			t.Errorf("Expected \"%s\", got \"%s\"", expected[i], result[i])
+		}
+	}
+}
+
+func TestTypeAndNumberOfArgsIsCorrectWrongArgs(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "char"})
+	foo := NewFunction("test", args, nil, nil)
+
+	var types []Type
+	types = append(types, Int(0))
+
+	b, _ := foo.TypeAndNumberOfArgsIsCorrect(types, nil)
+	if b {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestTypeAndNumberOfArgsIsCorrectSimple(t *testing.T) {
+	var args []parser.FunctionParams
+	name := "arg0"
+	args = append(args, parser.FunctionParams{name, "int"})
+	foo := NewFunction("test", args, nil, nil)
+	expected := make(map[string]*Var)
+	v := &Var{name, Int(0)}
+	expected[name] = v
+
+	var types []Type
+	types = append(types, Int(0))
+
+	b, result := foo.TypeAndNumberOfArgsIsCorrect(types, nil)
+	if !b {
+		t.Error("Expected true, got false")
+	}
+
+	if len(result) != len(expected) {
+		t.Errorf("Expected %d, got %d", len(expected), len(result))
+	}
+	if *(result[name]) != *(expected[name]) {
+		t.Errorf("Expected %v, got %v", expected[name], result[name])
+	}
+}
+
+func TestTypeAndNumberOfArgsIsCorrectSimpleVar(t *testing.T) {
+	var args []parser.FunctionParams
+	name := "arg0"
+	args = append(args, parser.FunctionParams{name, "int"})
+	foo := NewFunction("test", args, nil, nil)
+	expected := make(map[string]*Var)
+	v := &Var{name, Int(0)}
+	expected[name] = v
+
+	var types []Type
+	types = append(types, &Var{"test", Int(0)})
+
+	b, result := foo.TypeAndNumberOfArgsIsCorrect(types, nil)
+	if !b {
+		t.Error("Expected true, got false")
+	}
+
+	if len(result) != len(expected) {
+		t.Errorf("Expected %d, got %d", len(expected), len(result))
+	}
+	if *(result[name]) != *(expected[name]) {
+		t.Errorf("Expected %v, got %v", expected[name], result[name])
+	}
+}
+
+func TestTypeAndNumberOfArgsIsCorrectSimpleAny(t *testing.T) {
+	var args []parser.FunctionParams
+	name := "arg0"
+	args = append(args, parser.FunctionParams{name, parser.Any})
+	foo := NewFunction("test", args, nil, nil)
+	expected := make(map[string]*Var)
+	v := &Var{name, &Any{Int(0), parser.Int}}
+	expected[name] = v
+
+	var types []Type
+	types = append(types, &Any{Int(0), parser.Int})
+
+	b, result := foo.TypeAndNumberOfArgsIsCorrect(types, nil)
+	if !b {
+		t.Error("Expected true, got false")
+	}
+
+	if len(result) != len(expected) {
+		t.Errorf("Expected %d, got %d", len(expected), len(result))
+	}
+	if result[name].GetValue() != expected[name].GetValue() {
+		t.Errorf("Expected %v, got %v", expected[name].Value, result[name].Value)
+	}
+}
+
+func TestTypeAndNumberOfArgsIsCorrectUnimplementedArgs(t *testing.T) {
+	var args []parser.FunctionParams
+	args = append(args, parser.FunctionParams{"arg0", "test"})
+	foo := NewFunction("test", args, nil, nil)
+
+	var types []Type
+	types = append(types, Int(0))
+
+	b, _ := foo.TypeAndNumberOfArgsIsCorrect(types, nil)
+	if b {
+		t.Error("Expected false, got true")
+	}
+	t.Error("the test does not cover the case I want")
+}
+
+func TestCheckReturnDifferentLengths(t *testing.T) {
+	var ret []Type
+	ret = append(ret, Int(0))
+	ret = append(ret, Int(0))
+	var retStr []string
+	retStr = append(retStr, parser.Int)
+	foo := NewFunction("test", nil, nil, retStr)
+
+	if foo.CheckReturn(ret, nil) {
+		t.Error("Expected false, got true")
+	}
+}
+
 // Test errors in function
 
 func TestSetValueFunction(t *testing.T) {
@@ -614,82 +796,7 @@ func TestOverrideError(t *testing.T) {
 	}
 }
 
-func TestGetTypeFunctionEmpty(t *testing.T) {
-	expected := "function()"
-	foo := NewFunction("test", nil, nil, nil)
-	result := foo.GetTypes()
-
-	if len(result) != 1 {
-		t.Error("Expected exactly 1 types, got ", len(result))
-	}
-	if expected != result[0] {
-		t.Errorf("Expected %s, got %s", expected, result[0])
-	}
-}
-
-func TestGetTypeFunctionWithArgsAndReturn(t *testing.T) {
-	expected := "function(int, string)(string, int)"
-
-	var args []parser.FunctionParams
-	args = append(args, parser.FunctionParams{"arg0", "int"})
-	args = append(args, parser.FunctionParams{"arg1", "string"})
-	var ret []string
-	ret = append(ret, "string")
-	ret = append(ret, "int")
-
-	foo := NewFunction("test", args, nil, ret)
-	result := foo.GetTypes()
-
-	if len(result) != 1 {
-		t.Error("Expected exactly 1 types, got ", len(result))
-	}
-	if expected != result[0] {
-		t.Errorf("Expected %s, got %s", expected, result[0])
-	}
-}
-
-func TestGetTypeFunctionsWithArgsAndReturn(t *testing.T) {
-	var expected []string
-	expected = append(expected, "function(int)(string)")
-	expected = append(expected, "function(double)(char)")
-
-	var args1 []parser.FunctionParams
-	args1 = append(args1, parser.FunctionParams{"arg0", "int"})
-	var ret1 []string
-	ret1 = append(ret1, "string")
-
-	foo := NewFunction("test", args1, nil, ret1)
-
-	var args2 []parser.FunctionParams
-	args2 = append(args2, parser.FunctionParams{"arg0", "double"})
-	var ret2 []string
-	ret2 = append(ret2, "char")
-
-	foo.AddOverload(args2, nil, ret2)
-
-	result := foo.GetTypes()
-
-	if len(result) != 2 {
-		t.Error("Expected exactly 2 types, got ", len(result))
-	}
-	for i := 0; i < 2; i++ {
-		if expected[i] != result[i] {
-			t.Errorf("Expected \"%s\", got \"%s\"", expected[i], result[i])
-		}
-	}
-}
-
 /*
-func TestTypeAndNumberOfArgsIsCorrect(t *testing.T) {
-	var structDecl []eclaDecl.TypeDecl
-	f := NewFunction("test", nil, nil, nil)
-	var args []Type
-	test, expect := f.TypeAndNumberOfArgsIsCorrect(args, structDecl)
-	if !test || expect == nil {
-		t.Errorf("Expected true, got %v", test)
-	}
-}
-
 func TestCheckReturn(t *testing.T) {
 	f := NewFunction("test", nil, nil, nil)
 	var structDecl []eclaDecl.TypeDecl
