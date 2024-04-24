@@ -164,7 +164,7 @@ func NewAppend() *FunctionBuiltIn {
 		Name: "append",
 		f: func(args []Type) ([]Type, error) {
 			if len(args) < 2 {
-				return nil, errors.New("append function takes exactly two arguments")
+				return nil, errors.New("append function takes at least two arguments")
 			}
 			var r Type = args[0]
 			var err error

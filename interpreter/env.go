@@ -147,7 +147,11 @@ func (env *Env) Execute() {
 	}()
 
 	if env.File != "" {
-		env.Code = readFile(env.File)
+		var err error
+		env.Code, err = readFile(env.File)
+		if err != nil {
+			env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+		}
 	}
 	// Lexing
 	env.Tokens = lexer.Lexer(env.Code)
@@ -162,7 +166,11 @@ func (env *Env) Execute() {
 
 func (env *Env) ExecuteMetrics() met.Metrics {
 	if env.File != "" {
-		env.Code = readFile(env.File)
+		var err error
+		env.Code, err = readFile(env.File)
+		if err != nil {
+			env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+		}
 	}
 	m := met.NewMetrics()
 	m.StartTimers()
@@ -187,7 +195,11 @@ func (env *Env) ExecuteMetrics() met.Metrics {
 
 // Load the file
 func (env *Env) Load() {
-	env.Code = readFile(env.File)
+	var err error
+	env.Code, err = readFile(env.File)
+	if err != nil {
+		env.ErrorHandle.HandleError(0, 0, err.Error(), errorHandler.LevelFatal)
+	}
 	// Lexing
 	env.Tokens = lexer.Lexer(env.Code)
 
@@ -302,10 +314,10 @@ func (env *Env) GetTypeDecl(name string) (eclaDecl.TypeDecl, bool) {
 }
 
 // readFile reads the file at the given path and returns its contents as a string.
-func readFile(file string) string {
+func readFile(file string) (string, error) {
 	v, err := os.ReadFile(file)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return string(v)
+	return string(v), nil
 }

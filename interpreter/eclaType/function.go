@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+
 	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/interpreter/utils"
 	"github.com/Eclalang/Ecla/parser"
@@ -241,7 +242,7 @@ func (f *Function) GetIndexOfArgs(args []Type) int {
 				break
 			}
 		}
-		if /*maxNbAny == -1 ||*/ nbAny < maxNbAny {
+		if (maxNbAny == -1 && nbAny > 0) || nbAny < maxNbAny {
 			cursor = i
 			maxNbAny = nbAny
 		} else if isGoodArgs {
