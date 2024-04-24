@@ -2,6 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/Eclalang/Ecla)](https://goreportcard.com/report/github.com/Eclalang/Ecla)
 ![version](https://img.shields.io/github/go-mod/go-version/Eclalang/Ecla?style=plastic)
+[![codecov](https://codecov.io/gh/Eclalang/ecla/graph/badge.svg?token=HRCXPJWL35)](https://codecov.io/gh/Eclalang/ecla)
 
 ## What is Ecla ?
 
