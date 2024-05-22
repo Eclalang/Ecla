@@ -390,7 +390,7 @@ func (p *Parser) ParseIdent() Node {
 			return tempExpr
 		}
 	} else if p.Peek(1).TokenType == lexer.COLON {
-		p.Back()
+		p.Back() // TODO: remove this line since ParseImplicitVariableDecl will no longer step at the start
 		return p.ParseImplicitVariableDecl()
 	} else {
 		return p.ParseVariableAssign(nil)
@@ -532,7 +532,7 @@ func (p *Parser) ParseForStmt() Stmt {
 	if lookAhead.TokenType != lexer.COMMA {
 		tempFor.RangeToken = lexer.Token{}
 		if lookAhead.TokenType == lexer.COLON {
-			p.Back()
+			p.Back() // TODO: remove this line since ParseImplicitVariableDecl will no longer step at the start
 			tempFor.InitDecl = p.ParseImplicitVariableDecl()
 		} else {
 			tempFor.InitDecl = p.ParseVariableDecl()
@@ -649,7 +649,7 @@ func (p *Parser) ParseVariableDecl() Decl {
 
 func (p *Parser) ParseImplicitVariableDecl() Decl {
 	tempDecl := VariableDecl{VarToken: p.CurrentToken}
-	p.Step()
+	p.Step() //TODO: remove this line since the varToken is also the variable name so the step is not needed
 	if p.CurrentToken.TokenType == lexer.TEXT {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")

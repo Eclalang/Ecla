@@ -521,5 +521,377 @@ func TestParser_ParseIdent(t *testing.T) {
 }
 
 func TestParser_ParseIfStmt(t *testing.T) {
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	e.HookExit(f)
+
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different if statements
+	// normal if statement
+	resetWithTokens(&par, lexer.Lexer("if (true){console.println(\"Hello, World!\");}"))
+	par.ParseIfStmt()
+	if ok {
+		t.Errorf("ParseIfStmt() raised an error when it should not")
+	}
+	ok = false
+	// if statement with missing left parenthesis
+	resetWithTokens(&par, lexer.Lexer("if true){console.println(\"Hello, World!\");}"))
+	par.ParseIfStmt()
+	if !ok {
+		t.Errorf("ParseIfStmt() did not raise the missing left parenthesis error")
+	}
+	ok = false
+	// if statement with missing right parenthesis
+	resetWithTokens(&par, lexer.Lexer("if (true{console.println(\"Hello, World!\");}"))
+	par.ParseIfStmt()
+	if !ok {
+		t.Errorf("ParseIfStmt() did not raise the missing right parenthesis error")
+	}
+	ok = false
+	// if statement with missing left brace
+	resetWithTokens(&par, lexer.Lexer("if (true)console.println(\"Hello, World!\");}"))
+	par.ParseIfStmt()
+	if !ok {
+		t.Errorf("ParseIfStmt() did not raise the missing left brace error")
+	}
+	ok = false
+	// if statement with random text after the right brace
+	resetWithTokens(&par, lexer.Lexer("if (true){console.println(\"Hello, World!\");}randomText"))
+	par.ParseIfStmt()
+	if ok {
+		t.Errorf("ParseIfStmt() raised an error when it should not")
+	}
+	ok = false
+	// if statement with else statement
+	resetWithTokens(&par, lexer.Lexer("if (true){console.println(\"Hello, World!\");}else{console.println(\"Goodbye, World!\");}"))
+	par.ParseIfStmt()
+	if ok {
+		t.Errorf("ParseIfStmt() raised an error when it should not")
+	}
+	ok = false
+	// if statement with else statement and missing left brace
+	resetWithTokens(&par, lexer.Lexer("if (true){console.println(\"Hello, World!\");}else console.println(\"Goodbye, World!\");}"))
+	par.ParseIfStmt()
+	if !ok {
+		t.Errorf("ParseIfStmt() did not raise the missing left brace error")
+	}
+	ok = false
+	// if statement with else if statement
+	resetWithTokens(&par, lexer.Lexer("if (true){console.println(\"Hello, World!\");}else if (true){console.println(\"Goodbye, World!\");}"))
+	par.ParseIfStmt()
+	if ok {
+		t.Errorf("ParseIfStmt() raised an error when it should not")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseWhileStmt(t *testing.T) {
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	e.HookExit(f)
+
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different while statements
+	// normal while statement
+	resetWithTokens(&par, lexer.Lexer("while (true){console.println(\"Hello, World!\");}"))
+	par.ParseWhileStmt()
+	if ok {
+		t.Errorf("ParseWhileStmt() raised an error when it should not")
+	}
+	ok = false
+	// while statement with missing left parenthesis
+	resetWithTokens(&par, lexer.Lexer("while true){console.println(\"Hello, World!\");}"))
+	par.ParseWhileStmt()
+	if !ok {
+		t.Errorf("ParseWhileStmt() did not raise the missing left parenthesis error")
+	}
+	ok = false
+	// while statement with missing right parenthesis
+	resetWithTokens(&par, lexer.Lexer("while (true{console.println(\"Hello, World!\");}"))
+	par.ParseWhileStmt()
+	if !ok {
+		t.Errorf("ParseWhileStmt() did not raise the missing right parenthesis error")
+	}
+	ok = false
+	// while statement with missing left brace
+	resetWithTokens(&par, lexer.Lexer("while (true)console.println(\"Hello, World!\");}"))
+	par.ParseWhileStmt()
+	if !ok {
+		t.Errorf("ParseWhileStmt() did not raise the missing left brace error")
+	}
+	ok = false
+
+}
+
+func TestParser_ParseForStmt(t *testing.T) {
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	e.HookExit(f)
+
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different for statements
+	// normal for statement
+	resetWithTokens(&par, lexer.Lexer("for (i:=0,i<10,i++){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if ok {
+		t.Errorf("ParseForStmt() raised an error when it should not")
+	}
+	ok = false
+	// normal for statement with variable declaration
+	resetWithTokens(&par, lexer.Lexer("for (var i int,i<10,i++){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if ok {
+		t.Errorf("ParseForStmt() raised an error when it should not")
+	}
+	ok = false
+	// for statement with range
+	resetWithTokens(&par, lexer.Lexer("for (x,y range z){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if ok {
+		t.Errorf("ParseForStmt() raised an error when it should not")
+	}
+	ok = false
+	// for statement with missing left parenthesis
+	resetWithTokens(&par, lexer.Lexer("for i:=0,i<10,i++){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the missing left parenthesis error")
+	}
+	ok = false
+	// for statement with range and missing left parenthesis
+	resetWithTokens(&par, lexer.Lexer("for x,y range z){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the missing left parenthesis error")
+	}
+	ok = false
+	// for statement with missing right parenthesis
+	resetWithTokens(&par, lexer.Lexer("for (i:=0,i<10,i{console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the missing right parenthesis error")
+	}
+	ok = false
+	// for statement with range and missing right parenthesis
+	resetWithTokens(&par, lexer.Lexer("for (x,y range z{console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the missing right parenthesis error")
+	}
+	ok = false
+	// for statement with comma missing between the declaration and the condition
+	resetWithTokens(&par, lexer.Lexer("for (i:=0 i<10,i++){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the missing colon error")
+	}
+	ok = false
+	// for statement with comma missing between the condition and the increment
+	resetWithTokens(&par, lexer.Lexer("for (i:=0,i<10 i++){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the missing colon error")
+	}
+	ok = false
+	// for statement with missing comma between the key and the value
+	resetWithTokens(&par, lexer.Lexer("for (x 1 y range z){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the missing colon error")
+	}
+	ok = false
+	// for statement with an int instead of a range
+	resetWithTokens(&par, lexer.Lexer("for (x,y 10){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the invalid range error")
+	}
+	ok = false
+	// for statement with an text other than range
+	resetWithTokens(&par, lexer.Lexer("for (x,y test z){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the invalid range error")
+	}
+	ok = false
+	// for statement with missing left brace
+	resetWithTokens(&par, lexer.Lexer("for (i:=0,i<10,i++)console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		t.Errorf("ParseForStmt() did not raise the missing left brace error")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseVariableDecl(t *testing.T) {
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	e.HookExit(f)
+
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different variable declarations
+	// normal variable declaration
+	resetWithTokens(&par, lexer.Lexer("var test string;"))
+	par.ParseVariableDecl()
+	if ok {
+		t.Errorf("ParseVariableDecl() raised an error when it should not")
+	}
+	ok = false
+	// variable declaration with missing type
+	resetWithTokens(&par, lexer.Lexer("var test;"))
+	par.ParseVariableDecl()
+	if !ok {
+		t.Errorf("ParseVariableDecl() did not raise the missing type error")
+	}
+	ok = false
+	// variable declaration with missing name
+	resetWithTokens(&par, lexer.Lexer("var string;"))
+	par.ParseVariableDecl()
+	if !ok {
+		t.Errorf("ParseVariableDecl() did not raise the missing name error")
+	}
+	ok = false
+	// variable declaration with keyword as name
+	resetWithTokens(&par, lexer.Lexer("var var string;"))
+	par.ParseVariableDecl()
+	if !ok {
+		t.Errorf("ParseVariableDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// variable declaration with built-in function as name
+	resetWithTokens(&par, lexer.Lexer("var len string;"))
+	par.ParseVariableDecl()
+	if !ok {
+		t.Errorf("ParseVariableDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// variable declaration with type as name
+	resetWithTokens(&par, lexer.Lexer("var int string;"))
+	par.ParseVariableDecl()
+	if !ok {
+		t.Errorf("ParseVariableDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// variable declaration with somthing other than = or ; after the type
+	resetWithTokens(&par, lexer.Lexer("var test string test;"))
+	par.ParseVariableDecl()
+	if !ok {
+		t.Errorf("ParseVariableDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// variable declaration with =
+	resetWithTokens(&par, lexer.Lexer("var test string = \"hello\";"))
+	par.ParseVariableDecl()
+	if ok {
+		t.Errorf("ParseVariableDecl() raised an error when it should not")
+	}
+	ok = false
+	// variable declaration with a struct instanciation as value
+	resetWithTokens(&par, lexer.Lexer("var t Test = Test{};"))
+	par.VarTypes["Test"] = "struct"
+	par.ParseVariableDecl()
+	if ok {
+		t.Errorf("ParseVariableDecl() raised an error when it should not")
+	}
+
+	e.RestoreExit()
+}
+
+//func TestParser_ParseImplicitVariableDecl(t *testing.T) {
+//	// hook the error handler to avoid the fatal errors from the keywords not completing
+//	var ok bool
+//	var f = func(i int) {
+//		ok = i == 1
+//	}
+//	e.HookExit(f)
+//
+//	// save the current state of the parser
+//	par := TestParser
+//
+//	// test the different implicit variable declarations
+//	// normal implicit variable declaration
+//	resetWithTokens(&par, lexer.Lexer("test := 1;"))
+//	par.ParseImplicitVariableDecl()
+//	if ok {
+//		t.Errorf("ParseImplicitVariableDecl() raised an error when it should not")
+//	}
+//	ok = false
+//	// implicit variable declaration with missing value
+//	resetWithTokens(&par, lexer.Lexer("test := ;"))
+//	par.Back()
+//	par.ParseImplicitVariableDecl()
+//	if !ok {
+//		t.Errorf("ParseImplicitVariableDecl() did not raise the missing value error")
+//	}
+//	ok = false
+//	// implicit variable declaration with missing name
+//	resetWithTokens(&par, lexer.Lexer(":= 1;"))
+//	par.Back()
+//	par.ParseImplicitVariableDecl()
+//	if !ok {
+//		t.Errorf("ParseImplicitVariableDecl() did not raise the missing name error")
+//	}
+//	ok = false
+//	// implicit variable declaration with keyword as name
+//	resetWithTokens(&par, lexer.Lexer("var := 1;"))
+//	par.Back()
+//	par.ParseImplicitVariableDecl()
+//	if !ok {
+//		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
+//	}
+//	ok = false
+//	// implicit variable declaration with built-in function as name
+//	resetWithTokens(&par, lexer.Lexer("len := 1;"))
+//	par.Back()
+//	par.ParseImplicitVariableDecl()
+//	if !ok {
+//		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
+//	}
+//	ok = false
+//	// implicit variable declaration with type as name
+//	resetWithTokens(&par, lexer.Lexer("int := 1;"))
+//	par.Back()
+//	par.ParseImplicitVariableDecl()
+//	if !ok {
+//		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
+//	}
+//	ok = false
+//	// implicit variable declaration with somthing other than = or ; after the name
+//	resetWithTokens(&par, lexer.Lexer("test := 1 test;"))
+//	par.Back()
+//	par.ParseImplicitVariableDecl()
+//	if !ok {
+//		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
+//	}
+//	ok = false
+//
+//	e.RestoreExit()
+//}
+
+func TestParser_ParseFunctionCallExpr(t *testing.T) {
 
 }
