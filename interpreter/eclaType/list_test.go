@@ -36,12 +36,106 @@ func TestListGetValue(t *testing.T) {
 	}
 }
 
-func TestListSetValue(t *testing.T) {
+func TestListSetValueWithList(t *testing.T) {
 	t1, _ := NewList(parser.Int)
-	t2 := t1.GetValue()
+	var array []Type
+	array = append(array, Int(0))
+	t2 := &List{array, parser.Int}
+	err := t1.SetValue(t2)
 
-	if t1 != t2 {
-		t.Error("error when getting value of list")
+	if err != nil {
+		t.Error(err)
+	}
+	switch t1.(type) {
+	case *List:
+		if t1.(*List).Typ != t2.Typ {
+			t.Errorf("Expected %s, got %s", t1.(*List).Typ, t2.Typ)
+		}
+		if len(t1.(*List).Value) != len(t2.Value) {
+			t.Errorf("Expected list of length %d, got list of length %d", len(t1.(*List).Value), len(t2.Value))
+		}
+		for i, elem := range t1.(*List).Value {
+			if elem != t2.Value[i] {
+				t.Error("The lists contain different elements")
+			}
+		}
+	default:
+		t.Errorf("Expected %T, got %T", t2, t1)
+	}
+}
+
+func TestListSetValueWithSliceOfTypes(t *testing.T) {
+	t1 := &List{[]Type{}, "[]int"}
+	var array []Type
+	array = append(array, Int(0))
+	err := t1.SetValue(array)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if t1.Typ[2:] != array[0].GetType() {
+		t.Errorf("Expected %s, got %s", t1.Typ[2:], parser.Int)
+	}
+	if len(t1.Value) != len(array) {
+		t.Errorf("Expected list of length %d, got list of length %d", len(t1.Value), len(array))
+	}
+	for i, elem := range t1.Value {
+		if elem != array[i] {
+			t.Error("The lists contain different elements")
+		}
+	}
+}
+
+// Test List errors
+
+func TestListSetValueWithNonList(t *testing.T) {
+	t1, _ := NewList(parser.Int)
+	err := t1.SetValue(Int(0))
+
+	if err == nil {
+		t.Error("Expected error when setting list with non list value")
+	}
+}
+
+func TestListSetValueWithListOfWrongType(t *testing.T) {
+	t1 := &List{[]Type{}, "[]char"}
+	t2 := &List{[]Type{Int(0)}, "[]int"}
+	err := t1.SetValue(t2)
+
+	if err == nil {
+		t.Error("Expected error when setting value of list with another list of a different type")
+	}
+}
+
+func TestListSetValueWithSliceOfWrongTypes(t *testing.T) {
+	t1 := &List{[]Type{}, "[]char"}
+	var array []Type
+	array = append(array, Int(0))
+	err := t1.SetValue(array)
+
+	if err == nil {
+		t.Error("Expected error when setting value of list of char with slice of int")
+	}
+}
+
+func TestListString(t *testing.T) {
+	t1 := &List{[]Type{Int(0), Int(1), Int(2)}, parser.Int}
+	expected := "[0, 1, 2]"
+	result := t1.String()
+
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
+
+func TestListGetString(t *testing.T) {
+	t1 := &List{[]Type{Int(0), Int(1), Int(2)}, parser.Int}
+	expected := String("[0, 1, 2]")
+	result := t1.GetString()
+
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
 	}
 }
 

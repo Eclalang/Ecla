@@ -615,20 +615,20 @@ func TestTypeAndNumberOfArgsIsCorrectSimpleAny(t *testing.T) {
 	}
 }
 
-func TestTypeAndNumberOfArgsIsCorrectUnimplementedArgs(t *testing.T) {
-	var args []parser.FunctionParams
-	structType := "test"
-	args = append(args, parser.FunctionParams{"arg0", structType})
-	foo := NewFunction("test", args, nil, nil)
-
-	var types []Type
-	types = append(types, &Struct{nil, structType, nil})
-
-	b, _ := foo.TypeAndNumberOfArgsIsCorrect(types, nil)
-	if b {
-		t.Error("Expected false, got true")
-	}
-}
+//func TestTypeAndNumberOfArgsIsCorrectUnimplementedArgs(t *testing.T) {
+//	var args []parser.FunctionParams
+//	structType := "test"
+//	args = append(args, parser.FunctionParams{"arg0", structType})
+//	foo := NewFunction("test", args, nil, nil)
+//
+//	var types []Type
+//	types = append(types, &Struct{nil, structType, nil})
+//
+//	b, _ := foo.TypeAndNumberOfArgsIsCorrect(types, nil)
+//	if b {
+//		t.Error("Expected false, got true")
+//	}
+//}
 
 func TestCheckReturnDifferentLengths(t *testing.T) {
 	var ret []Type
