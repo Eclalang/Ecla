@@ -130,7 +130,7 @@ func (p *Parser) Parse() *File {
 			}
 		}
 		p.HandleFatal("Some dependencies are not satisfied: " + Unresolved)
-		return nil
+		return file
 	}
 	return file
 }
