@@ -725,6 +725,7 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 	}
 
 	tempFunctionCall.Args = exprArray
+	// TODO: this check is not needed since the previous for loop will stop when it reaches the RPAREN
 	if p.CurrentToken.TokenType != lexer.RPAREN {
 		p.HandleFatal("Expected ')' after function call arguments")
 		return nil
@@ -748,7 +749,7 @@ func (p *Parser) ParseStructInstantiation() StructInstantiationExpr {
 			tempExpr := p.ParseExpr()
 			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RBRACE {
 				p.PrintBacktrace()
-				p.HandleFatal("Expected comma between function call arguments")
+				p.HandleFatal("Expected comma between function call arguments") //TODO: change this message there is a typo in it (function call arguments)
 				return tempStructInstantiation
 			}
 			tempStructInstantiation.Args = append(tempStructInstantiation.Args, tempExpr)
@@ -761,6 +762,7 @@ func (p *Parser) ParseStructInstantiation() StructInstantiationExpr {
 		// if it is empty, it means that the struct is instantiated without with the default values
 		tempStructInstantiation.Args = nil
 	}
+	// TODO: this check is not needed since the previous for loop will stop when it reaches the RBRACE
 	if p.CurrentToken.TokenType != lexer.RBRACE {
 		p.HandleFatal("Expected '}' after struct instantiation arguments")
 		return tempStructInstantiation
@@ -768,30 +770,6 @@ func (p *Parser) ParseStructInstantiation() StructInstantiationExpr {
 	tempStructInstantiation.RightBrace = p.CurrentToken
 	p.Step()
 	return tempStructInstantiation
-}
-
-// ParseType parses a valid type
-func (p *Parser) ParseType() (string, bool) {
-	p.Step()
-	if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
-		tempType := ""
-		switch p.CurrentToken.Value {
-		case ArrayStart:
-			tempType = p.ParseArrayType()
-		case Map:
-			tempType = p.ParseMapType()
-		case Function:
-			tempType = p.ParseFunctionType()
-		default:
-			tempType = p.CurrentToken.Value
-		}
-		p.Step()
-		if tempType == "" {
-			return "", false
-		}
-		return tempType, true
-	}
-	return "", false
 }
 
 // ParseArrayType parses an array type
@@ -881,6 +859,31 @@ func (p *Parser) ParseFunctionType() string {
 		p.Back()
 	}
 	return tempType
+}
+
+// ParseType parses a valid type
+func (p *Parser) ParseType() (string, bool) {
+	p.Step() // TODO: Find a way to remove the step at the start of the function
+	if _, ok := p.VarTypes[p.CurrentToken.Value]; ok {
+		tempType := ""
+		switch p.CurrentToken.Value {
+		case ArrayStart:
+			tempType = p.ParseArrayType()
+		case Map:
+			tempType = p.ParseMapType()
+		case Function:
+			tempType = p.ParseFunctionType()
+		default:
+			tempType = p.CurrentToken.Value
+		}
+		p.Step()
+		// TODO: remove this check since there is a default case in the switch statement above
+		if tempType == "" {
+			return "", false
+		}
+		return tempType, true
+	}
+	return "", false
 }
 
 // ParseVariableAssign parses a variable assignment
@@ -1039,7 +1042,7 @@ func (p *Parser) ParseArrayLiteral() Expr {
 	tempArrayExpr := ArrayLiteral{}
 	tempArrayExpr.LBRACKET = p.CurrentToken
 	p.Step()
-	for {
+	for { //TODO: refactor this loop to remove the break statement and the for infinite loop
 		tempArrayExpr.Values = append(tempArrayExpr.Values, p.ParseExpr())
 		if p.CurrentToken.TokenType != lexer.COMMA {
 			break
@@ -1112,13 +1115,13 @@ func (p *Parser) ParseAnonymousFunctionExpr() Expr {
 	tempAnonymousFunctionDecl := AnonymousFunctionExpr{FunctionToken: p.CurrentToken}
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		p.PrintBacktrace()
 		p.HandleFatal("Expected '(' after function")
 		return nil
 	}
 	tempAnonymousFunctionDecl.Prototype = p.ParsePrototype()
 	p.Step()
 	tempAnonymousFunctionDecl.Body = p.ParseBody()
+	// TODO: this check is not needed since ParseBody runs until a right brace
 	if p.CurrentToken.TokenType != lexer.RBRACE {
 		p.HandleFatal("Expected '}' after function body")
 		return nil
@@ -1133,7 +1136,6 @@ func (p *Parser) ParseAnonymousFunctionExpr() Expr {
 				p.Step()
 				tempExpr := p.ParseExpr()
 				if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RPAREN {
-					p.PrintBacktrace()
 					p.HandleFatal("Expected comma between Anonymous function call arguments")
 					return nil
 				}
@@ -1144,6 +1146,7 @@ func (p *Parser) ParseAnonymousFunctionExpr() Expr {
 		}
 
 		tempAnonymousFunctionCall.Args = exprArray
+		// TODO: this check is not needed since the previous for loop will stop when it reaches the RPAREN
 		if p.CurrentToken.TokenType != lexer.RPAREN {
 			p.HandleFatal("Expected ')' after Anonymous function call arguments")
 			return nil
@@ -1179,13 +1182,13 @@ func (p *Parser) ParseFunctionDecl() Node {
 	tempFunctionDecl.Name = p.CurrentToken.Value
 	p.Step()
 	if p.CurrentToken.TokenType != lexer.LPAREN {
-		p.PrintBacktrace()
 		p.HandleFatal("Expected '(' after function name")
 		return nil
 	}
 	tempFunctionDecl.Prototype = p.ParsePrototype()
 	p.Step()
 	tempFunctionDecl.Body = p.ParseBody()
+	// TODO: this check is not needed since ParseBody runs until a right brace
 	if p.CurrentToken.TokenType != lexer.RBRACE {
 		p.HandleFatal("Expected '}' after function body")
 		return nil
@@ -1415,6 +1418,7 @@ func (p *Parser) ParsePrototype() FunctionPrototype {
 	} else {
 		p.Step()
 	}
+	// TODO: this check is not needed since the previous for loop will stop when it reaches the RPAREN
 	if p.CurrentToken.TokenType != lexer.RPAREN {
 		p.HandleFatal("Expected ')' after function parameters")
 		return tempFunctionPrototype
@@ -1435,6 +1439,7 @@ func (p *Parser) ParsePrototype() FunctionPrototype {
 				return tempFunctionPrototype
 			}
 		}
+		// TODO: this check is not needed since the previous for loop will stop when it reaches the RPAREN
 		if p.CurrentToken.TokenType != lexer.RPAREN {
 			p.HandleFatal("Expected ')' after return types")
 			return tempFunctionPrototype

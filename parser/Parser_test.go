@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/Eclalang/Ecla/errorHandler"
 	"github.com/Eclalang/Ecla/lexer"
 	"testing"
@@ -893,5 +894,969 @@ func TestParser_ParseVariableDecl(t *testing.T) {
 //}
 
 func TestParser_ParseFunctionCallExpr(t *testing.T) {
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	e.HookExit(f)
+
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different function calls
+	// normal function call
+	resetWithTokens(&par, lexer.Lexer("test();"))
+	par.ParseFunctionCallExpr()
+	if ok {
+		t.Errorf("ParseFunctionCallExpr() raised an error when it should not")
+	}
+	ok = false
+	// function call with keyword as name
+	resetWithTokens(&par, lexer.Lexer("var();"))
+	par.ParseFunctionCallExpr()
+	if !ok {
+		t.Errorf("ParseFunctionCallExpr() did not raise the invalid name error")
+	}
+	ok = false
+	// function call with type as name
+	resetWithTokens(&par, lexer.Lexer("int();"))
+	par.ParseFunctionCallExpr()
+	if !ok {
+		t.Errorf("ParseFunctionCallExpr() did not raise the invalid name error")
+	}
+	ok = false
+	// function call with something other than a name before the parenthesis
+	resetWithTokens(&par, lexer.Lexer("1();"))
+	par.ParseFunctionCallExpr()
+	if !ok {
+		t.Errorf("ParseFunctionCallExpr() did not raise the invalid name error")
+	}
+	ok = false
+	// function call with missing left parenthesis
+	resetWithTokens(&par, lexer.Lexer("test);"))
+	par.ParseFunctionCallExpr()
+	if !ok {
+		t.Errorf("ParseFunctionCallExpr() did not raise the missing left parenthesis error")
+	}
+	ok = false
+	// function call with missing right parenthesis
+	resetWithTokens(&par, lexer.Lexer("test(1;"))
+	par.ParseFunctionCallExpr()
+	if !ok {
+		t.Errorf("ParseFunctionCallExpr() did not raise the missing right parenthesis error")
+	}
+	ok = false
+	// function call with missing comma between the arguments
+	resetWithTokens(&par, lexer.Lexer("test(1 2);"))
+	par.ParseFunctionCallExpr()
+	if !ok {
+		t.Errorf("ParseFunctionCallExpr() did not raise the missing comma error")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseStructInstantiation(t *testing.T) {
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	e.HookExit(f)
+
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different struct instantiations
+	// normal struct instantiation
+	resetWithTokens(&par, lexer.Lexer("Test{}"))
+	par.ParseStructInstantiation()
+	if ok {
+		t.Errorf("ParseStructInstantiation() raised an error when it should not")
+	}
+	ok = false
+	// struct instantiation with missing left brace
+	resetWithTokens(&par, lexer.Lexer("Test}"))
+	par.ParseStructInstantiation()
+	if !ok {
+		t.Errorf("ParseStructInstantiation() did not raise the missing left brace error")
+	}
+	ok = false
+	// struct instantiation with missing right brace
+	resetWithTokens(&par, lexer.Lexer("Test{"))
+	par.ParseStructInstantiation()
+	if !ok {
+		t.Errorf("ParseStructInstantiation() did not raise the missing right brace error")
+	}
+	ok = false
+	// struct instantiation with some parameters
+	resetWithTokens(&par, lexer.Lexer("Test{1,\"hello\"}"))
+	par.ParseStructInstantiation()
+	if ok {
+		t.Errorf("ParseStructInstantiation() raised an error when it should not")
+	}
+	ok = false
+	// struct instantiation with missing arguments and missing right brace
+	resetWithTokens(&par, lexer.Lexer("Test{1,\"hello\""))
+	par.ParseStructInstantiation()
+	if !ok {
+		t.Errorf("ParseStructInstantiation() did not raise the missing right brace error")
+	}
+	ok = false
+	// struct instantiation with struct instanciation as argument and missing right brace
+	resetWithTokens(&par, lexer.Lexer("Test{Test{"))
+	par.ParseStructInstantiation()
+	if !ok {
+		t.Errorf("ParseStructInstantiation() did not raise the missing right brace error")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseArrayType(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different array types
+	// normal array type
+	resetWithTokens(&par, lexer.Lexer("[]int"))
+	if par.ParseArrayType() == "" {
+		t.Errorf("ParseArrayType() did not return the correct type")
+	}
+	// array type with missing type
+	resetWithTokens(&par, lexer.Lexer("[]"))
+	if par.ParseArrayType() != "" {
+		t.Errorf("ParseArrayType() did not return an empty string")
+	}
+	// array type with missing right bracket
+	resetWithTokens(&par, lexer.Lexer("[int"))
+	if par.ParseArrayType() != "" {
+		t.Errorf("ParseArrayType() did not return an empty string")
+	}
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseMapType(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different map types
+	// normal map type
+	resetWithTokens(&par, lexer.Lexer("map[int]string"))
+	if par.ParseMapType() == "" {
+		t.Errorf("ParseMapType() did not return the correct type")
+	}
+	// map type with missing key type
+	resetWithTokens(&par, lexer.Lexer("map[string"))
+	if par.ParseMapType() != "" {
+		t.Errorf("ParseMapType() did not return an empty string")
+	}
+	// map type with missing value type
+	resetWithTokens(&par, lexer.Lexer("map[int"))
+	if par.ParseMapType() != "" {
+		t.Errorf("ParseMapType() did not return an empty string")
+	}
+	// map type with missing right bracket
+	resetWithTokens(&par, lexer.Lexer("map[intstring"))
+	if par.ParseMapType() != "" {
+		t.Errorf("ParseMapType() did not return an empty string")
+	}
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseFunctionType(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different function types
+	// normal function type
+	resetWithTokens(&par, lexer.Lexer("functions(int)(string)"))
+	if par.ParseFunctionType() == "" {
+		t.Errorf("ParseFunctionType() did not return the correct type")
+	}
+	// function type with missing arguments
+	resetWithTokens(&par, lexer.Lexer("functions)string"))
+	if par.ParseFunctionType() != "" {
+		t.Errorf("ParseFunctionType() did not return an empty string")
+	}
+	// function type with missing return type
+	resetWithTokens(&par, lexer.Lexer("functions(int)"))
+	if par.ParseFunctionType() == "" {
+		t.Errorf("ParseFunctionType() did return an empty string")
+	}
+	// function type with missing right parenthesis
+	resetWithTokens(&par, lexer.Lexer("functions(intstring"))
+	if par.ParseFunctionType() != "" {
+		t.Errorf("ParseFunctionType() did not return an empty string")
+	}
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseType(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var success bool
+	// test the different types and add a random token at the start since the function expects a token before the type by stepping
+	// normal type
+	resetWithTokens(&par, lexer.Lexer("a int"))
+	_, success = par.ParseType()
+	if !success {
+		t.Errorf("ParseType() did not return the correct type")
+	}
+	// array type
+	resetWithTokens(&par, lexer.Lexer("a []int"))
+	_, success = par.ParseType()
+	if !success {
+		t.Errorf("ParseType() did not return the correct type")
+	}
+	// map type
+	resetWithTokens(&par, lexer.Lexer("a map[int]string"))
+	_, success = par.ParseType()
+	if !success {
+		t.Errorf("ParseType() did not return the correct type")
+	}
+	// function type
+	resetWithTokens(&par, lexer.Lexer("a function(int)(string)"))
+	_, success = par.ParseType()
+	if !success {
+		t.Errorf("ParseType() did not return the correct type")
+	}
+	// invalid type
+	resetWithTokens(&par, lexer.Lexer("a notAVaildType"))
+	res, success := par.ParseType()
+	fmt.Println(res, success)
+	if success {
+		t.Errorf("ParseType() did return a type")
+	}
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseVariableAssign(t *testing.T) {
+	// TODO: implement the test later
+}
+
+func TestParser_ParseVariableAssignSide(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var expr []Expr
+
+	// test the different variable assign sides
+	// normal variable assign side
+	resetWithTokens(&par, lexer.Lexer("1"))
+	expr = par.ParseVariableAssignSide()
+	if len(expr) != 1 {
+		t.Errorf("ParseVariableAssignSide() did not return the correct number of expressions")
+	}
+	// normal variable assign side with multiple expressions
+	resetWithTokens(&par, lexer.Lexer("1,2,3"))
+	expr = par.ParseVariableAssignSide()
+	if len(expr) != 3 {
+		t.Errorf("ParseVariableAssignSide() did not return the correct number of expressions")
+	}
+}
+
+func TestParser_ParseExpr(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var expr Expr
+
+	// test the different expressions
+	// normal expression
+	resetWithTokens(&par, lexer.Lexer("1"))
+	expr = par.ParseExpr()
+	if expr == nil {
+		t.Errorf("ParseExpr() did not return an expression")
+	}
+	// normal expression with multiple expressions
+	resetWithTokens(&par, lexer.Lexer("1+2"))
+	expr = par.ParseExpr()
+	if expr == nil {
+		t.Errorf("ParseExpr() did not return an expression")
+	}
+}
+
+func TestParser_ParseBinaryExpr(t *testing.T) {
+	// TODO: implement the test later
+}
+
+func TestParser_ParseUnaryExpr(t *testing.T) {
+	// TODO: implement the test later
+}
+
+func TestParser_ParsePrimaryExpr(t *testing.T) {
+	// TODO: implement the test later
+}
+
+func TestParser_ParseOperand(t *testing.T) {
+	// TODO: implement the test later
+}
+
+func TestParser_ParseSelector(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different selectors
+	// normal selector
+	resetWithTokens(&par, lexer.Lexer("test.test"))
+	par.MultiStep(2)
+	par.ParseSelector(nil)
+	if ok {
+		t.Errorf("ParseSelector() raised an error when it should not")
+	}
+	ok = false
+	// selector with none text field
+	resetWithTokens(&par, lexer.Lexer("test.1"))
+	par.MultiStep(2)
+	par.ParseSelector(nil)
+	if !ok {
+		t.Errorf("ParseSelector() did not raise the invalid name error")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseParenExpr(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different paren expressions
+	// normal paren expression
+	resetWithTokens(&par, lexer.Lexer("(1)"))
+	par.ParseParenExpr()
+	if ok {
+		t.Errorf("ParseParenExpr() raised an error when it should not")
+	}
+	ok = false
+	// paren expression with missing right parenthesis
+	resetWithTokens(&par, lexer.Lexer("(1"))
+	par.ParseParenExpr()
+	if !ok {
+		t.Errorf("ParseParenExpr() did not raise the missing right parenthesis error")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseArrayLiteral(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different array literals
+	// normal array literal
+	resetWithTokens(&par, lexer.Lexer("[1]"))
+	par.ParseArrayLiteral()
+	if ok {
+		t.Errorf("ParseArrayLiteral() raised an error when it should not")
+	}
+	ok = false
+	// array literal with missing right bracket
+	resetWithTokens(&par, lexer.Lexer("[1"))
+	par.ParseArrayLiteral()
+	if !ok {
+		t.Errorf("ParseArrayLiteral() did not raise the missing right bracket error")
+	}
+	ok = false
+	// array literal with multiple elements
+	resetWithTokens(&par, lexer.Lexer("[1,2,3]"))
+	par.ParseArrayLiteral()
+	if ok {
+		t.Errorf("ParseArrayLiteral() raised an error when it should not")
+	}
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseMapLiteral(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different map literals
+	// normal map literal
+	resetWithTokens(&par, lexer.Lexer("{1:\"hello\"}"))
+	par.ParseMapLiteral()
+	if ok {
+		t.Errorf("ParseMapLiteral() raised an error when it should not")
+	}
+	ok = false
+	// map literal with missing right brace
+	resetWithTokens(&par, lexer.Lexer("{1:\"hello\""))
+	par.ParseMapLiteral()
+	if !ok {
+		t.Errorf("ParseMapLiteral() did not raise the missing right brace error")
+	}
+	ok = false
+	// map literal with multiple elements
+	resetWithTokens(&par, lexer.Lexer("{1:\"hello\",2:\"world\"}"))
+	par.ParseMapLiteral()
+	if ok {
+		t.Errorf("ParseMapLiteral() raised an error when it should not")
+	}
+	// map literal with missing colon
+	resetWithTokens(&par, lexer.Lexer("{1\"hello\"}"))
+	par.ParseMapLiteral()
+	if !ok {
+		t.Errorf("ParseMapLiteral() did not raise the missing colon error")
+	}
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseImportStmt(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different import statements
+	// normal import statement
+	resetWithTokens(&par, lexer.Lexer("import \"console\""))
+	par.ParseImportStmt()
+	if ok {
+		t.Errorf("ParseImportStmt() raised an error when it should not")
+	}
+	ok = false
+	// import statement with missing string
+	resetWithTokens(&par, lexer.Lexer("import"))
+	par.ParseImportStmt()
+	if !ok {
+		t.Errorf("ParseImportStmt() did not raise the missing string error")
+	}
+	// import statement with something other than a string as package name
+	resetWithTokens(&par, lexer.Lexer("import \"\""))
+	par.ParseImportStmt()
+	if !ok {
+		t.Errorf("ParseImportStmt() did not raise the invalid package name error")
+	}
+	// import statement with missing opening double quote
+	resetWithTokens(&par, lexer.Lexer("import console\""))
+	par.ParseImportStmt()
+	if !ok {
+		t.Errorf("ParseImportStmt() did not raise the missing opening double quote error")
+	}
+	// import statement with missing closing double quote
+	resetWithTokens(&par, lexer.Lexer("import \"console;"))
+	par.ParseImportStmt()
+	if !ok {
+		t.Errorf("ParseImportStmt() did not raise the missing closing double quote error")
+	}
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseAnonymousFunctionExpr(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different anonymous function expressions
+	// normal anonymous function expression
+	resetWithTokens(&par, lexer.Lexer("function (a : int, b : int) {console.println(a + b);}"))
+	par.ParseAnonymousFunctionExpr()
+	if ok {
+		t.Errorf("ParseAnonymousFunctionExpr() raised an error when it should not")
+	}
+	ok = false
+	// anonymous function expression with missing arguments
+	resetWithTokens(&par, lexer.Lexer("function () {console.println(\"hello\");}"))
+	par.ParseAnonymousFunctionExpr()
+	if ok {
+		t.Errorf("ParseAnonymousFunctionExpr() raised an error when it should not")
+	}
+	ok = false
+	// anonymous function expression with missing return type
+	resetWithTokens(&par, lexer.Lexer("function (a : int, b : int) {console.println(a + b);}"))
+	par.ParseAnonymousFunctionExpr()
+	if ok {
+		t.Errorf("ParseAnonymousFunctionExpr() raised an error when it should not")
+	}
+	ok = false
+	// anonymous function expression with missing left parenthesis
+	resetWithTokens(&par, lexer.Lexer("function a : int)(string){return \"hello\";}"))
+	par.ParseAnonymousFunctionExpr()
+	if !ok {
+		t.Errorf("ParseAnonymousFunctionExpr() did not raise the missing left parenthesis error")
+	}
+	ok = false
+	// anonymous function expression with missing right parenthesis
+	resetWithTokens(&par, lexer.Lexer("function(a : int(string){return \"hello\";}"))
+	par.ParseAnonymousFunctionExpr()
+	if !ok {
+		t.Errorf("ParseAnonymousFunctionExpr() did not raise the missing right parenthesis error")
+	}
+	ok = false
+	// anonymous function expression with missing left brace
+	resetWithTokens(&par, lexer.Lexer("function(a : int)(string)return \"hello\";}"))
+	par.ParseAnonymousFunctionExpr()
+	if !ok {
+		t.Errorf("ParseAnonymousFunctionExpr() did not raise the missing left brace error")
+	}
+	ok = false
+
+	// anonymous function expression with call just after the function
+	resetWithTokens(&par, lexer.Lexer("function(a : int)(string){return \"hello\";}(1)"))
+	par.ParseAnonymousFunctionExpr()
+	if ok {
+		t.Errorf("ParseAnonymousFunctionExpr() raised an error when it should not")
+	}
+	ok = false
+	// anonymous function expression with call just after the function with multiple arguments
+	resetWithTokens(&par, lexer.Lexer("function(a : int)(string){return \"hello\";}(1,2,3)"))
+	par.ParseAnonymousFunctionExpr()
+	if ok {
+		t.Errorf("ParseAnonymousFunctionExpr() raised an error when it should not")
+	}
+	ok = false
+	// anonymous function expression with call just after the function with missing comma
+	resetWithTokens(&par, lexer.Lexer("function(a : int)(string){return \"hello\";}(1 2 3)"))
+	par.ParseAnonymousFunctionExpr()
+	if !ok {
+		t.Errorf("ParseAnonymousFunctionExpr() did not raise the missing comma error")
+	}
+	ok = false
+	// anonymous function expression with call just after the function with no arguments
+	resetWithTokens(&par, lexer.Lexer("function(a : int)(string){return \"hello\";}()"))
+	par.ParseAnonymousFunctionExpr()
+	if ok {
+		t.Errorf("ParseAnonymousFunctionExpr() raised an error when it should not")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseFunctionDecl(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different function declarations
+	// normal function declaration
+	resetWithTokens(&par, lexer.Lexer("function test(a : int, b : int)( string) {return a + b;}"))
+	par.ParseFunctionDecl()
+	if ok {
+		t.Errorf("ParseFunctionDecl() raised an error when it should not")
+	}
+	ok = false
+	// function declaration with keyword as name
+	resetWithTokens(&par, lexer.Lexer("function var(a : int, b : int)( string) {return a + b;}"))
+	par.ParseFunctionDecl()
+	if !ok {
+		t.Errorf("ParseFunctionDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// function declaration with type as name
+	resetWithTokens(&par, lexer.Lexer("function int(a : int, b : int)( string) {return a + b;}"))
+	par.ParseFunctionDecl()
+	if !ok {
+		t.Errorf("ParseFunctionDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// function declaration with built-in function as name
+	resetWithTokens(&par, lexer.Lexer("function len(a : int, b : int)( string) {return a + b;}"))
+	par.ParseFunctionDecl()
+	if !ok {
+		t.Errorf("ParseFunctionDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// function declaration with something other than a name before the parenthesis
+	resetWithTokens(&par, lexer.Lexer("function 1(a : int, b : int)( string) {return a + b;}"))
+	par.ParseFunctionDecl()
+	if !ok {
+		t.Errorf("ParseFunctionDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// function declaration with missing left parenthesis
+	resetWithTokens(&par, lexer.Lexer("function test a : int, b : int)( string) {return a + b;}"))
+	par.ParseFunctionDecl()
+	if !ok {
+		t.Errorf("ParseFunctionDecl() did not raise the missing left parenthesis error")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseReturnStmt(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different return statements
+	// normal return statement
+	resetWithTokens(&par, lexer.Lexer("return 1;"))
+	par.ParseReturnStmt()
+	if ok {
+		t.Errorf("ParseReturnStmt() raised an error when it should not")
+	}
+	ok = false
+	// return statement with missing expression
+	resetWithTokens(&par, lexer.Lexer("return;"))
+	par.ParseReturnStmt()
+	if ok {
+		t.Errorf("ParseReturnStmt() raised an error when it should not")
+	}
+	ok = false
+	// return statement with multiple expressions
+	resetWithTokens(&par, lexer.Lexer("return 1,2,3;"))
+	par.ParseReturnStmt()
+	if ok {
+		t.Errorf("ParseReturnStmt() raised an error when it should not")
+	}
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseIndexableAccessExpr(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different indexable access expressions
+	// normal indexable access expression
+	resetWithTokens(&par, lexer.Lexer("test[1]"))
+	par.ParseIndexableAccessExpr()
+	if ok {
+		t.Errorf("ParseIndexableAccessExpr() raised an error when it should not")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseVariableAccess(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different variable accesses
+	// normal variable access
+	resetWithTokens(&par, lexer.Lexer("test"))
+	par.ParseVariableAccess()
+	if ok {
+		t.Errorf("ParseVariableAccess() raised an error when it should not")
+	}
+	ok = false
+	// variable access with keyword as name
+	resetWithTokens(&par, lexer.Lexer("var"))
+	par.ParseVariableAccess()
+	if !ok {
+		t.Errorf("ParseVariableAccess() did not raise the invalid name error")
+	}
+	ok = false
+	// variable access with type as name
+	resetWithTokens(&par, lexer.Lexer("int"))
+	par.ParseVariableAccess()
+	if !ok {
+		t.Errorf("ParseVariableAccess() did not raise the invalid name error")
+	}
+	ok = false
+	// variable access with built-in function as name
+	resetWithTokens(&par, lexer.Lexer("len"))
+	par.ParseVariableAccess()
+	if !ok {
+		t.Errorf("ParseVariableAccess() did not raise the invalid name error")
+	}
+	ok = false
+	// variable access with indexable access
+	resetWithTokens(&par, lexer.Lexer("test[1]"))
+	par.ParseVariableAccess()
+	if ok {
+		t.Errorf("ParseVariableAccess() raised an error when it should not")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParseLiteral(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different literals
+	// int literal
+	resetWithTokens(&par, lexer.Lexer("1"))
+	par.ParseLiteral()
+	if ok {
+		t.Errorf("ParseLiteral() raised an error when it should not")
+	}
+	ok = false
+	// text literal
+	resetWithTokens(&par, lexer.Lexer("hello"))
+	par.ParseLiteral()
+	if ok {
+		t.Errorf("ParseLiteral() raised an error when it should not")
+	}
+	ok = false
+	// text with keyword as name
+	resetWithTokens(&par, lexer.Lexer("var"))
+	par.ParseLiteral()
+	if !ok {
+		t.Errorf("ParseLiteral() did not raise the invalid name error")
+	}
+	ok = false
+	// text name null
+	resetWithTokens(&par, lexer.Lexer("null"))
+	par.ParseLiteral()
+	if ok {
+		t.Errorf("ParseLiteral() raised an error when it should not")
+	}
+	ok = false
+	// text with type as name
+	resetWithTokens(&par, lexer.Lexer("int"))
+	par.ParseLiteral()
+	if !ok {
+		t.Errorf("ParseLiteral() did not raise the invalid name error")
+	}
+	ok = false
+	// text with built-in function as name
+	resetWithTokens(&par, lexer.Lexer("len"))
+	par.ParseLiteral()
+	if !ok {
+		t.Errorf("ParseLiteral() did not raise the invalid name error")
+	}
+	ok = false
+	// string literal
+	resetWithTokens(&par, lexer.Lexer("\"hello\""))
+	par.ParseLiteral()
+	if ok {
+		t.Errorf("ParseLiteral() raised an error when it should not")
+	}
+	ok = false
+	// string literal with only double quote
+	resetWithTokens(&par, lexer.Lexer("\"\""))
+	par.ParseLiteral()
+	if ok {
+		t.Errorf("ParseLiteral() raised an error when it should not")
+	}
+	ok = false
+	// string literal with missing double quote at the end
+	resetWithTokens(&par, lexer.Lexer("\"hello;"))
+	par.ParseLiteral()
+	if !ok {
+		t.Errorf("ParseLiteral() did not raise the missing double quote error")
+	}
+	ok = false
+	// error with multiline string
+	resetWithTokens(&par, lexer.Lexer("\"hello\nworld\""))
+	par.ParseLiteral()
+	if !ok {
+		t.Errorf("ParseLiteral() did not raise the invalid string error")
+	}
+	ok = false
+
+	// char literal
+	resetWithTokens(&par, lexer.Lexer("'a'"))
+	par.ParseLiteral()
+	if ok {
+		t.Errorf("ParseLiteral() raised an error when it should not")
+	}
+	ok = false
+	// char literal with only single quote
+	resetWithTokens(&par, lexer.Lexer("''"))
+	par.ParseLiteral()
+	if ok {
+		t.Errorf("ParseLiteral() raised an error when it should not")
+	}
+	ok = false
+	// char literal with missing single quote at the end
+	resetWithTokens(&par, []lexer.Token{{TokenType: lexer.SQUOTE, Value: "'"}, {TokenType: lexer.TEXT, Value: "a"}})
+	par.ParseLiteral()
+	if !ok {
+		t.Errorf("ParseLiteral() did not raise the missing single quote error")
+	}
+	ok = false
+	// char literal with multiline
+	resetWithTokens(&par, lexer.Lexer("'a\nb'"))
+	par.ParseLiteral()
+	if !ok {
+		t.Errorf("ParseLiteral() did not raise the invalid char error")
+	}
+	ok = false
+	// char literal with missing ending single quote
+	resetWithTokens(&par, lexer.Lexer("'a;"))
+	par.ParseLiteral()
+	if !ok {
+		t.Errorf("ParseLiteral() did not raise the missing single quote error")
+	}
+	ok = false
+
+	e.RestoreExit()
+}
+
+func TestParser_ParsePrototype(t *testing.T) {
+	// save the current state of the parser
+	par := TestParser
+
+	var ok bool
+
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+
+	// test the different prototypes
+	// normal prototype
+	resetWithTokens(&par, lexer.Lexer("(a : int, b : int)(string){return \"hello\";}"))
+	par.ParsePrototype()
+	if ok {
+		t.Errorf("ParsePrototype() raised an error when it should not")
+	}
+	ok = false
+	// prototype with missing arguments
+	resetWithTokens(&par, lexer.Lexer("()(string){return \"hello\";}"))
+	par.ParsePrototype()
+	if ok {
+		t.Errorf("ParsePrototype() raised an error when it should not")
+	}
+	ok = false
+	// prototype with missing return type
+	resetWithTokens(&par, lexer.Lexer("(a : int, b : int){return \"hello\";}"))
+	par.ParsePrototype()
+	if ok {
+		t.Errorf("ParsePrototype() raised an error when it should not")
+	}
+	ok = false
+	// prototype with missing left parenthesis
+	resetWithTokens(&par, lexer.Lexer("a : int, b : int)(string){return \"hello\";}"))
+	par.ParsePrototype()
+	if !ok {
+		t.Errorf("ParsePrototype() did not raise the missing left parenthesis error")
+	}
+	ok = false
+	// prototype with missing colon
+	resetWithTokens(&par, lexer.Lexer("(a int, b : int)(string){return \"hello\";}"))
+	par.ParsePrototype()
+	if !ok {
+		t.Errorf("ParsePrototype() did not raise the missing colon error")
+	}
+	ok = false
+	// prototype with wrong type
+	resetWithTokens(&par, lexer.Lexer("(a : test, b : int)(string){return \"hello\";}"))
+	par.ParsePrototype()
+	if !ok {
+		t.Errorf("ParsePrototype() did not raise the invalid type error")
+	}
+	ok = false
+	// prototype with duplicate argument name
+	resetWithTokens(&par, lexer.Lexer("(a : int, a : int)(string){return \"hello\";}"))
+	par.ParsePrototype()
+	if !ok {
+		t.Errorf("ParsePrototype() did not raise the duplicate argument error")
+	}
+	ok = false
+	// prototype with missing right parenthesis
+	resetWithTokens(&par, lexer.Lexer("(a : int, b : int(string){return \"hello\";}"))
+	par.ParsePrototype()
+	if !ok {
+		t.Errorf("ParsePrototype() did not raise the missing right parenthesis error")
+	}
+	ok = false
+	// prototype with wrong return type
+	resetWithTokens(&par, lexer.Lexer("(a : int, b : int)(test){return \"hello\";}"))
+	par.ParsePrototype()
+	if !ok {
+		t.Errorf("ParsePrototype() did not raise the invalid return type error")
+	}
+	ok = false
+	// prototype with missing return left parenthesis
+	resetWithTokens(&par, lexer.Lexer("(a : int, b : int)string){return \"hello\";}"))
+	par.ParsePrototype()
+	if !ok {
+		t.Errorf("ParsePrototype() did not raise the missing left parenthesis error")
+	}
+	ok = false
+	// prototype with missing return right parenthesis
+	resetWithTokens(&par, lexer.Lexer("(a : int, b : int)(string{return \"hello\"};"))
+	par.ParsePrototype()
+	if !ok {
+		t.Errorf("ParsePrototype() did not raise the missing right parenthesis error")
+	}
+	ok = false
+	// prototype with multiple return types
+	resetWithTokens(&par, lexer.Lexer("(a : int, b : int)(string, string){return \"hello\";}"))
+	par.ParsePrototype()
+	if ok {
+		t.Errorf("ParsePrototype() raised an error when it should not")
+	}
+	ok = false
+	// prototype with missing colon in return type
+	resetWithTokens(&par, lexer.Lexer("(a : int, b : int)(string string){return \"hello\";}"))
+	par.ParsePrototype()
+	if !ok {
+		t.Errorf("ParsePrototype() did not raise the missing colon in return type error")
+	}
+	ok = false
+
+	e.RestoreExit()
 
 }
