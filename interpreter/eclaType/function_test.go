@@ -1,6 +1,7 @@
 package eclaType
 
 import (
+	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/interpreter/utils"
 	"github.com/Eclalang/Ecla/lexer"
 	"github.com/Eclalang/Ecla/parser"
@@ -616,17 +617,17 @@ func TestTypeAndNumberOfArgsIsCorrectSimpleAny(t *testing.T) {
 
 func TestTypeAndNumberOfArgsIsCorrectUnimplementedArgs(t *testing.T) {
 	var args []parser.FunctionParams
-	args = append(args, parser.FunctionParams{"arg0", "test"})
+	structType := "test"
+	args = append(args, parser.FunctionParams{"arg0", structType})
 	foo := NewFunction("test", args, nil, nil)
 
 	var types []Type
-	types = append(types, Int(0))
+	types = append(types, &Struct{nil, structType, nil})
 
 	b, _ := foo.TypeAndNumberOfArgsIsCorrect(types, nil)
 	if b {
 		t.Error("Expected false, got true")
 	}
-	t.Error("the test does not cover the case I want")
 }
 
 func TestCheckReturnDifferentLengths(t *testing.T) {
@@ -639,6 +640,69 @@ func TestCheckReturnDifferentLengths(t *testing.T) {
 
 	if foo.CheckReturn(ret, nil) {
 		t.Error("Expected false, got true")
+	}
+}
+
+func TestCheckReturnSimpleCase(t *testing.T) {
+	var ret []Type
+	ret = append(ret, Int(0))
+	var retStr []string
+	retStr = append(retStr, parser.Int)
+	foo := NewFunction("test", nil, nil, retStr)
+
+	if !foo.CheckReturn(ret, nil) {
+		t.Error("Expected true, got false")
+	}
+}
+
+func TestCheckReturnVar(t *testing.T) {
+	var ret []Type
+	ret = append(ret, &Var{"arg0", Int(0)})
+	var retStr []string
+	retStr = append(retStr, parser.Int)
+	foo := NewFunction("test", nil, nil, retStr)
+
+	if !foo.CheckReturn(ret, nil) {
+		t.Error("Expected true, got false")
+	}
+}
+
+func TestCheckReturnAny(t *testing.T) {
+	var ret []Type
+	ret = append(ret, &Var{"arg0", Int(0)})
+	var retStr []string
+	retStr = append(retStr, parser.Any)
+	foo := NewFunction("test", nil, nil, retStr)
+
+	if !foo.CheckReturn(ret, nil) {
+		t.Error("Expected true, got false")
+	}
+}
+
+func TestCheckReturnSimpleStructNotImplemented(t *testing.T) {
+	var ret []Type
+	ret = append(ret, Int(0))
+	var retStr []string
+	retStr = append(retStr, "test")
+	foo := NewFunction("test", nil, nil, retStr)
+
+	if foo.CheckReturn(ret, nil) {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestCheckReturnSimpleStructImplemented(t *testing.T) {
+	structType := "test"
+	var ret []Type
+	ret = append(ret, Int(0))
+	var retStr []string
+	retStr = append(retStr, structType)
+	foo := NewFunction("test", nil, nil, retStr)
+	var structDecl []eclaDecl.TypeDecl
+	structDecl = append(structDecl, &eclaDecl.StructDecl{nil, nil, structType})
+
+	if !foo.CheckReturn(ret, structDecl) {
+		t.Error("Expected true, got false")
 	}
 }
 

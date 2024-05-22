@@ -272,7 +272,7 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type, StructDecl []eclaDe
 		if paramType == parser.Any {
 			tp = parser.Any
 		}
-		if tp != paramType {
+		if tp != paramType { //TODO investigate
 			isImplemented := false
 			for _, decl := range StructDecl {
 				if decl.GetName() == paramType {
