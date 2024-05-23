@@ -200,21 +200,11 @@ func (p *Parser) ParseText() Node {
 		if p.CurrentToken.TokenType == lexer.PERIOD {
 			// check if the ident is a Expr
 			p.Step()
-			if _, ok := tempNode.(Expr); ok {
-				selectorDepth++
-				exp := p.ParseSelector(tempNode.(Expr))
-				selectorDepth--
-				// check if exp.Expr is a Literal
-				// TODO: remove this line since it is not called and is handled in ParsePrimaryExpr
-				if _, ok := exp.(SelectorExpr).Expr.(Literal); ok {
-					p.CurrentFile.AddDependency(exp.(SelectorExpr).Expr.(Literal).Token.Value)
-				}
+			selectorDepth++
+			exp := p.ParseSelector(tempNode.(Expr))
+			selectorDepth--
 
-				return exp
-			} else {
-				p.HandleFatal("Cannot use a selector on a non-expression")
-				return nil
-			}
+			return exp
 		}
 		return tempNode
 	}
@@ -225,11 +215,6 @@ func (p *Parser) ParseBlock() Node {
 	tempBlock := BlockScopeStmt{LeftBrace: p.CurrentToken}
 	p.Step()
 	tempBlock.Body = p.ParseBody()
-	// TODO: this check is not needed since ParseBody runs until a right brace
-	if p.CurrentToken.TokenType != lexer.RBRACE {
-		p.HandleFatal("Expected '}' at the end of the block")
-		return nil
-	}
 	tempBlock.RightBrace = p.CurrentToken
 	return tempBlock
 }
@@ -324,11 +309,6 @@ func (p *Parser) ParseStructDecl() Node {
 			p.Step()
 		}
 	}
-	// TODO: remove this condition since the for loop will stop when it reaches the RBRACE
-	if p.CurrentToken.TokenType != lexer.RBRACE {
-		p.HandleFatal("Expected '}' after struct fields")
-		return nil
-	}
 	p.Step()
 	tempStructDecl.RightBrace = p.CurrentToken
 	p.DisableEOLChecking()
@@ -390,14 +370,9 @@ func (p *Parser) ParseIdent() Node {
 			return tempExpr
 		}
 	} else if p.Peek(1).TokenType == lexer.COLON {
-		p.Back() // TODO: remove this line since ParseImplicitVariableDecl will no longer step at the start
 		return p.ParseImplicitVariableDecl()
-	} else {
-		return p.ParseVariableAssign(nil)
 	}
-	// TODO: refactor this code to remove the last else statement
-	p.HandleFatal("Unknown identifier: " + p.CurrentToken.Value)
-	return nil
+	return p.ParseVariableAssign(nil)
 }
 
 // ParseIfStmt parses an if statement
@@ -424,11 +399,6 @@ func (p *Parser) ParseIfStmt() Stmt {
 	tempIf.LeftBrace = p.CurrentToken
 	p.Step()
 	tempIf.Body = p.ParseBody()
-	// TODO: this check is not needed since ParseBody runs until a right brace
-	if p.CurrentToken.TokenType != lexer.RBRACE {
-		p.HandleFatal("Expected '}' after if body")
-		return nil
-	}
 	tempIf.RightBrace = p.CurrentToken
 	p.Step()
 	if p.CurrentToken.TokenType == lexer.TEXT {
@@ -469,11 +439,6 @@ func (p *Parser) ParseElseStmt() *ElseStmt {
 	tempElse.LeftBrace = p.CurrentToken
 	p.Step()
 	tempElse.Body = p.ParseBody()
-	// TODO: this check is not needed since ParseBody runs until a right brace
-	if p.CurrentToken.TokenType != lexer.RBRACE {
-		p.HandleFatal("Expected '}' after else body")
-		return nil
-	}
 	tempElse.RightBrace = p.CurrentToken
 	p.Step()
 	if tempElse.IfStmt == nil {
@@ -506,11 +471,6 @@ func (p *Parser) ParseWhileStmt() Stmt {
 	tempWhile.LeftBrace = p.CurrentToken
 	p.Step()
 	tempWhile.Body = p.ParseBody()
-	// TODO: this check is not needed since ParseBody runs until a right brace
-	if p.CurrentToken.TokenType != lexer.RBRACE {
-		p.HandleFatal("Expected '}' after while body")
-		return nil
-	}
 	tempWhile.RightBrace = p.CurrentToken
 	p.Step()
 	p.DisableEOLChecking()
@@ -532,7 +492,6 @@ func (p *Parser) ParseForStmt() Stmt {
 	if lookAhead.TokenType != lexer.COMMA {
 		tempFor.RangeToken = lexer.Token{}
 		if lookAhead.TokenType == lexer.COLON {
-			p.Back() // TODO: remove this line since ParseImplicitVariableDecl will no longer step at the start
 			tempFor.InitDecl = p.ParseImplicitVariableDecl()
 		} else {
 			tempFor.InitDecl = p.ParseVariableDecl()
@@ -552,13 +511,7 @@ func (p *Parser) ParseForStmt() Stmt {
 		tempFor.PostAssignStmt = p.ParseVariableAssign(nil)
 	} else {
 		tempFor.KeyToken = p.CurrentToken
-		p.Step()
-		//TODO: remove this check since it is checked in with the if statement above
-		if p.CurrentToken.TokenType != lexer.COMMA {
-			p.HandleFatal("Expected ',' between key and value instead of " + p.CurrentToken.Value)
-			return nil
-		}
-		p.Step()
+		p.MultiStep(2)
 		tempFor.ValueToken = p.CurrentToken
 		p.Step()
 		if p.CurrentToken.TokenType != lexer.TEXT {
@@ -586,11 +539,6 @@ func (p *Parser) ParseForStmt() Stmt {
 	tempFor.LeftBrace = p.CurrentToken
 	p.Step()
 	tempFor.Body = p.ParseBody()
-	//TODO: this check is not needed since ParseBody runs until a right brace
-	if p.CurrentToken.TokenType != lexer.RBRACE {
-		p.HandleFatal("Expected '}' after for body")
-		return nil
-	}
 	tempFor.RightBrace = p.CurrentToken
 	p.Step()
 	p.DisableEOLChecking()
@@ -649,7 +597,6 @@ func (p *Parser) ParseVariableDecl() Decl {
 
 func (p *Parser) ParseImplicitVariableDecl() Decl {
 	tempDecl := VariableDecl{VarToken: p.CurrentToken}
-	p.Step() //TODO: remove this line since the varToken is also the variable name so the step is not needed
 	if p.CurrentToken.TokenType == lexer.TEXT {
 		if _, ok := Keywords[p.CurrentToken.Value]; ok {
 			p.HandleFatal("Cannot use keyword " + p.CurrentToken.Value + " as variable name")
@@ -725,11 +672,6 @@ func (p *Parser) ParseFunctionCallExpr() Expr {
 	}
 
 	tempFunctionCall.Args = exprArray
-	// TODO: this check is not needed since the previous for loop will stop when it reaches the RPAREN
-	if p.CurrentToken.TokenType != lexer.RPAREN {
-		p.HandleFatal("Expected ')' after function call arguments")
-		return nil
-	}
 	tempFunctionCall.RightParen = p.CurrentToken
 	p.Step()
 	return tempFunctionCall
@@ -749,7 +691,7 @@ func (p *Parser) ParseStructInstantiation() StructInstantiationExpr {
 			tempExpr := p.ParseExpr()
 			if p.CurrentToken.TokenType != lexer.COMMA && p.CurrentToken.TokenType != lexer.RBRACE {
 				p.PrintBacktrace()
-				p.HandleFatal("Expected comma between function call arguments") //TODO: change this message there is a typo in it (function call arguments)
+				p.HandleFatal("Expected comma between struct instantiation arguments")
 				return tempStructInstantiation
 			}
 			tempStructInstantiation.Args = append(tempStructInstantiation.Args, tempExpr)
@@ -761,11 +703,6 @@ func (p *Parser) ParseStructInstantiation() StructInstantiationExpr {
 	if len(tempStructInstantiation.Args) == 0 {
 		// if it is empty, it means that the struct is instantiated without with the default values
 		tempStructInstantiation.Args = nil
-	}
-	// TODO: this check is not needed since the previous for loop will stop when it reaches the RBRACE
-	if p.CurrentToken.TokenType != lexer.RBRACE {
-		p.HandleFatal("Expected '}' after struct instantiation arguments")
-		return tempStructInstantiation
 	}
 	tempStructInstantiation.RightBrace = p.CurrentToken
 	p.Step()
@@ -877,10 +814,6 @@ func (p *Parser) ParseType() (string, bool) {
 			tempType = p.CurrentToken.Value
 		}
 		p.Step()
-		// TODO: remove this check since there is a default case in the switch statement above
-		if tempType == "" {
-			return "", false
-		}
 		return tempType, true
 	}
 	return "", false
@@ -1121,11 +1054,6 @@ func (p *Parser) ParseAnonymousFunctionExpr() Expr {
 	tempAnonymousFunctionDecl.Prototype = p.ParsePrototype()
 	p.Step()
 	tempAnonymousFunctionDecl.Body = p.ParseBody()
-	// TODO: this check is not needed since ParseBody runs until a right brace
-	if p.CurrentToken.TokenType != lexer.RBRACE {
-		p.HandleFatal("Expected '}' after function body")
-		return nil
-	}
 	p.Step()
 	//check if it is a call
 	if p.CurrentToken.TokenType == lexer.LPAREN {
@@ -1146,11 +1074,6 @@ func (p *Parser) ParseAnonymousFunctionExpr() Expr {
 		}
 
 		tempAnonymousFunctionCall.Args = exprArray
-		// TODO: this check is not needed since the previous for loop will stop when it reaches the RPAREN
-		if p.CurrentToken.TokenType != lexer.RPAREN {
-			p.HandleFatal("Expected ')' after Anonymous function call arguments")
-			return nil
-		}
 		tempAnonymousFunctionCall.RightParen = p.CurrentToken
 		p.Step()
 		return tempAnonymousFunctionCall
@@ -1188,11 +1111,6 @@ func (p *Parser) ParseFunctionDecl() Node {
 	tempFunctionDecl.Prototype = p.ParsePrototype()
 	p.Step()
 	tempFunctionDecl.Body = p.ParseBody()
-	// TODO: this check is not needed since ParseBody runs until a right brace
-	if p.CurrentToken.TokenType != lexer.RBRACE {
-		p.HandleFatal("Expected '}' after function body")
-		return nil
-	}
 	p.Step()
 	p.CurrentFile.FunctionDecl = append(p.CurrentFile.FunctionDecl, tempFunctionDecl.Name)
 	p.DisableEOLChecking()
@@ -1418,11 +1336,6 @@ func (p *Parser) ParsePrototype() FunctionPrototype {
 	} else {
 		p.Step()
 	}
-	// TODO: this check is not needed since the previous for loop will stop when it reaches the RPAREN
-	if p.CurrentToken.TokenType != lexer.RPAREN {
-		p.HandleFatal("Expected ')' after function parameters")
-		return tempFunctionPrototype
-	}
 	tempFunctionPrototype.RightParamParen = p.CurrentToken
 	if p.Peek(1).TokenType == lexer.LPAREN {
 		p.Step()
@@ -1438,11 +1351,6 @@ func (p *Parser) ParsePrototype() FunctionPrototype {
 				p.HandleFatal("Expected ',' between return type")
 				return tempFunctionPrototype
 			}
-		}
-		// TODO: this check is not needed since the previous for loop will stop when it reaches the RPAREN
-		if p.CurrentToken.TokenType != lexer.RPAREN {
-			p.HandleFatal("Expected ')' after return types")
-			return tempFunctionPrototype
 		}
 	}
 	p.Step()
