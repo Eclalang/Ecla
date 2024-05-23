@@ -1075,6 +1075,21 @@ func TestParser_ParseMapType(t *testing.T) {
 	if par.ParseMapType() != "" {
 		t.Errorf("ParseMapType() did not return an empty string")
 	}
+	// map type with missing left bracket
+	resetWithTokens(&par, lexer.Lexer("map int]string"))
+	if par.ParseMapType() != "" {
+		t.Errorf("ParseMapType() did not return an empty string")
+	}
+	// map type with invalid key type
+	resetWithTokens(&par, lexer.Lexer("map[1]string"))
+	if par.ParseMapType() != "" {
+		t.Errorf("ParseMapType() did not return an empty string")
+	}
+	// map type with invalid value type
+	resetWithTokens(&par, lexer.Lexer("map[int]1"))
+	if par.ParseMapType() != "" {
+		t.Errorf("ParseMapType() did not return an empty string")
+	}
 
 	e.RestoreExit()
 }
@@ -1090,19 +1105,34 @@ func TestParser_ParseFunctionType(t *testing.T) {
 		t.Errorf("ParseFunctionType() did not return the correct type")
 	}
 	// function type with missing arguments
-	resetWithTokens(&par, lexer.Lexer("functions)string"))
+	resetWithTokens(&par, lexer.Lexer("functions)(string)"))
 	if par.ParseFunctionType() != "" {
 		t.Errorf("ParseFunctionType() did not return an empty string")
-	}
-	// function type with missing return type
-	resetWithTokens(&par, lexer.Lexer("functions(int)"))
-	if par.ParseFunctionType() == "" {
-		t.Errorf("ParseFunctionType() did return an empty string")
 	}
 	// function type with missing right parenthesis
 	resetWithTokens(&par, lexer.Lexer("functions(intstring"))
 	if par.ParseFunctionType() != "" {
 		t.Errorf("ParseFunctionType() did not return an empty string")
+	}
+	// function type with something other than comma between the arguments
+	resetWithTokens(&par, lexer.Lexer("functions(int 1 string)(string)"))
+	if par.ParseFunctionType() != "" {
+		t.Errorf("ParseFunctionType() did not return an empty string")
+	}
+	// function type with something other than comma between the arguments
+	resetWithTokens(&par, lexer.Lexer("functions(int)(string 1 string)"))
+	if par.ParseFunctionType() != "" {
+		t.Errorf("ParseFunctionType() did not return an empty string")
+	}
+	// function type with invalid return type
+	resetWithTokens(&par, lexer.Lexer("functions(int)(1)"))
+	if par.ParseFunctionType() != "" {
+		t.Errorf("ParseFunctionType() did not return an empty string")
+	}
+	// function type with missing return type left parenthesis
+	resetWithTokens(&par, lexer.Lexer("functions(int)string)"))
+	if par.ParseFunctionType() == "" {
+		t.Errorf("ParseFunctionType() did not return the correct type")
 	}
 
 	e.RestoreExit()
@@ -1208,7 +1238,73 @@ func TestParser_ParsePrimaryExpr(t *testing.T) {
 }
 
 func TestParser_ParseOperand(t *testing.T) {
-	// TODO: implement the test later
+	// save the current state of the parser
+	par := TestParser
+
+	var expr Expr
+
+	// test the different operands
+	// normal operand
+	resetWithTokens(&par, lexer.Lexer("1"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+	// operand with a function call
+	resetWithTokens(&par, lexer.Lexer("test()"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+	// operand with a struct instantiation
+	resetWithTokens(&par, lexer.Lexer("Test{}"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+	// operand with a variable
+	resetWithTokens(&par, lexer.Lexer("test"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+	// operand with a paren expression
+	resetWithTokens(&par, lexer.Lexer("(1)"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+	// operand with an array literal
+	resetWithTokens(&par, lexer.Lexer("[1]"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+	// operand with a map literal
+	resetWithTokens(&par, lexer.Lexer("{1:\"hello\"}"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+	// operand with a selector
+	resetWithTokens(&par, lexer.Lexer("test.test"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+	// operant with anonymous function
+	resetWithTokens(&par, lexer.Lexer("function(int)(string){return \"hello\";}"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+	// operand with a type cast with missing type
+	resetWithTokens(&par, lexer.Lexer("(1)"))
+	expr = par.ParseOperand()
+	if expr == nil {
+		t.Errorf("ParseOperand() did not return an expression")
+	}
+
 }
 
 func TestParser_ParseSelector(t *testing.T) {
