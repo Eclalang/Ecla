@@ -333,6 +333,7 @@ func TestParser_ParseText(t *testing.T) {
 		resetWithTokens(&par, v)
 		par.ParseText()
 	}
+
 }
 
 func TestParser_ParseBlock(t *testing.T) {
@@ -367,7 +368,7 @@ func TestParser_ParseStructDecl(t *testing.T) {
 	e.HookExit(f)
 
 	par := TestParser
-	resetWithTokens(&par, lexer.Lexer("struct test{}"))
+	resetWithTokens(&par, lexer.Lexer("struct test{a : int;}"))
 	par.ParseStructDecl()
 	if ok {
 		t.Errorf("ParseStructDecl() raised an error when it should not")
@@ -732,6 +733,14 @@ func TestParser_ParseForStmt(t *testing.T) {
 		t.Errorf("ParseForStmt() did not raise the invalid range error")
 	}
 	ok = false
+	// for statement with missing comma between the key and the value
+	resetWithTokens(&par, lexer.Lexer("for (x y range z){console.println(\"Hello, World!\");}"))
+	par.ParseForStmt()
+	if !ok {
+		fmt.Println("check here")
+		t.Errorf("ParseForStmt() did not raise the missing colon error")
+	}
+	ok = false
 	// for statement with missing left brace
 	resetWithTokens(&par, lexer.Lexer("for (i:=0,i<10,i++)console.println(\"Hello, World!\");}"))
 	par.ParseForStmt()
@@ -822,76 +831,77 @@ func TestParser_ParseVariableDecl(t *testing.T) {
 	e.RestoreExit()
 }
 
-//func TestParser_ParseImplicitVariableDecl(t *testing.T) {
-//	// hook the error handler to avoid the fatal errors from the keywords not completing
-//	var ok bool
-//	var f = func(i int) {
-//		ok = i == 1
-//	}
-//	e.HookExit(f)
-//
-//	// save the current state of the parser
-//	par := TestParser
-//
-//	// test the different implicit variable declarations
-//	// normal implicit variable declaration
-//	resetWithTokens(&par, lexer.Lexer("test := 1;"))
-//	par.ParseImplicitVariableDecl()
-//	if ok {
-//		t.Errorf("ParseImplicitVariableDecl() raised an error when it should not")
-//	}
-//	ok = false
-//	// implicit variable declaration with missing value
-//	resetWithTokens(&par, lexer.Lexer("test := ;"))
-//	par.Back()
-//	par.ParseImplicitVariableDecl()
-//	if !ok {
-//		t.Errorf("ParseImplicitVariableDecl() did not raise the missing value error")
-//	}
-//	ok = false
-//	// implicit variable declaration with missing name
-//	resetWithTokens(&par, lexer.Lexer(":= 1;"))
-//	par.Back()
-//	par.ParseImplicitVariableDecl()
-//	if !ok {
-//		t.Errorf("ParseImplicitVariableDecl() did not raise the missing name error")
-//	}
-//	ok = false
-//	// implicit variable declaration with keyword as name
-//	resetWithTokens(&par, lexer.Lexer("var := 1;"))
-//	par.Back()
-//	par.ParseImplicitVariableDecl()
-//	if !ok {
-//		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
-//	}
-//	ok = false
-//	// implicit variable declaration with built-in function as name
-//	resetWithTokens(&par, lexer.Lexer("len := 1;"))
-//	par.Back()
-//	par.ParseImplicitVariableDecl()
-//	if !ok {
-//		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
-//	}
-//	ok = false
-//	// implicit variable declaration with type as name
-//	resetWithTokens(&par, lexer.Lexer("int := 1;"))
-//	par.Back()
-//	par.ParseImplicitVariableDecl()
-//	if !ok {
-//		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
-//	}
-//	ok = false
-//	// implicit variable declaration with somthing other than = or ; after the name
-//	resetWithTokens(&par, lexer.Lexer("test := 1 test;"))
-//	par.Back()
-//	par.ParseImplicitVariableDecl()
-//	if !ok {
-//		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
-//	}
-//	ok = false
-//
-//	e.RestoreExit()
-//}
+func TestParser_ParseImplicitVariableDecl(t *testing.T) {
+	// hook the error handler to avoid the fatal errors from the keywords not completing
+	var ok bool
+	var f = func(i int) {
+		ok = i == 1
+	}
+	e.HookExit(f)
+
+	// save the current state of the parser
+	par := TestParser
+
+	// test the different implicit variable declarations
+	// normal implicit variable declaration
+	resetWithTokens(&par, lexer.Lexer("test := 1;"))
+	par.ParseImplicitVariableDecl()
+	if ok {
+		t.Errorf("ParseImplicitVariableDecl() raised an error when it should not")
+	}
+	ok = false
+	// implicit variable declaration with missing value
+	resetWithTokens(&par, lexer.Lexer("test := ;"))
+	par.ParseImplicitVariableDecl()
+	if !ok {
+		t.Errorf("ParseImplicitVariableDecl() did not raise the missing value error")
+	}
+	ok = false
+	// implicit variable declaration with missing name
+	resetWithTokens(&par, lexer.Lexer(":= 1;"))
+	par.ParseImplicitVariableDecl()
+	if !ok {
+		t.Errorf("ParseImplicitVariableDecl() did not raise the missing name error")
+	}
+	ok = false
+	// implicit variable declaration with keyword as name
+	resetWithTokens(&par, lexer.Lexer("var := 1;"))
+	par.ParseImplicitVariableDecl()
+	if !ok {
+		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// implicit variable declaration with built-in function as name
+	resetWithTokens(&par, lexer.Lexer("len := 1;"))
+	par.ParseImplicitVariableDecl()
+	if !ok {
+		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// implicit variable declaration with type as name
+	resetWithTokens(&par, lexer.Lexer("int := 1;"))
+	par.ParseImplicitVariableDecl()
+	if !ok {
+		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// implicit variable declaration with something other than := after the name
+	resetWithTokens(&par, lexer.Lexer("test = 1;"))
+	par.ParseImplicitVariableDecl()
+	if !ok {
+		t.Errorf("ParseImplicitVariableDecl() did not raise the invalid name error")
+	}
+	ok = false
+	// implicit variable declaration with a struct instanciation as value
+	resetWithTokens(&par, lexer.Lexer("t := Test{};"))
+	par.VarTypes["Test"] = "struct"
+	par.ParseImplicitVariableDecl()
+	if ok {
+		t.Errorf("ParseImplicitVariableDecl() raised an error when it should not")
+	}
+
+	e.RestoreExit()
+}
 
 func TestParser_ParseFunctionCallExpr(t *testing.T) {
 	// hook the error handler to avoid the fatal errors from the keywords not completing
