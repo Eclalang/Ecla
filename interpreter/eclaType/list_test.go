@@ -139,6 +139,149 @@ func TestListGetString(t *testing.T) {
 	}
 }
 
+func TestListGetType(t *testing.T) {
+	expected := "test type"
+	t1, err := NewList(expected)
+	if err != nil {
+		t.Error(err)
+	}
+
+	result := t1.GetType()
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
+
+func TestListSetType(t *testing.T) {
+	expected := "test type"
+	t1 := &List{[]Type{}, "wrong type"}
+
+	t1.SetType(expected)
+	if t1.Typ != expected {
+		t.Errorf("Expected %s, got %s", expected, t1.Typ)
+	}
+}
+
+func TestListGetIndex(t *testing.T) {
+	expected := Int(5)
+	t1 := &List{[]Type{Int(3), expected}, parser.Int}
+	result, err := t1.GetIndex(Int(1))
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if *result != expected {
+		t.Errorf("Expected %d, got %d", expected, *result)
+	}
+}
+
+// Test List errors
+
+func TestListGetIndexOutOfRange(t *testing.T) {
+	expected := Int(5)
+	t1 := &List{[]Type{Int(3), expected}, parser.Int}
+	_, err := t1.GetIndex(Int(42))
+
+	if err == nil {
+		t.Error("Expected error when getting index out of range")
+	}
+}
+
+func TestListGetIndexWrongType(t *testing.T) {
+	expected := Int(5)
+	t1 := &List{[]Type{Int(3), expected}, parser.Int}
+	_, err := t1.GetIndex(String("this won't work"))
+
+	if err == nil {
+		t.Error("Expected error when getting index with non int")
+	}
+}
+
+func TestListSub(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Sub(Int(0))
+	if result == nil {
+		t.Error("Expected error when subtracting from list")
+	}
+}
+
+func TestListMod(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Mod(Int(0))
+	if result == nil {
+		t.Error("Expected error when getting remainder of a list")
+	}
+}
+
+func TestListDiv(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Div(Int(0))
+	if result == nil {
+		t.Error("Expected error when dividing list")
+	}
+}
+
+func TestListDivEc(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.DivEc(Int(0))
+	if result == nil {
+		t.Error("Expected error when getting quotient of a list")
+	}
+}
+
+func TestListAnd(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.And(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing a list")
+	}
+}
+
+func TestListOr(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Or(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing a list")
+	}
+}
+
+func TestListXor(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Xor(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing a list")
+	}
+}
+
 /*
 func TestListGetSize(t *testing.T) {
 	t1 := List("test")
