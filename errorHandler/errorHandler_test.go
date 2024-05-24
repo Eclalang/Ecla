@@ -53,7 +53,7 @@ func TestNewHandler(t *testing.T) {
 	}
 }
 
-func TestHandleError(t *testing.T) {
+func TestErrorHandler_HandleError(t *testing.T) {
 	e := NewHandler()
 	e.HandleError(1, 2, "Test", LevelError)
 	if len(e.Errors) != 1 {
@@ -82,6 +82,31 @@ func TestHandleError(t *testing.T) {
 	}
 	if e.Errors[2].Line != 5 || e.Errors[2].Col != 6 || e.Errors[2].Msg != "Test3" || e.Errors[2].Level != LevelFatal {
 		t.Errorf("HandleError() appended the wrong error")
+	}
+}
+
+func TestErrorHandler_HookExit(t *testing.T) {
+	e := NewHandler()
+	var ok bool
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+	eclaExit(1)
+	if !ok {
+		t.Errorf("HookExit() did not hook the function")
+	}
+}
+
+func TestErrorHandler_RestoreExit(t *testing.T) {
+	e := NewHandler()
+	var ok bool
+	e.HookExit(func(i int) {
+		ok = i == 1
+	})
+	e.RestoreExit()
+	eclaExit(1)
+	if ok {
+		t.Errorf("RestoreExit() did not restore the function")
 	}
 }
 
