@@ -313,6 +313,230 @@ func TestListEqTrueVar(t *testing.T) {
 	}
 }
 
+func TestListEqFalseLength(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &List{[]Type{Int(1)}, parser.Int}
+
+	res, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(false) {
+		t.Errorf("Expected false, got true")
+	}
+}
+
+func TestListEqFalseDifferentElement(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &List{[]Type{Int(1), Int(3)}, parser.Int}
+
+	res, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(false) {
+		t.Errorf("Expected false, got true")
+	}
+}
+
+func TestListNotEqTrueLength(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &List{[]Type{Int(1)}, parser.Int}
+
+	res, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListNotEqTrueDifferentElement(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &List{[]Type{Int(1), Int(3)}, parser.Int}
+
+	res, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListNotEqTrueAny(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &Any{Value: &List{[]Type{Int(1)}, parser.Int}, Type: "[]" + parser.Int}
+
+	res, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListNotEqTrueVar(t *testing.T) {
+	t1 := &List{[]Type{Int(1)}, "[]" + parser.Int}
+	t2 := &Var{"test", &List{[]Type{Int(1), Int(2)}, "[]" + parser.Int}}
+
+	res, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListNotEqFalse(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+
+	res, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(false) {
+		t.Errorf("Expected false, got true")
+	}
+}
+
+func TestListGtTrue(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &List{[]Type{Int(1)}, parser.Int}
+
+	res, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListGtFalse(t *testing.T) {
+	t1 := &List{[]Type{Int(1)}, parser.Int}
+	t2 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+
+	res, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(false) {
+		t.Errorf("Expected false, got true")
+	}
+}
+
+func TestListGtTrueAny(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &Any{Value: &List{[]Type{Int(1)}, parser.Int}, Type: "[]" + parser.Int}
+
+	res, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListGtTrueVar(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, "[]" + parser.Int}
+	t2 := &Var{"test", &List{[]Type{Int(1)}, "[]" + parser.Int}}
+
+	res, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListGtEqTrue(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &List{[]Type{Int(1)}, parser.Int}
+
+	res, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListGtEqTrueEq(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+
+	res, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListGtEqFalse(t *testing.T) {
+	t1 := &List{[]Type{Int(1)}, parser.Int}
+	t2 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+
+	res, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(false) {
+		t.Errorf("Expected false, got true")
+	}
+}
+
+func TestListGtEqTrueAny(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &Any{Value: &List{[]Type{Int(1)}, parser.Int}, Type: "[]" + parser.Int}
+
+	res, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListGtEqTrueVar(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, "[]" + parser.Int}
+	t2 := &Var{"test", &List{[]Type{Int(1)}, "[]" + parser.Int}}
+
+	res, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
 // Test List errors
 
 func TestListSetValueWithNonList(t *testing.T) {
