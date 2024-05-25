@@ -35,6 +35,9 @@ func (l *List) SetValue(v any) error {
 		l.Value = v.([]Type)
 		return nil
 	case *List:
+		if l.GetValueType() != v.(*List).GetValueType() {
+			return errors.New(fmt.Sprintf("cannot set value %s to list of type %s", v.(*List).Typ, l.Typ))
+		}
 		t := v.(*List)
 		*l = *t
 		return nil
