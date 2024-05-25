@@ -210,6 +210,67 @@ func TestListGetSize(t *testing.T) {
 	}
 }
 
+func TestListMulInt(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	expected := &List{[]Type{Int(1), Int(2), Int(1), Int(2), Int(1), Int(2)}, parser.Int}
+	result, err := t1.Mul(Int(3))
+	if err != nil {
+		t.Error(err)
+	}
+
+	lenRes, _ := result.Len()
+	lenExp, _ := expected.Len()
+	if lenRes != lenExp {
+		t.Errorf("Expected list of size %d, got list of size %d", lenRes, lenExp)
+	}
+	for i, elem := range result.(*List).Value {
+		if elem != expected.Value[i] {
+			t.Error("The elements do not match")
+		}
+	}
+}
+
+func TestListMulAny(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	expected := &List{[]Type{Int(1), Int(2), Int(1), Int(2), Int(1), Int(2)}, parser.Int}
+	result, err := t1.Mul(&Any{Int(3), parser.Int})
+	if err != nil {
+		t.Error(err)
+	}
+
+	lenRes, _ := result.Len()
+	lenExp, _ := expected.Len()
+	if lenRes != lenExp {
+		t.Errorf("Expected list of size %d, got list of size %d", lenRes, lenExp)
+	}
+	for i, elem := range result.(*List).Value {
+		if elem != expected.Value[i] {
+			t.Error("The elements do not match")
+		}
+	}
+}
+
+func TestListMulVar(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	v := &Var{"test", Int(3)}
+	expected := &List{[]Type{Int(1), Int(2), Int(1), Int(2), Int(1), Int(2)}, parser.Int}
+	result, err := t1.Mul(v)
+	if err != nil {
+		t.Error(err)
+	}
+
+	lenRes, _ := result.Len()
+	lenExp, _ := expected.Len()
+	if lenRes != lenExp {
+		t.Errorf("Expected list of size %d, got list of size %d", lenRes, lenExp)
+	}
+	for i, elem := range result.(*List).Value {
+		if elem != expected.Value[i] {
+			t.Error("The elements do not match")
+		}
+	}
+}
+
 // Test List errors
 
 func TestListSetValueWithNonList(t *testing.T) {
