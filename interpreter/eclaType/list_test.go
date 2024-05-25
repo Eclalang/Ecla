@@ -271,6 +271,48 @@ func TestListMulVar(t *testing.T) {
 	}
 }
 
+func TestListEqTrue(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+
+	res, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListEqTrueAny(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	t2 := &Any{Value: &List{[]Type{Int(1), Int(2)}, parser.Int}, Type: "[]" + parser.Int}
+
+	res, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestListEqTrueVar(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, "[]" + parser.Int}
+	t2 := &Var{"test", &List{[]Type{Int(1), Int(2)}, "[]" + parser.Int}}
+
+	res, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res != Bool(true) {
+		t.Errorf("Expected true, got false")
+	}
+}
+
 // Test List errors
 
 func TestListSetValueWithNonList(t *testing.T) {
