@@ -325,8 +325,8 @@ func (l *List) Append(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case *List:
-		if other.(*List).Typ == l.GetValueType() {
-			l.Value = append(l.Value, other.(*List))
+		if other.(*List).GetValueType() == l.GetValueType() {
+			l.Value = append(l.Value, other.(*List).Value...)
 			return l, nil
 		}
 		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char ||
@@ -353,15 +353,6 @@ func (l *List) GetValueType() string {
 }
 
 // utils Functions for lists trainmen
-
-func CheckTypeOfList(l *List, t string) bool {
-	for _, v := range l.Value {
-		if v.GetType() != l.Typ {
-			return false
-		}
-	}
-	return true
-}
 
 func IsList(t string) bool {
 	// via []int or []string [][]int ,string int map[string]int []map[string]int
