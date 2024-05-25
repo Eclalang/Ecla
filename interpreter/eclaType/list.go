@@ -325,8 +325,8 @@ func (l *List) Append(other Type) (Type, error) {
 	}
 	switch other.(type) {
 	case *List:
-		if other.(*List).Typ == l.GetValueType() {
-			l.Value = append(l.Value, other.(*List))
+		if other.(*List).GetValueType() == l.GetValueType() {
+			l.Value = append(l.Value, other.(*List).Value...)
 			return l, nil
 		}
 		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char ||
