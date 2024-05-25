@@ -164,6 +164,10 @@ func (l *List) DivEc(other Type) (Type, error) {
 // Eq returns true if two Type objects are equal
 func (l *List) Eq(other Type) (Type, error) {
 	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
 			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
@@ -185,6 +189,10 @@ func (l *List) Eq(other Type) (Type, error) {
 
 // NotEq returns true if two Type objects are not equal
 func (l *List) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
@@ -208,6 +216,10 @@ func (l *List) NotEq(other Type) (Type, error) {
 // Gt returns true if the first Type object is greater than the second
 func (l *List) Gt(other Type) (Type, error) {
 	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
 			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
@@ -224,7 +236,10 @@ func (l *List) Gt(other Type) (Type, error) {
 
 // GtEq returns true if the first Type object is greater than or equal the second
 func (l *List) GtEq(other Type) (Type, error) {
-
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
@@ -243,6 +258,10 @@ func (l *List) GtEq(other Type) (Type, error) {
 // Lw returns true if the first Type object is lower than the second
 func (l *List) Lw(other Type) (Type, error) {
 	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
 			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
@@ -259,6 +278,10 @@ func (l *List) Lw(other Type) (Type, error) {
 
 // LwEq returns true if the first Type object is lower than or equal the second
 func (l *List) LwEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
@@ -296,6 +319,10 @@ func (l *List) Xor(other Type) (Type, error) {
 
 // Append to list
 func (l *List) Append(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if other.(*List).Typ == l.GetValueType() {
