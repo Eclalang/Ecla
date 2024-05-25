@@ -162,20 +162,6 @@ func TestListGetValueType(t *testing.T) {
 	}
 }
 
-func TestListCheckTypeOfListTrue(t *testing.T) {
-	t1 := &List{[]Type{Int(1), Int(0)}, "[]" + parser.Int}
-	if !CheckTypeOfList(t1, parser.Int) {
-		t.Error("Expected true, got false")
-	}
-}
-
-func TestListCheckTypeOfListFalse(t *testing.T) {
-	t1 := &List{[]Type{Int(1), Char('c')}, parser.Int}
-	if CheckTypeOfList(t1, parser.Int) {
-		t.Error("Expected false, got true")
-	}
-}
-
 func TestIsListTrue(t *testing.T) {
 	if !IsList("[]int") {
 		t.Error("Expected true, got false")
@@ -790,6 +776,121 @@ func TestListAppendList(t *testing.T) {
 	t1 := &List{[]Type{Int(0)}, "[]" + parser.Int}
 	t2 := &List{[]Type{Int(1)}, "[]" + parser.Int}
 	expected := &List{[]Type{Int(0), Int(1)}, "[]" + parser.Int}
+
+	result, err := t1.Append(t2)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	lenRes := len(result.(*List).Value)
+	lenExp := len(expected.Value)
+	if lenRes != lenExp {
+		t.Errorf("Expected list of size %d, got list of size %d", lenExp, lenRes)
+	}
+	for i, elem := range result.(*List).Value {
+		if elem != expected.Value[i] {
+			t.Errorf("The %dth elements do not match: %d, %d", i, expected.Value[i], elem)
+		}
+	}
+}
+
+func TestListAppendVar(t *testing.T) {
+	t1 := &List{[]Type{Int(0)}, "[]" + parser.Int}
+	t2 := &Var{"test", &List{[]Type{Int(1)}, "[]" + parser.Int}}
+	expected := &List{[]Type{Int(0), Int(1)}, "[]" + parser.Int}
+
+	result, err := t1.Append(t2)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	lenRes := len(result.(*List).Value)
+	lenExp := len(expected.Value)
+	if lenRes != lenExp {
+		t.Errorf("Expected list of size %d, got list of size %d", lenExp, lenRes)
+	}
+	for i, elem := range result.(*List).Value {
+		if elem != expected.Value[i] {
+			t.Errorf("The %dth elements do not match: %d, %d", i, expected.Value[i], elem)
+		}
+	}
+}
+
+func TestListAppendAny(t *testing.T) {
+	t1 := &List{[]Type{Int(0)}, "[]" + parser.Int}
+	t2 := &Any{&List{[]Type{Int(1)}, "[]" + parser.Int}, "[]" + parser.Int}
+	expected := &List{[]Type{Int(0), Int(1)}, "[]" + parser.Int}
+
+	result, err := t1.Append(t2)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	lenRes := len(result.(*List).Value)
+	lenExp := len(expected.Value)
+	if lenRes != lenExp {
+		t.Errorf("Expected list of size %d, got list of size %d", lenExp, lenRes)
+	}
+	for i, elem := range result.(*List).Value {
+		if elem != expected.Value[i] {
+			t.Errorf("The %dth elements do not match: %d, %d", i, expected.Value[i], elem)
+		}
+	}
+}
+
+func TestListAppendListInt(t *testing.T) {
+	t1 := &List{[]Type{Int(0)}, "[]" + parser.Int}
+	t2 := Int(1)
+	expected := &List{[]Type{Int(0), Int(1)}, "[]" + parser.Int}
+
+	result, err := t1.Append(t2)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	lenRes := len(result.(*List).Value)
+	lenExp := len(expected.Value)
+	if lenRes != lenExp {
+		t.Errorf("Expected list of size %d, got list of size %d", lenExp, lenRes)
+	}
+	for i, elem := range result.(*List).Value {
+		if elem != expected.Value[i] {
+			t.Errorf("The %dth elements do not match: %d, %d", i, expected.Value[i], elem)
+		}
+	}
+}
+
+func TestListAppendListIntWithChar(t *testing.T) {
+	t1 := &List{[]Type{Char('A')}, "[]" + parser.Char}
+	t2 := &List{[]Type{Int(66)}, "[]" + parser.Int}
+	expected := &List{[]Type{Int(66), Int(65)}, "[]" + parser.Int}
+
+	result, err := t2.Append(t1)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	lenRes := len(result.(*List).Value)
+	lenExp := len(expected.Value)
+	if lenRes != lenExp {
+		t.Errorf("Expected list of size %d, got list of size %d", lenExp, lenRes)
+	}
+	for i, elem := range result.(*List).Value {
+		if elem != expected.Value[i] {
+			t.Errorf("The %dth elements do not match: %d, %d", i, expected.Value[i], elem)
+		}
+	}
+}
+
+func TestListAppendListCharWithInt(t *testing.T) {
+	t1 := &List{[]Type{Char('A')}, "[]" + parser.Char}
+	t2 := &List{[]Type{Int(66)}, "[]" + parser.Int}
+	expected := &List{[]Type{Char('A'), Char('B')}, "[]" + parser.Char}
 
 	result, err := t1.Append(t2)
 	if err != nil {
