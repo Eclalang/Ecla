@@ -175,7 +175,7 @@ func (l *List) Eq(other Type) (Type, error) {
 	case *Any:
 		return l.Eq(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // NotEq returns true if two Type objects are not equal
@@ -197,7 +197,7 @@ func (l *List) NotEq(other Type) (Type, error) {
 	case *Any:
 		return l.NotEq(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Gt returns true if the first Type object is greater than the second
@@ -214,7 +214,7 @@ func (l *List) Gt(other Type) (Type, error) {
 	case *Any:
 		return l.Gt(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // GtEq returns true if the first Type object is greater than or equal the second
@@ -232,7 +232,7 @@ func (l *List) GtEq(other Type) (Type, error) {
 	case *Any:
 		return l.GtEq(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Lw returns true if the first Type object is lower than the second
@@ -249,7 +249,7 @@ func (l *List) Lw(other Type) (Type, error) {
 	case *Any:
 		return l.Lw(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // LwEq returns true if the first Type object is lower than or equal the second
@@ -266,17 +266,17 @@ func (l *List) LwEq(other Type) (Type, error) {
 	case *Any:
 		return l.LwEq(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.GetType())
 }
 
 // And returns errors
 func (l *List) And(other Type) (Type, error) {
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Or returns errors
 func (l *List) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Not returns errors
@@ -286,7 +286,7 @@ func (l *List) Not() (Type, error) {
 
 // Xor returns errors
 func (l *List) Xor(other Type) (Type, error) {
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Append to list
