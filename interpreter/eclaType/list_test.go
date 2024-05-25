@@ -1,6 +1,7 @@
 package eclaType
 
 import (
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"github.com/Eclalang/Ecla/parser"
 	"testing"
 )
@@ -87,38 +88,6 @@ func TestListSetValueWithSliceOfTypes(t *testing.T) {
 	}
 }
 
-// Test List errors
-
-func TestListSetValueWithNonList(t *testing.T) {
-	t1, _ := NewList(parser.Int)
-	err := t1.SetValue(Int(0))
-
-	if err == nil {
-		t.Error("Expected error when setting list with non list value")
-	}
-}
-
-func TestListSetValueWithListOfWrongType(t *testing.T) {
-	t1 := &List{[]Type{}, "[]char"}
-	t2 := &List{[]Type{Int(0)}, "[]int"}
-	err := t1.SetValue(t2)
-
-	if err == nil {
-		t.Error("Expected error when setting value of list with another list of a different type")
-	}
-}
-
-func TestListSetValueWithSliceOfWrongTypes(t *testing.T) {
-	t1 := &List{[]Type{}, "[]char"}
-	var array []Type
-	array = append(array, Int(0))
-	err := t1.SetValue(array)
-
-	if err == nil {
-		t.Error("Expected error when setting value of list of char with slice of int")
-	}
-}
-
 func TestListString(t *testing.T) {
 	t1 := &List{[]Type{Int(0), Int(1), Int(2)}, parser.Int}
 	expected := "[0, 1, 2]"
@@ -176,7 +145,102 @@ func TestListGetIndex(t *testing.T) {
 	}
 }
 
+func TestListIsNull(t *testing.T) {
+	t1 := &List{[]Type{}, parser.Int}
+
+	if t1.IsNull() {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestListGetValueType(t *testing.T) {
+	expected := "test"
+	t1 := &List{[]Type{}, expected}
+	result := t1.GetValueType()
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
+
+func TestListCheckTypeOfListTrue(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(0)}, parser.Int}
+	if !CheckTypeOfList(t1, parser.Int) {
+		t.Error("Expected true, got false")
+	}
+}
+
+func TestListCheckTypeOfListFalse(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Char('c')}, parser.Int}
+	if CheckTypeOfList(t1, parser.Int) {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestIsListTrue(t *testing.T) {
+	if !IsList("[]int") {
+		t.Error("Expected true, got false")
+	}
+}
+
+func TestIsListFalse(t *testing.T) {
+	if IsList("int") {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestListLen(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2), Int(3)}, parser.Int}
+	expected := 3
+	result, err := t1.Len()
+	if err != nil {
+		t.Error(err)
+	}
+
+	if result != expected {
+		t.Errorf("Expected %d, got %d", expected, result)
+	}
+}
+
+func TestListGetSize(t *testing.T) {
+	t1 := &List{[]Type{Int(1), Int(2)}, parser.Int}
+	expected := utils.Sizeof(t1)
+	result := t1.GetSize()
+	if result != expected {
+		t.Errorf("Expected %d, got %d", expected, result)
+	}
+}
+
 // Test List errors
+
+func TestListSetValueWithNonList(t *testing.T) {
+	t1, _ := NewList(parser.Int)
+	err := t1.SetValue(Int(0))
+
+	if err == nil {
+		t.Error("Expected error when setting list with non list value")
+	}
+}
+
+func TestListSetValueWithListOfWrongType(t *testing.T) {
+	t1 := &List{[]Type{}, "[]char"}
+	t2 := &List{[]Type{Int(0)}, "[]int"}
+	err := t1.SetValue(t2)
+
+	if err == nil {
+		t.Error("Expected error when setting value of list with another list of a different type")
+	}
+}
+
+func TestListSetValueWithSliceOfWrongTypes(t *testing.T) {
+	t1 := &List{[]Type{}, "[]char"}
+	var array []Type
+	array = append(array, Int(0))
+	err := t1.SetValue(array)
+
+	if err == nil {
+		t.Error("Expected error when setting value of list of char with slice of int")
+	}
+}
 
 func TestListGetIndexOutOfRange(t *testing.T) {
 	expected := Int(5)
@@ -246,6 +310,150 @@ func TestListDivEc(t *testing.T) {
 	}
 }
 
+func TestListEqWithNonList(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Eq(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing list to int")
+	}
+}
+
+func TestListEqWithWrongType(t *testing.T) {
+	t1, err := NewList(parser.Char)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Eq(&List{[]Type{Int(1)}, parser.Int})
+	if result == nil {
+		t.Error("Expected error when comparing list of char to list of int")
+	}
+}
+
+func TestListNotEqWithNonList(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.NotEq(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing list to int")
+	}
+}
+
+func TestListNotEqWithWrongType(t *testing.T) {
+	t1, err := NewList(parser.Char)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.NotEq(&List{[]Type{Int(1)}, parser.Int})
+	if result == nil {
+		t.Error("Expected error when comparing list of char to list of int")
+	}
+}
+
+func TestListGtWithNonList(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Gt(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing list to int")
+	}
+}
+
+func TestListGtWithWrongType(t *testing.T) {
+	t1, err := NewList(parser.Char)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Gt(&List{[]Type{Int(1)}, parser.Int})
+	if result == nil {
+		t.Error("Expected error when comparing list of char to list of int")
+	}
+}
+
+func TestListGtEqWithNonList(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.GtEq(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing list to int")
+	}
+}
+
+func TestListGtEqWithWrongType(t *testing.T) {
+	t1, err := NewList(parser.Char)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.GtEq(&List{[]Type{Int(1)}, parser.Int})
+	if result == nil {
+		t.Error("Expected error when comparing list of char to list of int")
+	}
+}
+
+func TestListLwWithNonList(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Lw(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing list to int")
+	}
+}
+
+func TestListLwWithWrongType(t *testing.T) {
+	t1, err := NewList(parser.Char)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Lw(&List{[]Type{Int(1)}, parser.Int})
+	if result == nil {
+		t.Error("Expected error when comparing list of char to list of int")
+	}
+}
+
+func TestListLwEqWithNonList(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.LwEq(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing list to int")
+	}
+}
+
+func TestListLwEqWithWrongType(t *testing.T) {
+	t1, err := NewList(parser.Char)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.LwEq(&List{[]Type{Int(1)}, parser.Int})
+	if result == nil {
+		t.Error("Expected error when comparing list of char to list of int")
+	}
+}
+
 func TestListAnd(t *testing.T) {
 	t1, err := NewList("test")
 	if err != nil {
@@ -277,6 +485,18 @@ func TestListXor(t *testing.T) {
 	}
 
 	_, result := t1.Xor(Int(0))
+	if result == nil {
+		t.Error("Expected error when comparing a list")
+	}
+}
+
+func TestListNot(t *testing.T) {
+	t1, err := NewList("test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, result := t1.Not()
 	if result == nil {
 		t.Error("Expected error when comparing a list")
 	}
