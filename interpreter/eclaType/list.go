@@ -354,15 +354,6 @@ func (l *List) GetValueType() string {
 
 // utils Functions for lists trainmen
 
-func CheckTypeOfList(l *List, t string) bool {
-	for _, v := range l.Value {
-		if v.GetType() != l.Typ {
-			return false
-		}
-	}
-	return true
-}
-
 func IsList(t string) bool {
 	// via []int or []string [][]int ,string int map[string]int []map[string]int
 	if !(len(t) <= 2) {
