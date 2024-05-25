@@ -145,6 +145,8 @@ func (l *List) Mul(other Type) (Type, error) {
 		return &result, nil
 	case *Any:
 		return l.Mul(other.(*Any).Value)
+	case *Var:
+		return l.Mul(other.(*Var).Value)
 	}
 	return nil, fmt.Errorf("cannot multiply list by %s", other.GetString())
 }
