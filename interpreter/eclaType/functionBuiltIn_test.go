@@ -154,17 +154,13 @@ func TestAppend(t *testing.T) {
 	}
 	arr = append(arr, list)
 
-	listToAppend, errList2 := NewList(parser.Int)
-	if errList2 != nil {
-		t.Error(errList)
-	}
-	var ints []Type
-	ints = append(ints, Int(0))
+	listToAppend := &List{[]Type{Int(0)}, "[]" + parser.Int}
 	arr = append(arr, listToAppend)
 
 	result, errResult := foo.f(arr)
 	if errResult != nil {
 		t.Error(errResult)
+		return
 	}
 
 	if len(result) != 1 {
@@ -173,7 +169,7 @@ func TestAppend(t *testing.T) {
 	switch result[0].(type) {
 	case *List:
 		if len(result[0].(*List).Value) != 1 {
-			t.Error("Expected 1, got ", len(result))
+			t.Error("Expected 1, got ", len(result[0].(*List).Value))
 		}
 	}
 
