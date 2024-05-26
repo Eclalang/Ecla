@@ -297,7 +297,7 @@ func IsMap(typ string) bool {
 func GetTypeOfKeyAndValue(v string) (string, string) {
 	val := ""
 	count := 0
-	for i := 4; i < len(v); i++ {
+	for i := 3; i < len(v); i++ {
 		if v[i] == '[' {
 			count++
 		}
