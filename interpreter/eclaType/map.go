@@ -210,7 +210,6 @@ func (m *Map) DivEc(value Type) (Type, error) {
 	return nil, errors.New("cannot get quotient of map by " + value.String())
 }
 
-// TODO add case var ?
 func (m *Map) Eq(value Type) (Type, error) {
 	switch value.(type) {
 	case *Var:
