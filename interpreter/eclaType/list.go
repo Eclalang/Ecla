@@ -330,7 +330,7 @@ func (l *List) Append(other Type) (Type, error) {
 			return l, nil
 		}
 		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char ||
-			l.GetValueType() == parser.Char && other.(*List).GetType() == parser.Int {
+			l.GetValueType() == parser.Char && other.(*List).GetValueType() == parser.Int {
 			return l.Add(other)
 		}
 	case *Any:
@@ -338,6 +338,20 @@ func (l *List) Append(other Type) (Type, error) {
 	default:
 		if other.GetType() == l.GetValueType() {
 			l.Value = append(l.Value, other)
+			return l, nil
+		}
+		if l.GetValueType() == parser.Int && other.GetType() == parser.Char {
+			l.Value = append(l.Value, other.(*Char).GetValueAsInt())
+			return l, nil
+		}
+		if l.GetValueType() == parser.Char && other.GetType() == parser.Int {
+			i := int(*(other.(*Int)))
+			var err error = nil
+			c, err := NewChar(string(rune(i)))
+			if err != nil {
+				return nil, err
+			}
+			l.Value = append(l.Value, c)
 			return l, nil
 		}
 	}
