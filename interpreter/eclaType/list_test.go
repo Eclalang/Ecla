@@ -915,7 +915,7 @@ func TestListAppendListIntChar(t *testing.T) {
 	t2 := Char('A')
 	expected := &List{[]Type{Int(0), Int(65)}, "[]" + parser.Int}
 
-	result, err := t1.Append(t2)
+	result, err := t1.Append(&t2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -925,10 +925,12 @@ func TestListAppendListIntChar(t *testing.T) {
 	lenExp := len(expected.Value)
 	if lenRes != lenExp {
 		t.Errorf("Expected list of size %d, got list of size %d", lenExp, lenRes)
+		return
 	}
 	for i, elem := range result.(*List).Value {
 		if elem != expected.Value[i] {
 			t.Errorf("The %dth elements do not match: %d, %d", i, expected.Value[i], elem)
+			return
 		}
 	}
 }
@@ -938,7 +940,7 @@ func TestListAppendListCharInt(t *testing.T) {
 	t2 := Int(66)
 	expected := &List{[]Type{Char('A'), Char('B')}, "[]" + parser.Char}
 
-	result, err := t1.Append(t2)
+	result, err := t1.Append(&t2)
 	if err != nil {
 		t.Error(err)
 		return
