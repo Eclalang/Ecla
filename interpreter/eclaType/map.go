@@ -221,6 +221,9 @@ func (m *Map) Eq(value Type) (Type, error) {
 			return Bool(false), nil
 		}
 		for index, _ := range m.Keys {
+			if k, err := m.Keys[index].Eq(value.(*Map).Keys[index]); err == nil && k.(Bool) == false {
+				return Bool(false), nil
+			}
 			if v, err := m.Values[index].Eq(value.(*Map).Values[index]); err == nil && v.(Bool) == false {
 				return Bool(false), nil
 			}
