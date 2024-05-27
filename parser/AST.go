@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"log"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -97,9 +96,7 @@ func contains(needle string, haystack []string) bool {
 
 func GetPackageNameByPath(path string) string {
 	_, fPath := filepath.Split(path)
+	// since spe in split function is not empty the function cannot return a slice of length 0
 	temp := strings.Split(fPath, ".")
-	if len(temp) == 0 {
-		log.Fatal("Invalid path")
-	}
 	return temp[0]
 }

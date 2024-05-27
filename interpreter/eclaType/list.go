@@ -35,6 +35,9 @@ func (l *List) SetValue(v any) error {
 		l.Value = v.([]Type)
 		return nil
 	case *List:
+		if l.GetValueType() != v.(*List).GetValueType() {
+			return errors.New(fmt.Sprintf("cannot set value %s to list of type %s", v.(*List).Typ, l.Typ))
+		}
 		t := v.(*List)
 		*l = *t
 		return nil
@@ -142,6 +145,8 @@ func (l *List) Mul(other Type) (Type, error) {
 		return &result, nil
 	case *Any:
 		return l.Mul(other.(*Any).Value)
+	case *Var:
+		return l.Mul(other.(*Var).Value)
 	}
 	return nil, fmt.Errorf("cannot multiply list by %s", other.GetString())
 }
@@ -159,6 +164,10 @@ func (l *List) DivEc(other Type) (Type, error) {
 // Eq returns true if two Type objects are equal
 func (l *List) Eq(other Type) (Type, error) {
 	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
 			return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
@@ -175,11 +184,15 @@ func (l *List) Eq(other Type) (Type, error) {
 	case *Any:
 		return l.Eq(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // NotEq returns true if two Type objects are not equal
 func (l *List) NotEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
@@ -197,11 +210,15 @@ func (l *List) NotEq(other Type) (Type, error) {
 	case *Any:
 		return l.NotEq(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Gt returns true if the first Type object is greater than the second
 func (l *List) Gt(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
@@ -214,12 +231,15 @@ func (l *List) Gt(other Type) (Type, error) {
 	case *Any:
 		return l.Gt(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // GtEq returns true if the first Type object is greater than or equal the second
 func (l *List) GtEq(other Type) (Type, error) {
-
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
@@ -232,11 +252,15 @@ func (l *List) GtEq(other Type) (Type, error) {
 	case *Any:
 		return l.GtEq(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Lw returns true if the first Type object is lower than the second
 func (l *List) Lw(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
@@ -249,11 +273,15 @@ func (l *List) Lw(other Type) (Type, error) {
 	case *Any:
 		return l.Lw(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // LwEq returns true if the first Type object is lower than or equal the second
 func (l *List) LwEq(other Type) (Type, error) {
+	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
 	switch other.(type) {
 	case *List:
 		if l.Typ != other.(*List).Typ {
@@ -266,17 +294,17 @@ func (l *List) LwEq(other Type) (Type, error) {
 	case *Any:
 		return l.LwEq(other.(*Any).Value)
 	}
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with list of " + other.GetType())
 }
 
 // And returns errors
 func (l *List) And(other Type) (Type, error) {
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Or returns errors
 func (l *List) Or(other Type) (Type, error) {
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Not returns errors
@@ -286,19 +314,23 @@ func (l *List) Not() (Type, error) {
 
 // Xor returns errors
 func (l *List) Xor(other Type) (Type, error) {
-	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.(*List).GetValueType())
+	return nil, errors.New("cannot compare list of " + l.GetValueType() + " with " + other.GetType())
 }
 
 // Append to list
 func (l *List) Append(other Type) (Type, error) {
 	switch other.(type) {
+	case *Var:
+		other = other.(*Var).Value
+	}
+	switch other.(type) {
 	case *List:
-		if other.(*List).Typ == l.GetValueType() {
-			l.Value = append(l.Value, other.(*List))
+		if other.(*List).GetValueType() == l.GetValueType() {
+			l.Value = append(l.Value, other.(*List).Value...)
 			return l, nil
 		}
 		if l.GetValueType() == parser.Int && other.(*List).GetValueType() == parser.Char ||
-			l.GetValueType() == parser.Char && other.(*List).GetType() == parser.Int {
+			l.GetValueType() == parser.Char && other.(*List).GetValueType() == parser.Int {
 			return l.Add(other)
 		}
 	case *Any:
@@ -306,6 +338,20 @@ func (l *List) Append(other Type) (Type, error) {
 	default:
 		if other.GetType() == l.GetValueType() {
 			l.Value = append(l.Value, other)
+			return l, nil
+		}
+		if l.GetValueType() == parser.Int && other.GetType() == parser.Char {
+			l.Value = append(l.Value, other.(*Char).GetValueAsInt())
+			return l, nil
+		}
+		if l.GetValueType() == parser.Char && other.GetType() == parser.Int {
+			i := int(*(other.(*Int)))
+			var err error = nil
+			c, err := NewChar(string(rune(i)))
+			if err != nil {
+				return nil, err
+			}
+			l.Value = append(l.Value, c)
 			return l, nil
 		}
 	}
@@ -321,15 +367,6 @@ func (l *List) GetValueType() string {
 }
 
 // utils Functions for lists trainmen
-
-func CheckTypeOfList(l *List, t string) bool {
-	for _, v := range l.Value {
-		if v.GetType() != l.Typ {
-			return false
-		}
-	}
-	return true
-}
 
 func IsList(t string) bool {
 	// via []int or []string [][]int ,string int map[string]int []map[string]int

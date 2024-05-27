@@ -210,8 +210,11 @@ func (m *Map) DivEc(value Type) (Type, error) {
 	return nil, errors.New("cannot get quotient of map by " + value.String())
 }
 
-// TODO add case var ?
 func (m *Map) Eq(value Type) (Type, error) {
+	switch value.(type) {
+	case *Var:
+		value = value.(*Var).Value
+	}
 	switch value.(type) {
 	case *Map:
 		if len(m.Keys) != len(value.(*Map).Keys) {
@@ -294,7 +297,7 @@ func IsMap(typ string) bool {
 func GetTypeOfKeyAndValue(v string) (string, string) {
 	val := ""
 	count := 0
-	for i := 4; i < len(v); i++ {
+	for i := 3; i < len(v); i++ {
 		if v[i] == '[' {
 			count++
 		}
