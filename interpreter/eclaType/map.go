@@ -152,11 +152,14 @@ func (m *Map) Add(value Type) (Type, error) {
 		if value.GetType() != m.Typ && m.TypKey != "string" && m.TypVal != "string" {
 			return nil, errors.New("cannot add map with " + value.String())
 		}
-
-		for index, v := range value.(*Map).Keys {
-			m.Set(v, value.(*Map).Values[index])
+		tmp := &Map{[]Type{}, []Type{}, m.Typ, m.TypKey, m.TypVal}
+		for index, k := range m.Keys {
+			tmp.Set(k, m.Values[index])
 		}
-		return m, nil
+		for index, v := range value.(*Map).Keys {
+			tmp.Set(v, value.(*Map).Values[index])
+		}
+		return tmp, nil
 	case String:
 		return m.GetString().Add(value)
 	case *Any:
@@ -185,13 +188,18 @@ func (m *Map) Sub(value Type) (Type, error) {
 		if value.GetType() != m.Typ && m.TypKey != "string" && m.TypVal != "string" {
 			return nil, errors.New("cannot subtract " + value.String() + " from map")
 		}
-		for _, v := range value.(*Map).Keys {
-			value.(*Map).Delete(v)
+		tmp := &Map{[]Type{}, []Type{}, m.Typ, m.TypKey, m.TypVal}
+		for index, k := range m.Keys {
+			tmp.Set(k, m.Values[index])
 		}
+		for _, v := range value.(*Map).Keys {
+			tmp.Delete(v)
+		}
+		return tmp, nil
 	case *Any:
 		return m.Sub(value.(*Any).Value)
 	}
-	return m, nil
+	return nil, errors.New("cannot subtract " + value.String() + " from map")
 }
 
 func (m *Map) Mul(value Type) (Type, error) {
