@@ -152,11 +152,14 @@ func (m *Map) Add(value Type) (Type, error) {
 		if value.GetType() != m.Typ && m.TypKey != "string" && m.TypVal != "string" {
 			return nil, errors.New("cannot add map with " + value.String())
 		}
-
-		for index, v := range value.(*Map).Keys {
-			m.Set(v, value.(*Map).Values[index])
+		tmp := &Map{[]Type{}, []Type{}, m.Typ, m.TypKey, m.TypVal}
+		for index, v := range m.Keys {
+			tmp.Set(v, m.Values[index])
 		}
-		return m, nil
+		for index, v := range value.(*Map).Keys {
+			tmp.Set(v, value.(*Map).Values[index])
+		}
+		return tmp, nil
 	case String:
 		return m.GetString().Add(value)
 	case *Any:
