@@ -495,7 +495,7 @@ func TestMapSub(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	b, e := result.Eq(t2)
+	b, e := result.Eq(expected)
 	if e != nil {
 		t.Error(e)
 	}
@@ -512,7 +512,7 @@ func TestMapSubVar(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	b, e := result.Eq(t2)
+	b, e := result.Eq(expected)
 	if e != nil {
 		t.Error(e)
 	}
@@ -529,7 +529,7 @@ func TestMapSubAny(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	b, e := result.Eq(t2)
+	b, e := result.Eq(expected)
 	if e != nil {
 		t.Error(e)
 	}
@@ -753,5 +753,13 @@ func TestMapNotErr(t *testing.T) {
 	_, err := t1.Not()
 	if err == nil {
 		t.Error("Expected error when getting \"not\" of map")
+	}
+}
+
+func TestMapSubErr(t *testing.T) {
+	t1 := &Map{[]Type{Int(0), Int(1)}, []Type{String("0"), String("1")}, "map[int]string", parser.Int, parser.String}
+	_, err := t1.Sub(Int(0))
+	if err == nil {
+		t.Error("Expected error when subtracting an int from a map")
 	}
 }
