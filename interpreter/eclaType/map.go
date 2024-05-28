@@ -285,7 +285,7 @@ func (m *Map) LwEq(other Type) (Type, error) {
 }
 
 func (m *Map) Append(other Type) (Type, error) {
-	return nil, errors.New("cannot compare map with " + other.String())
+	return nil, errors.New("cannot append " + other.String() + "to map")
 }
 
 func (m *Map) IsNull() bool {
