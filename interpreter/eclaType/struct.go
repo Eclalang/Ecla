@@ -158,9 +158,9 @@ func (s *Struct) Eq(value Type) (Type, error) {
 		if len(s.Fields) != len(value.(*Struct).Fields) {
 			return Bool(false), nil
 		}
-		for name, value := range s.Fields {
-			vVal, ok := (*value).(*Struct).Fields[name]
-			if !ok || (vVal != value) {
+		for key, val := range s.Fields {
+			vVal, ok := value.(*Struct).Fields[key]
+			if !ok || (*vVal != *val) {
 				return Bool(false), nil
 			}
 		}
