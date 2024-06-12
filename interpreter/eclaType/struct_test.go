@@ -357,6 +357,181 @@ func TestSetStructAnyField(t *testing.T) {
 	}
 }
 
+func TestAddStructString(t *testing.T) {
+	decl := &eclaDecl.StructDecl{nil, []string{"field0", "field1"}, ""}
+	var i Type = Int(42)
+	var str Type = String("test")
+	s := &Struct{map[string]*Type{"field0": &i, "field1": &str}, "", decl}
+	result, err := s.Add(String("test"))
+	if err != nil {
+		t.Error(err)
+	}
+	expected := String("{42, test}test")
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
+
+func TestAddStructVar(t *testing.T) {
+	decl := &eclaDecl.StructDecl{nil, []string{"field0", "field1"}, ""}
+	var i Type = Int(42)
+	var str Type = String("test")
+	s := &Struct{map[string]*Type{"field0": &i, "field1": &str}, "", decl}
+	result, err := s.Add(&Var{"", String("test")})
+	if err != nil {
+		t.Error(err)
+	}
+	expected := String("{42, test}test")
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
+
+func TestAddStructAny(t *testing.T) {
+	decl := &eclaDecl.StructDecl{nil, []string{"field0", "field1"}, ""}
+	var i Type = Int(42)
+	var str Type = String("test")
+	s := &Struct{map[string]*Type{"field0": &i, "field1": &str}, "", decl}
+	result, err := s.Add(&Any{String("test"), ""})
+	if err != nil {
+		t.Error(err)
+	}
+	expected := String("{42, test}test")
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
+
+func TestStructEqFalseType(t *testing.T) {
+	s1 := &Struct{nil, "test", nil}
+	s2 := &Struct{nil, "other struct", nil}
+	result, err := s1.Eq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestStructEqFalseFieldsLength(t *testing.T) {
+	var arg1 Type = Int(0)
+	var arg2 Type = Int(0)
+	s1 := &Struct{map[string]*Type{"1": &arg1}, "", nil}
+	s2 := &Struct{map[string]*Type{"1": &arg1, "2": &arg2}, "", nil}
+	result, err := s1.Eq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestStructEqFalseValues(t *testing.T) {
+	var arg1 Type = Int(0)
+	s1 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	s2 := &Struct{map[string]*Type{"2": &arg1}, "test", nil}
+	result, err := s1.Eq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestStructEqTrue(t *testing.T) {
+	var arg1 Type = Int(0)
+	s1 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	s2 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	result, err := s1.Eq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got false")
+	}
+}
+
+func TestStructEqTrueVar(t *testing.T) {
+	var arg1 Type = Int(0)
+	s1 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	s2 := &Var{"", &Struct{map[string]*Type{"1": &arg1}, "test", nil}}
+	result, err := s1.Eq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got false")
+	}
+}
+
+func TestStructEqTrueAny(t *testing.T) {
+	var arg1 Type = Int(0)
+	s1 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	s2 := &Any{&Struct{map[string]*Type{"1": &arg1}, "test", nil}, ""}
+	result, err := s1.Eq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got false")
+	}
+}
+
+func TestStructNotEqTrueValues(t *testing.T) {
+	var arg1 Type = Int(0)
+	s1 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	s2 := &Struct{map[string]*Type{"2": &arg1}, "test", nil}
+	result, err := s1.NotEq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got false")
+	}
+}
+
+func TestStructNotEqFalse(t *testing.T) {
+	var arg1 Type = Int(0)
+	s1 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	s2 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	result, err := s1.NotEq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestStructNotEqTrueVar(t *testing.T) {
+	var arg1 Type = Int(0)
+	s1 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	s2 := &Var{"", &Struct{map[string]*Type{"1": &arg1}, "test", nil}}
+	result, err := s1.NotEq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got true")
+	}
+}
+
+func TestStructNotEqTrueAny(t *testing.T) {
+	var arg1 Type = Int(0)
+	s1 := &Struct{map[string]*Type{"1": &arg1}, "test", nil}
+	s2 := &Any{&Struct{map[string]*Type{"1": &arg1}, "test", nil}, ""}
+	result, err := s1.NotEq(s2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got true")
+	}
+}
+
 // Tests struct errors
 
 func TestStructVerifyError(t *testing.T) {
