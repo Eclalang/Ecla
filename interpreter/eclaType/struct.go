@@ -35,6 +35,10 @@ func (s *Struct) GetValue() any {
 
 func (s *Struct) SetValue(v any) error {
 	switch v.(type) {
+	case *Var:
+		v = v.(*Var).Value
+	}
+	switch v.(type) {
 	case *Struct:
 		t := v.(*Struct)
 		*s = *t
