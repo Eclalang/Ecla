@@ -3,6 +3,7 @@ package eclaType
 import (
 	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/interpreter/utils"
+	"github.com/Eclalang/Ecla/parser"
 	"testing"
 )
 
@@ -237,6 +238,122 @@ func TestSetValueStruct(t *testing.T) {
 			t.Error("The fields are not the same")
 			return
 		}
+	}
+}
+
+func TestSetValueStructVar(t *testing.T) {
+	decl := &eclaDecl.StructDecl{nil, []string{"field0", "field1"}, ""}
+	var i Type = Int(42)
+	var str Type = String("test")
+	v := &Var{"", &Struct{map[string]*Type{"field0": &i, "field1": &str}, "", decl}}
+	s := &Struct{nil, "", nil}
+	err := s.SetValue(v)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	expected := v.Value.(*Struct)
+	if s.Typ != expected.Typ || s.Definition != expected.Definition || len(s.Fields) != len(expected.Fields) {
+		t.Errorf("Expected %s, got %s", expected, s)
+		return
+	}
+	for k, arg := range expected.Fields {
+		if s.Fields[k] != arg {
+			t.Error("The fields are not the same")
+			return
+		}
+	}
+}
+
+func TestSetValueStructAny(t *testing.T) {
+	decl := &eclaDecl.StructDecl{nil, []string{"field0", "field1"}, ""}
+	var i Type = Int(42)
+	var str Type = String("test")
+	a := &Any{&Struct{map[string]*Type{"field0": &i, "field1": &str}, "", decl}, ""}
+	s := &Struct{nil, "", nil}
+	err := s.SetValue(a)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	expected := a.Value.(*Struct)
+	if s.Typ != expected.Typ || s.Definition != expected.Definition || len(s.Fields) != len(expected.Fields) {
+		t.Errorf("Expected %s, got %s", expected, s)
+		return
+	}
+	for k, arg := range expected.Fields {
+		if s.Fields[k] != arg {
+			t.Error("The fields are not the same")
+			return
+		}
+	}
+}
+
+func TestSetStruct(t *testing.T) {
+	decl := &eclaDecl.StructDecl{nil, []string{"field0"}, ""}
+	var i Type = Int(0)
+	expected := Int(42)
+	fieldName := "field0"
+	s := &Struct{map[string]*Type{fieldName: &i}, "", decl}
+	err := s.Set(fieldName, expected)
+	if err != nil {
+		t.Error(err)
+	}
+	result := *s.Fields[fieldName]
+	if result != expected {
+		t.Errorf("Expected %d, got %d", expected, result)
+	}
+}
+
+func TestSetStructVar(t *testing.T) {
+	decl := &eclaDecl.StructDecl{nil, []string{"field0"}, ""}
+	var i Type = Int(0)
+	expected := Int(42)
+	fieldName := "field0"
+	s := &Struct{map[string]*Type{fieldName: &i}, "", decl}
+	err := s.Set(fieldName, &Var{"", expected})
+	if err != nil {
+		t.Error(err)
+	}
+	result := *s.Fields[fieldName]
+	if result != expected {
+		t.Errorf("Expected %d, got %d", expected, result)
+	}
+}
+
+func TestSetStructAnyArg(t *testing.T) {
+	decl := &eclaDecl.StructDecl{nil, []string{"field0"}, ""}
+	var i Type = Int(0)
+	expected := Int(42)
+	fieldName := "field0"
+	s := &Struct{map[string]*Type{fieldName: &i}, "", decl}
+	err := s.Set(fieldName, &Any{expected, ""})
+	if err != nil {
+		t.Error(err)
+	}
+	result := *s.Fields[fieldName]
+	if result != expected {
+		t.Errorf("Expected %d, got %d", expected, result)
+	}
+}
+
+func TestSetStructAnyField(t *testing.T) {
+	decl := &eclaDecl.StructDecl{map[string]string{"field0": parser.Any}, []string{"field0"}, ""}
+	var i Type = &Any{Int(0), "test"}
+	expected := Int(42)
+	fieldName := "field0"
+	s := &Struct{map[string]*Type{fieldName: &i}, "", decl}
+	err := s.Set(fieldName, expected)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	result := (*s.Fields[fieldName]).(*Any).Value
+	if result != expected {
+		t.Errorf("Expected %d, got %d", expected, result)
+		return
 	}
 }
 
