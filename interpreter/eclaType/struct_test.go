@@ -216,6 +216,30 @@ func TestIsStructFalse(t *testing.T) {
 	}
 }
 
+func TestSetValueStruct(t *testing.T) {
+	decl := &eclaDecl.StructDecl{nil, []string{"field0", "field1"}, ""}
+	var i Type = Int(42)
+	var str Type = String("test")
+	expected := &Struct{map[string]*Type{"field0": &i, "field1": &str}, "", decl}
+	s := &Struct{nil, "", nil}
+	err := s.SetValue(expected)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if s.Typ != expected.Typ || s.Definition != expected.Definition || len(s.Fields) != len(expected.Fields) {
+		t.Errorf("Expected %s, got %s", expected, s)
+		return
+	}
+	for k, arg := range expected.Fields {
+		if s.Fields[k] != arg {
+			t.Error("The fields are not the same")
+			return
+		}
+	}
+}
+
 // Tests struct errors
 
 func TestStructVerifyError(t *testing.T) {
