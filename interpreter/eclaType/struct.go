@@ -85,7 +85,7 @@ func (s *Struct) Set(fieldName string, FieldValue Type) error {
 	if _, ok := s.Fields[fieldName]; !ok {
 		return errors.New("field " + fieldName + " does not exist")
 	}
-	if (*s.Fields[fieldName]).GetType() == parser.Any {
+	if (*s.Fields[fieldName]).GetType()[:3] == parser.Any {
 		return (*s.Fields[fieldName]).(*Any).SetAny(FieldValue)
 	}
 	if (*s.Fields[fieldName]).GetType() != FieldValue.GetType() {
