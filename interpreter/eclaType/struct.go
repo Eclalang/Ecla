@@ -141,8 +141,11 @@ func (s *Struct) DivEc(value Type) (Type, error) {
 	return nil, errors.New("cannot get quotient " + s.String() + " by " + value.String())
 }
 
-// TODO add case var ?
 func (s *Struct) Eq(value Type) (Type, error) {
+	switch value.(type) {
+	case *Var:
+		value = value.(*Var).Value
+	}
 	switch value.(type) {
 	case *Struct:
 		if s.Typ != value.(*Struct).Typ {
