@@ -2,6 +2,7 @@ package eclaType
 
 import (
 	"errors"
+
 	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"github.com/Eclalang/Ecla/interpreter/utils"
 	"github.com/Eclalang/Ecla/parser"
@@ -149,9 +150,9 @@ func NewFunction(Name string, args []parser.FunctionParams, body []parser.Node, 
 	argsList = append(argsList, args)
 	argsString := generateArgsString(args)
 	var returnMap = make(map[string][]string)
-	returnMap[argsString] = ret
+	returnMap[argsString] = ret // associating a set of return types with args for overloading
 	var bodyMap = make(map[string][]parser.Node)
-	bodyMap[argsString] = body
+	bodyMap[argsString] = body // associating a body with args for overloading
 	return &Function{
 		Name:            Name,
 		Args:            argsList,
@@ -271,7 +272,7 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type, StructDecl []eclaDe
 		if paramType == parser.Any {
 			tp = parser.Any
 		}
-		if tp != paramType {
+		if tp != paramType { //TODO investigate
 			isImplemented := false
 			for _, decl := range StructDecl {
 				if decl.GetName() == paramType {
@@ -284,7 +285,7 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type, StructDecl []eclaDe
 			}
 		}
 		v, err := NewVar(paramName, tp, elem)
-		if err != nil {
+		if err != nil { //TODO we can never reach this
 			panic(err)
 		}
 		argsType[paramName] = v
@@ -294,7 +295,6 @@ func (f *Function) TypeAndNumberOfArgsIsCorrect(args []Type, StructDecl []eclaDe
 }
 
 func (f *Function) CheckReturn(ret []Type, StructDecl []eclaDecl.TypeDecl) bool {
-
 	key := generateArgsString(f.Args[f.lastIndexOfArgs])
 	if len(f.Return[key]) != len(ret) {
 		return false

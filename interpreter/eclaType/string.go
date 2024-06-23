@@ -198,6 +198,7 @@ func (s String) GtEq(other Type) (Type, error) {
 }
 
 // Lw returns true if s is lower than other
+
 func (s String) Lw(other Type) (Type, error) {
 	switch other.(type) {
 	case *Var:

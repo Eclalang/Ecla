@@ -2,7 +2,7 @@ package eclaType
 
 type Any struct {
 	Value Type
-	Type  string
+	Type  string //actually the type of Value
 }
 
 func (a *Any) String() string {

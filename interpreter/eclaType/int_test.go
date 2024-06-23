@@ -1,6 +1,7 @@
 package eclaType
 
 import (
+	"github.com/Eclalang/Ecla/interpreter/utils"
 	"testing"
 )
 
@@ -602,7 +603,7 @@ func TestSubIntChar(t *testing.T) {
 
 func TestModIntChar(t *testing.T) {
 	t1 := Int(60)
-	t2 := Int('!')
+	t2 := Char('!')
 
 	result, err := t1.Mod(t2)
 	if err != nil {
@@ -641,7 +642,7 @@ func TestDivIntChar(t *testing.T) {
 
 func TestDivEcIntChar(t *testing.T) {
 	t1 := Int(67)
-	t2 := Int('!')
+	t2 := Char('!')
 
 	result, err := t1.DivEc(t2)
 	if err != nil {
@@ -1067,7 +1068,47 @@ func TestIntGetString(t *testing.T) {
 	}
 }
 
+func TestIntGetSize(t *testing.T) {
+	t1 := Int(0)
+	expected := utils.Sizeof(t1)
+
+	result := t1.GetSize()
+	if result != expected {
+		t.Errorf("expected %d, got %d", expected, result)
+	}
+}
+
 // test errors Int
+
+func TestIntAndErr(t *testing.T) {
+	t1 := Int(5)
+	t2 := String("test")
+
+	_, err := t1.And(t2)
+	if err == nil {
+		t.Error("Expected error when checking int and string")
+	}
+}
+
+func TestIntOrErr(t *testing.T) {
+	t1 := Int(5)
+	t2 := String("test")
+
+	_, err := t1.Or(t2)
+	if err == nil {
+		t.Error("Expected error when checking int or string")
+	}
+}
+
+func TestIntXorErr(t *testing.T) {
+	t1 := Int(5)
+	t2 := String("test")
+
+	_, err := t1.Xor(t2)
+	if err == nil {
+		t.Error("Expected error when checking int xor string")
+	}
+}
 
 func TestIntLenErr(t *testing.T) {
 	t1 := Int(5)
@@ -1166,9 +1207,19 @@ func TestDivBy0IntErr(t *testing.T) {
 	}
 }
 
-func TestDivEcBy0IntCharErr(t *testing.T) {
+func TestDivBy0IntCharErr(t *testing.T) {
 	t1 := Int(5)
 	t2 := Char(0)
+
+	_, err := t1.Div(t2)
+	if err == nil {
+		t.Error("Expected error when dividing an int by 0")
+	}
+}
+
+func TestDivBy0IntFloatErr(t *testing.T) {
+	t1 := Int(5)
+	t2 := Float(0)
 
 	_, err := t1.Div(t2)
 	if err == nil {
@@ -1226,9 +1277,9 @@ func TestDivEcBy0IntErr(t *testing.T) {
 	}
 }
 
-func TestDivEcBy0IntIntErr(t *testing.T) {
-	t1 := Int('A')
-	t2 := Int(0)
+func TestDivEcBy0IntCharErr(t *testing.T) {
+	t1 := Int(1)
+	t2 := Char(0)
 
 	_, err := t1.DivEc(t2)
 	if err == nil {
@@ -1508,6 +1559,58 @@ func TestOrIntFloatFalseBoth(t *testing.T) {
 	t2 := Float(0)
 
 	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestXorIntFloat(t *testing.T) {
+	t1 := Int(1)
+	t2 := Float(1)
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestXorIntFloatFalseRight(t *testing.T) {
+	t1 := Int(1)
+	t2 := Float(0)
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestXorIntFloatFalseLeft(t *testing.T) {
+	t1 := Int(0)
+	t2 := Float(1)
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestXorIntFloatFalseBoth(t *testing.T) {
+	t1 := Int(0)
+	t2 := Float(0)
+
+	result, err := t1.Xor(t2)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1872,6 +1975,1024 @@ func TestXorIntBoolFalseRight(t *testing.T) {
 func TestXorIntBoolFalseBoth(t *testing.T) {
 	t1 := Int(0)
 	t2 := Bool(false)
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+// Int interacts with Var
+
+func TestAddIntVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Add(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(3) {
+		t.Error("Expected 3, got ", result)
+	}
+}
+
+func TestAddNegIntVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(-2))
+
+	result, err := t1.Add(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(-1) {
+		t.Error("Expected -1, got ", result)
+	}
+}
+
+func TestSubIntVar(t *testing.T) {
+	t1 := Int(4)
+	t2, _ := NewVar("testVar", "int", Int(3))
+
+	result, err := t1.Sub(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(1) {
+		t.Error("Expected 1, got ", result)
+	}
+}
+
+func TestNegSubIntVar(t *testing.T) {
+	t1 := Int(4)
+	t2, _ := NewVar("testVar", "int", Int(-3))
+
+	result, err := t1.Sub(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(7) {
+		t.Error("Expected 7, got ", result)
+	}
+}
+
+func TestModIntVar(t *testing.T) {
+	t1 := Int(3)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Mod(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(1) {
+		t.Error("Expected 1, got ", result)
+	}
+}
+
+func TestMulIntVar(t *testing.T) {
+	t1 := Int(4)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Mul(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(8) {
+		t.Error("Expected 8, got ", result)
+	}
+}
+
+func TestMulNegIntVar(t *testing.T) {
+	t1 := Int(4)
+	t2, _ := NewVar("testVar", "int", Int(-2))
+
+	result, err := t1.Mul(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(-8) {
+		t.Error("Expected -8, got ", result)
+	}
+}
+
+func TestDivIntVar(t *testing.T) {
+	t1 := Int(4)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Div(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Float(2.0) {
+		t.Error("Expected 2.0, got ", result)
+	}
+}
+
+func TestDivNegIntVar(t *testing.T) {
+	t1 := Int(4)
+	t2, _ := NewVar("testVar", "int", Int(-2))
+
+	result, err := t1.Div(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Float(-2.0) {
+		t.Error("Expected -2.0, got ", result)
+	}
+}
+
+func TestDivEcIntVar(t *testing.T) {
+	t1 := Int(5)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.DivEc(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(2) {
+		t.Error("Expected 2, got ", result)
+	}
+}
+
+func TestDivEcNegIntVar(t *testing.T) {
+	t1 := Int(5)
+	t2, _ := NewVar("testVar", "int", Int(-2))
+
+	result, err := t1.DivEc(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(-2) {
+		t.Error("Expected -2, got ", result)
+	}
+}
+
+func TestEqIntVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(1))
+
+	result, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestEqIntFalseVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestNotEqIntVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestNotEqIntVarFalse(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(1))
+
+	result, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestGtIntVarTrue(t *testing.T) {
+	t1 := Int(2)
+	t2, _ := NewVar("testVar", "int", Int(1))
+
+	result, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestGtIntVarFalse(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestGtIntVarEq(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(1))
+
+	result, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestGtEqIntVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(0))
+
+	result, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestGtEqIntVarEq(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(1))
+
+	result, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestGtEqIntVarFalse(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestLwIntVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Lw(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestLwIntVarFalse(t *testing.T) {
+	t1 := Int(2)
+	t2, _ := NewVar("testVar", "int", Int(1))
+
+	result, err := t1.Lw(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestLwIntVarEq(t *testing.T) {
+	t1 := Int(2)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Lw(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestLwEqIntVar(t *testing.T) {
+	t1 := Int(2)
+	t2, _ := NewVar("testVar", "int", Int(3))
+
+	result, err := t1.LwEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestLwEqIntVarFalse(t *testing.T) {
+	t1 := Int(2)
+	t2, _ := NewVar("testVar", "int", Int(1))
+
+	result, err := t1.LwEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestLwEqIntVarEq(t *testing.T) {
+	t1 := Int(2)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.LwEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndIntVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndIntVarFalseRight(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(0))
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestAndIntVarFalseLeft(t *testing.T) {
+	t1 := Int(0)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestAndIntVarFalseBoth(t *testing.T) {
+	t1 := Int(0)
+	t2, _ := NewVar("testVar", "int", Int(0))
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestOrIntVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrIntVarFalseRight(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(0))
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrIntVarFalseLeft(t *testing.T) {
+	t1 := Int(0)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrIntVarFalseBoth(t *testing.T) {
+	t1 := Int(0)
+	t2, _ := NewVar("testVar", "int", Int(0))
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestXorIntVar(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestXorIntVarFalseLeft(t *testing.T) {
+	t1 := Int(0)
+	t2, _ := NewVar("testVar", "int", Int(2))
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestXorIntVarFalseRight(t *testing.T) {
+	t1 := Int(1)
+	t2, _ := NewVar("testVar", "int", Int(0))
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestXorIntVarFalseBoth(t *testing.T) {
+	t1 := Int(0)
+	t2, _ := NewVar("testVar", "int", Int(0))
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+// Int interacts with Any
+
+func TestAddIntAnt(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Add(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(3) {
+		t.Error("Expected 3, got ", result)
+	}
+}
+
+func TestAddNegIntAny(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(-2))
+
+	result, err := t1.Add(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(-1) {
+		t.Error("Expected -1, got ", result)
+	}
+}
+
+func TestSubIntAny(t *testing.T) {
+	t1 := Int(4)
+	t2 := NewAny(Int(3))
+
+	result, err := t1.Sub(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(1) {
+		t.Error("Expected 1, got ", result)
+	}
+}
+
+func TestNegSubIntAny(t *testing.T) {
+	t1 := Int(4)
+	t2 := NewAny(Int(-3))
+
+	result, err := t1.Sub(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(7) {
+		t.Error("Expected 7, got ", result)
+	}
+}
+
+func TestModIntAny(t *testing.T) {
+	t1 := Int(3)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Mod(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(1) {
+		t.Error("Expected 1, got ", result)
+	}
+}
+
+func TestMulIntAny(t *testing.T) {
+	t1 := Int(4)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Mul(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(8) {
+		t.Error("Expected 8, got ", result)
+	}
+}
+
+func TestMulNegIntAny(t *testing.T) {
+	t1 := Int(4)
+	t2 := NewAny(Int(-2))
+
+	result, err := t1.Mul(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(-8) {
+		t.Error("Expected -8, got ", result)
+	}
+}
+
+func TestDivIntAny(t *testing.T) {
+	t1 := Int(4)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Div(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Float(2.0) {
+		t.Error("Expected 2.0, got ", result)
+	}
+}
+
+func TestDivNegIntAny(t *testing.T) {
+	t1 := Int(4)
+	t2 := NewAny(Int(-2))
+
+	result, err := t1.Div(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Float(-2.0) {
+		t.Error("Expected -2.0, got ", result)
+	}
+}
+
+func TestDivEcIntAny(t *testing.T) {
+	t1 := Int(5)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.DivEc(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(2) {
+		t.Error("Expected 2, got ", result)
+	}
+}
+
+func TestDivEcNegIntAny(t *testing.T) {
+	t1 := Int(5)
+	t2 := NewAny(Int(-2))
+
+	result, err := t1.DivEc(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Int(-2) {
+		t.Error("Expected -2, got ", result)
+	}
+}
+
+func TestEqIntAny(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(1))
+
+	result, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestEqIntFalseAny(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Eq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestNotEqIntAny(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestNotEqIntAnyFalse(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(1))
+
+	result, err := t1.NotEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestGtIntAnyTrue(t *testing.T) {
+	t1 := Int(2)
+	t2 := NewAny(Int(1))
+
+	result, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestGtIntAnyFalse(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestGtIntAnyEq(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(1))
+
+	result, err := t1.Gt(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestGtEqIntAny(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(0))
+
+	result, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestGtEqIntAnyEq(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(1))
+
+	result, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestGtEqIntAnyFalse(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.GtEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestLwIntAny(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Lw(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestLwIntAnyFalse(t *testing.T) {
+	t1 := Int(2)
+	t2 := NewAny(Int(1))
+
+	result, err := t1.Lw(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestLwIntAnyEq(t *testing.T) {
+	t1 := Int(2)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Lw(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestLwEqIntAny(t *testing.T) {
+	t1 := Int(2)
+	t2 := NewAny(Int(3))
+
+	result, err := t1.LwEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestLwEqIntAnyFalse(t *testing.T) {
+	t1 := Int(2)
+	t2 := NewAny(Int(1))
+
+	result, err := t1.LwEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestLwEqIntAnyEq(t *testing.T) {
+	t1 := Int(2)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.LwEq(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result.GetValue() != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndIntAny(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestAndIntAnyFalseRight(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(0))
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestAndIntAnyFalseLeft(t *testing.T) {
+	t1 := Int(0)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestAndIntAnyFalseBoth(t *testing.T) {
+	t1 := Int(0)
+	t2 := NewAny(Int(0))
+
+	result, err := t1.And(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestOrIntAny(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrIntAnyFalseRight(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(0))
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrIntAnyFalseLeft(t *testing.T) {
+	t1 := Int(0)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestOrIntAnyFalseBoth(t *testing.T) {
+	t1 := Int(0)
+	t2 := NewAny(Int(0))
+
+	result, err := t1.Or(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected true, got ", result)
+	}
+}
+
+func TestXorIntAny(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(false) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestXorIntAnyFalseLeft(t *testing.T) {
+	t1 := Int(0)
+	t2 := NewAny(Int(2))
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestXorIntAnyFalseRight(t *testing.T) {
+	t1 := Int(1)
+	t2 := NewAny(Int(0))
+
+	result, err := t1.Xor(t2)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != Bool(true) {
+		t.Error("Expected false, got ", result)
+	}
+}
+
+func TestXorIntAnyFalseBoth(t *testing.T) {
+	t1 := Int(0)
+	t2 := NewAny(Int(0))
 
 	result, err := t1.Xor(t2)
 	if err != nil {
