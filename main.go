@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/Eclalang/Ecla/interpreter"
+	"github.com/Eclalang/mainthread"
 	"strings"
 	"time"
-
-	"github.com/Eclalang/Ecla/interpreter"
 )
 
 var (
@@ -33,7 +33,7 @@ func init() {
 	flag.Parse()
 }
 
-func main() {
+func eclaCli() {
 	args := flag.Args()
 	if len(args) == 0 {
 		fmt.Println("invalid input")
@@ -75,4 +75,8 @@ func main() {
 		txt, _ := json.MarshalIndent(Env.SyntaxTree, "", "  ")
 		fmt.Println("SYNTAX TREE:", string(txt))
 	}
+}
+
+func main() {
+	mainthread.Run(eclaCli)
 }
