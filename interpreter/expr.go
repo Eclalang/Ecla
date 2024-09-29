@@ -582,9 +582,11 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 
 func RunStructInstantiationExpr(tree parser.StructInstantiationExpr, env *Env) []*Bus {
 	decl, ok := env.GetTypeDecl(tree.Name)
-	if !ok {
+	if !ok { //checking if declaration exists
 		env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "unknown type: "+tree.Name, errorHandler.LevelFatal)
 	}
+
+	fields := decl.GetFieldsInOrder()
 	s := eclaType.NewStruct(decl.(*eclaDecl.StructDecl))
 	s.SetType(tree.Name)
 	for i, arg := range tree.Args {
@@ -597,7 +599,11 @@ func RunStructInstantiationExpr(tree parser.StructInstantiationExpr, env *Env) [
 		case *eclaType.Var:
 			temp = temp.(*eclaType.Var).GetValue().(eclaType.Type)
 		}
-		s.AddField(i, temp)
+		if temp.GetType() == fields[i].Type {
+			s.AddField(i, temp)
+		} else {
+			env.ErrorHandle.HandleError(tree.StartLine(), tree.StartPos(), "Field of type "+temp.GetType()+" does not belong in struct "+decl.GetName(), errorHandler.LevelFatal)
+		}
 	}
 	err := s.Verify()
 	if err != nil {
