@@ -1,0 +1,227 @@
+import "pixel";
+import "console";
+import "time";
+import "math";
+import "cast";
+
+struct Color {
+    R: int;
+    G: int;
+    B: int;
+    A: int;
+}
+
+struct Point {
+    X: float;
+    Y: float;
+}
+
+struct Point3D {
+    X: float;
+    Y: float;
+    Z: float;
+}
+
+function Point3DTo2D(p: Point3D, c: Point3D) (Point) {
+    var point Point3D = Point3D{0.0,0.0,0.0};
+    var camera Point3D = Point3D{0.0,0.0,0.0};
+    camera = c;
+    point = p;
+    px := point.X;
+    py := point.Y;
+    pz := point.Z;
+    cx := camera.X;
+    cy := camera.Y;
+    cz := camera.Z;
+    var x float = px - cx;
+    var y float = py - cy;
+    var z float = pz - cz;
+    var scale float = 1.0 / z;
+    return Point{x * scale, y * scale};
+}
+
+function DegToRad(deg: float) (float) {
+    return deg * 3.141592 / 180.0;
+}
+
+function ApplyRotation(p: Point3D, r: Point3D) (Point3D) {
+    var point Point3D = Point3D{0.0,0.0,0.0};
+    var rotation Point3D = Point3D{0.0,0.0,0.0};
+    point = p;
+    rotation = r;
+    px := point.X;
+    py := point.Y;
+    pz := point.Z;
+    # transform to radians
+    rx := DegToRad(rotation.X);
+    ry := DegToRad(rotation.Y);
+    rz := DegToRad(rotation.Z);
+
+    cos1 := math.cos(rx);
+    sin1 := math.sin(rx);
+
+    cos2 := math.cos(ry);
+    sin2 := math.sin(ry);
+
+    cos3 := math.cos(rz);
+    sin3 := math.sin(rz);
+
+    var y1 float = py * math.cos(rx) - pz * sin1;
+    var z1 float = py * sin1 + pz * cos1;
+
+    var x1 float = px * cos2 + z1 * sin2;
+    var z2 float = -px * sin2 + z1 * cos2;
+
+    var x2 float = x1 * cos3 - y1 * sin3;
+    var y2 float = x1 * sin3 + y1 * cos3;
+
+    return Point3D{x2, y2, z2};
+}
+
+function ApplyTranslation(p: Point3D, t: Point3D) (Point3D) {
+    var point Point3D = Point3D{0.0,0.0,0.0};
+    var translation Point3D = Point3D{0.0,0.0,0.0};
+    point = p;
+    translation = t;
+    px := point.X;
+    py := point.Y;
+    pz := point.Z;
+    tx := translation.X;
+    ty := translation.Y;
+    tz := translation.Z;
+    return Point3D{px + tx, py + ty, pz + tz};
+}
+
+function ApplyScale(p: Point3D, s: Point3D) (Point3D) {
+    var point Point3D = Point3D{0.0,0.0,0.0};
+    var scale Point3D = Point3D{0.0,0.0,0.0};
+    point = p;
+    scale = s;
+    px := point.X;
+    py := point.Y;
+    pz := point.Z;
+    sx := scale.X;
+    sy := scale.Y;
+    sz := scale.Z;
+    return Point3D{px * sx, py * sy, pz * sz};
+}
+
+
+pixel.start();
+var windowHandle int;
+windowHandle = pixel.createWindow("testWindow1", 1000, 1000);
+console.println("Created window with handle: ", windowHandle);
+
+# draw a simple cube
+var vertices []Point3D = [
+    # triangle 1
+    Point3D{0.0, 0.0, 0.0},
+    Point3D{1.0, 0.0, 0.0},
+    Point3D{1.0, 1.0, 0.0},
+    # triangle 2
+    Point3D{0.0, 0.0, 0.0},
+    Point3D{1.0, 1.0, 0.0},
+    Point3D{0.0, 1.0, 0.0},
+    # triangle 3
+    Point3D{0.0, 0.0, 0.0},
+    Point3D{0.0, 1.0, 0.0},
+    Point3D{0.0, 1.0, 1.0},
+    # triangle 4
+    Point3D{0.0, 0.0, 0.0},
+    Point3D{0.0, 1.0, 1.0},
+    Point3D{0.0, 0.0, 1.0},
+    # triangle 5
+    Point3D{0.0, 0.0, 0.0},
+    Point3D{0.0, 0.0, 1.0},
+    Point3D{1.0, 0.0, 1.0},
+    # triangle 6
+    Point3D{0.0, 0.0, 0.0},
+    Point3D{1.0, 0.0, 1.0},
+    Point3D{1.0, 0.0, 0.0},
+    # triangle 7
+    Point3D{1.0, 0.0, 0.0},
+    Point3D{1.0, 0.0, 1.0},
+    Point3D{1.0, 1.0, 1.0},
+    # triangle 8
+    Point3D{1.0, 0.0, 0.0},
+    Point3D{1.0, 1.0, 1.0},
+    Point3D{1.0, 1.0, 0.0},
+    # triangle 9
+    Point3D{0.0, 1.0, 0.0},
+    Point3D{1.0, 1.0, 0.0},
+    Point3D{1.0, 1.0, 1.0},
+    # triangle 10
+    Point3D{0.0, 1.0, 0.0},
+    Point3D{1.0, 1.0, 1.0},
+    Point3D{0.0, 1.0, 1.0},
+    # triangle 11
+    Point3D{0.0, 0.0, 1.0},
+    Point3D{1.0, 0.0, 1.0},
+    Point3D{1.0, 1.0, 1.0},
+    # triangle 12
+    Point3D{0.0, 0.0, 1.0},
+    Point3D{1.0, 1.0, 1.0},
+    Point3D{0.0, 1.0, 1.0}
+];
+
+
+
+var camera Point3D = Point3D{0.0, 0.0, 0.0};
+
+var rotation Point3D = Point3D{0.0, 0.0, 0.0};
+
+var position Point3D = Point3D{2000.0, 5000.0, 10.0};
+
+var scale Point3D = Point3D{1000.0, 1000.0, 1.0};
+
+
+var running bool = true;
+
+var velocityX float = 10.0;
+var velocityY float = 10.0;
+
+while (running){
+    time.sleep(0.1);
+    pixel.clear(windowHandle, Color{0, 0,  0, 255});
+#    p1 := Point3DTo2D(ApplyTranslation(ApplyScale(ApplyRotation(vertices[0],rotation), scale), position), camera);
+#    p2 := Point3DTo2D(ApplyTranslation(ApplyScale(ApplyRotation(vertices[1],rotation), scale), position), camera);
+#    p3 := Point3DTo2D(ApplyTranslation(ApplyScale(ApplyRotation(vertices[2],rotation), scale), position), camera);
+
+    var projected []Point;
+
+    for (i := 0, i < len(vertices), i++) {
+        projected = append(projected, Point3DTo2D(ApplyTranslation(ApplyScale(ApplyRotation(vertices[i],rotation), scale), position), camera));
+    }
+
+    for (i := 0, i < len(projected), i+=3) {
+        pixel.drawTriangle(windowHandle, projected[i], projected[i+1], projected[i+2], Color{255,255,255, 255},false);
+    }
+
+    # rotate the cube
+    rotation.X += 0.1;
+    rotation.Y += 0.1;
+    rotation.Z += 0.1;
+
+    # change direction when hitting the edge
+    posx := position.X;
+    posy := position.Y;
+    if (posx > 10000 || posx < 0) {
+        velocityX = -velocityX;
+    }
+    if (posy > 10000 || posy < 0) {
+        velocityY = -velocityY;
+    }
+    position.X += velocityX;
+    position.Y += velocityY;
+
+
+
+
+
+
+    pixel.updateWindow(windowHandle);
+    if (pixel.windowShouldClose(windowHandle)){
+        pixel.destroyWindow(windowHandle);
+        running = false;
+    }
+}

@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Eclalang/Ecla/interpreter"
-	"github.com/Eclalang/mainthread"
 	"strings"
 	"time"
 )
@@ -78,5 +77,5 @@ func eclaCli() {
 }
 
 func main() {
-	mainthread.Run(eclaCli)
+	eclaCli()
 }

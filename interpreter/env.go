@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"os"
@@ -159,6 +160,9 @@ func (env *Env) Execute() {
 	// Parsing
 	pars := parser.Parser{Tokens: env.Tokens, ErrorHandler: env.ErrorHandle}
 	env.SyntaxTree = pars.Parse()
+	data, _ := json.Marshal(env.SyntaxTree)
+	os.WriteFile("syntaxTree.json", data, 0644)
+	fmt.Println(json.Marshal(env.SyntaxTree))
 
 	// Execute
 	Run(env)
@@ -289,6 +293,10 @@ func (lib *envLib) Call(name string, args []eclaType.Type) ([]eclaType.Type, err
 
 func (lib *envLib) GetVar(name string) (*eclaType.Var, bool) {
 	return lib.Var.Get(name)
+}
+
+func (lib *envLib) GetVariables() map[string]eclaType.Type {
+	return map[string]eclaType.Type{}
 }
 
 // ConvertToLib converts the Env to a Lib.

@@ -1,0 +1,96 @@
+import "pixel";
+import "console";
+import "time";
+import "math";
+import "cast";
+
+struct Color {
+    R: int;
+    G: int;
+    B: int;
+    A: int;
+}
+
+struct Point {
+    X: float;
+    Y: float;
+}
+
+
+pixel.start();
+var windowHandle int;
+windowHandle = pixel.createWindow("testWindow1", 1000, 1000);
+console.println("Created window with handle: ", windowHandle);
+
+var balls []Point;
+var ballSizes []float;
+var ballSpeeds []Point;
+var colors []Color;
+
+# generate balls
+for (var i int = 0, i < 100, i++){
+    x := math.random(0.0, 1000.0);
+    time.sleep(0.1);
+    y := math.random(0.0, 1000.0);
+    time.sleep(0.1);
+    p := Point{x, y};
+    balls = append(balls, p);
+}
+# generate ball sizes
+for (var i int = 0, i < 100, i++){
+    time.sleep(0.1);
+    s := math.random(10.0, 20.0);
+    ballSizes = append(ballSizes, s);
+}
+# generate ball speeds
+for (var i int = 0, i < 100, i++){
+    x := math.random(-10.0, 10.0);
+    time.sleep(0.1);
+    y := math.random(x, 10.0);
+    time.sleep(0.1);
+    bs := Point{x, y};
+    ballSpeeds = append(ballSpeeds, bs);
+}
+
+# generate colors
+for (var i int = 0, i < 100, i++){
+    r := cast.floatToInt(math.random(0.0, 255.0));
+    time.sleep(0.1);
+    g := cast.floatToInt(math.random(0.0, 255.0));
+    time.sleep(0.1);
+    b := cast.floatToInt(math.random(0.0, 255.0));
+    time.sleep(0.1);
+    c := Color{r, g, b, 255};
+    colors = append(colors, c);
+}
+
+var running bool = true;
+while (running){
+    time.sleep(0.1);
+    pixel.clear(windowHandle, Color{0, 0,  0, 255});
+
+    for (var i int = 0, i < 100, i++){
+        balls[i].X += ballSpeeds[i].X;
+        balls[i].Y += ballSpeeds[i].Y;
+
+        posX := balls[i].X;
+        posY := balls[i].Y;
+
+        if (posX < 0 || posX > 1000){
+            ballSpeeds[i].X = -ballSpeeds[i].X;
+        }
+        if (posY < 0 || posY > 1000){
+            ballSpeeds[i].Y = -ballSpeeds[i].Y;
+        }
+
+        pixel.drawCircle(windowHandle, balls[i], ballSizes[i], colors[i], true);
+    }
+
+
+
+    pixel.updateWindow(windowHandle);
+    if (pixel.windowShouldClose(windowHandle)){
+        pixel.destroyWindow(windowHandle);
+        running = false;
+    }
+}
