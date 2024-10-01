@@ -572,7 +572,7 @@ func RunSelectorExpr(expr parser.SelectorExpr, env *Env, Struct eclaType.Type) [
 			}
 			return []*Bus{NewMainBus(*result)}
 		default:
-			env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "struct cannot have filed of type "+prev.GetType(), errorHandler.LevelFatal)
+			env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "struct cannot have field of type "+prev.GetType(), errorHandler.LevelFatal)
 		}
 	default:
 		env.ErrorHandle.HandleError(expr.StartLine(), expr.StartPos(), "type "+prev.GetType()+" has no fields", errorHandler.LevelFatal)
