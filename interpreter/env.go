@@ -1,7 +1,6 @@
 package interpreter
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/Eclalang/Ecla/interpreter/eclaDecl"
 	"os"
@@ -160,9 +159,6 @@ func (env *Env) Execute() {
 	// Parsing
 	pars := parser.Parser{Tokens: env.Tokens, ErrorHandler: env.ErrorHandle}
 	env.SyntaxTree = pars.Parse()
-	data, _ := json.Marshal(env.SyntaxTree)
-	os.WriteFile("syntaxTree.json", data, 0644)
-	fmt.Println(json.Marshal(env.SyntaxTree))
 
 	// Execute
 	Run(env)
