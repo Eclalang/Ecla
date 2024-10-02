@@ -67,3 +67,12 @@ p.printSelf(p);
 # access embedded struct fields
 console.println(p.test.test);
 
+# use a struct field in a binary operation
+var p2 int = p.x + p.y;
+console.println(p2);
+
+# use a field of a struct field in a binary operation
+var p3 string = p.test.test + p.test.test;
+console.println(p3);
+
+
