@@ -951,7 +951,21 @@ func (p *Parser) ParseSelector(x Expr) Expr {
 		p.HandleFatal("Expected field name after '.'")
 		return nil
 	}
-	selector := p.ParseExpr()
+	// check if the field is a function call
+	var selector Expr
+	if p.Peek(1).TokenType == lexer.LPAREN {
+		selector = p.ParseFunctionCallExpr()
+	} else {
+		selector = p.ParseVariableAccess()
+		p.Step()
+	}
+	// check if there is a period after the selector to see if it is a selector
+	if p.CurrentToken.TokenType == lexer.PERIOD {
+		p.Step()
+		selectorDepth++
+		selector = p.ParseSelector(selector)
+		selectorDepth--
+	}
 	return SelectorExpr{Field: p.CurrentToken, Expr: x, Sel: selector}
 }
 
