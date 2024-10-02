@@ -1335,6 +1335,23 @@ func TestParser_ParseSelector(t *testing.T) {
 	}
 	ok = false
 
+	// selector with a function call
+	resetWithTokens(&par, lexer.Lexer("test.test()"))
+	par.MultiStep(2)
+	par.ParseSelector(nil)
+	if ok {
+		t.Errorf("ParseSelector() raised an error when it should not")
+	}
+	ok = false
+	// selector used in a binary expression
+	resetWithTokens(&par, lexer.Lexer("test.test + 1"))
+	par.MultiStep(2)
+	par.ParseSelector(nil)
+	if ok {
+		t.Errorf("ParseSelector() raised an error when it should not")
+	}
+	ok = false
+
 	e.RestoreExit()
 }
 
