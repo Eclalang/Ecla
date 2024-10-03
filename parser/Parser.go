@@ -20,6 +20,7 @@ type Parser struct {
 }
 
 var selectorDepth int
+var inFunction bool
 
 // Step moves the parser to the next token
 func (p *Parser) Step() {
@@ -1068,6 +1069,12 @@ func (p *Parser) ParseAnonymousFunctionExpr() Expr {
 	tempAnonymousFunctionDecl.Prototype = p.ParsePrototype()
 	p.Step()
 	tempAnonymousFunctionDecl.Body = p.ParseBody()
+	// check the parsed prototype parameters and remove them from the list of dependencies if they are inside
+	for _, param := range tempAnonymousFunctionDecl.Prototype.Parameters {
+		if contains(param.Name, p.CurrentFile.Dependencies) {
+			p.CurrentFile.RemoveDependency(param.Name)
+		}
+	}
 	p.Step()
 	//check if it is a call
 	if p.CurrentToken.TokenType == lexer.LPAREN {
@@ -1122,12 +1129,20 @@ func (p *Parser) ParseFunctionDecl() Node {
 		p.HandleFatal("Expected '(' after function name")
 		return nil
 	}
+	inFunction = true
 	tempFunctionDecl.Prototype = p.ParsePrototype()
 	p.Step()
 	tempFunctionDecl.Body = p.ParseBody()
+	// check the parsed prototype parameters and remove them from the list of dependencies if they are inside
+	for _, param := range tempFunctionDecl.Prototype.Parameters {
+		if contains(param.Name, p.CurrentFile.Dependencies) {
+			p.CurrentFile.RemoveDependency(param.Name)
+		}
+	}
 	p.Step()
 	p.CurrentFile.FunctionDecl = append(p.CurrentFile.FunctionDecl, tempFunctionDecl.Name)
 	p.DisableEOLChecking()
+	inFunction = false
 	return tempFunctionDecl
 }
 
