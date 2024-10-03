@@ -1588,6 +1588,13 @@ func TestParser_ParseAnonymousFunctionExpr(t *testing.T) {
 		t.Errorf("ParseAnonymousFunctionExpr() raised an error when it should not")
 	}
 	ok = false
+	// function declaration with structs as parameters and field access in the body
+	resetWithTokens(&par, lexer.Lexer("function(a : Test, b : Test)( string) {return a.test + b.test;}"))
+	par.VarTypes["Test"] = "struct"
+	par.ParseAnonymousFunctionExpr()
+	if ok {
+		t.Errorf("ParseAnonymousFunctionExpr() raised an error when it should not")
+	}
 
 	e.RestoreExit()
 }
@@ -1645,6 +1652,13 @@ func TestParser_ParseFunctionDecl(t *testing.T) {
 		t.Errorf("ParseFunctionDecl() did not raise the missing left parenthesis error")
 	}
 	ok = false
+	// function declaration with structs as parameters and field access in the body
+	resetWithTokens(&par, lexer.Lexer("function test(a : Test, b : Test)( string) {return a.test + b.test;}"))
+	par.VarTypes["Test"] = "struct"
+	par.ParseFunctionDecl()
+	if ok {
+		t.Errorf("ParseFunctionDecl() raised an error when it should not")
+	}
 
 	e.RestoreExit()
 }
