@@ -1588,7 +1588,7 @@ func TestParser_ParseAnonymousFunctionExpr(t *testing.T) {
 		t.Errorf("ParseAnonymousFunctionExpr() raised an error when it should not")
 	}
 	ok = false
-	// function declaration with structs as parameters and field access in the body
+	// anonymous function expression with structs as parameters and field access in the body
 	resetWithTokens(&par, lexer.Lexer("function(a : Test, b : Test)( string) {return a.test + b.test;}"))
 	par.VarTypes["Test"] = "struct"
 	par.ParseAnonymousFunctionExpr()
